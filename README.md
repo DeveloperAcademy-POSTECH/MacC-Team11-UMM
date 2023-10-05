@@ -59,21 +59,15 @@ Macro Challenge, Team 11, UMM, Morning, 2023
 - Git flow에 해당하지 않는 브랜치는 머지 후 삭제합니다
 - [Exeption] 해당하는 이슈 내 태스크가 완료되지 않았지만 기타 사유로 일단 머지하는 경우
 
-## Code Review 코드 리뷰
-
-### 방식에 대하여
-- 본인 외 2인의 승인 필요(사실상 테크 전원)
-- PR을 올린 다음날 아침 10시까지, 주말 포함
-
-### 작업 순서
-#### push: 보낼 때
+## 작업 순서
+### push: 보낼 때
 {working directory}</br>
 -> git add -> {staging area} </br>
 -> git commit -> {local repository == 나의 mac}</br>
 -> git pull 후 충돌 발생하면 로컬에서 해결</br>
 -> git push -> {remote repository == github}</br>
 
-#### 깃헙 페이지에서의 Pull Request
+### 깃헙 페이지에서의 Pull Request
 1. PR 생성 버튼 누르기
 2. PR 컨벤션에 따라 작성하기
 3. 코드 리뷰와 승인 받기
@@ -81,12 +75,17 @@ Macro Challenge, Team 11, UMM, Morning, 2023
 5. 병합하기
 6. 리모트 브랜치 삭제하기
 
-#### pull: 받을 때
+### pull: 받을 때
 {remote repository}</br>
 -> git pull -> {local repository}</br>
 -> git branch -d {prev}</br>
 -> git branch {new} -> git checkout {new} -> {working directory}</br>
 
+## Code Review 코드 리뷰
+
+### 방식에 대하여
+- 본인 외 2인의 승인 필요(사실상 테크 전원)
+- PR을 올린 다음날 아침 10시까지, 주말 포함
 
 ### 코드 컨벤션
 - 주석은 복잡한 기능 등을 한줄요약하는 정도로만 사용합니다. 레거시 주석이 되지 않게 일반적인 내용을 적습니다.
@@ -99,6 +98,3 @@ Macro Challenge, Team 11, UMM, Morning, 2023
 - **ASAP** as soon as possible
 - **TL;DR** Too Long. Didn't Read *보통 문장 앞 부분에 긴 글을 요약할 때*
 - **P1 ~ P3** 우선순위. 1이 높은 것.
-  
-
-### 
