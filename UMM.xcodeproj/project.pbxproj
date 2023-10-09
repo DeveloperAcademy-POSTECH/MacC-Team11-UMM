@@ -11,6 +11,7 @@
 		571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571A426B2ACE857500FA3D2B /* ContentView.swift */; };
 		571A426E2ACE857600FA3D2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A426D2ACE857600FA3D2B /* Assets.xcassets */; };
 		571A42712ACE857600FA3D2B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A42702ACE857600FA3D2B /* Preview Assets.xcassets */; };
+		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		571A426B2ACE857500FA3D2B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		571A426D2ACE857600FA3D2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		571A42702ACE857600FA3D2B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 				571A426B2ACE857500FA3D2B /* ContentView.swift */,
 				571A426D2ACE857600FA3D2B /* Assets.xcassets */,
 				571A426F2ACE857600FA3D2B /* Preview Content */,
+				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
 			);
 			path = UMM;
 			sourceTree = "<group>";
@@ -161,6 +164,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
+				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,
 				571A426A2ACE857500FA3D2B /* UMMApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,6 +373,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */,
+			);
+			currentVersion = 5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */;
+			path = UMM.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 571A425E2ACE857500FA3D2B /* Project object */;
 }
