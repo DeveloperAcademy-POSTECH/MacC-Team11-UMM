@@ -22,15 +22,21 @@ struct AddTravelView: View {
 
         VStack {
             HStack {
-                Button { } label: {
+                Button {
+                    viewModel.changeMonth(by: -1)
+                } label: {
                     Image(systemName: "arrow.left")
                         .font(.title)
                 }
                 Spacer()
-                Text(viewModel.dateToMonth(date: viewModel.today) + "월")
+                Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
+                    .font(.title)
+                + Text("월")
                     .font(.title)
                 Spacer()
-                Button { } label: {
+                Button {
+                    viewModel.changeMonth(by: 1)
+                } label: {
                     Image(systemName: "arrow.right")
                         .font(.title)
                 }
