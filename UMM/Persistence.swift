@@ -9,13 +9,10 @@ import CoreData
 
 struct PersistenceController {
     static let shared = PersistenceController()
-    
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        
         // Dummy data will go here later
-        
         do {
             try viewContext.save()
         } catch {
@@ -24,9 +21,7 @@ struct PersistenceController {
         }
         return result
     }()
-    
     let container: NSPersistentContainer
-      
       init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "UMM")
         if inMemory {
@@ -39,7 +34,6 @@ struct PersistenceController {
           }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
-        
         container.viewContext.name = "viewContext"
         /// - Tag: viewContextMergePolicy
         container.viewContext.mergePolicy =
