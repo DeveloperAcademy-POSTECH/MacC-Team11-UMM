@@ -81,19 +81,11 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		C17550552AD54FCF00A61BE5 /* TravelList */ = {
-			isa = PBXGroup;
-			children = (
-				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
-				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
-			);
-			path = TravelList;
-			sourceTree = "<group>";
-		};
 		C17550562AD5518C00A61BE5 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C17550552AD54FCF00A61BE5 /* TravelList */,
+				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
+				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";

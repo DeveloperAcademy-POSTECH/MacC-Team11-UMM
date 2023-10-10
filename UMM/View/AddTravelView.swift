@@ -24,6 +24,7 @@ struct AddTravelView: View {
             HStack {
                 Button {
                     viewModel.changeMonth(by: -1)
+                    print(Date())
                 } label: {
                     Image(systemName: "arrow.left")
                         .font(.title)
@@ -51,14 +52,16 @@ struct AddTravelView: View {
     }
 
     private var calendarGridView: some View {
+
         let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
         let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
+
         return VStack {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
                 ForEach(0 ..< daysInMonth + firstWeekday, id: \.self) { index in
                     if index < firstWeekday {
                         RoundedRectangle(cornerRadius: 5)
-                            .foregroundColor(.clear)
+                            .foregroundColor(.gray)
                     } else {
 //                        let date = getDate(for: index - firstWeekday)
                         let day = index - firstWeekday + 1
@@ -76,7 +79,7 @@ struct AddTravelView: View {
         }
         var body: some View {
             VStack {
-                RoundedRectangle(cornerRadius: 5)
+                Circle()
                     .opacity(0)
                     .overlay(Text(String(day)))
             }

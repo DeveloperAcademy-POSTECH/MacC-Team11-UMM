@@ -23,7 +23,7 @@ class AddTravelViewModel: ObservableObject {
     }
 
     // 해당 월의 시작 날짜
-    func startOfMonth() -> Date {
+    private func startOfMonth() -> Date {
         let components = Calendar.current.dateComponents([.year, .month], from: month)
         return Calendar.current.date(from: components)!
     }
@@ -33,7 +33,7 @@ class AddTravelViewModel: ObservableObject {
         return Calendar.current.range(of: .day, in: .month, for: date)?.count ?? 0
     }
 
-    // 해당 월의 첫 번쩨 날짜의 요일
+    // 해당 월의 첫 번째 날짜의 요일
     func firstWeekdayOfMonth(in date: Date) -> Int {
         let components = Calendar.current.dateComponents([.year, .month], from: date)
         let firstDayOfMonth = Calendar.current.date(from: components)!
