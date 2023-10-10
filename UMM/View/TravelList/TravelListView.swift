@@ -11,8 +11,8 @@ struct TravelListView: View {
     @State var month: Date
     var body: some View {
         NavigationStack {
-            NavigationLink(destination: AddTravelView(month: month), label: {
-                Text("임의버튼")
+            NavigationLink(destination: AddTravelView(), label: {
+                Text("+")
             })
         }
     }
