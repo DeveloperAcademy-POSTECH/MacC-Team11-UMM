@@ -14,18 +14,25 @@ struct AddTravelView: View {
     var body: some View {
         VStack {
 
+            Spacer()
+
             headerView
+
+            Spacer()
 
             VStack {
                 calendarHeader
                 calendarGridView
             }
+
+            Spacer()
         }
     }
 
     private var headerView: some View {
 
-         VStack {
+        VStack(alignment: .leading, spacing: 10) {
+
             Text("기간을 입력해주세요")
                 .font(.title)
                 .fontWeight(.bold)
@@ -41,7 +48,7 @@ struct AddTravelView: View {
 
     private var calendarHeader: some View {
 
-        VStack {
+        VStack(spacing: 30) {
             HStack {
                 Button {
                     viewModel.changeMonth(by: -1)
@@ -49,20 +56,29 @@ struct AddTravelView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.title)
+                        .foregroundStyle(Color.black)
                 }
+
                 Spacer()
+
                 Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
                     .font(.title)
                 + Text("월")
                     .font(.title)
+
                 Spacer()
+
                 Button {
                     viewModel.changeMonth(by: 1)
                 } label: {
                     Image(systemName: "chevron.right")
+                        .padding(1.0)
                         .font(.title)
+                        .foregroundStyle(Color.black)
                 }
             }
+            .padding(.horizontal, 20)
+
             HStack {
                 ForEach(AddTravelViewModel.weekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
@@ -110,7 +126,6 @@ struct AddTravelView: View {
             VStack {
                 Button {
                     viewModel.startDate = date
-                    print(viewModel.startDate!)
                 } label: {
                     Circle()
                         .opacity(0)

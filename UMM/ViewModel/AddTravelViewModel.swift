@@ -42,7 +42,6 @@ class AddTravelViewModel: ObservableObject {
     func firstWeekdayOfMonth(in date: Date) -> Int {
         let components = Calendar.current.dateComponents([.year, .month], from: date)
         let firstDayOfMonth = Calendar.current.date(from: components)!
-
         return Calendar.current.component(.weekday, from: firstDayOfMonth)
     }
 
@@ -57,12 +56,10 @@ class AddTravelViewModel: ObservableObject {
             self.month = newMonth
         }
     }
-    
+
     func dateToDay(in date: Date) -> String {
-        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d"
-        
         return dateFormatter.string(from: date)
     }
 }
