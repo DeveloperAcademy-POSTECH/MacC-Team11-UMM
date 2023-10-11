@@ -10,16 +10,21 @@ import Foundation
 class AddTravelViewModel: ObservableObject {
 
     @Published var month: Date
+    @Published var startDate: Date?
 
     static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
+    
     static let dateFormatter: DateFormatter = {
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "M"
+        
         return formatter
     }()
 
     init(month: Date) {
         self.month = month
+        self.startDate = Date()
     }
 
     // 해당 월의 시작 날짜
@@ -42,7 +47,7 @@ class AddTravelViewModel: ObservableObject {
     }
 
     // 특정 해당 날짜 반환
-    private func getDate(for day: Int) -> Date {
+    func getDate(for day: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: day, to: startOfMonth())!
     }
 

@@ -13,8 +13,27 @@ struct AddTravelView: View {
 
     var body: some View {
         VStack {
-            calendarHeader
-            calendarGridView
+            headerView
+            VStack {
+                calendarHeader
+                calendarGridView
+            }
+        }
+    }
+
+    private var headerView: some View {
+
+        VStack {
+            Text("기간을 입력해주세요")
+                .font(.title)
+                .fontWeight(.bold)
+
+            Text("여행의 시작일과 종료일을 설정해주세요.")
+
+            HStack {
+                Text("시작일")
+//                Text(viewModel.startDate)
+            }
         }
     }
 
@@ -63,9 +82,9 @@ struct AddTravelView: View {
                         RoundedRectangle(cornerRadius: 5)
                             .foregroundColor(.gray)
                     } else {
-//                        let date = getDate(for: index - firstWeekday)
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = index - firstWeekday + 1
-                        CellView(day: day)
+                        CellView(day: day, viewModel: viewModel, date: date)
                     }
                 }
             }
@@ -73,13 +92,24 @@ struct AddTravelView: View {
     }
 
     private struct CellView: View {
-        var day: Int
-        init(day: Int) {
+
+        private var day: Int
+        private var date: Date?
+
+        @ObservedObject private var viewModel: AddTravelViewModel
+
+        init(day: Int, viewModel: AddTravelViewModel, date: Date?) {
             self.day = day
+            self.viewModel = viewModel
+            self.date = date
         }
+
         var body: some View {
             VStack {
-                Button{ } label: {
+                Button {
+                    viewModel.startDate = date
+                    print(viewModel.startDate!)
+                } label: {
                     Circle()
                         .opacity(0)
                         .overlay(Text(String(day)))

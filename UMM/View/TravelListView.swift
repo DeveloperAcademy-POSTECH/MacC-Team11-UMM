@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct TravelListView: View {
+
     @State var month: Date
+
     var body: some View {
         NavigationStack {
             NavigationLink(destination: AddTravelView(), label: {
