@@ -13,8 +13,7 @@ struct UMMApp: App {
     var month = Date()
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            TravelListView(month: month)
+            ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
