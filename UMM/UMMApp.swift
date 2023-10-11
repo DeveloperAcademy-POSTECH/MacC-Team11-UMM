@@ -10,7 +10,6 @@ import SwiftUI
 @main
 struct UMMApp: App {
     let persistenceController = PersistenceController.shared
-    var month = Date()
     var body: some Scene {
         WindowGroup {
             ContentView()
