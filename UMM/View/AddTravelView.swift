@@ -13,7 +13,9 @@ struct AddTravelView: View {
 
     var body: some View {
         VStack {
+
             headerView
+
             VStack {
                 calendarHeader
                 calendarGridView
@@ -23,7 +25,7 @@ struct AddTravelView: View {
 
     private var headerView: some View {
 
-        VStack {
+         VStack {
             Text("기간을 입력해주세요")
                 .font(.title)
                 .fontWeight(.bold)
@@ -32,7 +34,7 @@ struct AddTravelView: View {
 
             HStack {
                 Text("시작일")
-//                Text(viewModel.startDate)
+                Text("\(viewModel.startDate)" as String)
             }
         }
     }
@@ -45,7 +47,7 @@ struct AddTravelView: View {
                     viewModel.changeMonth(by: -1)
                     print(Date())
                 } label: {
-                    Image(systemName: "arrow.left")
+                    Image(systemName: "chevron.left")
                         .font(.title)
                 }
                 Spacer()
@@ -57,7 +59,7 @@ struct AddTravelView: View {
                 Button {
                     viewModel.changeMonth(by: 1)
                 } label: {
-                    Image(systemName: "arrow.right")
+                    Image(systemName: "chevron.right")
                         .font(.title)
                 }
             }

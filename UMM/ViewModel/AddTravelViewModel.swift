@@ -13,12 +13,12 @@ class AddTravelViewModel: ObservableObject {
     @Published var startDate: Date?
 
     static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
-    
+
     static let dateFormatter: DateFormatter = {
-        
+
         let formatter = DateFormatter()
         formatter.dateFormat = "M"
-        
+
         return formatter
     }()
 
@@ -56,5 +56,13 @@ class AddTravelViewModel: ObservableObject {
         if let newMonth = calendar.date(byAdding: .month, value: value, to: month) {
             self.month = newMonth
         }
+    }
+    
+    func dateToDay(in date: Date) -> String {
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d"
+        
+        return dateFormatter.string(from: date)
     }
 }
