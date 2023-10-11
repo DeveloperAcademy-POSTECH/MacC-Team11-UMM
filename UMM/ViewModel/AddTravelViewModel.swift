@@ -22,6 +22,14 @@ class AddTravelViewModel: ObservableObject {
         return formatter
     }()
 
+    static let dateToDayFormatter: DateFormatter = {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d"
+
+        return formatter
+    }()
+
     init(month: Date) {
         self.month = month
         self.startDate = Date()
@@ -58,8 +66,6 @@ class AddTravelViewModel: ObservableObject {
     }
 
     func dateToDay(in date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d"
-        return dateFormatter.string(from: date)
+        return AddTravelViewModel.dateToDayFormatter.string(from: date)
     }
 }
