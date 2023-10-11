@@ -13,12 +13,12 @@ struct AddTravelView: View {
 
     var body: some View {
         VStack {
-            header
+            calendarHeader
             calendarGridView
         }
     }
 
-    private var header: some View {
+    private var calendarHeader: some View {
 
         VStack {
             HStack {
@@ -79,9 +79,12 @@ struct AddTravelView: View {
         }
         var body: some View {
             VStack {
-                Circle()
-                    .opacity(0)
-                    .overlay(Text(String(day)))
+                Button{ } label: {
+                    Circle()
+                        .opacity(0)
+                        .overlay(Text(String(day)))
+                        .foregroundStyle(Color.black)
+                }
             }
         }
     }
