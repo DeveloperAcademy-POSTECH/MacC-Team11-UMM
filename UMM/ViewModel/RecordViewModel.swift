@@ -9,11 +9,35 @@ import Foundation
 
 final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
-    @Published var voiceSentence: String = ""
+    @Published var voiceSentence: String = RecordViewModel.voiceSentenceArray[0]
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
+    
+    static let voiceSentenceArray = [
+        "",
+        "3.25달러",
+        "1,000,000루피",
+        "세면도구 3000루피",
+        "100,000,000 50,000,000루피",
+        "2000페소 사토시",
+        "150 솔",
+        "250,000 Sol",
+        "500 헤알",
+        "점 육 오",
+        "190.65",
+        "30,000루블 카드",
+        "330,000,025.35달러",
+        "3,000,000,000",
+        "오만 오천동",
+        "삼만 이 백동",
+        "3.25",
+        "안녕하세요",
+        "오로나민씨 2000원",
+        "오이 3000원"
+    ]
+    var voiceSentenceChoicer: Int = 0
     
     func divideVoiceSentence() {
         guard voiceSentence.count > 0 else {
@@ -382,5 +406,14 @@ final class RecordViewModel: ObservableObject {
         // MARK: - splitArray에 남아 있는 나머지는 공백 생략하지 않은 문자열로 합친 후에 구매내역 퍼블리시드 변수에 입력
         
         info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+    }
+    
+    func alterVoiceSentence() {
+        if voiceSentenceChoicer < RecordViewModel.voiceSentenceArray.count - 1 {
+            voiceSentenceChoicer += 1
+        } else if voiceSentenceChoicer == RecordViewModel.voiceSentenceArray.count - 1 {
+            voiceSentenceChoicer = 0
+        }
+        voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
     }
 }
