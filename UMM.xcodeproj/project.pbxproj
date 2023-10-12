@@ -67,7 +67,6 @@
 		571A425D2ACE857500FA3D2B = {
 			isa = PBXGroup;
 			children = (
-				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
 				571A42682ACE857500FA3D2B /* UMM */,
 				571A42672ACE857500FA3D2B /* Products */,
 			);
@@ -94,6 +93,7 @@
 				571A426F2ACE857600FA3D2B /* Preview Content */,
 				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
 				57C41DFB2AD4F1EB00345253 /* Persistence.swift */,
+				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
 			);
 			path = UMM;
 			sourceTree = "<group>";
