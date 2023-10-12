@@ -8,7 +8,7 @@
 import Foundation
 
 enum ExpenseInfoCategory: Int {
-    case unknown = 0
+    case unknown = -1
     case plane
     case room
     case transportation

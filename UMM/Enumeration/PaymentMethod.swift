@@ -8,7 +8,7 @@
 import Foundation
 
 enum PaymentMethod: Int {
-    case unknown = 0
+    case unknown = -1
     case card
     case cash
 }
