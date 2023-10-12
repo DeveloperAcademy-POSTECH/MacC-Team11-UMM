@@ -1,0 +1,8 @@
+disabled_rules:
+    - cyclomatic_complexity
+    - deployment_target
+    - file_length
+    - function_parameter_count
+    - leading_whitespace
+    - line_length
+    - trailing_whitespace
