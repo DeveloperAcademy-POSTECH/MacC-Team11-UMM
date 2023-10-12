@@ -23,33 +23,33 @@ final class RecordViewModel: ObservableObject {
             return
         }
 
-        //MARK: - 전체 스트링을 스페이스바 기준으로 스플릿
+        // MARK: - 전체 스트링을 스페이스바 기준으로 스플릿
 
         var splitArray = voiceSentence.components(separatedBy: " ")
         var formSplitArray: [[CharacterForm]] {
             var temp = [[CharacterForm]]()
-            for ind in 0..<splitArray.count {
-                temp.append(splitArray[ind].getCharacterFormArray())
+            for i in 0..<splitArray.count {
+                temp.append(splitArray[i].getCharacterFormArray())
             }
             return temp
         }
         var splitVarietyAndCountArray: [(SplitVariety, Int)] {
             var temp = [(SplitVariety, Int)]()
             let localFormSplitArray = formSplitArray
-            for ind in 0..<splitArray.count {
-                temp.append(localFormSplitArray[ind].getSplitVarietyAndNumericPrefixCount())
+            for i in 0..<splitArray.count {
+                temp.append(localFormSplitArray[i].getSplitVarietyAndNumericPrefixCount())
             }
             return temp
         }
 
         //MARK: - 쉼표 없애기
 
-        for ind in 0..<splitArray.count {
-            var traveler = splitArray[ind].endIndex
-            for _ in (0..<splitArray[ind].count).reversed() {
-                traveler = splitArray[ind].index(before: traveler)
-                if splitArray[ind][traveler] == "," {
-                    splitArray[ind].remove(at: traveler)
+        for i in 0..<splitArray.count {
+            var j = splitArray[i].endIndex
+            for _ in (0..<splitArray[i].count).reversed() {
+                j = splitArray[i].index(before: j)
+                if splitArray[i][j] == "," {
+                    splitArray[i].remove(at: j)
                 }
             }
         }
@@ -134,8 +134,8 @@ final class RecordViewModel: ObservableObject {
 
         var numericSplits: [String] = []
 
-        for ind in (splitArray.count - numberOfAllNumericSplits)..<splitArray.count {
-            numericSplits.append(splitArray[ind])
+        for i in (splitArray.count - numberOfAllNumericSplits)..<splitArray.count {
+            numericSplits.append(splitArray[i])
         }
 
         splitArray = [String](splitArray[0..<(splitArray.count - numberOfAllNumericSplits)])
@@ -220,22 +220,22 @@ final class RecordViewModel: ObservableObject {
         // 5. A, B 안에서 이어지는 아바리아 숫자 여러 개는 이어붙인 문자열 한 개로 대치하기
 
         if monoA.count > 1 {
-            for ind in (1..<monoA.count).reversed() {
-                if let digit1 = monoA[ind-1].first, let digit0 = monoA[ind].first {
+            for i in (1..<monoA.count).reversed() {
+                if let digit1 = monoA[i-1].first, let digit0 = monoA[i].first {
                     if digit1.getCharacterForm() == .arabicNumeric && digit0.getCharacterForm() == .arabicNumeric {
-                        monoA[ind-1] = String(digit1) + monoA[ind]
-                        monoA.remove(at: ind)
+                        monoA[i-1] = String(digit1) + monoA[i]
+                        monoA.remove(at: i)
                     }
                 }
             }
         }
 
         if monoB.count > 1 {
-            for ind in (1..<monoB.count).reversed() {
-                if let digit1 = monoB[ind-1].first, let digit0 = monoB[ind].first {
+            for i in (1..<monoB.count).reversed() {
+                if let digit1 = monoB[i-1].first, let digit0 = monoB[i].first {
                     if digit1.getCharacterForm() == .arabicNumeric && digit0.getCharacterForm() == .arabicNumeric {
-                        monoB[ind-1] = String(digit1) + monoB[ind]
-                        monoB.remove(at: ind)
+                        monoB[i-1] = String(digit1) + monoB[i]
+                        monoB.remove(at: i)
                     }
                 }
             }
@@ -243,25 +243,25 @@ final class RecordViewModel: ObservableObject {
 
         // 6. A, B에서 공백 없애기
 
-        for ind in (0..<monoA.count).reversed() {
-            if monoA[ind] == " " {
-                monoA.remove(at: ind)
+        for i in (0..<monoA.count).reversed() {
+            if monoA[i] == " " {
+                monoA.remove(at: i)
             }
         }
 
-        for ind in (0..<monoB.count).reversed() {
-            if monoB[ind] == " " {
-                monoB.remove(at: ind)
+        for i in (0..<monoB.count).reversed() {
+            if monoB[i] == " " {
+                monoB.remove(at: i)
             }
         }
 
         // 7. C 안에서 arabicNumeric 혹은 koreanNumeric이 아닌 원소는 없애기
 
         if monoC.count > 1 {
-            for ind in (0..<monoC.count).reversed() {
-                if let digit = monoC[ind].first {
+            for i in (0..<monoC.count).reversed() {
+                if let digit = monoC[i].first {
                     if digit.getCharacterForm() != .arabicNumeric && digit.getCharacterForm() != .koreanNumeric {
-                        monoC.remove(at: ind)
+                        monoC.remove(at: i)
                     }
                 }
             }
@@ -271,64 +271,64 @@ final class RecordViewModel: ObservableObject {
 
         var sum: Double = 0
 
-        for ind in (0..<monoA.count).reversed() {
-            if monoA[ind].count > 4 {
-                sum += Double(monoA[ind]) ?? 0
-                monoA.remove(at: ind)
+        for i in (0..<monoA.count).reversed() {
+            if monoA[i].count > 4 {
+                sum += Double(monoA[i]) ?? 0
+                monoA.remove(at: i)
             }
         }
 
         // 9. A, B에서 "천", "백", "십" 앞에 한글 숫자가 있으면 1000 100 10 곱해서 아라비아로 바꾸기, 없으면 그것을 1000, 100, 10으로 바꾸기
 
         if monoA.count > 1 {
-            for ind in (1..<monoA.count).reversed() {
-                if monoA[ind] == "십" {
-                    if monoA[ind-1].count == 1 && monoA[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoA[ind-1] = "\((Int(monoA[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 10)"
-                        monoA.remove(at: ind)
+            for i in (1..<monoA.count).reversed() {
+                if monoA[i] == "십" {
+                    if monoA[i-1].count == 1 && monoA[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoA[i-1] = "\((Int(monoA[i-1].first!.getCorrespondingArabicString()) ?? 0) * 10)"
+                        monoA.remove(at: i)
                     } else {
-                        monoA[ind] = "10"
+                        monoA[i] = "10"
                     }
-                } else if monoA[ind] == "백" {
-                    if monoA[ind-1].count == 1 && monoA[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoA[ind-1] = "\((Int(monoA[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 100)"
-                        monoA.remove(at: ind)
+                } else if monoA[i] == "백" {
+                    if monoA[i-1].count == 1 && monoA[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoA[i-1] = "\((Int(monoA[i-1].first!.getCorrespondingArabicString()) ?? 0) * 100)"
+                        monoA.remove(at: i)
                     } else {
-                        monoA[ind] = "100"
+                        monoA[i] = "100"
                     }
-                } else if monoA[ind] == "천" {
-                    if monoA[ind-1].count == 1 && monoA[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoA[ind-1] = "\((Int(monoA[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 1000)"
-                        monoA.remove(at: ind)
+                } else if monoA[i] == "천" {
+                    if monoA[i-1].count == 1 && monoA[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoA[i-1] = "\((Int(monoA[i-1].first!.getCorrespondingArabicString()) ?? 0) * 1000)"
+                        monoA.remove(at: i)
                     } else {
-                        monoA[ind] = "1000"
+                        monoA[i] = "1000"
                     }
                 }
             }
         }
 
         if monoB.count > 1 {
-            for ind in (1..<monoB.count).reversed() {
-                if monoB[ind] == "십" {
-                    if monoB[ind-1].count == 1 && monoB[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoB[ind-1] = "\((Int(monoB[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 10)"
-                        monoB.remove(at: ind)
+            for i in (1..<monoB.count).reversed() {
+                if monoB[i] == "십" {
+                    if monoB[i-1].count == 1 && monoB[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoB[i-1] = "\((Int(monoB[i-1].first!.getCorrespondingArabicString()) ?? 0) * 10)"
+                        monoB.remove(at: i)
                     } else {
-                        monoB[ind] = "10"
+                        monoB[i] = "10"
                     }
-                } else if monoB[ind] == "백" {
-                    if monoB[ind-1].count == 1 && monoB[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoB[ind-1] = "\((Int(monoB[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 100)"
-                        monoB.remove(at: ind)
+                } else if monoB[i] == "백" {
+                    if monoB[i-1].count == 1 && monoB[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoB[i-1] = "\((Int(monoB[i-1].first!.getCorrespondingArabicString()) ?? 0) * 100)"
+                        monoB.remove(at: i)
                     } else {
-                        monoB[ind] = "100"
+                        monoB[i] = "100"
                     }
-                } else if monoB[ind] == "천" {
-                    if monoB[ind-1].count == 1 && monoB[ind-1].first!.getCharacterForm() == .koreanNumeric {
-                        monoB[ind-1] = "\((Int(monoB[ind-1].first!.getCorrespondingArabicString()) ?? 0) * 1000)"
-                        monoB.remove(at: ind)
+                } else if monoB[i] == "천" {
+                    if monoB[i-1].count == 1 && monoB[i-1].first!.getCharacterForm() == .koreanNumeric {
+                        monoB[i-1] = "\((Int(monoB[i-1].first!.getCorrespondingArabicString()) ?? 0) * 1000)"
+                        monoB.remove(at: i)
                     } else {
-                        monoB[ind] = "1000"
+                        monoB[i] = "1000"
                     }
                 }
             }
@@ -336,21 +336,21 @@ final class RecordViewModel: ObservableObject {
 
         // 10. A, B, C에서 남은 한글 숫자는 숫자 그대로 아라비아로 바꾸기
 
-        for ind in 0..<monoA.count {
-            if monoA[ind].count == 1 && monoA[ind].first!.getCharacterForm() == .koreanNumeric {
-                monoA[ind] = monoA[ind].first!.getCorrespondingArabicString()
+        for i in 0..<monoA.count {
+            if monoA[i].count == 1 && monoA[i].first!.getCharacterForm() == .koreanNumeric {
+                monoA[i] = monoA[i].first!.getCorrespondingArabicString()
             }
         }
 
-        for ind in 0..<monoB.count {
-            if monoB[ind].count == 1 && monoB[ind].first!.getCharacterForm() == .koreanNumeric {
-                monoB[ind] = monoB[ind].first!.getCorrespondingArabicString()
+        for i in 0..<monoB.count {
+            if monoB[i].count == 1 && monoB[i].first!.getCharacterForm() == .koreanNumeric {
+                monoB[i] = monoB[i].first!.getCorrespondingArabicString()
             }
         }
 
-        for ind in 0..<monoC.count {
-            if monoC[ind].count == 1 && monoC[ind].first!.getCharacterForm() == .koreanNumeric {
-                monoC[ind] = monoC[ind].first!.getCorrespondingArabicString()
+        for i in 0..<monoC.count {
+            if monoC[i].count == 1 && monoC[i].first!.getCharacterForm() == .koreanNumeric {
+                monoC[i] = monoC[i].first!.getCorrespondingArabicString()
             }
         }
 
@@ -367,9 +367,9 @@ final class RecordViewModel: ObservableObject {
 
         // 12. C 안의 한글 숫자 전부 아라비아식으로 바꾸기
 
-        for ind in 0..<monoC.count {
-            if monoC[ind].count == 1 && monoC[ind].first!.getCharacterForm() == .koreanNumeric {
-                monoC[ind] = monoC[ind].first!.getCorrespondingArabicString()
+        for i in 0..<monoC.count {
+            if monoC[i].count == 1 && monoC[i].first!.getCharacterForm() == .koreanNumeric {
+                monoC[i] = monoC[i].first!.getCorrespondingArabicString()
             }
         }
 
