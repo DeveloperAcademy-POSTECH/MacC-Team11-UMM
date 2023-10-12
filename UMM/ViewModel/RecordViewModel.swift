@@ -42,7 +42,7 @@ final class RecordViewModel: ObservableObject {
             return temp
         }
 
-        //MARK: - 쉼표 없애기
+        // MARK: - 쉼표 없애기
 
         for i in 0..<splitArray.count {
             var j = splitArray[i].endIndex
@@ -54,7 +54,7 @@ final class RecordViewModel: ObservableObject {
             }
         }
 
-        //MARK: - (카드, 현금, 카드로, 현금으로, 카드 결제, 현금 결제) 중 하나로 끝나면 그 부분 remove하고 카드 혹은 현금을 인식해서 paymentMethod 변수에 입력
+        // MARK: - (카드, 현금, 카드로, 현금으로, 카드 결제, 현금 결제) 중 하나로 끝나면 그 부분 remove하고 카드 혹은 현금을 인식해서 paymentMethod 변수에 입력
 
         if let last = splitArray.last {
             if last == "카드" || last == "카드로" || last == "카드결제" {
@@ -85,7 +85,7 @@ final class RecordViewModel: ObservableObject {
             return
         }
 
-        //MARK: - 숫자로 해석할 조각(split)이 없으면 전부 info에 넣고 끝내기
+        // MARK: - 숫자로 해석할 조각(split)이 없으면 전부 info에 넣고 끝내기
 
         var allNoNumericInterpretation = true
         var tempSplitVarietyAndCountArray = splitVarietyAndCountArray
@@ -101,7 +101,7 @@ final class RecordViewModel: ObservableObject {
             return
         }
 
-        //MARK: - 뒤에서부터 조각을 읽고, 숫자로 해석 안 되는 연속된 조각 전부 없애기
+        // MARK: - 뒤에서부터 조각을 읽고, 숫자로 해석 안 되는 연속된 조각 전부 없애기
 
         var indexing = 0
         while indexing < tempSplitVarietyAndCountArray.count && tempSplitVarietyAndCountArray[tempSplitVarietyAndCountArray.count - indexing - 1].0 == .noNumericInterpretation {
@@ -109,7 +109,7 @@ final class RecordViewModel: ObservableObject {
             indexing += 1
         }
 
-        //MARK: - 가장 마지막 조각이 .startsWithNumeric이면 뉴메릭 아닌 부분은 잘라내서 없애기
+        // MARK: - 가장 마지막 조각이 .startsWithNumeric이면 뉴메릭 아닌 부분은 잘라내서 없애기
 
         if indexing > 0 {
             tempSplitVarietyAndCountArray = splitVarietyAndCountArray
@@ -123,7 +123,7 @@ final class RecordViewModel: ObservableObject {
             tempSplitVarietyAndCountArray = splitVarietyAndCountArray
         }
 
-        //MARK: - 뒤에서부터 조각을 읽고, 숫자로 이해되는 연속된 조각들을 변환해서 payAmount로 넘기기
+        // MARK: - 뒤에서부터 조각을 읽고, 숫자로 이해되는 연속된 조각들을 변환해서 payAmount로 넘기기
 
         // 1. 뒤에서의 연속된 뉴메릭 스플릿들을 별도의 단일 문자형 스트링 어레이로 떼어놓기
 
@@ -387,7 +387,7 @@ final class RecordViewModel: ObservableObject {
 
         payAmount = sum
 
-        //MARK: - splitArray에 남아 있는 나머지는 공백 생략하지 않은 문자열로 합친 후에 구매내역 퍼블리시드 변수에 입력
+        // MARK: - splitArray에 남아 있는 나머지는 공백 생략하지 않은 문자열로 합친 후에 구매내역 퍼블리시드 변수에 입력
 
         info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
     }
