@@ -83,10 +83,9 @@
 		571A42682ACE857500FA3D2B /* UMM */ = {
 			isa = PBXGroup;
 			children = (
+				571A42692ACE857500FA3D2B /* UMMApp.swift */,
 				C17550572AD5519800A61BE5 /* ViewModel */,
 				C17550562AD5518C00A61BE5 /* View */,
-				571A42692ACE857500FA3D2B /* UMMApp.swift */,
-				571A426B2ACE857500FA3D2B /* ContentView.swift */,
 				57A65D062AD7D4BE00131266 /* Enumeration */,
 				57A65D032AD7D49100131266 /* Extension */,
 				571A426D2ACE857600FA3D2B /* Assets.xcassets */,
@@ -131,6 +130,7 @@
 		C17550562AD5518C00A61BE5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				571A426B2ACE857500FA3D2B /* ContentView.swift */,
 				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
 				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
 				57A65D172AD7DDA700131266 /* RecordView.swift */,

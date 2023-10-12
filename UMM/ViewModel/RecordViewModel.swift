@@ -400,25 +400,17 @@ final class RecordViewModel: ObservableObject {
             sumB += Int(mono) ?? 0
         }
         
-        // 12. C 안의 한글 숫자 전부 아라비아식으로 바꾸기
-        
-        for i in 0..<monoC.count {
-            if monoC[i].count == 1 && monoC[i].first!.getCharacterForm() == .koreanNumeric {
-                monoC[i] = monoC[i].first!.getCorrespondingArabicString()
-            }
-        }
-        
-        // 13. C 앞에 "0." 더해주고 그것을 Double로 바꾸기: doubleC
+        // 12. C 앞에 "0." 더해주고 그것을 Double로 바꾸기: doubleC
         
         var reducedC = monoC.reduce("") { $0 + $1 }
         reducedC = "0." + reducedC
         let doubleC = Double(reducedC) ?? 0.0
         
-        // 14. sum = Double(sumA * 10000) + Double(sumB) + doubleC
+        // 13. sum = Double(sumA * 10000) + Double(sumB) + doubleC
         
         sum = Double(sumA * 10000) + Double(sumB) + doubleC
         
-        // 15. sum을 payAmount로 넘기기
+        // 14. sum을 payAmount로 넘기기
         
         payAmount = sum
         
