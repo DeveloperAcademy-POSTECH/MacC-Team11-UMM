@@ -19,6 +19,9 @@
 		57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D0B2AD7D4FF00131266 /* Array<String>+Extension.swift */; };
 		57A65D0E2AD7D51600131266 /* SplitVariety.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D0D2AD7D51600131266 /* SplitVariety.swift */; };
 		57A65D102AD7D52700131266 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D0F2AD7D52700131266 /* String+Extension.swift */; };
+		57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D112AD7D5D500131266 /* RecordViewModel.swift */; };
+		57A65D142AD7D65600131266 /* ExpenseInfoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */; };
+		57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D152AD7D6B000131266 /* PaymentMethod.swift */; };
 		57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C41DFB2AD4F1EB00345253 /* Persistence.swift */; };
 		C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550512AD54FB000A61BE5 /* TravelListView.swift */; };
 		C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550532AD54FC900A61BE5 /* AddTravelView.swift */; };
@@ -39,6 +42,9 @@
 		57A65D0B2AD7D4FF00131266 /* Array<String>+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array<String>+Extension.swift"; sourceTree = "<group>"; };
 		57A65D0D2AD7D51600131266 /* SplitVariety.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitVariety.swift; sourceTree = "<group>"; };
 		57A65D0F2AD7D52700131266 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		57A65D112AD7D5D500131266 /* RecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewModel.swift; sourceTree = "<group>"; };
+		57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseInfoCategory.swift; sourceTree = "<group>"; };
+		57A65D152AD7D6B000131266 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
 		57C41DFB2AD4F1EB00345253 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		C17550512AD54FB000A61BE5 /* TravelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListView.swift; sourceTree = "<group>"; };
 		C17550532AD54FC900A61BE5 /* AddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelView.swift; sourceTree = "<group>"; };
@@ -114,6 +120,8 @@
 			children = (
 				57A65D072AD7D4D100131266 /* CharacterForm.swift */,
 				57A65D0D2AD7D51600131266 /* SplitVariety.swift */,
+				57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */,
+				57A65D152AD7D6B000131266 /* PaymentMethod.swift */,
 			);
 			path = Enumeration;
 			sourceTree = "<group>";
@@ -131,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */,
+				57A65D112AD7D5D500131266 /* RecordViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -230,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
+				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
@@ -241,6 +251,8 @@
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
 				57A65D052AD7D4A900131266 /* Character+Extension.swift in Sources */,
+				57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */,
+				57A65D142AD7D65600131266 /* ExpenseInfoCategory.swift in Sources */,
 				571A426A2ACE857500FA3D2B /* UMMApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
