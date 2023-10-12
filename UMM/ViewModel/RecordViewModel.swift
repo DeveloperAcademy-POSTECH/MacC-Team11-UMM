@@ -89,11 +89,9 @@ final class RecordViewModel: ObservableObject {
         
         var allNoNumericInterpretation = true
         var tempSplitVarietyAndCountArray = splitVarietyAndCountArray
-        for splitVariety in tempSplitVarietyAndCountArray {
-            if splitVariety.0 != .noNumericInterpretation {
-                allNoNumericInterpretation = false
-                break
-            }
+        for splitVariety in tempSplitVarietyAndCountArray where splitVariety.0 != .noNumericInterpretation {
+            allNoNumericInterpretation = false
+            break
         }
         if allNoNumericInterpretation {
             info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
@@ -243,16 +241,12 @@ final class RecordViewModel: ObservableObject {
         
         // 6. A, B에서 공백 없애기
         
-        for i in (0..<monoA.count).reversed() {
-            if monoA[i] == " " {
-                monoA.remove(at: i)
-            }
+        for i in (0..<monoA.count).reversed() where monoA[i] == " " {
+            monoA.remove(at: i)
         }
         
-        for i in (0..<monoB.count).reversed() {
-            if monoB[i] == " " {
-                monoB.remove(at: i)
-            }
+        for i in (0..<monoB.count).reversed() where monoB[i] == " " {
+            monoB.remove(at: i)
         }
         
         // 7. C 안에서 arabicNumeric 혹은 koreanNumeric이 아닌 원소는 없애기
@@ -271,11 +265,9 @@ final class RecordViewModel: ObservableObject {
         
         var sum: Double = 0
         
-        for i in (0..<monoA.count).reversed() {
-            if monoA[i].count > 4 {
-                sum += Double(monoA[i]) ?? 0
-                monoA.remove(at: i)
-            }
+        for i in (0..<monoA.count).reversed() where monoA[i].count > 4 {
+            sum += Double(monoA[i]) ?? 0
+            monoA.remove(at: i)
         }
         
         // 9. A, B에서 "천", "백", "십" 앞에 한글 숫자가 있으면 1000 100 10 곱해서 아라비아로 바꾸기, 없으면 그것을 1000, 100, 10으로 바꾸기
