@@ -17,6 +17,7 @@ final class RecordViewModel: ObservableObject {
     
     static let voiceSentenceArray = [
         "",
+        "하얀 요트 십 팔만 1,300 점이오달 러",
         "3.25달러",
         "1,000,000루피",
         "세면도구 3000루피",
@@ -322,6 +323,15 @@ final class RecordViewModel: ObservableObject {
                 }
             }
         }
+        if monoA.count > 0 {
+            if monoA[0] == "십" {
+                monoA[0] = "10"
+            } else if monoA[0] == "백" {
+                monoA[0] = "100"
+            } else if monoA[0] == "천" {
+                monoA[0] = "1000"
+            }
+        }
         
         if monoB.count > 1 {
             for i in (1..<monoB.count).reversed() {
@@ -347,6 +357,15 @@ final class RecordViewModel: ObservableObject {
                         monoB[i] = "1000"
                     }
                 }
+            }
+        }
+        if monoB.count > 0 {
+            if monoB[0] == "십" {
+                monoB[0] = "10"
+            } else if monoB[0] == "백" {
+                monoA[0] = "100"
+            } else if monoB[0] == "천" {
+                monoB[0] = "1000"
             }
         }
         
