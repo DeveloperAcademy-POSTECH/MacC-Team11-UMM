@@ -36,28 +36,28 @@ extension Character {
     
     func getCorrespondingArabicString() -> String {
         switch self {
-            case "영":
-                return "0"
-            case "일":
-                return "1"
-            case "이":
-                return "2"
-            case "삼":
-                return "3"
-            case "사":
-                return "4"
-            case "오":
-                return "5"
-            case "육":
-                return "6"
-            case "칠":
-                return "7"
-            case "팔":
-                return "8"
-            case "구":
-                return "9"
-            default:
-                return ""
+        case "영":
+            return "0"
+        case "일":
+            return "1"
+        case "이":
+            return "2"
+        case "삼":
+            return "3"
+        case "사":
+            return "4"
+        case "오":
+            return "5"
+        case "육":
+            return "6"
+        case "칠":
+            return "7"
+        case "팔":
+            return "8"
+        case "구":
+            return "9"
+        default:
+            return ""
         }
     }
 }
