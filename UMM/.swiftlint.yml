@@ -6,3 +6,4 @@ disabled_rules:
     - leading_whitespace
     - line_length
     - trailing_whitespace
+    - function_body_length
