@@ -10,6 +10,7 @@ import SwiftUI
 struct RecordView: View {
     
     @ObservedObject var viewModel = RecordViewModel()
+    @GestureState private var isDetectingPress = false
     
     var body: some View {
         VStack(spacing: 30) {
@@ -17,6 +18,7 @@ struct RecordView: View {
             sentenceView
             livePropertyView
             sentenceAlterButton
+            recordButton
         }
         .onAppear {
             viewModel.divideVoiceSentence()
@@ -63,6 +65,42 @@ struct RecordView: View {
                     .foregroundStyle(.white)
             }
         }
+    }
+    
+    var continuousPress: some Gesture {
+        LongPressGesture(minimumDuration: 0.1)
+            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
+            .updating($isDetectingPress) { value, gestureState, _ in
+                switch value {
+                case .second(true, nil):
+                    gestureState = true
+                    print("녹음 중")
+                default:
+                    break
+                }
+            }.onEnded { value in
+                switch value {
+                case .second(_, _):
+                    print("녹음완료")
+                default:
+                    break
+                }
+            }
+    }
+    
+    var recordButton: some View {
+        Button {
+            
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(.blue)
+                    .frame(width: 50, height: 50)
+                Image(systemName: "record.circle")
+                    .foregroundStyle(Color.white)
+            }
+        }
+        .simultaneousGesture(continuousPress)
     }
 }
 

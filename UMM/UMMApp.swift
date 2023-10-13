@@ -12,7 +12,8 @@ struct UMMApp: App {
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+            RecordView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

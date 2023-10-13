@@ -427,4 +427,6 @@ final class RecordViewModel: ObservableObject {
         }
         voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
     }
+    
+    
 }
