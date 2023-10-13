@@ -89,18 +89,33 @@ struct RecordView: View {
     }
     
     var recordButton: some View {
-        Button {
+        VStack {
+            Button {
+                viewModel.invalidateButton()
+                do {
+                    try viewModel.startRecording()
+                } catch {
+                    print("error while recording: \(error.localizedDescription)")
+                }
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(isDetectingPress ? .blue : .gray)
+                        .frame(width: 50, height: 50)
+                    Image(systemName: "record.circle")
+                        .foregroundStyle(Color.white)
+                }
+            }
+            .simultaneousGesture(continuousPress)
             
-        } label: {
             ZStack {
-                Circle()
-                    .fill(isDetectingPress ? .blue : .gray)
-                    .frame(width: 50, height: 50)
-                Image(systemName: "record.circle")
-                    .foregroundStyle(Color.white)
+                Rectangle()
+                    .frame(width: 300, height: 150)
+                    .foregroundStyle(Color.yellow)
+                
+                Text(viewModel.voiceSentenceTemp)
             }
         }
-        .simultaneousGesture(continuousPress)
     }
 }
 
