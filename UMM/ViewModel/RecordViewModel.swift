@@ -433,7 +433,7 @@ final class RecordViewModel: ObservableObject {
         voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
     }
     
-    //MARK: 녹음 기능
+    // MARK: 녹음 기능
     func updateTranscribedString(transcribedString: String) {
         voiceSentenceTemp = transcribedString
     }
@@ -459,7 +459,7 @@ final class RecordViewModel: ObservableObject {
         let inputNode = audioEngine.inputNode
         inputNode.removeTap(onBus: 0)
         let recordingFormat = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, _: AVAudioTime) in
             self.recognitionRequest?.append(buffer)
         }
         

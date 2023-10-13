@@ -80,8 +80,9 @@ struct RecordView: View {
                 }
             }.onEnded { value in
                 switch value {
-                case .second(_, _):
+                case .second( _, _):
                     print("녹음완료")
+                    print(viewModel.voiceSentenceTemp)
                 default:
                     break
                 }
@@ -110,7 +111,7 @@ struct RecordView: View {
             
             ZStack {
                 Rectangle()
-                    .frame(width: 300, height: 150)
+                    .frame(width: 200, height: 50)
                     .foregroundStyle(Color.yellow)
                 
                 Text(viewModel.voiceSentenceTemp)
