@@ -94,7 +94,7 @@ struct RecordView: View {
         } label: {
             ZStack {
                 Circle()
-                    .fill(.blue)
+                    .fill(isDetectingPress ? .blue : .gray)
                     .frame(width: 50, height: 50)
                 Image(systemName: "record.circle")
                     .foregroundStyle(Color.white)
