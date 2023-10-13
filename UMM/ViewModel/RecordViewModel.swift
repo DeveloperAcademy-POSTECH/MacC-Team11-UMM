@@ -38,7 +38,7 @@ final class RecordViewModel: ObservableObject {
         "오로나민씨 2000원",
         "오이 3000원"
     ]
-    var voiceSentenceChoicer: Int = 0
+    private var voiceSentenceChoicer: Int = 0
     
     func divideVoiceSentence() {
         guard voiceSentence.count > 0 else {
