@@ -72,6 +72,9 @@ struct RecordView: View {
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
             .updating($isDetectingPress) { value, gestureState, _ in
                 switch value {
+                case .first(true):
+                    gestureState = true
+                    print("녹음 시작")
                 case .second(true, nil):
                     gestureState = true
                     print("녹음 중")
@@ -80,7 +83,7 @@ struct RecordView: View {
                 }
             }.onEnded { value in
                 switch value {
-                case .second( _, _):
+                case .second:
                     print("녹음완료")
                     print(viewModel.voiceSentenceTemp)
                 default:
@@ -101,7 +104,7 @@ struct RecordView: View {
             } label: {
                 ZStack {
                     Circle()
-                        .fill(isDetectingPress ? .blue : .gray)
+                        .fill(isDetectingPress ? .gray : .blue)
                         .frame(width: 50, height: 50)
                     Image(systemName: "record.circle")
                         .foregroundStyle(Color.white)

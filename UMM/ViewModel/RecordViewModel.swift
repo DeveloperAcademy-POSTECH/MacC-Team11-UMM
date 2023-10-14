@@ -489,8 +489,4 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
-    
-    func finishRecording() throws {
-        audioEngine.stop()
-    }
 }
