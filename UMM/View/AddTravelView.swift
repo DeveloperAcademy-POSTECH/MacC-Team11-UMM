@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddTravelView: View {
-
+    
     @ObservedObject private var viewModel = AddTravelViewModel(month: Date())
 
     var body: some View {
@@ -26,7 +26,12 @@ struct AddTravelView: View {
             }
 
             Spacer()
+            
+            nextButton
+            
+            Spacer()
         }
+        .navigationTitle("새로운 여행 생성")
     }
 
     private var headerView: some View {
@@ -41,14 +46,16 @@ struct AddTravelView: View {
 
             HStack {
                 Text("시작일")
-                Text(viewModel.startDateToString(in: viewModel.startDate!))
+                Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
             }
         }
     }
 
     private var calendarHeader: some View {
-
-        VStack(spacing: 30) {
+        
+        let koreanWeekdaySymbols = ["일", "월", "화", "수", "목", "금", "토"]
+        
+        return VStack(spacing: 30) {
             HStack {
                 Button {
                     viewModel.changeMonth(by: -1)
@@ -80,7 +87,7 @@ struct AddTravelView: View {
             .padding(.horizontal, 20)
 
             HStack {
-                ForEach(AddTravelViewModel.weekdaySymbols, id: \.self) { symbol in
+                ForEach(koreanWeekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
                         .frame(maxWidth: .infinity)
                 }
@@ -113,7 +120,7 @@ struct AddTravelView: View {
 
         private var day: Int
         private var date: Date?
-
+        
         @ObservedObject private var viewModel: AddTravelViewModel
 
         init(day: Int, viewModel: AddTravelViewModel, date: Date?) {
@@ -126,6 +133,7 @@ struct AddTravelView: View {
             VStack {
                 Button {
                     viewModel.startDate = date! - 1
+                    viewModel.isSelectedStartDate = true
                 } label: {
                     Circle()
                         .opacity(0)
@@ -134,6 +142,16 @@ struct AddTravelView: View {
                 }
             }
         }
+    }
+    
+    var nextButton: some View {
+        NavigationLink(destination: AddMemberView()) {
+            Rectangle()
+                .frame(width: 134, height: 45)
+                .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray)
+                .cornerRadius(16)
+                
+        }.disabled(!viewModel.isSelectedStartDate)
     }
 }
 

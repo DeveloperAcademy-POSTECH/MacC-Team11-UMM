@@ -11,6 +11,7 @@ class AddTravelViewModel: ObservableObject {
 
     @Published var month: Date
     @Published var startDate: Date?
+    @Published var isSelectedStartDate = false
 
     static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
 
@@ -40,7 +41,7 @@ class AddTravelViewModel: ObservableObject {
 
     init(month: Date) {
         self.month = month
-        self.startDate = Date()
+        self.startDate = nil
     }
 
     // 해당 월의 시작 날짜
@@ -78,6 +79,11 @@ class AddTravelViewModel: ObservableObject {
     }
     
     func startDateToString(in date: Date) -> String {
-        return AddTravelViewModel.startDateFormatter.string(from: date)
+        if let startDate = startDate {
+            return AddTravelViewModel.startDateFormatter.string(from: date)
+        } else {
+            return ""
+        }
+        
     }
 }
