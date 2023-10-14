@@ -15,6 +15,7 @@
 		C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550512AD54FB000A61BE5 /* TravelListView.swift */; };
 		C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550532AD54FC900A61BE5 /* AddTravelView.swift */; };
 		C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */; };
+		E28D29722ADA6091001E444B /* FindCurrentTravelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D29712ADA6091001E444B /* FindCurrentTravelHandler.swift */; };
 		E2B8C2072AD7E67900C70655 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B8C2062AD7E67900C70655 /* ExpenseViewModel.swift */; };
 		E2EEAFF42AD6EC750028EBC2 /* TodayExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFF32AD6EC750028EBC2 /* TodayExpenseView.swift */; };
 		E2EEAFF62AD6EC830028EBC2 /* AllExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFF52AD6EC830028EBC2 /* AllExpenseView.swift */; };
@@ -39,6 +40,7 @@
 		C17550512AD54FB000A61BE5 /* TravelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListView.swift; sourceTree = "<group>"; };
 		C17550532AD54FC900A61BE5 /* AddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelView.swift; sourceTree = "<group>"; };
 		C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelViewModel.swift; sourceTree = "<group>"; };
+		E28D29712ADA6091001E444B /* FindCurrentTravelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindCurrentTravelHandler.swift; sourceTree = "<group>"; };
 		E2B8C2062AD7E67900C70655 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		E2EEAFF32AD6EC750028EBC2 /* TodayExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExpenseView.swift; sourceTree = "<group>"; };
 		E2EEAFF52AD6EC830028EBC2 /* AllExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpenseView.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 		571A42682ACE857500FA3D2B /* UMM */ = {
 			isa = PBXGroup;
 			children = (
+				E28D29702ADA6060001E444B /* Handler */,
 				E2EEB0072AD78C5F0028EBC2 /* Dummy */,
 				C17550572AD5519800A61BE5 /* ViewModel */,
 				C17550562AD5518C00A61BE5 /* View */,
@@ -126,6 +129,14 @@
 				E2B8C2062AD7E67900C70655 /* ExpenseViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		E28D29702ADA6060001E444B /* Handler */ = {
+			isa = PBXGroup;
+			children = (
+				E28D29712ADA6091001E444B /* FindCurrentTravelHandler.swift */,
+			);
+			path = Handler;
 			sourceTree = "<group>";
 		};
 		E2EEB0072AD78C5F0028EBC2 /* Dummy */ = {
@@ -239,6 +250,7 @@
 				E2EF25C42AD79F8300417292 /* UMM.xcdatamodeld in Sources */,
 				E2EEAFFE2AD6EE7B0028EBC2 /* ExpenseView.swift in Sources */,
 				E2EEAFFA2AD6ECA50028EBC2 /* AllExpenseDetailView.swift in Sources */,
+				E28D29722ADA6091001E444B /* FindCurrentTravelHandler.swift in Sources */,
 				E2EEB0042AD6F7C80028EBC2 /* dummyData.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
 				E2B8C2072AD7E67900C70655 /* ExpenseViewModel.swift in Sources */,
@@ -379,7 +391,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -409,7 +421,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;

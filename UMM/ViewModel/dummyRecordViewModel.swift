@@ -13,9 +13,24 @@ class DummyRecordViewModel: ObservableObject {
     @Published var savedTravels: [Travel] = []
 
     // dummyData를 위한 프로퍼티
-    let dummyName = ["관광관광", "TravelTravel", "탐사탐사", "여행가자", "여기어때", "야놀자"]
+    let dummyName = ["aaaa", "bbbb", "cccc", "dddd", "eeee", "ffff", "gggg", "hhhh", "iiii", "xxxx"]
     let dummyStartDate = ["2023-01-09", "2023-02-25", "2023-04-08"]
+    let dummyEndDate = [
+            Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +1, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +2, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +3, to: Date())!
+            
+        ]
+    let dummyLastUpdate = [
+            Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: -4, to: Date())!
+            
+        ]
 //    let dummyEndDate = ["2023-10-06", "2023-10-29", "2023-08-18"]
+
     
     func fetchDummyTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -26,20 +41,6 @@ class DummyRecordViewModel: ObservableObject {
         }
     }
     
-    // dummy Travel을 추가하는 함수
-    func addDummyTravel() {
-        let tempTravel = Travel(context: viewContext)
-        tempTravel.id = UUID()
-        tempTravel.name = dummyName.randomElement()
-        tempTravel.startDate = dummyStartDate.randomElement()
-        tempTravel.endDate = Date()
-        print("tempTravel.id: \(String(describing: tempTravel.id))")
-        print("tempTravel.name: \(tempTravel.name ?? "no name")")
-        print("tempTravel.startDate: \(tempTravel.startDate ?? "no startDate")")
-        print("tempTravel.endDate: \(tempTravel.endDate ?? Date())")
-        saveDummyTravel()
-    }
-    
     func saveDummyTravel() {
         do {
             try viewContext.save()
@@ -47,5 +48,22 @@ class DummyRecordViewModel: ObservableObject {
         } catch let error {
             print("Error while saveDummyTravel: \(error.localizedDescription)")
         }
+    }
+    
+    // dummy Travel을 추가하는 함수
+    func addDummyTravel() {
+        let tempTravel = Travel(context: viewContext)
+        tempTravel.id = UUID()
+        tempTravel.name = dummyName.randomElement()
+        tempTravel.startDate = dummyStartDate.randomElement()
+        tempTravel.endDate = dummyEndDate.randomElement()
+        tempTravel.lastUpdate = dummyLastUpdate.randomElement()
+        
+        print("tempTravel.id: \(String(describing: tempTravel.id))")
+        print("tempTravel.name: \(tempTravel.name ?? "no name")")
+        print("tempTravel.startDate: \(String(describing: tempTravel.startDate))")
+        print("tempTravel.endDate: \(tempTravel.endDate ?? Date())")
+        print("tempTravel.lastUpdate: \(tempTravel.lastUpdate ?? Date())")
+        saveDummyTravel()
     }
 }

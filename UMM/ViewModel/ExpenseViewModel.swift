@@ -11,7 +11,6 @@ import CoreData
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     let dummyRecordViewModel = DummyRecordViewModel()
-    
     @Published var savedExpenses: [Expense] = []
     
     func fetchExpense() {
@@ -20,6 +19,15 @@ class ExpenseViewModel: ObservableObject {
             savedExpenses = try viewContext.fetch(request)
         } catch let error {
             print("Error while fetchExpense: \(error.localizedDescription)")
+        }
+    }
+    
+    func saveExpense() {
+        do {
+            try viewContext.save()
+            fetchExpense()
+        } catch let error {
+            print("Error while saveExpense: \(error.localizedDescription)")
         }
     }
     
@@ -46,19 +54,33 @@ class ExpenseViewModel: ObservableObject {
         // 현재 선택된 여행에 추가할 수 있도록
         dummyRecordViewModel.fetchDummyTravel()
         if let targetTravel = dummyRecordViewModel.savedTravels.first(where: { $0.id == travel.id}) {
+            print("1 targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
             targetTravel.addToExpenseArray(tempExpense)
+            targetTravel.lastUpdate = Date()
+            print("2 targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
             saveExpense()
         } else {
             print("Error while addExpense")
         }
     }
     
-    func saveExpense() {
-        do {
-            try viewContext.save()
-            fetchExpense()
-        } catch let error {
-            print("Error while saveExpense: \(error.localizedDescription)")
+    func filterExpensesByTravel(selectedTravelID: UUID) -> [Expense] {
+        return savedExpenses.filter { $0.travel?.id == selectedTravelID }
+    }
+    
+    func filterExpensesByDate(filteredExpenses: [Expense], selectedDate: Date) -> [Expense] {
+        return filteredExpenses.filter { expense in
+            if let payDate = expense.payDate {
+                return Calendar.current.isDate(payDate, inSameDayAs: selectedDate)
+            } else {
+                return false
+            }
         }
+    }
+    
+    func filterExpensesByTravelByDate(selectedTravel: Travel?, selectedDate: Date) -> [Expense] {
+        guard let selectedTravelID = selectedTravel?.id else { return [] }
+        let filteredExpensesByTravel = filterExpensesByTravel(selectedTravelID: selectedTravelID)
+        return filterExpensesByDate(filteredExpenses: filteredExpensesByTravel, selectedDate: selectedDate)
     }
 }

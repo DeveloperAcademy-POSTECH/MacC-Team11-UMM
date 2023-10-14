@@ -16,16 +16,15 @@ struct DummyRecordView: View {
             } label: {
                 Text("addDummyTravel")
             }
-            if viewModel.savedTravels.count > 0 {
-                List {
-                    ForEach(viewModel.savedTravels) { travel in
-                        Text(travel.name ?? "No Name")
-                        Text(travel.startDate ?? "No StartDate")
-                    }
-                }.listStyle(.automatic)
-            }
+            List {
+                ForEach(viewModel.savedTravels) { travel in
+                    Text(travel.name ?? "No Name")
+                }
+            }.listStyle(.automatic)
         }
         .onAppear {
+            print("####")
+            print("RecordView Appeared")
             viewModel.fetchDummyTravel()
             print("viewModel.savedTravels.count: \(viewModel.savedTravels.count)")
         }

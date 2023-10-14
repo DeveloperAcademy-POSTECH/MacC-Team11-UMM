@@ -34,18 +34,17 @@ struct ExpenseView: View {
     }
 }
 
-extension ExpenseView {
-    func customTabItem(title: String, isActive: Bool) -> some View {
-        HStack(spacing: 10) {
-            Spacer()
-            Text(title)
-                .font(.system(size: 14))
-                .foregroundStyle(isActive ? .black : .gray)
-            Spacer()
-        }
-        .frame(width: 80, height: 40)
+private func customTabItem(title: String, isActive: Bool) -> some View {
+    HStack(spacing: 10) {
+        Spacer()
+        Text(title)
+            .font(.system(size: 14))
+            .foregroundStyle(isActive ? .black : .gray)
+        Spacer()
     }
+    .frame(width: 80, height: 40)
 }
+
 
 enum TabbedItems: Int, CaseIterable {
     case todayExpense
