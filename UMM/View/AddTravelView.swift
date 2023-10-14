@@ -41,7 +41,7 @@ struct AddTravelView: View {
 
             HStack {
                 Text("시작일")
-                Text("\(viewModel.startDate)" as String)
+                Text(viewModel.startDateToString(in: viewModel.startDate!))
             }
         }
     }
@@ -125,7 +125,7 @@ struct AddTravelView: View {
         var body: some View {
             VStack {
                 Button {
-                    viewModel.startDate = date
+                    viewModel.startDate = date! - 1
                 } label: {
                     Circle()
                         .opacity(0)
