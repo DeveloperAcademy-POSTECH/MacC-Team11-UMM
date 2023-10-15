@@ -98,9 +98,6 @@ struct AddTravelView: View {
             HStack {
                 Button {
                     viewModel.changeMonth(by: -1)
-                    print(viewModel.prevMonth)
-                    print(viewModel.month)
-                    print(viewModel.nextMonth)
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.title)
@@ -118,9 +115,6 @@ struct AddTravelView: View {
 
                 Button {
                     viewModel.changeMonth(by: 1)
-                    print(viewModel.prevMonth)
-                    print(viewModel.month)
-                    print(viewModel.nextMonth)
                 } label: {
                     Image(systemName: "chevron.right")
                         .padding(1.0)
@@ -192,7 +186,6 @@ struct AddTravelView: View {
             self.day = day
             self.viewModel = viewModel
             self.date = date
-//            self._opacityRate = State(initialValue: 0.0)
             self.textColor = textColor
         }
 
@@ -201,13 +194,27 @@ struct AddTravelView: View {
                 Button {
                     viewModel.startDate = date! - 1
                     viewModel.isSelectedStartDate = true
-//                    self.opacityRate = 0.5
                     
                 } label: {
-                    Circle()
-                        .opacity(0.0)
-                        .overlay(Text(String(day)))
+//                    Circle()
+//                        .opacity(0.0)
+//                        .overlay(Text(String(day)))
+//                        .foregroundStyle(textColor)
+                    Text(String(day))
+                        .padding(9.81)
+                        .frame(width: 45, height: 41)
                         .foregroundStyle(textColor)
+                        .overlay {
+                            // startDate와 date가 같으면 opacity 0.5 아니면 0
+                            if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
+                                Circle()
+                                    .opacity(0.5)
+                            } else {
+                                Circle()
+                                    .opacity(0)
+                            }
+                            
+                        }
                 }
             }
         }

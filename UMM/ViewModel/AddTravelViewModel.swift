@@ -111,10 +111,6 @@ class AddTravelViewModel: ObservableObject {
     }
     
     func startDateToString(in date: Date) -> String {
-        if startDate != nil {
-            return AddTravelViewModel.startDateFormatter.string(from: date)
-        } else {
-            return ""
-        }
+        return AddTravelViewModel.startDateFormatter.string(from: date)
     }
 }
