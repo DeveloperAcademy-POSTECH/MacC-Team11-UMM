@@ -6,10 +6,15 @@
 //
 
 import Foundation
+import SwiftUI
+import Speech
+import AVFoundation
 
 final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     @Published var voiceSentence: String = RecordViewModel.voiceSentenceArray[0]
+    @Published var voiceSentenceTemp = ""
+    @Published var buttonPressed = false
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
@@ -426,5 +431,62 @@ final class RecordViewModel: ObservableObject {
             voiceSentenceChoicer = 0
         }
         voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
+    }
+    
+    // MARK: 녹음 기능
+    func updateTranscribedString(transcribedString: String) {
+        voiceSentenceTemp = transcribedString
+    }
+    
+    private let audioEngine = AVAudioEngine()
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
+    private var recognitionTask: SFSpeechRecognitionTask?
+    
+    func invalidateButton() {
+        buttonPressed = true
+    }
+    
+    func startRecording() throws {
+        
+        recognitionTask?.cancel()
+        recognitionTask = nil
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        
+        let inputNode = audioEngine.inputNode
+        inputNode.removeTap(onBus: 0)
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, _: AVAudioTime) in
+            self.recognitionRequest?.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        try audioEngine.start()
+        
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
+        recognitionRequest.shouldReportPartialResults = true
+        
+        if speechRecognizer?.supportsOnDeviceRecognition ?? false {
+            recognitionRequest.requiresOnDeviceRecognition = true
+        }
+        
+        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
+            if let result = result {
+                DispatchQueue.main.async {
+                    let transcribedString = result.bestTranscription.formattedString
+                    self.updateTranscribedString(transcribedString: transcribedString)
+                }
+            }
+            if error != nil {
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
+            }
+        }
     }
 }
