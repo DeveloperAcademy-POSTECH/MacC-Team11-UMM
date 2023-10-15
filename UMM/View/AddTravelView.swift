@@ -25,6 +25,13 @@ struct AddTravelView: View {
                 calendarHeader
                 calendarGridView
             }
+            .padding(20)
+            .overlay {
+                RoundedRectangle(cornerRadius: 21.49123)
+                    .inset(by: 0.51)
+                    .stroke(Color.gray, lineWidth: 1.02)
+                    .frame(width: UIScreen.main.bounds.size.width-15, height: .none)
+            }
             
             Spacer()
             
@@ -48,8 +55,37 @@ struct AddTravelView: View {
             Text("여행의 시작일과 종료일을 설정해주세요.")
 
             HStack {
-                Text("시작일")
-                Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
+                Text("시작일*")
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 95, height: 25)
+                        .cornerRadius(3)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .inset(by: 0.5)
+                                .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
+                        )
+                    Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
+                }
+                
+                Text("-")
+                
+                Text("종료일")
+                
+                ZStack {
+                    Rectangle()
+                      .foregroundColor(.clear)
+                      .frame(width: 95, height: 25)
+                      .cornerRadius(3)
+                      .overlay(
+                        RoundedRectangle(cornerRadius: 3)
+                          .inset(by: 0.5)
+                          .stroke(.black, lineWidth: 1)
+                      )
+                    Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
+                }
             }
         }
     }
@@ -97,6 +133,7 @@ struct AddTravelView: View {
             HStack {
                 ForEach(koreanWeekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
+                        .foregroundStyle(Color.gray)
                         .frame(maxWidth: .infinity)
                 }
             }
