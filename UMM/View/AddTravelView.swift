@@ -117,14 +117,14 @@ struct AddTravelView: View {
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = total - (firstWeekday - index - 1)
                         
-                        CellView(day: day, viewModel: viewModel, date: date)
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
                         
                     } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
                         
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = index - firstWeekday + 1
                         
-                        CellView(day: day, viewModel: viewModel, date: date)
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.black)
                         
                     } else {
                         
@@ -133,7 +133,7 @@ struct AddTravelView: View {
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = maxNum - (daysInMonth + firstWeekday) - tmp + 1
                         
-                        CellView(day: day, viewModel: viewModel, date: date)
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
                     }
                 }
             }
@@ -145,13 +145,15 @@ struct AddTravelView: View {
         private var day: Int
         private var date: Date?
 //        @State private var opacityRate: Double
+        private var textColor: Color
         @ObservedObject private var viewModel: AddTravelViewModel
 
-        init(day: Int, viewModel: AddTravelViewModel, date: Date?) {
+        init(day: Int, viewModel: AddTravelViewModel, date: Date?, textColor: Color) {
             self.day = day
             self.viewModel = viewModel
             self.date = date
 //            self._opacityRate = State(initialValue: 0.0)
+            self.textColor = textColor
         }
 
         var body: some View {
@@ -165,7 +167,7 @@ struct AddTravelView: View {
                     Circle()
                         .opacity(0.0)
                         .overlay(Text(String(day)))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(textColor)
                 }
             }
         }
