@@ -99,21 +99,35 @@ struct AddTravelView: View {
 
         let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
         let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
-        @State var opacityRate: Double = 0.0
+//        @State var opacityRate: Double = 0.0
 
         return VStack {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
                 ForEach(0 ..< 35, id: \.self) { index in
                     if index < firstWeekday {
-                        RoundedRectangle(cornerRadius: 5)
-                            .foregroundColor(.gray)
+
+                        let total = viewModel.numbersOfPrevDays(in: Date())
+                        let cnt = firstWeekday
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
+                        let day = total - cnt + index + 2
+                        
+                        CellView(day: day, viewModel: viewModel, date: date)
+                        
                     } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
+                        
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = index - firstWeekday + 1
-                        CellView(day: day, viewModel: viewModel, date: date, opacityRate: $opacityRate)
+                        CellView(day: day, viewModel: viewModel, date: date)
+                        
                     } else {
-                        RoundedRectangle(cornerRadius: 5)
-                            .foregroundColor(.yellow)
+                        
+                        let maxNum = 35
+                        let tmp = maxNum - index
+                        let totalMonth = viewModel.numberOfDays(in: Date())
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
+                        let day = maxNum - totalMonth - tmp + 1
+                        
+                        CellView(day: day, viewModel: viewModel, date: date)
                     }
                 }
             }
@@ -124,14 +138,14 @@ struct AddTravelView: View {
 
         private var day: Int
         private var date: Date?
-        @State private var opacityRate: Double
+//        @State private var opacityRate: Double
         @ObservedObject private var viewModel: AddTravelViewModel
 
-        init(day: Int, viewModel: AddTravelViewModel, date: Date?, opacityRate: Binding<Double>) {
+        init(day: Int, viewModel: AddTravelViewModel, date: Date?) {
             self.day = day
             self.viewModel = viewModel
             self.date = date
-            self._opacityRate = State(initialValue: 0.0)
+//            self._opacityRate = State(initialValue: 0.0)
         }
 
         var body: some View {
@@ -139,11 +153,11 @@ struct AddTravelView: View {
                 Button {
                     viewModel.startDate = date! - 1
                     viewModel.isSelectedStartDate = true
-                    self.opacityRate = 0.5
+//                    self.opacityRate = 0.5
                     
                 } label: {
                     Circle()
-                        .opacity(opacityRate)
+                        .opacity(0.0)
                         .overlay(Text(String(day)))
                         .foregroundStyle(Color.black)
                 }

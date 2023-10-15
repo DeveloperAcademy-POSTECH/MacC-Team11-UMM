@@ -55,6 +55,23 @@ class AddTravelViewModel: ObservableObject {
         return Calendar.current.range(of: .day, in: .month, for: date)?.count ?? 0
     }
 
+    // 이전 달의 일자 수
+    func numbersOfPrevDays(in date: Date) -> Int {
+        let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: Date())
+        return Calendar.current.range(of: .day, in: .month, for: previousMonth!)?.count ?? 0
+    }
+    
+    func previousDate(by total: Int, cnt: Int) -> [Int] {
+        
+        var res: [Int] = []
+        
+        for i in total - cnt + 1..<total+1 {
+            res.append(i)
+        }
+        return res
+                    
+    }
+    
     // 해당 월의 첫 번째 날짜의 요일
     func firstWeekdayOfMonth(in date: Date) -> Int {
         let components = Calendar.current.dateComponents([.year, .month], from: date)
@@ -79,11 +96,10 @@ class AddTravelViewModel: ObservableObject {
     }
     
     func startDateToString(in date: Date) -> String {
-        if let startDate = startDate {
+        if startDate != nil {
             return AddTravelViewModel.startDateFormatter.string(from: date)
         } else {
             return ""
         }
-        
     }
 }
