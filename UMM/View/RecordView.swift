@@ -22,6 +22,7 @@ struct RecordView: View {
         }
         .onAppear {
             viewModel.divideVoiceSentence()
+            viewModel.classifyVoiceSentence()
         }
     }
     
@@ -42,6 +43,10 @@ struct RecordView: View {
                 Text(viewModel.info ?? " ")
             }
             HStack {
+                Text("소비내역 분류")
+                Text(viewModel.getExpenseInfoString(category: viewModel.infoCategory))
+            }
+            HStack {
                 Text("금액")
                 Text(String(format: "%.2f", viewModel.payAmount))
             }
@@ -56,6 +61,7 @@ struct RecordView: View {
         Button {
             viewModel.alterVoiceSentence()
             viewModel.divideVoiceSentence()
+            viewModel.classifyVoiceSentence()
         } label: {
             ZStack {
                 Circle()
