@@ -5,13 +5,16 @@
 //  Created by Wonil Lee on 10/12/23.
 //
 
-import Foundation
-import SwiftUI
-import Speech
 import AVFoundation
+import CoreML
+import NaturalLanguage
+import Speech
+import SwiftUI
 
 final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
+    var mlModel: MLModel?
+    var infoPredictor: NLModel?
     @Published var voiceSentence: String = RecordViewModel.voiceSentenceArray[0]
     @Published var voiceSentenceTemp = ""
     @Published var buttonPressed = false
@@ -23,13 +26,13 @@ final class RecordViewModel: ObservableObject {
     static let voiceSentenceArray = [
         "",
         "하얀 요트 십 팔만 1,300 점이오달 러",
-        "3.25달러",
-        "1,000,000루피",
+        "비행기 티켓 3.25달러",
+        "생선 요리 1,000,000루피",
         "세면도구 3000루피",
-        "100,000,000 50,000,000루피",
-        "2000페소 사토시",
-        "150 솔",
-        "250,000 Sol",
+        "성당 투어 100,000,000 50,000,000루피",
+        "가족 기념품 2000페소",
+        "버스 요금 150 솔",
+        "택시 250,000 Sol",
         "500 헤알",
         "점 육 오",
         "190.65",
@@ -44,6 +47,19 @@ final class RecordViewModel: ObservableObject {
         "오이 3000원"
     ]
     private var voiceSentenceChoicer: Int = 0
+    
+    init() {
+        do {
+            mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
+        } catch {
+            print("error creating mlModel: \(error.localizedDescription)")
+        }
+        do {
+            infoPredictor = try NLModel(mlModel: mlModel!)
+        } catch {
+            print("error creating infoPredictor: \(error.localizedDescription)")
+        }
+    }
     
     func divideVoiceSentence() {
         guard voiceSentence.count > 0 else {
@@ -125,6 +141,11 @@ final class RecordViewModel: ObservableObject {
         }
         if allNoNumericInterpretation {
             info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+            if let info {
+                if info == "" {
+                    self.info = nil
+                }
+            }
             payAmount = -1
             return
         }
@@ -177,7 +198,7 @@ final class RecordViewModel: ObservableObject {
         }
         
         guard monoNumericArray.count > 0 else {
-            info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+            info = nil
             payAmount = -1
             return
         }
@@ -422,6 +443,58 @@ final class RecordViewModel: ObservableObject {
         // MARK: - splitArray에 남아 있는 나머지는 공백 생략하지 않은 문자열로 합친 후에 구매내역 퍼블리시드 변수에 입력
         
         info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+        if let info {
+            if info == "" {
+                self.info = nil
+            }
+        }
+    }
+    
+    func classifyVoiceSentence() {
+        if let infoPredictor, let info, let label = infoPredictor.predictedLabel(for: info) {
+            infoCategory = getExpenseInfoCagetory(stringLabel: label)
+        } else {
+            infoCategory = .unknown
+        }
+        
+    }
+    
+    private func getExpenseInfoCagetory(stringLabel: String) -> ExpenseInfoCategory {
+        switch stringLabel {
+        case "plane":
+            return .plane
+        case "room":
+            return .room
+        case "transportation":
+            return .transportation
+        case "food":
+            return .food
+        case "fun":
+            return .fun
+        case "shopping":
+            return .shopping
+        default:
+            return .unknown
+        }
+    }
+    
+    func getExpenseInfoString(category: ExpenseInfoCategory) -> String {
+        switch category {
+        case .plane:
+            return "plane"
+        case .room:
+            return "room"
+        case .transportation:
+            return "transportation"
+        case .food:
+            return "food"
+        case .fun:
+            return "fun"
+        case .shopping:
+            return "shopping"
+        default:
+            return "unknown"
+        }
     }
     
     func alterVoiceSentence() {
