@@ -10,6 +10,8 @@ import Foundation
 class AddTravelViewModel: ObservableObject {
 
     @Published var month: Date
+    @Published var prevMonth: Date
+    @Published var nextMonth: Date
     @Published var startDate: Date?
     @Published var isSelectedStartDate = false
 
@@ -39,8 +41,10 @@ class AddTravelViewModel: ObservableObject {
         return formatter
     }()
 
-    init(month: Date) {
+    init(month: Date, prevMonth: Date, nextMonth: Date) {
         self.month = month
+        self.prevMonth = prevMonth
+        self.nextMonth = nextMonth
         self.startDate = nil
     }
 
@@ -61,17 +65,23 @@ class AddTravelViewModel: ObservableObject {
         return Calendar.current.range(of: .day, in: .month, for: previousMonth!)?.count ?? 0
     }
     
-    func previousDate(by total: Int, cnt: Int) -> [Int] {
-        
-        var res: [Int] = []
-        
-        for i in total - cnt + 1..<total+1 {
-            res.append(i)
-        }
-        return res
-                    
+    // 다음 달의 일자 수
+    func numbersOfNextDays(in date: Date) -> Int {
+        let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: Date())
+        return Calendar.current.range(of: .day, in: .month, for: nextMonth!)?.count ?? 0
     }
     
+    // 해당 달력의 줄 수에 알맞은 정수 값 반환
+    func calculateGridItemCount(daysInMonth: Int, firstWeekday: Int) -> Int {
+        if daysInMonth + firstWeekday >= 36 {
+            return 42
+        } else if daysInMonth + firstWeekday <= 28 {
+            return 28
+        } else {
+            return 35
+        }
+    }
+
     // 해당 월의 첫 번째 날짜의 요일
     func firstWeekdayOfMonth(in date: Date) -> Int {
         let components = Calendar.current.dateComponents([.year, .month], from: date)
@@ -86,8 +96,13 @@ class AddTravelViewModel: ObservableObject {
 
     func changeMonth(by value: Int) {
         let calendar = Calendar.current
-        if let newMonth = calendar.date(byAdding: .month, value: value, to: month) {
+        
+        if let newMonth = calendar.date(byAdding: .month, value: value, to: month),
+            let prevMonth = calendar.date(byAdding: .month, value: value - 1, to: month),
+           let nextMonth = calendar.date(byAdding: .month, value: value + 1, to: month) {
             self.month = newMonth
+            self.prevMonth = prevMonth
+            self.nextMonth = nextMonth
         }
     }
 

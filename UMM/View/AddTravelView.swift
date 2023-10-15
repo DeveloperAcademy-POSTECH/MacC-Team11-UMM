@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(month: Date())
+    @ObservedObject private var viewModel = AddTravelViewModel(month: Date(), prevMonth: Date(), nextMonth: Date())
 
     var body: some View {
         VStack {
@@ -59,7 +59,9 @@ struct AddTravelView: View {
             HStack {
                 Button {
                     viewModel.changeMonth(by: -1)
-                    print(Date())
+                    print(viewModel.prevMonth)
+                    print(viewModel.month)
+                    print(viewModel.nextMonth)
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.title)
@@ -77,6 +79,9 @@ struct AddTravelView: View {
 
                 Button {
                     viewModel.changeMonth(by: 1)
+                    print(viewModel.prevMonth)
+                    print(viewModel.month)
+                    print(viewModel.nextMonth)
                 } label: {
                     Image(systemName: "chevron.right")
                         .padding(1.0)
@@ -100,16 +105,17 @@ struct AddTravelView: View {
         let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
         let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
 //        @State var opacityRate: Double = 0.0
-
+        
+        let maxNumOfCalendar = viewModel.calculateGridItemCount(daysInMonth: daysInMonth, firstWeekday: firstWeekday)
+        
         return VStack {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                ForEach(0 ..< 35, id: \.self) { index in
+                ForEach(0 ..< maxNumOfCalendar, id: \.self) { index in
                     if index < firstWeekday {
 
-                        let total = viewModel.numbersOfPrevDays(in: Date())
-                        let cnt = firstWeekday
+                        let total = viewModel.numberOfDays(in: viewModel.prevMonth)
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
-                        let day = total - cnt + index + 2
+                        let day = total - (firstWeekday - index - 1)
                         
                         CellView(day: day, viewModel: viewModel, date: date)
                         
@@ -117,15 +123,15 @@ struct AddTravelView: View {
                         
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = index - firstWeekday + 1
+                        
                         CellView(day: day, viewModel: viewModel, date: date)
                         
                     } else {
                         
-                        let maxNum = 35
+                        let maxNum = maxNumOfCalendar
                         let tmp = maxNum - index
-                        let totalMonth = viewModel.numberOfDays(in: Date())
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
-                        let day = maxNum - totalMonth - tmp + 1
+                        let day = maxNum - (daysInMonth + firstWeekday) - tmp + 1
                         
                         CellView(day: day, viewModel: viewModel, date: date)
                     }
