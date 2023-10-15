@@ -99,17 +99,21 @@ struct AddTravelView: View {
 
         let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
         let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
+        @State var opacityRate: Double = 0.0
 
         return VStack {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                ForEach(0 ..< daysInMonth + firstWeekday, id: \.self) { index in
+                ForEach(0 ..< 35, id: \.self) { index in
                     if index < firstWeekday {
                         RoundedRectangle(cornerRadius: 5)
                             .foregroundColor(.gray)
-                    } else {
+                    } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = index - firstWeekday + 1
-                        CellView(day: day, viewModel: viewModel, date: date)
+                        CellView(day: day, viewModel: viewModel, date: date, opacityRate: $opacityRate)
+                    } else {
+                        RoundedRectangle(cornerRadius: 5)
+                            .foregroundColor(.yellow)
                     }
                 }
             }
@@ -120,13 +124,14 @@ struct AddTravelView: View {
 
         private var day: Int
         private var date: Date?
-        
+        @State private var opacityRate: Double
         @ObservedObject private var viewModel: AddTravelViewModel
 
-        init(day: Int, viewModel: AddTravelViewModel, date: Date?) {
+        init(day: Int, viewModel: AddTravelViewModel, date: Date?, opacityRate: Binding<Double>) {
             self.day = day
             self.viewModel = viewModel
             self.date = date
+            self._opacityRate = State(initialValue: 0.0)
         }
 
         var body: some View {
@@ -134,9 +139,11 @@ struct AddTravelView: View {
                 Button {
                     viewModel.startDate = date! - 1
                     viewModel.isSelectedStartDate = true
+                    self.opacityRate = 0.5
+                    
                 } label: {
                     Circle()
-                        .opacity(0)
+                        .opacity(opacityRate)
                         .overlay(Text(String(day)))
                         .foregroundStyle(Color.black)
                 }
@@ -146,10 +153,15 @@ struct AddTravelView: View {
     
     var nextButton: some View {
         NavigationLink(destination: AddMemberView()) {
-            Rectangle()
-                .frame(width: 134, height: 45)
-                .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray)
-                .cornerRadius(16)
+            ZStack {
+                Rectangle()
+                    .frame(width: 134, height: 45)
+                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray)
+                    .cornerRadius(16)
+                
+                Text("다음")
+                    .foregroundStyle(Color.white)
+            }
                 
         }.disabled(!viewModel.isSelectedStartDate)
     }
