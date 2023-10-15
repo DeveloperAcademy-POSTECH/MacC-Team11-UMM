@@ -67,7 +67,7 @@ struct AddTravelView: View {
                                 .inset(by: 0.5)
                                 .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
                         )
-                    Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
+                    Text(viewModel.startDateToString(in: viewModel.startDate))
                 }
                 
                 Text("-")
@@ -84,7 +84,7 @@ struct AddTravelView: View {
                           .inset(by: 0.5)
                           .stroke(.black, lineWidth: 1)
                       )
-                    Text(viewModel.startDateToString(in: viewModel.startDate ?? Date()))
+                    Text(viewModel.endDateToString(in: viewModel.endDate))
                 }
             }
         }
@@ -138,8 +138,6 @@ struct AddTravelView: View {
 
         let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
         let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
-//        @State var opacityRate: Double = 0.0
-        
         let maxNumOfCalendar = viewModel.calculateGridItemCount(daysInMonth: daysInMonth, firstWeekday: firstWeekday)
         
         return VStack {

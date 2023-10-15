@@ -13,6 +13,7 @@ class AddTravelViewModel: ObservableObject {
     @Published var prevMonth: Date
     @Published var nextMonth: Date
     @Published var startDate: Date?
+    @Published var endDate: Date?
     @Published var isSelectedStartDate = false
 
     static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
@@ -110,7 +111,22 @@ class AddTravelViewModel: ObservableObject {
         return AddTravelViewModel.dateToDayFormatter.string(from: date)
     }
     
-    func startDateToString(in date: Date) -> String {
-        return AddTravelViewModel.startDateFormatter.string(from: date)
+    func startDateToString(in date: Date?) -> String {
+        if date == nil {
+            return ""
+        } else {
+            return AddTravelViewModel.startDateFormatter.string(from: date!)
+        }
     }
+    
+    func endDateToString(in date: Date?) -> String {
+        if date == nil {
+            return "미정"
+        } else {
+            return AddTravelViewModel.startDateFormatter.string(from: date!)
+        }
+    }
+        
+    // MARK: 시작일 + 종료일 선택 알고리즘
+    
 }
