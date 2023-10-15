@@ -34,8 +34,8 @@ class ExpenseViewModel: ObservableObject {
     func addExpense(travel: Travel) {
         let infos = ["여행", "쇼핑", "관광"]
         let participants = [["John", "Alice"], ["Bob"], ["Charlie"]]
-        let payAmounts = [50.0, 100.25, 80.0]
-        let paymentMethods = [1, 2, 1]
+        let payAmounts = [50.0, 1000.25, 80.0]
+        let paymentMethods = [1, 2, 3]
         let voiceRecordFiles = ["voice1.mp3", "voice2.mp3", "voice3.mp3"]
         let locations = ["서울", "도쿄", "파리", "상파울루", "바그다드", "짐바브웨"]
         let currencies = [0, 1, 2]
@@ -50,6 +50,7 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.paymentMethod = Int64(paymentMethods.randomElement() ?? 0)
         tempExpense.payAmount = Double(payAmounts.randomElement() ?? 300.0)
         tempExpense.payDate = Date()
+        tempExpense.category = Int64(Int.random(in: 1...5))
         
         // 현재 선택된 여행에 추가할 수 있도록
         dummyRecordViewModel.fetchDummyTravel()
@@ -68,8 +69,20 @@ class ExpenseViewModel: ObservableObject {
         return savedExpenses.filter { $0.travel?.id == selectedTravelID }
     }
     
-    func filterExpensesByDate(filteredExpenses: [Expense], selectedDate: Date) -> [Expense] {
-        return filteredExpenses.filter { expense in
+    func filterExpensesByLocation(expenses: [Expense], location: String) -> [Expense] {
+        return expenses.filter { $0.location == location }
+    }
+    
+    func filterExpensesByCategory(expenses: [Expense], category: Int64) -> [Expense] {
+        return expenses.filter { $0.category == category }
+    }
+    
+    func filterExpensesByPaymentMethod(expenses: [Expense], paymentMethod: Int64) -> [Expense] {
+        return expenses.filter { $0.paymentMethod == paymentMethod }
+    }
+    
+    func filterExpensesByDate(expenses: [Expense], selectedDate: Date) -> [Expense] {
+        return expenses.filter { expense in
             if let payDate = expense.payDate {
                 return Calendar.current.isDate(payDate, inSameDayAs: selectedDate)
             } else {
@@ -78,9 +91,12 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func filterExpensesByTravelByDate(selectedTravel: Travel?, selectedDate: Date) -> [Expense] {
-        guard let selectedTravelID = selectedTravel?.id else { return [] }
-        let filteredExpensesByTravel = filterExpensesByTravel(selectedTravelID: selectedTravelID)
-        return filterExpensesByDate(filteredExpenses: filteredExpensesByTravel, selectedDate: selectedDate)
+    // MARK: - 아직 안 씀
+    func groupExpensesByLocation(expenses: [Expense], location: String) -> [String?: [Expense]] {
+        return Dictionary(grouping: expenses, by: { $0.location })
+    }
+    
+    func groupExpensesByCategory(expenses: [Expense], category: Int64) -> [Int64?: [Expense]] {
+        return Dictionary(grouping: expenses, by: { $0.category })
     }
 }
