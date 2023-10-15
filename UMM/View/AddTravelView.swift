@@ -10,21 +10,22 @@ import SwiftUI
 struct AddTravelView: View {
     
     @ObservedObject private var viewModel = AddTravelViewModel(month: Date(), prevMonth: Date(), nextMonth: Date())
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack {
-
+            
             Spacer()
-
+            
             headerView
-
+            
             Spacer()
-
+            
             VStack {
                 calendarHeader
                 calendarGridView
             }
-
+            
             Spacer()
             
             nextButton
@@ -32,6 +33,8 @@ struct AddTravelView: View {
             Spacer()
         }
         .navigationTitle("새로운 여행 생성")
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButton)
     }
 
     private var headerView: some View {
@@ -187,6 +190,16 @@ struct AddTravelView: View {
                 
         }.disabled(!viewModel.isSelectedStartDate)
     }
+    
+    var backButton: some View {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .imageScale(.large)
+                    .foregroundColor(Color.black)
+            }
+        }
 }
 
 #Preview {
