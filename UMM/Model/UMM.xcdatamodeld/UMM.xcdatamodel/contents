@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Expense" representedClassName="Expense" isAbstract="YES" syncable="YES" codeGenerationType="class">
-        <attribute name="category" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G120" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Expense" representedClassName="Expense" syncable="YES" codeGenerationType="class">
         <attribute name="currency" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="exchangeRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="info" optional="YES" attributeType="String"/>
         <attribute name="location" optional="YES" attributeType="String"/>
-        <attribute name="participant" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName" customClassName="[String]"/>
+        <attribute name="participant" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="payAmount" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="payDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="paymentMethod" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
-        <attribute name="voiceRecordFile" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName"/>
+        <attribute name="voiceRecordFile" optional="YES" attributeType="Transformable"/>
         <relationship name="travel" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Travel" inverseName="expenseArray" inverseEntity="Travel"/>
     </entity>
-    <entity name="Travel" representedClassName="Travel" isAbstract="YES" syncable="YES" codeGenerationType="class">
+    <entity name="Travel" representedClassName="Travel" syncable="YES" codeGenerationType="class">
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-<<<<<<< HEAD:UMM/UMM.xcdatamodeld/UMM.xcdatamodel/contents
-        <attribute name="participantArray" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName" customClassName="[String]"/>
-        <attribute name="startDate" optional="YES" attributeType="String"/>
-=======
         <attribute name="participantArray" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
->>>>>>> 5b2c38d44de8cd89112ff957366f689e75ab1e2e:UMM/Model/UMM.xcdatamodeld/UMM.xcdatamodel/contents
         <relationship name="expenseArray" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Expense" inverseName="travel" inverseEntity="Expense"/>
     </entity>
-    <entity name="User" representedClassName="User" isAbstract="YES" syncable="YES" codeGenerationType="class">
+    <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
 </model>

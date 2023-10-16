@@ -22,8 +22,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 5b2c38d44de8cd89112ff957366f689e75ab1e2e
