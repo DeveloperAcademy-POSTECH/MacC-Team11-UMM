@@ -25,11 +25,11 @@ enum ExpenseInfoCategory: Int {
         case .food:
             return "food"
         case .fun:
-            return"fun"
+            return "fun"
         case .shopping:
-            return"shopping"
+            return "shopping"
         default:
-            return"unknown"
+            return "unknown"
         }
     }
 }
