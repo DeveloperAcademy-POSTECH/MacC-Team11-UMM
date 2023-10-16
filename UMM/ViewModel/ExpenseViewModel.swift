@@ -13,13 +13,19 @@ class ExpenseViewModel: ObservableObject {
     let dummyRecordViewModel = DummyRecordViewModel()
     
     @Published var savedExpenses: [Expense] = []
+    @Published var selectedTravel: Travel?
+    @Published var selectedDate: Date = Date()
+    @Published var selectedLocation: String = ""
+    @Published var selectedPaymentMethod: Int64 = 0
     
     func fetchExpense() {
-        let request = NSFetchRequest<Expense>(entityName: "Expense")
-        do {
-            savedExpenses = try viewContext.fetch(request)
-        } catch let error {
-            print("Error while fetchExpense: \(error.localizedDescription)")
+        DispatchQueue.main.async {
+            let request = NSFetchRequest<Expense>(entityName: "Expense")
+            do {
+                self.savedExpenses = try self.viewContext.fetch(request)
+            } catch let error {
+                print("Error while fetchExpense: \(error.localizedDescription)")
+            }
         }
     }
     

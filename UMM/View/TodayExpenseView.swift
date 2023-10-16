@@ -11,8 +11,6 @@ struct TodayExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
     @ObservedObject var findCurrentTravelHandler = FindCurrentTravelHandler()
-    @State private var selectedTravel: Travel?
-    @State private var selectedDate = Date()
     
     init() {
         self.expenseViewModel = ExpenseViewModel()
@@ -25,21 +23,21 @@ struct TodayExpenseView: View {
                 Text("일별 지출")
                 
                 // Picker: 여행별
-                Picker("현재 여행", selection: $selectedTravel) {
+                Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
                     ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
                         Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
                     }
                 }
                 .pickerStyle(MenuPickerStyle())
-                .onChange(of: selectedTravel) { _, newValue in
+                .onChange(of: expenseViewModel.selectedTravel) { _, newValue in
                     print(newValue?.name ?? "")
                 }
                 
                 // Picker: 날짜별
-                DatePicker("날짜", selection: $selectedDate, displayedComponents: [.date])
+                DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
                 
                 Button {
-                    expenseViewModel.addExpense(travel: selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
+                    expenseViewModel.addExpense(travel: expenseViewModel.selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
                     findCurrentTravelHandler.findCurrentTravel()
                 } label: {
                     Text("지출 추가")
@@ -49,8 +47,8 @@ struct TodayExpenseView: View {
                 
                 // 여행별 + 날짜별 리스트
                 // 국가별로 나눠서 보여줌
-                let filteredExpensesByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: selectedTravel?.id ?? UUID())
-                let filteredExpensesByDate = expenseViewModel.filterExpensesByDate(expenses: filteredExpensesByTravel, selectedDate: selectedDate)
+                let filteredExpensesByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
+                let filteredExpensesByDate = expenseViewModel.filterExpensesByDate(expenses: filteredExpensesByTravel, selectedDate: expenseViewModel.selectedDate)
                 drawExpensesByLocation(expenses: filteredExpensesByDate)
                 
             }
@@ -61,7 +59,7 @@ struct TodayExpenseView: View {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             findCurrentTravelHandler.findCurrentTravel()
-            self.selectedTravel = findCurrentTravelHandler.currentTravel
+            expenseViewModel.selectedTravel = findCurrentTravelHandler.currentTravel
         }
     }
     
@@ -75,14 +73,7 @@ struct TodayExpenseView: View {
                 
                 // 모든 결제 금액
                 let totalPayAmountForAllMethods = expenses.reduce(0.0) { $0 + ($1.payAmount ?? 0.0) }
-                NavigationLink(destination:
-                    TodayExpenseDetailView(
-                        selectedTravel:.constant(selectedTravel),
-                        selectedDate:.constant(selectedDate),
-                        selectedLocation:.constant(location ?? "서울"),
-                        selectedPaymentMethod: .constant(0) // nil to represent all methods.
-                    )
-                ) {
+                NavigationLink(destination: TodayExpenseDetailView(expenseViewModel: self.expenseViewModel)) {
                     VStack {
                         Text("All Payment Methods")
                         Text("Total Pay Amount for All Methods : \(totalPayAmountForAllMethods)")
@@ -93,14 +84,7 @@ struct TodayExpenseView: View {
                 // 결제 수단별 금액
                 ForEach(groupedExpensesByPaymentMethod.sorted(by: { $0.key < $1.key }), id: \.key) { paymentMethod, expensesForPaymentMethod in
                     let totalPayAmount = expensesForPaymentMethod.reduce(0.0) { $0 + ($1.payAmount ?? 0.0) }
-                    NavigationLink(destination:
-                        TodayExpenseDetailView(
-                            selectedTravel:.constant(selectedTravel),
-                            selectedDate:.constant(selectedDate),
-                            selectedLocation:.constant(location ?? "서울"),
-                            selectedPaymentMethod:.constant(paymentMethod)
-                        )
-                    ) {
+                    NavigationLink(destination: TodayExpenseDetailView(expenseViewModel: self.expenseViewModel)) {
                         VStack {
                             Text("Payment Method: \(paymentMethod)")
                             Text("Total Pay Amount: \(totalPayAmount)")
