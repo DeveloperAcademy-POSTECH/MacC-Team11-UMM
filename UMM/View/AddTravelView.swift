@@ -191,9 +191,13 @@ struct AddTravelView: View {
         var body: some View {
             VStack {
                 Button {
-                    viewModel.startDate = date! - 1
-                    viewModel.isSelectedStartDate = true
                     
+                    let result = viewModel.startDateEndDate(in: viewModel.startDate, endDate: viewModel.endDate, selectDate: date!-1)
+                    viewModel.startDate = result[0]
+                    viewModel.endDate = result[1]
+                    
+                    viewModel.selectDate = date! - 1
+                    viewModel.isSelectedStartDate = true
                 } label: {
                     Text(String(day))
                         .padding(9.81)

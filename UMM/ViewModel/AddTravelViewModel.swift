@@ -14,6 +14,7 @@ class AddTravelViewModel: ObservableObject {
     @Published var nextMonth: Date
     @Published var startDate: Date?
     @Published var endDate: Date?
+    @Published var selectDate: Date?
     @Published var isSelectedStartDate = false
 
     static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
@@ -128,5 +129,16 @@ class AddTravelViewModel: ObservableObject {
     }
         
     // MARK: 시작일 + 종료일 선택 알고리즘
-    
+    func startDateEndDate(in startDate: Date?, endDate: Date?, selectDate: Date?) -> [Date?] {
+        if startDate == nil && endDate == nil {
+            return [selectDate, nil]
+        } else if startDate != nil && endDate == nil && selectDate! >= startDate! {
+            return [startDate, selectDate]
+        } else if startDate != nil && endDate == nil && selectDate! < startDate! {
+            return [selectDate, nil]
+        } else if startDate != nil && endDate != nil {
+            return [selectDate, nil]
+        }
+        return [nil, nil]
+    }
 }
