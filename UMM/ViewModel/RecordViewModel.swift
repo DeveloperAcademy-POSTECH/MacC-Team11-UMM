@@ -27,6 +27,10 @@ final class RecordViewModel: ObservableObject {
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
     
+    @Published var completeRecordModalIsShown = false
+    @Published var travelChoiceHalfModalIsShown = false
+    @Published var manualRecordViewModalIsShown = false
+    
     init() {
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
