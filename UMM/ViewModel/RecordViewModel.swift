@@ -29,7 +29,7 @@ final class RecordViewModel: ObservableObject {
     
     @Published var completeRecordModalIsShown = false
     @Published var travelChoiceHalfModalIsShown = false
-    @Published var manualRecordViewModalIsShown = false
+    @Published var manualRecordModalIsShown = false
     
     init() {
         do {

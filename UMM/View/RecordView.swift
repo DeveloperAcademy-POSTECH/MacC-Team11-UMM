@@ -17,7 +17,18 @@ struct RecordView: View {
             travelChoiceView
             sentenceView
             livePropertyView
+            manualRecordButton
             recordButton
+        }
+        .sheet(isPresented: $viewModel.manualRecordModalIsShown) {
+            ManualRecordView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.completeRecordModalIsShown) {
+            CompleteRecordView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
+            TravelChoiceHalfView(viewModel: viewModel)
+                .presentationDetents([.height(226)])
         }
     }
     
@@ -25,6 +36,9 @@ struct RecordView: View {
         Capsule()
             .fill(.gray)
             .frame(width: 80, height: 40)
+            .onTapGesture {
+                viewModel.travelChoiceHalfModalIsShown = true
+            }
     }
     
     var sentenceView: some View {
@@ -97,6 +111,15 @@ struct RecordView: View {
         }
     }
     
+    var manualRecordButton: some View {
+        Button {
+            viewModel.manualRecordModalIsShown = true
+        } label: {
+            Text("직접 기록")
+        }
+        .buttonStyle(.bordered)
+    }
+    
     var continuousPress: some Gesture {
         LongPressGesture(minimumDuration: 0.1)
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
@@ -116,6 +139,7 @@ struct RecordView: View {
                 case .second:
                     print("녹음완료")
                     print(viewModel.voiceSentence)
+                    viewModel.completeRecordModalIsShown = true
                 default:
                     break
                 }
