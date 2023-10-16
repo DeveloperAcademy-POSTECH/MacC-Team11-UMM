@@ -11,7 +11,7 @@ import SwiftUI
 struct UMMApp: App {
     var body: some Scene {
         WindowGroup {
-            Content정View()
+            ContentView()
         }
     }
 }
