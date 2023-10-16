@@ -29,9 +29,6 @@ struct TodayExpenseView: View {
                     }
                 }
                 .pickerStyle(MenuPickerStyle())
-                .onChange(of: expenseViewModel.selectedTravel) { _, newValue in
-                    print(newValue?.name ?? "")
-                }
                 
                 // Picker: 날짜별
                 DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
@@ -73,7 +70,14 @@ struct TodayExpenseView: View {
                 
                 // 모든 결제 금액
                 let totalPayAmountForAllMethods = expenses.reduce(0.0) { $0 + ($1.payAmount ?? 0.0) }
-                NavigationLink(destination: TodayExpenseDetailView(expenseViewModel: self.expenseViewModel)) {
+                NavigationLink(destination:
+                    TodayExpenseDetailView(
+                        selectedTravel: $expenseViewModel.selectedTravel,
+                        selectedDate: $expenseViewModel.selectedDate,
+                        selectedLocation: .constant(location ?? "서울"),
+                        selectedPaymentMethod: .constant(Int64(0)) // nil to represent all methods.
+                    )
+                ) {
                     VStack {
                         Text("All Payment Methods")
                         Text("Total Pay Amount for All Methods : \(totalPayAmountForAllMethods)")
@@ -84,7 +88,14 @@ struct TodayExpenseView: View {
                 // 결제 수단별 금액
                 ForEach(groupedExpensesByPaymentMethod.sorted(by: { $0.key < $1.key }), id: \.key) { paymentMethod, expensesForPaymentMethod in
                     let totalPayAmount = expensesForPaymentMethod.reduce(0.0) { $0 + ($1.payAmount ?? 0.0) }
-                    NavigationLink(destination: TodayExpenseDetailView(expenseViewModel: self.expenseViewModel)) {
+                    NavigationLink(destination:
+                        TodayExpenseDetailView(
+                            selectedTravel:$expenseViewModel.selectedTravel,
+                            selectedDate:$expenseViewModel.selectedDate,
+                            selectedLocation:.constant(location ?? "서울"),
+                            selectedPaymentMethod:.constant(Int64(paymentMethod))
+                        )
+                    ) {
                         VStack {
                             Text("Payment Method: \(paymentMethod)")
                             Text("Total Pay Amount: \(totalPayAmount)")
@@ -106,16 +117,16 @@ struct TodayExpenseView: View {
 //
 //// 국가별로 비용 항목을 분류하여 표시
 //private func drawExpensesByLocation(expenses: [Expense]) -> some View {
-//    let groupedExpenses = Dictionary(grouping: expenses, by: { $0.location })
-//    
-//    return ForEach(groupedExpenses.sorted(by: { $0.key ?? "" < $1.key ?? "" }), id: \.key) { location, expenses in
-//        Section(header: Text(location ?? "")) {
+//    let groupedExpenses = Dictionary(grouping: expenses, by: { $0.paymentMethod })
+//
+//    return ForEach(groupedExpenses.sorted(by: { $0.key < $1.key }), id: \.key) { paymentMethod, expenses in
+//        Section(header: Text(paymentMethod)) {
 //            ForEach(expenses, id: \.id) { expense in
 //                if let payDate = expense.payDate {
 //                    VStack {
 //                        HStack {
 //                            Text(expense.info ?? "no info")
-//                            Text(expense.location ?? "no location")
+//                            Text(expense.paymentMethod ?? "no location")
 //                        }
 //                        Text(payDate.description)
 //                    }

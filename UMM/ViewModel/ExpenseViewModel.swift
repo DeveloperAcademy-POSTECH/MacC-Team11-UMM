@@ -13,19 +13,19 @@ class ExpenseViewModel: ObservableObject {
     let dummyRecordViewModel = DummyRecordViewModel()
     
     @Published var savedExpenses: [Expense] = []
+    @Published var filteredExpenses: [Expense] = []
+
     @Published var selectedTravel: Travel?
-    @Published var selectedDate: Date = Date()
+    @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
     
     func fetchExpense() {
-        DispatchQueue.main.async {
-            let request = NSFetchRequest<Expense>(entityName: "Expense")
-            do {
-                self.savedExpenses = try self.viewContext.fetch(request)
-            } catch let error {
-                print("Error while fetchExpense: \(error.localizedDescription)")
-            }
+        let request = NSFetchRequest<Expense>(entityName: "Expense")
+        do {
+            savedExpenses = try viewContext.fetch(request)
+        } catch let error {
+            print("Error while fetchExpense: \(error.localizedDescription)")
         }
     }
     
@@ -42,7 +42,7 @@ class ExpenseViewModel: ObservableObject {
         let infos = ["여행", "쇼핑", "관광"]
         let participants = [["John", "Alice"], ["Bob"], ["Charlie"]]
         let payAmounts = [50.0, 1000.25, 80.0]
-        let paymentMethods = [1, 2, 3]
+//        let paymentMethods = [Int64(0), Int64(1), Int64(2), Int64(3)]
         let voiceRecordFiles = ["voice1.mp3", "voice2.mp3", "voice3.mp3"]
         let locations = ["서울", "도쿄", "파리", "상파울루", "바그다드", "짐바브웨"]
         let currencies = [0, 1, 2]
@@ -54,7 +54,7 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.info = infos.randomElement()
         tempExpense.location = locations.randomElement()
         tempExpense.participant = participants.randomElement()
-        tempExpense.paymentMethod = Int64(paymentMethods.randomElement() ?? 0)
+        tempExpense.paymentMethod = Int64(Int.random(in: -1...2))
         tempExpense.payAmount = Double(payAmounts.randomElement() ?? 300.0)
         tempExpense.payDate = Date()
         tempExpense.category = Int64(Int.random(in: 1...5))
