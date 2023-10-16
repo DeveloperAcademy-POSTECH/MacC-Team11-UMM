@@ -13,7 +13,7 @@ struct RecordView: View {
     @GestureState private var isDetectingPress = false
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 50) {
             travelChoiceView
             sentenceView
             livePropertyView
@@ -41,7 +41,7 @@ struct RecordView: View {
     }
     
     var livePropertyView: some View {
-        VStack {
+        VStack(spacing: 20) {
             HStack {
                 Text("소비내역")
                 if viewModel.info != nil {
@@ -141,14 +141,6 @@ struct RecordView: View {
                 }
             }
             .simultaneousGesture(continuousPress)
-            
-            ZStack {
-                Rectangle()
-                    .frame(width: 200, height: 50)
-                    .foregroundStyle(Color.yellow)
-                
-                Text(viewModel.voiceSentence)
-            }
         }
     }
 }
