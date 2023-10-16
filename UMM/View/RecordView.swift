@@ -32,7 +32,7 @@ struct RecordView: View {
         }
     }
     
-    var travelChoiceView: some View {
+    private var travelChoiceView: some View {
         Capsule()
             .fill(.gray)
             .frame(width: 80, height: 40)
@@ -41,7 +41,7 @@ struct RecordView: View {
             }
     }
     
-    var sentenceView: some View {
+    private var sentenceView: some View {
         if !viewModel.buttonPressed {
             Text("지출을 기록해주세요")
         } else {
@@ -54,7 +54,7 @@ struct RecordView: View {
         }
     }
     
-    var livePropertyView: some View {
+    private var livePropertyView: some View {
         VStack(spacing: 20) {
             HStack {
                 Text("소비내역")
@@ -111,7 +111,7 @@ struct RecordView: View {
         }
     }
     
-    var manualRecordButton: some View {
+    private var manualRecordButton: some View {
         Button {
             viewModel.manualRecordModalIsShown = true
         } label: {
@@ -120,7 +120,7 @@ struct RecordView: View {
         .buttonStyle(.bordered)
     }
     
-    var continuousPress: some Gesture {
+    private var continuousPress: some Gesture {
         LongPressGesture(minimumDuration: 0.1)
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
             .updating($isDetectingPress) { value, gestureState, _ in
@@ -146,7 +146,7 @@ struct RecordView: View {
             }
     }
     
-    var recordButton: some View {
+    private var recordButton: some View {
         VStack {
             Button {
                 viewModel.invalidateButton()
