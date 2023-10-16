@@ -150,6 +150,7 @@ struct AddTravelView: View {
                         let day = total - (firstWeekday - index - 1)
                         
                         CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
+                            .disabled(true)
                         
                     } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
                         
@@ -166,6 +167,7 @@ struct AddTravelView: View {
                         let day = maxNum - (daysInMonth + firstWeekday) - tmp + 1
                         
                         CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
+                            .disabled(true)
                     }
                 }
             }
@@ -176,7 +178,6 @@ struct AddTravelView: View {
 
         private var day: Int
         private var date: Date?
-//        @State private var opacityRate: Double
         private var textColor: Color
         @ObservedObject private var viewModel: AddTravelViewModel
 
@@ -194,16 +195,11 @@ struct AddTravelView: View {
                     viewModel.isSelectedStartDate = true
                     
                 } label: {
-//                    Circle()
-//                        .opacity(0.0)
-//                        .overlay(Text(String(day)))
-//                        .foregroundStyle(textColor)
                     Text(String(day))
                         .padding(9.81)
                         .frame(width: 45, height: 41)
                         .foregroundStyle(textColor)
                         .overlay {
-                            // startDate와 date가 같으면 opacity 0.5 아니면 0
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
                                 Circle()
                                     .opacity(0.5)
