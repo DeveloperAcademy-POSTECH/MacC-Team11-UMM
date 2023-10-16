@@ -41,6 +41,7 @@
 		C17966082ADD66F90036E866 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FF2ADD66F90036E866 /* Pretendard-Medium.otf */; };
 		C17966092ADD66F90036E866 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17966002ADD66F90036E866 /* Pretendard-Bold.otf */; };
 		C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179660B2ADD68BC0036E866 /* FontsManager.swift */; };
+		C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179660D2ADD6BF90036E866 /* Color+Extension.swift */; };
 		C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		C17966002ADD66F90036E866 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		C179660A2ADD67440036E866 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C179660B2ADD68BC0036E866 /* FontsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontsManager.swift; sourceTree = "<group>"; };
+		C179660D2ADD6BF90036E866 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
 		C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,6 +156,7 @@
 				57A65D092AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift */,
 				57A65D0B2AD7D4FF00131266 /* Array<String>+Extension.swift */,
 				57A65D0F2AD7D52700131266 /* String+Extension.swift */,
+				C179660D2ADD6BF90036E866 /* Color+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 				C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
 				57A65D182AD7DDA700131266 /* RecordView.swift in Sources */,
+				C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
 				5760066F2ADD4355006CD8DF /* TravelChoiceHalfView.swift in Sources */,
