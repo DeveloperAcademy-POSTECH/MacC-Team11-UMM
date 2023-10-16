@@ -1,5 +1,5 @@
 //
-//  ButtomTheme.swift
+//  ButtonTheme.swift
 //  UMM
 //
 //  Created by GYURI PARK on 2023/10/16.
@@ -226,7 +226,7 @@ struct DoneButtonUnactive: View {
     }
 }
 
-struct ButtomThemeTemplate: View {
+struct ButtonThemeTemplate: View {
     var body: some View {
         VStack(spacing: 20) {
             LargeButtonActive(title: "저장하기") {}
@@ -258,5 +258,5 @@ struct ButtomThemeTemplate: View {
 }
 
 #Preview {
-    ButtomThemeTemplate()
+    ButtonThemeTemplate()
 }
