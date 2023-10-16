@@ -18,7 +18,7 @@ struct LargeButtonActive: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
             
         }
@@ -42,7 +42,7 @@ struct LargeButtonUnactive: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
             
         }
@@ -65,7 +65,7 @@ struct MediumButtonWhite: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.black)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
 
         }
@@ -85,7 +85,7 @@ struct MediumButtonMain: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
         }
         .background(Color.red)
@@ -104,7 +104,7 @@ struct MediumButtonActive: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
         }
         .background(Color.black)
@@ -123,7 +123,7 @@ struct MediumButtonUnactive: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 17)
+                .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
         }
         .background(Color.gray)
@@ -141,14 +141,14 @@ struct NextButtonActive: View {
         Button(action: action) {
             HStack {
                 Text(title)
-                Image(systemName: "chevron.right")
+                    .padding(.leading, 28)
+                    .padding(.vertical, 14.5)
+                Image("icon")
+                    .padding(.trailing, 24)
+                    .padding(.vertical, 13)
             }
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(Color.white)
-                .padding(.vertical, 13)
-                .padding(.leading, 28)
-                .padding(.trailing, 20)
-                .frame(width: 116, height: 50, alignment: .center)
+            .font(.system(size: 18, weight: .medium))
+            .foregroundStyle(Color.white)
         }
         .background(Color.black)
         .cornerRadius(12)
@@ -164,16 +164,17 @@ struct NextButtonUnactive: View {
     
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 12) {
                 Text(title)
-                Image(systemName: "chevron.right")
+                    .padding(.leading, 28)
+                    .padding(.vertical, 14.5)
+                Image("icon")
+                    .padding(.trailing, 24)
+                    .padding(.vertical, 13)
             }
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 13)
-                .padding(.leading, 28)
-                .padding(.trailing, 20)
-                .frame(width: 116, height: 50, alignment: .center)
+        
         }
         .background(Color.gray)
         .cornerRadius(12)
@@ -192,8 +193,9 @@ struct DoneButtonActive: View {
             Text(title)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 13)
-                .frame(width: 116, height: 50, alignment: .center)
+                .padding(.horizontal, 42)
+                .padding(.vertical, 14.5)
+                
         }
         .background(Color.black)
         .cornerRadius(12)
@@ -213,13 +215,14 @@ struct DoneButtonUnactive: View {
             
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
-                .padding(.vertical, 13)
-                .frame(width: 116, height: 50, alignment: .center)
+                .padding(.vertical, 14.5)
+                .padding(.horizontal, 42)
         }
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.trailing, 16)
         .padding(.bottom, 45)
+        
     }
 }
 
@@ -245,8 +248,10 @@ struct ButtomThemeTemplate: View {
             }
             
             HStack {
+               
                 DoneButtonActive {}
                 DoneButtonUnactive {}
+                
             }
         }
     }
