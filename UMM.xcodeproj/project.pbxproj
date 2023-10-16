@@ -12,6 +12,7 @@
 		571A426E2ACE857600FA3D2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A426D2ACE857600FA3D2B /* Assets.xcassets */; };
 		571A42712ACE857600FA3D2B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A42702ACE857600FA3D2B /* Preview Assets.xcassets */; };
 		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
+		578858252ADBBCB2001B82FA /* InfoClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 578858242ADBBCB2001B82FA /* InfoClassifier.mlmodel */; };
 		57A65D002AD7D3DF00131266 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */; };
 		57A65D052AD7D4A900131266 /* Character+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D042AD7D4A900131266 /* Character+Extension.swift */; };
 		57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D072AD7D4D100131266 /* CharacterForm.swift */; };
@@ -36,6 +37,7 @@
 		571A426D2ACE857600FA3D2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		571A42702ACE857600FA3D2B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
+		578858242ADBBCB2001B82FA /* InfoClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = InfoClassifier.mlmodel; sourceTree = "<group>"; };
 		57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		57A65D042AD7D4A900131266 /* Character+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Extension.swift"; sourceTree = "<group>"; };
 		57A65D072AD7D4D100131266 /* CharacterForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterForm.swift; sourceTree = "<group>"; };
@@ -84,15 +86,13 @@
 			isa = PBXGroup;
 			children = (
 				571A42692ACE857500FA3D2B /* UMMApp.swift */,
+				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
+				578858262ADBBED5001B82FA /* Model */,
 				C17550572AD5519800A61BE5 /* ViewModel */,
 				C17550562AD5518C00A61BE5 /* View */,
-				57A65D062AD7D4BE00131266 /* Enumeration */,
 				57A65D032AD7D49100131266 /* Extension */,
 				571A426D2ACE857600FA3D2B /* Assets.xcassets */,
 				571A426F2ACE857600FA3D2B /* Preview Content */,
-				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
-				57C41DFB2AD4F1EB00345253 /* Persistence.swift */,
-				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
 			);
 			path = UMM;
 			sourceTree = "<group>";
@@ -103,6 +103,17 @@
 				571A42702ACE857600FA3D2B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		578858262ADBBED5001B82FA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				57C41DFB2AD4F1EB00345253 /* Persistence.swift */,
+				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
+				578858242ADBBCB2001B82FA /* InfoClassifier.mlmodel */,
+				57A65D062AD7D4BE00131266 /* Enumeration */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		57A65D032AD7D49100131266 /* Extension */ = {
@@ -241,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				578858252ADBBCB2001B82FA /* InfoClassifier.mlmodel in Sources */,
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
 				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
@@ -391,7 +403,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = XF4GNZL7MP;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -424,7 +436,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = XF4GNZL7MP;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
