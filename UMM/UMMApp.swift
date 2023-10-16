@@ -14,6 +14,7 @@ struct UMMApp: App {
 //            ContentView()
 //           AddTravelView()
             TravelListView(month: Date())
+//            MainView()
         }
     }
 }
