@@ -16,7 +16,7 @@
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="participantArray" optional="YES" attributeType="Transformable" customClassName="[String]"/>
-        <attribute name="startDate" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="expenseArray" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Expense" inverseName="travel" inverseEntity="Expense"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
