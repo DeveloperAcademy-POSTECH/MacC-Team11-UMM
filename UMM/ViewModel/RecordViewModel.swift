@@ -15,38 +15,21 @@ final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
-    @Published var voiceSentence: String = RecordViewModel.voiceSentenceArray[0]
-    @Published var voiceSentenceTemp = ""
+    @Published var voiceSentence = "" {
+        didSet {
+            divideVoiceSentence()
+            classifyVoiceSentence()
+        }
+    }
     @Published var buttonPressed = false
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
     
-    static let voiceSentenceArray = [
-        "",
-        "하얀 요트 십 팔만 1,300 점이오달 러",
-        "비행기 티켓 3.25달러",
-        "생선 요리 1,000,000루피",
-        "세면도구 3000루피",
-        "성당 투어 100,000,000 50,000,000루피",
-        "가족 기념품 2000페소",
-        "버스 요금 150 솔",
-        "택시 250,000 Sol",
-        "500 헤알",
-        "점 육 오",
-        "190.65",
-        "30,000루블 카드",
-        "330,000,025.35달러",
-        "3,000,000,000",
-        "오만 오천동",
-        "삼만 이 백동",
-        "3.25",
-        "안녕하세요",
-        "오로나민씨 2000원",
-        "오이 3000원"
-    ]
-    private var voiceSentenceChoicer: Int = 0
+    @Published var completeRecordModalIsShown = false
+    @Published var travelChoiceHalfModalIsShown = false
+    @Published var manualRecordModalIsShown = false
     
     init() {
         do {
@@ -478,18 +461,9 @@ final class RecordViewModel: ObservableObject {
         }
     }
     
-    func alterVoiceSentence() {
-        if voiceSentenceChoicer < RecordViewModel.voiceSentenceArray.count - 1 {
-            voiceSentenceChoicer += 1
-        } else if voiceSentenceChoicer == RecordViewModel.voiceSentenceArray.count - 1 {
-            voiceSentenceChoicer = 0
-        }
-        voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
-    }
-    
     // MARK: 녹음 기능
     func updateTranscribedString(transcribedString: String) {
-        voiceSentenceTemp = transcribedString
+        voiceSentence = transcribedString
     }
     
     private let audioEngine = AVAudioEngine()
