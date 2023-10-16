@@ -43,10 +43,10 @@ class AddTravelViewModel: ObservableObject {
         return formatter
     }()
 
-    init(month: Date, prevMonth: Date, nextMonth: Date) {
-        self.month = month
-        self.prevMonth = prevMonth
-        self.nextMonth = nextMonth
+    init(currentMonth: Date) {
+        self.month = currentMonth
+        self.prevMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
+        self.nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
         self.startDate = nil
     }
 

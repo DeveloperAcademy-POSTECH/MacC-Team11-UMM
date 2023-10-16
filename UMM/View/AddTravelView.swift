@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(month: Date(), prevMonth: Date(), nextMonth: Date())
+    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date())
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
