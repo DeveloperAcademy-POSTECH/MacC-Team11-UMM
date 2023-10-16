@@ -94,7 +94,7 @@ struct MediumButtonMain: View {
     }
 }
 
-struct MediumButtonBlack: View {
+struct MediumButtonActive: View {
     
     var title: String
     var action: () -> Void
@@ -236,7 +236,7 @@ struct ButtomThemeTemplate: View {
             
             HStack {
                 MediumButtonUnactive(title: "저장하기") {}
-                MediumButtonBlack(title: "저장하기") {}
+                MediumButtonActive(title: "저장하기") {}
             }
 
             HStack {
