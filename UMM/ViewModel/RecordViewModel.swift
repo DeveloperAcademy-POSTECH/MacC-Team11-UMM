@@ -5,40 +5,44 @@
 //  Created by Wonil Lee on 10/12/23.
 //
 
-import Foundation
+import AVFoundation
+import CoreML
+import NaturalLanguage
+import Speech
+import SwiftUI
 
 final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
-    @Published var voiceSentence: String = RecordViewModel.voiceSentenceArray[0]
+    var mlModel: MLModel?
+    var infoPredictor: NLModel?
+    @Published var voiceSentence = "" {
+        didSet {
+            divideVoiceSentence()
+            classifyVoiceSentence()
+        }
+    }
+    @Published var buttonPressed = false
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
     
-    static let voiceSentenceArray = [
-        "",
-        "하얀 요트 십 팔만 1,300 점이오달 러",
-        "3.25달러",
-        "1,000,000루피",
-        "세면도구 3000루피",
-        "100,000,000 50,000,000루피",
-        "2000페소 사토시",
-        "150 솔",
-        "250,000 Sol",
-        "500 헤알",
-        "점 육 오",
-        "190.65",
-        "30,000루블 카드",
-        "330,000,025.35달러",
-        "3,000,000,000",
-        "오만 오천동",
-        "삼만 이 백동",
-        "3.25",
-        "안녕하세요",
-        "오로나민씨 2000원",
-        "오이 3000원"
-    ]
-    private var voiceSentenceChoicer: Int = 0
+    @Published var completeRecordModalIsShown = false
+    @Published var travelChoiceHalfModalIsShown = false
+    @Published var manualRecordModalIsShown = false
+    
+    init() {
+        do {
+            mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
+        } catch {
+            print("error creating mlModel: \(error.localizedDescription)")
+        }
+        do {
+            infoPredictor = try NLModel(mlModel: mlModel!)
+        } catch {
+            print("error creating infoPredictor: \(error.localizedDescription)")
+        }
+    }
     
     func divideVoiceSentence() {
         guard voiceSentence.count > 0 else {
@@ -120,6 +124,11 @@ final class RecordViewModel: ObservableObject {
         }
         if allNoNumericInterpretation {
             info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+            if let info {
+                if info == "" {
+                    self.info = nil
+                }
+            }
             payAmount = -1
             return
         }
@@ -172,7 +181,7 @@ final class RecordViewModel: ObservableObject {
         }
         
         guard monoNumericArray.count > 0 else {
-            info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+            info = nil
             payAmount = -1
             return
         }
@@ -417,14 +426,95 @@ final class RecordViewModel: ObservableObject {
         // MARK: - splitArray에 남아 있는 나머지는 공백 생략하지 않은 문자열로 합친 후에 구매내역 퍼블리시드 변수에 입력
         
         info = splitArray.getUnifiedStringWithSpaceBetweenEachSplit()
+        if let info {
+            if info == "" {
+                self.info = nil
+            }
+        }
     }
     
-    func alterVoiceSentence() {
-        if voiceSentenceChoicer < RecordViewModel.voiceSentenceArray.count - 1 {
-            voiceSentenceChoicer += 1
-        } else if voiceSentenceChoicer == RecordViewModel.voiceSentenceArray.count - 1 {
-            voiceSentenceChoicer = 0
+    func classifyVoiceSentence() {
+        if let infoPredictor, let info, let label = infoPredictor.predictedLabel(for: info) {
+            infoCategory = getExpenseInfoCagetory(stringLabel: label)
+        } else {
+            infoCategory = .unknown
         }
-        voiceSentence = RecordViewModel.voiceSentenceArray[voiceSentenceChoicer]
+        
+    }
+    
+    private func getExpenseInfoCagetory(stringLabel: String) -> ExpenseInfoCategory {
+        switch stringLabel {
+        case "plane":
+            return .plane
+        case "room":
+            return .room
+        case "transportation":
+            return .transportation
+        case "food":
+            return .food
+        case "fun":
+            return .fun
+        case "shopping":
+            return .shopping
+        default:
+            return .unknown
+        }
+    }
+    
+    // MARK: 녹음 기능
+    func updateTranscribedString(transcribedString: String) {
+        voiceSentence = transcribedString
+    }
+    
+    private let audioEngine = AVAudioEngine()
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
+    private var recognitionTask: SFSpeechRecognitionTask?
+    
+    func invalidateButton() {
+        buttonPressed = true
+    }
+    
+    func startRecording() throws {
+        
+        recognitionTask?.cancel()
+        recognitionTask = nil
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        
+        let inputNode = audioEngine.inputNode
+        inputNode.removeTap(onBus: 0)
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, _: AVAudioTime) in
+            self.recognitionRequest?.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        try audioEngine.start()
+        
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
+        recognitionRequest.shouldReportPartialResults = true
+        
+        if speechRecognizer?.supportsOnDeviceRecognition ?? false {
+            recognitionRequest.requiresOnDeviceRecognition = true
+        }
+        
+        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
+            if let result = result {
+                DispatchQueue.main.async {
+                    let transcribedString = result.bestTranscription.formattedString
+                    self.updateTranscribedString(transcribedString: transcribedString)
+                }
+            }
+            if error != nil {
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
+            }
+        }
     }
 }

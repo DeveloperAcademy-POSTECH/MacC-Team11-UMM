@@ -10,58 +10,161 @@ import SwiftUI
 struct RecordView: View {
     
     @ObservedObject var viewModel = RecordViewModel()
+    @GestureState private var isDetectingPress = false
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 50) {
             travelChoiceView
             sentenceView
             livePropertyView
-            sentenceAlterButton
+            manualRecordButton
+            recordButton
         }
-        .onAppear {
-            viewModel.divideVoiceSentence()
+        .sheet(isPresented: $viewModel.manualRecordModalIsShown) {
+            ManualRecordView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.completeRecordModalIsShown) {
+            CompleteRecordView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
+            TravelChoiceHalfView(viewModel: viewModel)
+                .presentationDetents([.height(226)])
         }
     }
     
-    var travelChoiceView: some View {
+    private var travelChoiceView: some View {
         Capsule()
             .fill(.gray)
             .frame(width: 80, height: 40)
+            .onTapGesture {
+                viewModel.travelChoiceHalfModalIsShown = true
+            }
     }
     
-    var sentenceView: some View {
-        Text("보정 전 문장: \(viewModel.voiceSentence)")
+    private var sentenceView: some View {
+        if !viewModel.buttonPressed {
+            Text("지출을 기록해주세요")
+        } else {
+            if viewModel.voiceSentence == "" {
+                Text("듣고 있어요")
+            } else {
+                Text(viewModel.voiceSentence)
+            }
+            
+        }
     }
     
-    var livePropertyView: some View {
-        VStack {
+    private var livePropertyView: some View {
+        VStack(spacing: 20) {
             HStack {
                 Text("소비내역")
-                Text(viewModel.info ?? " ")
+                if viewModel.info != nil {
+                    Image(systemName: "wifi")
+                        .foregroundStyle(.red)
+                    Text(viewModel.info!)
+                } else {
+                    Image(systemName: "wifi")
+                        .foregroundStyle(.blue)
+                    Text("-")
+                }
             }
             HStack {
                 Text("금액")
-                Text(String(format: "%.2f", viewModel.payAmount))
+                if viewModel.payAmount != -1 {
+                    Image(systemName: "wifi")
+                        .foregroundStyle(.red)
+                    Text(String(format: "%.2f", viewModel.payAmount))
+                } else {
+                    Image(systemName: "wifi")
+                        .foregroundStyle(.blue)
+                    Text("-")
+                }
             }
             HStack {
-                Text("결제 수단(-1미정0카드1현금)")
-                Text("\(viewModel.paymentMethod.rawValue)")
+                Text("결제 수단")
+                switch viewModel.paymentMethod {
+                case .card:
+                    HStack {
+                        Text("현금")
+                            .foregroundStyle(.gray)
+                        Text("/")
+                            .foregroundStyle(.gray)
+                        Text("카드")
+                    }
+                case .cash:
+                    HStack {
+                        Text("현금")
+                        Text("/")
+                            .foregroundStyle(.gray)
+                        Text("카드")
+                            .foregroundStyle(.gray)
+                    }
+                case .unknown:
+                    HStack {
+                        Text("현금")
+                        Text("/")
+                        Text("카드")
+                    }
+                    .foregroundStyle(.gray)
+                }
             }
         }
     }
     
-    var sentenceAlterButton: some View {
+    private var manualRecordButton: some View {
         Button {
-            viewModel.alterVoiceSentence()
-            viewModel.divideVoiceSentence()
+            viewModel.manualRecordModalIsShown = true
         } label: {
-            ZStack {
-                Circle()
-                    .fill(.gray)
-                    .frame(width: 50, height: 50)
-                Text("다음")
-                    .foregroundStyle(.white)
+            Text("직접 기록")
+        }
+        .buttonStyle(.bordered)
+    }
+    
+    private var continuousPress: some Gesture {
+        LongPressGesture(minimumDuration: 0.1)
+            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
+            .updating($isDetectingPress) { value, gestureState, _ in
+                switch value {
+                case .first(true):
+                    gestureState = true
+                    print("녹음 시작")
+                case .second(true, nil):
+                    gestureState = true
+                    print("녹음 중")
+                default:
+                    break
+                }
+            }.onEnded { value in
+                switch value {
+                case .second:
+                    print("녹음완료")
+                    print(viewModel.voiceSentence)
+                    viewModel.completeRecordModalIsShown = true
+                default:
+                    break
+                }
             }
+    }
+    
+    private var recordButton: some View {
+        VStack {
+            Button {
+                viewModel.invalidateButton()
+                do {
+                    try viewModel.startRecording()
+                } catch {
+                    print("error while recording: \(error.localizedDescription)")
+                }
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(isDetectingPress ? .gray : .blue)
+                        .frame(width: 50, height: 50)
+                    Image(systemName: "record.circle")
+                        .foregroundStyle(Color.white)
+                }
+            }
+            .simultaneousGesture(continuousPress)
         }
     }
 }
