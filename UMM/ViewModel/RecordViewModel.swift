@@ -15,7 +15,12 @@ final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
-    @Published var voiceSentence = ""
+    @Published var voiceSentence = "" {
+        didSet {
+            divideVoiceSentence()
+            classifyVoiceSentence()
+        }
+    }
     @Published var buttonPressed = false
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
