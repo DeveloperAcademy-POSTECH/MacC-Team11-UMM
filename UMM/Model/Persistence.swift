@@ -7,7 +7,7 @@
 
 import CoreData
 
-struct PersistenceController {
+class PersistenceController {
     static let shared = PersistenceController()
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
@@ -17,7 +17,7 @@ struct PersistenceController {
             try viewContext.save()
         } catch {
             let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            fatalError("Unresolved error \(nsError), \(nsError)")
         }
         return result
     }()
@@ -30,7 +30,7 @@ struct PersistenceController {
         }
         container.loadPersistentStores { _, error in
           if let error = error as NSError? {
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            fatalError("Unresolved error \(error), \(error)")
           }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
