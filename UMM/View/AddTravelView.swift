@@ -24,7 +24,7 @@ struct AddTravelView: View {
                 calendarHeader
                 calendarGridView
             }
-
+            
             Spacer()
         }
     }
