@@ -18,8 +18,13 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+<<<<<<< HEAD:UMM/UMM.xcdatamodeld/UMM.xcdatamodel/contents
         <attribute name="participantArray" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName" customClassName="[String]"/>
         <attribute name="startDate" optional="YES" attributeType="String"/>
+=======
+        <attribute name="participantArray" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+>>>>>>> 5b2c38d44de8cd89112ff957366f689e75ab1e2e:UMM/Model/UMM.xcdatamodeld/UMM.xcdatamodel/contents
         <relationship name="expenseArray" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Expense" inverseName="travel" inverseEntity="Expense"/>
     </entity>
     <entity name="User" representedClassName="User" isAbstract="YES" syncable="YES" codeGenerationType="class">
