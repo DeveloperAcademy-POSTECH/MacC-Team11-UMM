@@ -478,25 +478,6 @@ final class RecordViewModel: ObservableObject {
         }
     }
     
-    func getExpenseInfoString(category: ExpenseInfoCategory) -> String {
-        switch category {
-        case .plane:
-            return "plane"
-        case .room:
-            return "room"
-        case .transportation:
-            return "transportation"
-        case .food:
-            return "food"
-        case .fun:
-            return "fun"
-        case .shopping:
-            return "shopping"
-        default:
-            return "unknown"
-        }
-    }
-    
     func alterVoiceSentence() {
         if voiceSentenceChoicer < RecordViewModel.voiceSentenceArray.count - 1 {
             voiceSentenceChoicer += 1
