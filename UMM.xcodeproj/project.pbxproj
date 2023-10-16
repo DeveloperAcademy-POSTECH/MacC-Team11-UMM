@@ -43,6 +43,7 @@
 		E2EEB0042AD6F7C80028EBC2 /* dummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */; };
 		E2EEB0062AD771000028EBC2 /* DummyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */; };
 		E2EF25C42AD79F8300417292 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
+		C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */; };
 		C190C20C2ADCD47E0099EE3A /* ButtomTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtomTheme.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,7 @@
 		E2EEAFFF2AD6EF670028EBC2 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummyData.swift; sourceTree = "<group>"; };
 		E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordViewModel.swift; sourceTree = "<group>"; };
+		C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberView.swift; sourceTree = "<group>"; };
 		C190C20B2ADCD47E0099EE3A /* ButtomTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtomTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +194,7 @@
 				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
 				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
 				57A65D172AD7DDA700131266 /* RecordView.swift */,
+				C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */,
 				5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */,
 				5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */,
 				5760066E2ADD4355006CD8DF /* TravelChoiceHalfView.swift */,
@@ -347,6 +350,7 @@
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
 				E2B8C2072AD7E67900C70655 /* ExpenseViewModel.swift in Sources */,
 				C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */,
+				C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */,
 				5760066F2ADD4355006CD8DF /* TravelChoiceHalfView.swift in Sources */,
 				57A65D0A2AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift in Sources */,
 				C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */,

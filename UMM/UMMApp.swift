@@ -11,7 +11,10 @@ import SwiftUI
 struct UMMApp: App {
     var body: some Scene {
         WindowGroup {
-            MainView()
+//             MainView()
+//            ContentView()
+//           AddTravelView()
+            TravelListView(month: Date())
         }
     }
 }
