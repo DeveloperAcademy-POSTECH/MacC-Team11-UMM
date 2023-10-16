@@ -43,8 +43,19 @@
 		E2EEB0042AD6F7C80028EBC2 /* dummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */; };
 		E2EEB0062AD771000028EBC2 /* DummyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */; };
 		E2EF25C42AD79F8300417292 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
+		C17966012ADD66F90036E866 /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965F82ADD66F90036E866 /* Pretendard-ExtraLight.otf */; };
+		C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965F92ADD66F90036E866 /* Pretendard-ExtraBold.otf */; };
+		C17966032ADD66F90036E866 /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FA2ADD66F90036E866 /* Pretendard-Light.otf */; };
+		C17966042ADD66F90036E866 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FB2ADD66F90036E866 /* Pretendard-SemiBold.otf */; };
+		C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FC2ADD66F90036E866 /* Pretendard-Thin.otf */; };
+		C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FD2ADD66F90036E866 /* Pretendard-Black.otf */; };
+		C17966072ADD66F90036E866 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FE2ADD66F90036E866 /* Pretendard-Regular.otf */; };
+		C17966082ADD66F90036E866 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17965FF2ADD66F90036E866 /* Pretendard-Medium.otf */; };
+		C17966092ADD66F90036E866 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C17966002ADD66F90036E866 /* Pretendard-Bold.otf */; };
+		C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179660B2ADD68BC0036E866 /* FontsManager.swift */; };
+		C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179660D2ADD6BF90036E866 /* Color+Extension.swift */; };
+		C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */; };
 		C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */; };
-		C190C20C2ADCD47E0099EE3A /* ButtomTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtomTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,8 +95,20 @@
 		E2EEAFFF2AD6EF670028EBC2 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummyData.swift; sourceTree = "<group>"; };
 		E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordViewModel.swift; sourceTree = "<group>"; };
+		C17965F82ADD66F90036E866 /* Pretendard-ExtraLight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraLight.otf"; sourceTree = "<group>"; };
+		C17965F92ADD66F90036E866 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
+		C17965FA2ADD66F90036E866 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
+		C17965FB2ADD66F90036E866 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		C17965FC2ADD66F90036E866 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Thin.otf"; sourceTree = "<group>"; };
+		C17965FD2ADD66F90036E866 /* Pretendard-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Black.otf"; sourceTree = "<group>"; };
+		C17965FE2ADD66F90036E866 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		C17965FF2ADD66F90036E866 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		C17966002ADD66F90036E866 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		C179660A2ADD67440036E866 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C179660B2ADD68BC0036E866 /* FontsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontsManager.swift; sourceTree = "<group>"; };
+		C179660D2ADD6BF90036E866 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
+		C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTheme.swift; sourceTree = "<group>"; };
 		C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberView.swift; sourceTree = "<group>"; };
-		C190C20B2ADCD47E0099EE3A /* ButtomTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtomTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +146,7 @@
 				C17550572AD5519800A61BE5 /* ViewModel */,
 				C17550562AD5518C00A61BE5 /* View */,
 				571A42692ACE857500FA3D2B /* UMMApp.swift */,
+				C179660A2ADD67440036E866 /* Info.plist */,
 				C190C20A2ADCD4520099EE3A /* DesignSystem */,
 				571A42692ACE857500FA3D2B /* UMMApp.swift */,
 				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
@@ -162,6 +186,7 @@
 				57A65D092AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift */,
 				57A65D0B2AD7D4FF00131266 /* Array<String>+Extension.swift */,
 				57A65D0F2AD7D52700131266 /* String+Extension.swift */,
+				C179660D2ADD6BF90036E866 /* Color+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -227,10 +252,28 @@
 				E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */,
 			);
 			path = Dummy;
+		C17965F52ADD64340036E866 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C17965FD2ADD66F90036E866 /* Pretendard-Black.otf */,
+				C17966002ADD66F90036E866 /* Pretendard-Bold.otf */,
+				C17965F92ADD66F90036E866 /* Pretendard-ExtraBold.otf */,
+				C17965F82ADD66F90036E866 /* Pretendard-ExtraLight.otf */,
+				C17965FA2ADD66F90036E866 /* Pretendard-Light.otf */,
+				C17965FF2ADD66F90036E866 /* Pretendard-Medium.otf */,
+				C17965FE2ADD66F90036E866 /* Pretendard-Regular.otf */,
+				C17965FB2ADD66F90036E866 /* Pretendard-SemiBold.otf */,
+				C17965FC2ADD66F90036E866 /* Pretendard-Thin.otf */,
+				C179660B2ADD68BC0036E866 /* FontsManager.swift */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		C190C20A2ADCD4520099EE3A /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
-				C190C20B2ADCD47E0099EE3A /* ButtomTheme.swift */,
+				C17965F52ADD64340036E866 /* Fonts */,
+				C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -295,8 +338,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				57A65D002AD7D3DF00131266 /* .swiftlint.yml in Resources */,
+				C17966092ADD66F90036E866 /* Pretendard-Bold.otf in Resources */,
 				571A42712ACE857600FA3D2B /* Preview Assets.xcassets in Resources */,
+				C17966042ADD66F90036E866 /* Pretendard-SemiBold.otf in Resources */,
+				C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */,
+				C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */,
+				C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */,
+				C17966012ADD66F90036E866 /* Pretendard-ExtraLight.otf in Resources */,
+				C17966072ADD66F90036E866 /* Pretendard-Regular.otf in Resources */,
 				571A426E2ACE857600FA3D2B /* Assets.xcassets in Resources */,
+				C17966032ADD66F90036E866 /* Pretendard-Light.otf in Resources */,
+				C17966082ADD66F90036E866 /* Pretendard-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,9 +387,10 @@
 				E2EEB0062AD771000028EBC2 /* DummyRecordViewModel.swift in Sources */,
 				E2EEAFFC2AD6EE150028EBC2 /* MainView.swift in Sources */,
 				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
-				C190C20C2ADCD47E0099EE3A /* ButtomTheme.swift in Sources */,
+				C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
 				57A65D182AD7DDA700131266 /* RecordView.swift in Sources */,
+				C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				E2EEB0002AD6EF670028EBC2 /* DummyRecordView.swift in Sources */,
 				E2EEAFF82AD6EC8E0028EBC2 /* TodayExpenseDetailView.swift in Sources */,
@@ -359,6 +412,7 @@
 				57A65D102AD7D52700131266 /* String+Extension.swift in Sources */,
 				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
+				C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
 				57A65D052AD7D4A900131266 /* Character+Extension.swift in Sources */,
 				57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */,
@@ -502,6 +556,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = test;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Need to convert sound data into text data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -535,6 +590,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = test;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Need to convert sound data into text data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
