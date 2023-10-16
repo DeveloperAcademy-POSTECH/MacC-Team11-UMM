@@ -17,7 +17,6 @@ struct RecordView: View {
             travelChoiceView
             sentenceView
             livePropertyView
-            sentenceAlterButton
             recordButton
         }
         .onAppear {
@@ -57,22 +56,6 @@ struct RecordView: View {
         }
     }
     
-    var sentenceAlterButton: some View {
-        Button {
-            viewModel.alterVoiceSentence()
-            viewModel.divideVoiceSentence()
-            viewModel.classifyVoiceSentence()
-        } label: {
-            ZStack {
-                Circle()
-                    .fill(.gray)
-                    .frame(width: 50, height: 50)
-                Text("다음")
-                    .foregroundStyle(.white)
-            }
-        }
-    }
-    
     var continuousPress: some Gesture {
         LongPressGesture(minimumDuration: 0.1)
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
@@ -91,7 +74,7 @@ struct RecordView: View {
                 switch value {
                 case .second:
                     print("녹음완료")
-                    print(viewModel.voiceSentenceTemp)
+                    print(viewModel.voiceSentence)
                 default:
                     break
                 }
@@ -123,7 +106,7 @@ struct RecordView: View {
                     .frame(width: 200, height: 50)
                     .foregroundStyle(Color.yellow)
                 
-                Text(viewModel.voiceSentenceTemp)
+                Text(viewModel.voiceSentence)
             }
         }
     }
