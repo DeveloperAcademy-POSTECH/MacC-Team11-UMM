@@ -23,9 +23,9 @@
 		E2EEAFFA2AD6ECA50028EBC2 /* AllExpenseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFF92AD6ECA50028EBC2 /* AllExpenseDetailView.swift */; };
 		E2EEAFFC2AD6EE150028EBC2 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFFB2AD6EE150028EBC2 /* MainView.swift */; };
 		E2EEAFFE2AD6EE7B0028EBC2 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFFD2AD6EE7B0028EBC2 /* ExpenseView.swift */; };
-		E2EEB0002AD6EF670028EBC2 /* dummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFFF2AD6EF670028EBC2 /* dummyRecordView.swift */; };
+		E2EEB0002AD6EF670028EBC2 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEAFFF2AD6EF670028EBC2 /* DummyRecordView.swift */; };
 		E2EEB0042AD6F7C80028EBC2 /* dummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */; };
-		E2EEB0062AD771000028EBC2 /* dummyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0052AD771000028EBC2 /* dummyRecordViewModel.swift */; };
+		E2EEB0062AD771000028EBC2 /* DummyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */; };
 		E2EF25C42AD79F8300417292 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -48,9 +48,9 @@
 		E2EEAFF92AD6ECA50028EBC2 /* AllExpenseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpenseDetailView.swift; sourceTree = "<group>"; };
 		E2EEAFFB2AD6EE150028EBC2 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2EEAFFD2AD6EE7B0028EBC2 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
-		E2EEAFFF2AD6EF670028EBC2 /* dummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummyRecordView.swift; sourceTree = "<group>"; };
+		E2EEAFFF2AD6EF670028EBC2 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2EEB0032AD6F7C80028EBC2 /* dummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummyData.swift; sourceTree = "<group>"; };
-		E2EEB0052AD771000028EBC2 /* dummyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummyRecordViewModel.swift; sourceTree = "<group>"; };
+		E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,7 +110,7 @@
 				E2EEAFFB2AD6EE150028EBC2 /* MainView.swift */,
 				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
 				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
-				E2EEAFFF2AD6EF670028EBC2 /* dummyRecordView.swift */,
+				E2EEAFFF2AD6EF670028EBC2 /* DummyRecordView.swift */,
 				E2EEAFFD2AD6EE7B0028EBC2 /* ExpenseView.swift */,
 				E2EEAFF32AD6EC750028EBC2 /* TodayExpenseView.swift */,
 				E2EEAFF72AD6EC8E0028EBC2 /* TodayExpenseDetailView.swift */,
@@ -125,7 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */,
-				E2EEB0052AD771000028EBC2 /* dummyRecordViewModel.swift */,
+				E2EEB0052AD771000028EBC2 /* DummyRecordViewModel.swift */,
 				E2B8C2062AD7E67900C70655 /* ExpenseViewModel.swift */,
 			);
 			path = ViewModel;
@@ -241,10 +241,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
-				E2EEB0062AD771000028EBC2 /* dummyRecordViewModel.swift in Sources */,
+				E2EEB0062AD771000028EBC2 /* DummyRecordViewModel.swift in Sources */,
 				E2EEAFFC2AD6EE150028EBC2 /* MainView.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
-				E2EEB0002AD6EF670028EBC2 /* dummyRecordView.swift in Sources */,
+				E2EEB0002AD6EF670028EBC2 /* DummyRecordView.swift in Sources */,
 				E2EEAFF82AD6EC8E0028EBC2 /* TodayExpenseDetailView.swift in Sources */,
 				E2EEAFF42AD6EC750028EBC2 /* TodayExpenseView.swift in Sources */,
 				E2EF25C42AD79F8300417292 /* UMM.xcdatamodeld in Sources */,

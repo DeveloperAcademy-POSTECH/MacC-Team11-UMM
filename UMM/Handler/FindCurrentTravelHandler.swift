@@ -28,6 +28,9 @@
 // travel을 기록하고 저장할 때, lastUpdate를 현재 시각으로 업데이트 해준다.
 // lastUpdate는 TodayExpenseView에서 지출 기록을 정렬할 때도 쓰인다.
 
+// ^^^
+// 함수로 변경
+
 
 import Foundation
 import CoreData

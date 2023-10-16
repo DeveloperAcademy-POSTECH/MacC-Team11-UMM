@@ -11,6 +11,7 @@ import CoreData
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     let dummyRecordViewModel = DummyRecordViewModel()
+    
     @Published var savedExpenses: [Expense] = []
     
     func fetchExpense() {
