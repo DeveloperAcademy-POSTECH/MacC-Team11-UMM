@@ -44,7 +44,7 @@ struct RecordView: View {
             }
             HStack {
                 Text("소비내역 분류")
-                Text(viewModel.getExpenseInfoString(category: viewModel.infoCategory))
+                Text(viewModel.infoCategory.description)
             }
             HStack {
                 Text("금액")
