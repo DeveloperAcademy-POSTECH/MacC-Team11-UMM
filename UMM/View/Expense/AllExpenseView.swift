@@ -11,11 +11,6 @@ struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
     
-    @State private var selectedTravel: Travel?
-    @State private var selectedCategory: Int64 = 0
-    @State private var selectedPaymentMethod: Int64 = 0
-    @State private var selectedCountry: Int64 = 0
-    
     init() {
         self.expenseViewModel = ExpenseViewModel()
         self.dummyRecordViewModel = DummyRecordViewModel()
@@ -61,7 +56,6 @@ struct AllExpenseView: View {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            selectedTravel = expenseViewModel.selectedTravel
             expenseViewModel.filteredExpenses = getFilteredExpenses(selectedCountry: expenseViewModel.selectedCountry)
         }
     }
@@ -90,7 +84,7 @@ struct AllExpenseView: View {
                             AllExpenseDetailView(
                                 selectedTravel: $expenseViewModel.selectedTravel,
                                 selectedCategory: .constant(category),
-                                selectedPaymentMethod: .constant(Int64(0)),
+                                selectedPaymentMethod: $expenseViewModel.selectedPaymentMethod,
                                 selectedCountry: $expenseViewModel.selectedCountry
                             )
                         ) {

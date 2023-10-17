@@ -30,18 +30,18 @@ struct AllExpenseDetailView: View {
         self.expenseViewModel = ExpenseViewModel()
         self.dummyRecordViewModel = DummyRecordViewModel()
         
-        expenseViewModel.selectedPaymentMethod = selectedPaymentMethod.wrappedValue
+//        expenseViewModel.selectedPaymentMethod = selectedPaymentMethod.wrappedValue
     }
     
     var body: some View {
         ScrollView {
-            Picker("현재 결제 수단", selection: $expenseViewModel.selectedPaymentMethod) {
+            Picker("현재 결제 수단", selection: $selectedPaymentMethod) {
                 ForEach(0...2, id: \.self) { index in
                     Text("\(index)").tag(Int64(index))
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .onChange(of: expenseViewModel.selectedPaymentMethod) { newValue in
+            .onChange(of: selectedPaymentMethod) { newValue in
                 print("Picker | onChange() | newValue: \(newValue)")
                 expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: newValue)
             }
