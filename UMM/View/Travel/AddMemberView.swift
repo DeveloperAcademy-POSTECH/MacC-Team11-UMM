@@ -12,21 +12,46 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
+    @State var participantArr: [String]?
+    @State private var participantCnt = 0
     
     var body: some View {
         VStack {
+            
+            Spacer()
             
             headerView
             
             selectBoxView
             
-            NavigationLink(destination: CompleteAddTravelView()) {
-                DoneButtonActive(title: "완료", action: {
+            Spacer()
+            
+            isTogetherView
+            
+            Spacer()
+            
+            HStack {
+                Spacer()
+                
+                if isSelectedTogether == true && participantCnt == 0 {
+                    DoneButtonUnactive(title: "완료", action: {
+                        
+                    })
+                    .disabled(true)
                     
-                })
-                .disabled(true)
+                } else {
+                    NavigationLink(destination: CompleteAddTravelView()) {
+                        DoneButtonActive(title: "완료", action: {
+                            
+                        })
+                        .disabled(true)
+                    }
+                }
             }
             
+        }
+        .onAppear {
+            print(participantArr?.count as Any)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -46,7 +71,7 @@ struct AddMemberView: View {
                 .font(.custom(FontsManager.Pretendard.medium, size: 24))
                 .foregroundStyle(Color.gray300)
             
-//            Spacer()
+            Spacer()
         }
     }
     
@@ -69,7 +94,11 @@ struct AddMemberView: View {
                         
                         Text("정산이 필요 없어요")
                             .foregroundStyle(isSelectedAlone ? Color.black : Color.gray300)
+                        
+                        Spacer()
                     }
+                    .padding(.leading, 10)
+                    .frame(width: 350, height: 53)
                 }
             }
             
@@ -90,6 +119,81 @@ struct AddMemberView: View {
                         
                         Text("여러 명이서 정산이 필요한 여행이에요")
                             .foregroundStyle(isSelectedTogether ? Color.black : Color.gray300)
+                        
+                        Spacer()
+                    }
+                    .padding(.leading, 10)
+                    .frame(width: 350, height: 53)
+                }
+            }
+        }
+    }
+    
+    private var isTogetherView: some View {
+        
+        VStack {
+            HStack {
+                if self.isSelectedTogether == true {
+                    HStack {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 76, height: 30)
+                                .background(Color.gray200)
+                                .cornerRadius(15)
+                            
+                            Text("me")
+                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .foregroundStyle(Color.white)
+                            +
+                            Text("나")
+                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .foregroundStyle(Color.black)
+                        }
+                        
+                        participantListView
+                        
+                        Button {
+                            participantCnt += 1
+                        } label: {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 44, height: 30)
+                                    .cornerRadius(15)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .inset(by: 0.5)
+                                            .stroke(.black, style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                                    )
+                                
+                                Image(systemName: "plus")
+                                    .foregroundStyle(Color.black)
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer()
+        }
+    }
+    
+    private var participantListView: some View {
+        HStack {
+            if participantCnt != 0 {
+                ForEach(0..<participantCnt, id: \.self) { index in
+                    HStack {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 76, height: 30)
+                                .background(Color.gray200)
+                                .cornerRadius(15)
+                            
+                            Text("참여자 \(index+1)")
+                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .foregroundStyle(Color.black)
+                        }
                     }
                 }
             }

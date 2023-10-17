@@ -23,7 +23,7 @@ class AddTravelViewModel: ObservableObject {
     static let dateFormatter: DateFormatter = {
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "M"
+        formatter.dateFormat = "MM"
 
         return formatter
     }()

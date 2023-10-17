@@ -221,8 +221,7 @@ struct DoneButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.trailing, 16)
-        .padding(.bottom, 45)
-        
+        .padding(.bottom, 45)        
     }
 }
 
