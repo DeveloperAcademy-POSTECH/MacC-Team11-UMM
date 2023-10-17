@@ -134,7 +134,7 @@ struct MediumButtonUnactive: View {
 
 struct NextButtonActive: View {
     
-    var title: String = ""
+    var title: String
     var action: () -> Void
     
     var body: some View {
@@ -159,7 +159,7 @@ struct NextButtonActive: View {
 
 struct NextButtonUnactive: View {
     
-    var title: String = ""
+    var title: String
     var action: () -> Void
     
     var body: some View {
@@ -243,8 +243,8 @@ struct ButtonThemeTemplate: View {
             }
 
             HStack {
-                NextButtonActive {}
-                NextButtonUnactive {}
+                NextButtonActive(title: "다음") {}
+                NextButtonUnactive(title: "다음") {}
             }
             
             HStack {

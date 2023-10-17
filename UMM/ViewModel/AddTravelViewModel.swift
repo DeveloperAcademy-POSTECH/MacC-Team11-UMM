@@ -10,6 +10,7 @@ import Foundation
 class AddTravelViewModel: ObservableObject {
 
     @Published var month: Date
+    @Published var year: Date
     @Published var prevMonth: Date
     @Published var nextMonth: Date
     @Published var startDate: Date?
@@ -23,6 +24,14 @@ class AddTravelViewModel: ObservableObject {
 
         let formatter = DateFormatter()
         formatter.dateFormat = "M"
+
+        return formatter
+    }()
+    
+    static let dateYearFormatter: DateFormatter = {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY"
 
         return formatter
     }()
@@ -45,6 +54,7 @@ class AddTravelViewModel: ObservableObject {
 
     init(currentMonth: Date) {
         self.month = currentMonth
+        self.year = currentMonth
         self.prevMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
         self.nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
         self.startDate = nil
