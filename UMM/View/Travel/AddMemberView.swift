@@ -10,6 +10,7 @@ import SwiftUI
 struct AddMemberView: View {
     var body: some View {
         VStack {
+            
             Text("AddMemberView")
             
         }

@@ -35,7 +35,15 @@ struct AddTravelView: View {
             
             Spacer()
             
-            nextButton
+            HStack {
+                Spacer()
+                
+                NavigationLink(destination: AddMemberView()) {
+                    NextButtonActive(title: "다음", action: {
+                        print("sfdsf")
+                    })
+                }
+            }
             
             Spacer()
         }
@@ -191,7 +199,6 @@ struct AddTravelView: View {
         var body: some View {
             VStack {
                 Button {
-                    
                     let result = viewModel.startDateEndDate(in: viewModel.startDate, endDate: viewModel.endDate, selectDate: date!-1)
                     viewModel.startDate = result[0]
                     viewModel.endDate = result[1]
@@ -205,11 +212,29 @@ struct AddTravelView: View {
                         .foregroundStyle(textColor)
                         .overlay {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
-                                Circle()
-                                    .opacity(0.5)
-                            } else {
-                                Circle()
-                                    .opacity(0)
+                                ZStack {
+                                    
+                                    Circle()
+                                        .stroke(Color.black)
+                                        .fill(Color.mainPink)
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    
+                                    Circle()
+                                        .stroke(Color.black)
+                                        .fill(Color.mainPink)
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
                             }
                             
                         }
@@ -229,8 +254,7 @@ struct AddTravelView: View {
                 Text("다음")
                     .foregroundStyle(Color.white)
             }
-                
-        }.disabled(!viewModel.isSelectedStartDate)
+        }
     }
     
     var backButton: some View {
@@ -244,6 +268,6 @@ struct AddTravelView: View {
         }
 }
 
-#Preview {
-    AddTravelView()
-}
+// #Preview {
+//     AddTravelView()
+// }
