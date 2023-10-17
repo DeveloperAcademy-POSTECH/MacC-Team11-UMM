@@ -37,7 +37,6 @@ struct ManualRecordView: View {
             } label: {
                 Text("")
             }
-        
         }
     }
     private var saveButton: some View {

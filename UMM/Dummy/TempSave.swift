@@ -15,12 +15,17 @@ class TempSave {
     
     // dummyTravelData를 위한 프로퍼티
     let dummyTravelName = ["DummyTravel0", "DummyTravel1", "DummyTravel2", "DummyTravel3"]
-    let dummyTravelDate = [
-        Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +1, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +2, to: Date())!,
+    let dummyTravelStartDate = [
+        Calendar.current.date(byAdding: .day, value: -4, to: Date())!,
+        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
+        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
         Calendar.current.date(byAdding: .day, value: +3, to: Date())!
-        
+    ]
+    let dummyTravelEndDate = [
+        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
+        Calendar.current.date(byAdding: .day, value: +2, to: Date())!,
+        Calendar.current.date(byAdding: .day, value: +3, to: Date())!,
+        Calendar.current.date(byAdding: .day, value: +10, to: Date())!
     ]
     let dummyTravelLastUpdate = [
         Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
@@ -110,8 +115,8 @@ class TempSave {
         let tempTravel = Travel(context: viewContext)
         tempTravel.id = UUID()
         tempTravel.name = dummyTravelName[seed]
-        tempTravel.startDate = dummyTravelDate[seed]
-        tempTravel.endDate = dummyTravelDate[seed]
+        tempTravel.startDate = dummyTravelStartDate[seed]
+        tempTravel.endDate = dummyTravelEndDate[seed]
         tempTravel.lastUpdate = dummyTravelLastUpdate[seed]
     }
     
