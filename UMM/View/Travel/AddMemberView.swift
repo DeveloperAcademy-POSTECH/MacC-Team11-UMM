@@ -12,6 +12,7 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
+    @State private var tempNm = ""
     @State var participantArr: [String]?
     @State private var participantCnt = 0
     
@@ -179,24 +180,38 @@ struct AddMemberView: View {
     }
     
     private var participantListView: some View {
+        // LazyVGrid 로 해서 Count에 너비를 개수로 나눈 값으로
         HStack {
             if participantCnt != 0 {
                 ForEach(0..<participantCnt, id: \.self) { index in
                     HStack {
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(.clear)
-                                .frame(width: 76, height: 30)
-                                .background(Color.gray200)
-                                .cornerRadius(15)
+//                        ZStack {
+//                            Rectangle()
+//                                .foregroundColor(.clear)
+//                                .frame(width: 76, height: 30)
+//                                .background(Color.gray200)
+//                                .cornerRadius(15)
                             
-                            Text("참여자 \(index+1)")
+                            // 텍스트 필드
+                            TextField("참여자 \(index+1)", text: $tempNm)
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
+                                .textFieldStyle(CustomTextFieldStyle())
                         }
-                    }
+//                    }
                 }
             }
+        }
+    }
+    
+    struct CustomTextFieldStyle: TextFieldStyle {
+        func _body(configuration: TextField<Self._Label>) -> some View {
+            configuration
+                .padding(10)
+                .foregroundColor(.black)
+                .frame(width: 83, height: 30)
+                .background(Color(0xD9D9D9))
+                .cornerRadius(15)
         }
     }
     
