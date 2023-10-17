@@ -15,7 +15,7 @@ struct RecordView: View {
     var body: some View {
         VStack(spacing: 50) {
             travelChoiceView
-            sentenceView
+            rawSentenceView
             livePropertyView
             manualRecordButton
             recordButton
@@ -41,8 +41,8 @@ struct RecordView: View {
             }
     }
     
-    private var sentenceView: some View {
-        if !viewModel.buttonPressed {
+    private var rawSentenceView: some View {
+        if !isDetectingPress {
             Text("지출을 기록해주세요")
         } else {
             if viewModel.voiceSentence == "" {
@@ -120,52 +120,46 @@ struct RecordView: View {
         .buttonStyle(.bordered)
     }
     
-    private var continuousPress: some Gesture {
-        LongPressGesture(minimumDuration: 0.1)
-            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
-            .updating($isDetectingPress) { value, gestureState, _ in
-                switch value {
-                case .first(true):
-                    gestureState = true
-                    print("녹음 시작")
-                case .second(true, nil):
-                    gestureState = true
-                    print("녹음 중")
-                default:
-                    break
-                }
-            }.onEnded { value in
-                switch value {
-                case .second:
-                    print("녹음완료")
-                    print(viewModel.voiceSentence)
-                    viewModel.completeRecordModalIsShown = true
-                default:
-                    break
-                }
-            }
-    }
-    
     private var recordButton: some View {
         VStack {
-            Button {
-                viewModel.invalidateButton()
-                do {
-                    try viewModel.startRecording()
-                } catch {
-                    print("error while recording: \(error.localizedDescription)")
-                }
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(isDetectingPress ? .gray : .blue)
-                        .frame(width: 50, height: 50)
-                    Image(systemName: "record.circle")
-                        .foregroundStyle(Color.white)
+            ZStack {
+                Circle()
+                    .fill(isDetectingPress ? .gray : .blue)
+                    .frame(width: 50, height: 50)
+                Image(systemName: "record.circle")
+                    .foregroundStyle(Color.white)
+            }
+            .gesture(continuousPress)
+            .onChange(of: isDetectingPress) { value in
+                if !value {
+                    print("녹음 끝")
+                    viewModel.stopSTT()
+                    viewModel.stopRecording()
+                    viewModel.completeRecordModalIsShown = true
                 }
             }
-            .simultaneousGesture(continuousPress)
+            
         }
+    }
+    
+    private var continuousPress: some Gesture {
+        LongPressGesture(minimumDuration: 0.1, maximumDistance: 40)
+            .sequenced(before: LongPressGesture(minimumDuration: .infinity, maximumDistance: 40))
+            .updating($isDetectingPress) { value, state, _ in
+                switch value {
+                case .second(true, nil):
+                    state = true
+                    print("녹음 시작")
+                    do {
+                        try viewModel.startSTT()
+                        viewModel.startRecording()
+                    } catch {
+                        print("error starting record: \(error.localizedDescription)")
+                    }
+                default:
+                    break
+                }
+            }
     }
 }
 

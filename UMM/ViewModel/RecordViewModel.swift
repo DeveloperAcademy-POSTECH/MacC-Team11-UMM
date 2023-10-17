@@ -21,7 +21,6 @@ final class RecordViewModel: ObservableObject {
             classifyVoiceSentence()
         }
     }
-    @Published var buttonPressed = false
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
@@ -40,6 +39,16 @@ final class RecordViewModel: ObservableObject {
     @Published var participantArray: [String]? = []
     @Published var payDate: Date = Date()
     @Published var location: String = "일본 도쿄"
+    
+    private let audioEngine = AVAudioEngine()
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
+    private var recognitionTask: SFSpeechRecognitionTask?
+    
+    private var audioRecorder: AVAudioRecorder!
+    private var audioPlayer: AVAudioPlayer!
+    var path: URL = URL(string: "http://www.apple.com")!
+    var fileName: URL = URL(string: "http://www.apple.com")!
     
     init() {
         do {
@@ -476,16 +485,7 @@ final class RecordViewModel: ObservableObject {
         voiceSentence = transcribedString
     }
     
-    private let audioEngine = AVAudioEngine()
-    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-    private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
-    private var recognitionTask: SFSpeechRecognitionTask?
-    
-    func invalidateButton() {
-        buttonPressed = true
-    }
-    
-    func startRecording() throws {
+    func startSTT() throws {
         
         recognitionTask?.cancel()
         recognitionTask = nil
@@ -526,5 +526,69 @@ final class RecordViewModel: ObservableObject {
                 self.recognitionTask = nil
             }
         }
+    }
+    
+    func stopSTT() {
+        self.audioEngine.stop()
+        audioEngine.inputNode.removeTap(onBus: 0)
+        self.recognitionRequest = nil
+        self.recognitionTask = nil
+    }
+    
+    func startRecording() {
+        
+        let recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+        } catch {
+            print("Can not setup the Recording")
+        }
+
+        path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        fileName = path.appendingPathComponent("CO-Voice : \(Date().toString(dateFormat: "dd-MM-YY 'at' HH:mm:ss")).m4a")
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
+            audioRecorder.prepareToRecord()
+            audioRecorder.record()
+        } catch {
+            print("Failed to Setup the Recording")
+        }
+    }
+    
+    func stopRecording() {
+        audioRecorder.stop()
+    }
+    
+    func startPlayingAudio(url: URL) {
+      
+        let playSession = AVAudioSession.sharedInstance()
+            
+        do {
+            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        } catch {
+            print("Playing failed in Device")
+        }
+            
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer.prepareToPlay()
+            audioPlayer.play()
+                
+        } catch {
+            print("Playing Failed")
+        }
+    }
+    
+    func stopPlayingAudio(url: URL) {
+        audioPlayer.stop()
     }
 }

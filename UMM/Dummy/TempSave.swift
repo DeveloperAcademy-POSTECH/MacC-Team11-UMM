@@ -32,7 +32,6 @@ class TempSave {
         Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
         Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
         Calendar.current.date(byAdding: .day, value: -4, to: Date())!
-        
     ]
     // dummyExpenseData를 위한 프로퍼티
     let dummyExpenseName = ["DummyExpense0", "DummyExpense1", "DummyExpense2", "DummyExpense3"]
