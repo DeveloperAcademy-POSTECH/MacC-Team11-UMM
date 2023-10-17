@@ -8,10 +8,26 @@
 import SwiftUI
 
 struct CompleteRecordView: View {
-    let viewModel: RecordViewModel
+    @ObservedObject var viewModel: RecordViewModel
     
     var body: some View {
-        Text("CompleteRecordView")
+        VStack(spacing: 60) {
+            Button {
+                viewModel.startPlayingAudio(url: viewModel.fileName)
+            } label: {
+                Text("Play Audio")
+                    .font(.title2)
+            }
+            .buttonStyle(.bordered)
+            
+            Button {
+                viewModel.stopPlayingAudio(url: viewModel.fileName)
+            } label: {
+                Text("Stop Audio")
+                    .font(.title2)
+            }
+            .buttonStyle(.bordered)
+        }
     }
 }
 

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ManualRecordView: View {
-    let viewModel: RecordViewModel
+    @ObservedObject var viewModel: RecordViewModel
     
     var body: some View {
         VStack {
@@ -37,7 +37,6 @@ struct ManualRecordView: View {
             } label: {
                 Text("")
             }
-        
         }
     }
     private var saveButton: some View {

@@ -55,12 +55,10 @@ func findCurrentTravel() -> Travel? {
         currentTravels.sort { $0.lastUpdate ?? Date.distantPast > $1.lastUpdate ?? Date.distantPast }
         if let lastestTravel = currentTravels.first {
             currentTravel = lastestTravel
-            print("여행 중: currentTravel: \(String(describing: currentTravel))")
             return currentTravel
         }
     }
     // 여행 중이 아님
-    // 여기에 DefaultTravel 사용 ^^^
     let defaultTravel = allTravels.first(where: { $0.name == "Default" })
     return defaultTravel
 }
