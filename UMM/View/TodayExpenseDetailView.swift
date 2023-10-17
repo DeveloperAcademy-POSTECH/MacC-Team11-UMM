@@ -19,9 +19,9 @@ struct TodayExpenseDetailView: View {
     @Binding private var selectedPaymentMethod: Int64
 
     init(selectedTravel: Binding<Travel?>,
-         selectedDate : Binding<Date>,
-         selectedLocation : Binding<String>,
-         selectedPaymentMethod : Binding<Int64>) {
+         selectedDate: Binding<Date>,
+         selectedLocation: Binding<String>,
+         selectedPaymentMethod: Binding<Int64>) {
         
         self._selectedTravel = selectedTravel
         self._selectedDate = selectedDate
@@ -34,7 +34,7 @@ struct TodayExpenseDetailView: View {
         expenseViewModel.selectedPaymentMethod = selectedPaymentMethod.wrappedValue
     }
 
-    var body:some View{
+    var body: some View {
         ScrollView {
 
             Picker("현재 결제 수단", selection: $expenseViewModel.selectedPaymentMethod) {
@@ -47,7 +47,6 @@ struct TodayExpenseDetailView: View {
                 print("Picker | onChange() | newValue: \(newValue)")
                 expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
             }
-
 
             Text("일별 지출")
             
@@ -72,7 +71,7 @@ struct TodayExpenseDetailView: View {
         let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         print("Filtered by date: \(filteredByDate.count)")
         
-        let filteredByLocation = expenseViewModel.filterExpensesByLocation(expenses: filteredByDate, location:selectedLocation)
+        let filteredByLocation = expenseViewModel.filterExpensesByLocation(expenses: filteredByDate, location: selectedLocation)
         print("Filtered by location: \(filteredByLocation.count)")
         
         if selectedPaymentMethod == 0 {
@@ -82,17 +81,16 @@ struct TodayExpenseDetailView: View {
         }
     }
 
-
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
-    private func drawExpensesDetail(expenses: [Expense]) -> some View{
+    private func drawExpensesDetail(expenses: [Expense]) -> some View {
       ForEach(expenses, id: \.id) { expense in
-          VStack{
+          VStack {
               Text(expense.description)
           }.padding()
       }
     }
 }
 
-//#Preview {
-//    TodayExpenseDetailView()
-//}
+//  #Preview {
+//      TodayExpenseDetailView()
+//  }

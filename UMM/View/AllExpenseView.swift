@@ -82,11 +82,6 @@ private func drawExpensesByCategory(expenses: [Expense]) -> some View {
     }
 }
 
-
-
-// ... (나머지 부분은 동일하게 유지) ...
-
-
 #Preview {
     AllExpenseView()
 }

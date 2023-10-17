@@ -45,7 +45,6 @@ private func customTabItem(title: String, isActive: Bool) -> some View {
     .frame(width: 80, height: 40)
 }
 
-
 enum TabbedItems: Int, CaseIterable {
     case todayExpense
     case allExpense

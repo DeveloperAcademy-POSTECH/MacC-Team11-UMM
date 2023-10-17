@@ -31,7 +31,6 @@ class DummyRecordViewModel: ObservableObject {
         ]
 //    let dummyEndDate = ["2023-10-06", "2023-10-29", "2023-08-18"]
 
-    
     func fetchDummyTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
         do {

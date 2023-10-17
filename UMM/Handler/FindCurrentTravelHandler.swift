@@ -31,7 +31,6 @@
 // ^^^
 // 함수로 변경
 
-
 import Foundation
 import CoreData
 
