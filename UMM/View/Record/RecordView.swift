@@ -24,7 +24,7 @@ struct RecordView: View {
             recordButtonView
                 .offset(y: 250)
         }
-        .onAppear() {
+        .onAppear {
             viewModel.chosenTravel = findCurrentTravel()
         }
         .sheet(isPresented: $viewModel.manualRecordModalIsShown) {

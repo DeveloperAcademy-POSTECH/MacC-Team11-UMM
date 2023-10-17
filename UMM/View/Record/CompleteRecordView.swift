@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CompleteRecordView: View {
-    let viewModel: RecordViewModel
+    @ObservedObject var viewModel: RecordViewModel
     
     var body: some View {
         VStack(spacing: 60) {
