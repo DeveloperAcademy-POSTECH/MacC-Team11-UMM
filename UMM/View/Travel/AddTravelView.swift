@@ -69,18 +69,20 @@ struct AddTravelView: View {
     private var headerView: some View {
         
         VStack(alignment: .leading) {
-            Spacer()
-            
-            Text("기간을 입력해주세요")
-                .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
-            
-            Spacer()
-            
-            Text("여행의 시작일과 종료일을 설정해주세요.")
-                .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                .foregroundStyle(Color.gray300)
-            
-            Spacer()
+            VStack(alignment: .leading) {
+                Spacer()
+                
+                Text("기간을 입력해주세요")
+                    .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
+                
+                Spacer()
+                
+                Text("여행의 시작일과 종료일을 설정해주세요.")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                    .foregroundStyle(Color.gray300)
+                
+                Spacer()
+            }
             
             HStack {
                 Text("시작일*")
@@ -264,19 +266,19 @@ struct AddTravelView: View {
     }
 
     private struct CellView: View {
-
+        
         private var day: Int
         private var date: Date?
         private var textColor: Color
         @ObservedObject private var viewModel: AddTravelViewModel
-
+        
         init(day: Int, viewModel: AddTravelViewModel, date: Date?, textColor: Color) {
             self.day = day
             self.viewModel = viewModel
             self.date = date
             self.textColor = textColor
         }
-
+        
         var body: some View {
             VStack {
                 Button {
@@ -317,7 +319,6 @@ struct AddTravelView: View {
                                         .foregroundStyle(Color.white)
                                 }
                             }
-                            
                         }
                 }
             }
@@ -339,14 +340,14 @@ struct AddTravelView: View {
     }
     
     var backButton: some View {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .imageScale(.large)
-                    .foregroundColor(Color.black)
-            }
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
+    }
 }
 
 // #Preview {
