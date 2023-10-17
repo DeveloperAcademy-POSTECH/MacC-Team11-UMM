@@ -20,8 +20,8 @@ struct TodayExpenseDetailView: View {
     init(selectedTravel: Binding<Travel?>,
          selectedDate: Binding<Date>,
          selectedLocation: Binding<String>,
-         selectedPaymentMethod: Binding<Int64>) {
-        
+         selectedPaymentMethod: Binding<Int64>
+    ) {
         self._selectedTravel = selectedTravel
         self._selectedDate = selectedDate
         self._selectedLocation = selectedLocation
@@ -35,34 +35,32 @@ struct TodayExpenseDetailView: View {
 
     var body: some View {
         ScrollView {
-
             Picker("현재 결제 수단", selection: $expenseViewModel.selectedPaymentMethod) {
-                ForEach(0..<4, id: \.self) { index in
+                ForEach(0...2, id: \.self) { index in
                     Text("\(index)").tag(Int64(index))
                 }
             }
             .pickerStyle(MenuPickerStyle())
             .onChange(of: expenseViewModel.selectedPaymentMethod) { newValue in
                 print("Picker | onChange() | newValue: \(newValue)")
-                expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
+                expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: newValue)
             }
-
-            Text("일별 지출")
             
             Spacer()
 
             drawExpensesDetail(expenses: expenseViewModel.filteredExpenses)
         }
         .onAppear {
-            self.expenseViewModel.fetchExpense()
-            self.dummyRecordViewModel.fetchDummyTravel()
+            print("onAppear TodayExpenseDetailView")
+            expenseViewModel.fetchExpense()
+            dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
             expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
         }
     }
     
     // 최종 배열
-    func getFilteredExpenses(selectedPaymentMethod: Int64) -> [Expense] {
+    private func getFilteredExpenses(selectedPaymentMethod: Int64) -> [Expense] {
         let filteredByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: selectedTravel?.id ?? UUID())
         print("Filtered by travel: \(filteredByTravel.count)")
         
@@ -72,7 +70,7 @@ struct TodayExpenseDetailView: View {
         let filteredByLocation = expenseViewModel.filterExpensesByLocation(expenses: filteredByDate, location: selectedLocation)
         print("Filtered by location: \(filteredByLocation.count)")
         
-        if selectedPaymentMethod == 0 {
+        if selectedPaymentMethod == -1 {
             return filteredByLocation
         } else {
             return expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByLocation, paymentMethod: selectedPaymentMethod)
