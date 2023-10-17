@@ -9,12 +9,11 @@ import SwiftUI
 
 @main
 struct UMMApp: App {
+    let tempSave = TempSave.shared
+    
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-//           AddTravelView()
-            TravelListView(month: Date())
-//            MainView()
+            MainView()
         }
     }
 }

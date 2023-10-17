@@ -23,10 +23,10 @@ class DummyRecordViewModel: ObservableObject {
             
         ]
     let dummyLastUpdate = [
-            Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-            Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-            Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
-            Calendar.current.date(byAdding: .day, value: -4, to: Date())!
+            Calendar.current.date(byAdding: .day, value: +1, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +2, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +3, to: Date())!,
+            Calendar.current.date(byAdding: .day, value: +4, to: Date())!
             
         ]
 //    let dummyEndDate = ["2023-10-06", "2023-10-29", "2023-08-18"]

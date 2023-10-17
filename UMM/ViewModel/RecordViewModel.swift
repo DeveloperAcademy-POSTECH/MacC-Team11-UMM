@@ -31,6 +31,16 @@ final class RecordViewModel: ObservableObject {
     @Published var travelChoiceHalfModalIsShown = false
     @Published var manualRecordModalIsShown = false
     
+    @Published var nonOptionalInfo: String = "" {
+        didSet {
+            info = nonOptionalInfo
+        }
+    }
+    @Published var chosenTravel: Travel?
+    @Published var participantArray: [String]? = []
+    @Published var payDate: Date = Date()
+    @Published var location: String = "일본 도쿄"
+    
     init() {
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
