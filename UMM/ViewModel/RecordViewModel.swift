@@ -37,7 +37,7 @@ final class RecordViewModel: ObservableObject {
         }
     }
     @Published var chosenTravel: Travel?
-    @Published var participant: [String]? = []
+    @Published var participantArray: [String]? = []
     @Published var payDate: Date = Date()
     @Published var location: String = "일본 도쿄"
     

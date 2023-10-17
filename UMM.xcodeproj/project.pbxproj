@@ -28,6 +28,7 @@
 		57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D152AD7D6B000131266 /* PaymentMethod.swift */; };
 		57A65D182AD7DDA700131266 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D172AD7DDA700131266 /* RecordView.swift */; };
 		57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C41DFB2AD4F1EB00345253 /* Persistence.swift */; };
+		57EA42202ADE38EE006CA587 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EA421F2ADE38EE006CA587 /* Country.swift */; };
 		C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550512AD54FB000A61BE5 /* TravelListView.swift */; };
 		C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550532AD54FC900A61BE5 /* AddTravelView.swift */; };
 		C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */; };
@@ -80,6 +81,7 @@
 		57A65D152AD7D6B000131266 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
 		57A65D172AD7DDA700131266 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		57C41DFB2AD4F1EB00345253 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		57EA421F2ADE38EE006CA587 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		C17550512AD54FB000A61BE5 /* TravelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListView.swift; sourceTree = "<group>"; };
 		C17550532AD54FC900A61BE5 /* AddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelView.swift; sourceTree = "<group>"; };
 		C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelViewModel.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				57A65D0D2AD7D51600131266 /* SplitVariety.swift */,
 				57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */,
 				57A65D152AD7D6B000131266 /* PaymentMethod.swift */,
+				57EA421F2ADE38EE006CA587 /* Country.swift */,
 			);
 			path = Enumeration;
 			sourceTree = "<group>";
@@ -409,6 +412,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				578858252ADBBCB2001B82FA /* InfoClassifier.mlmodel in Sources */,
+				57EA42202ADE38EE006CA587 /* Country.swift in Sources */,
 				E2D5C05C2ADD921400907501 /* MainView.swift in Sources */,
 				5760066D2ADD42FA006CD8DF /* ManualRecordView.swift in Sources */,
 				E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */,

@@ -35,8 +35,9 @@ class TempSave {
     let dummyExpenseCurrency = Int.random(in: 1...5)
     let dummyExpenseExchangeRate = Double(Int.random(in: 1...5))
     let dummyExpenseInfo = ["DummyExpenseInfo0", "DummyExpenseInfo1", "DummyExpenseInfo2", "DummyExpenseInfo3"]
+    let dummyExpenseCountry = Int.random(in: 1...5)
     let dummyExpenseLocation = ["DummyExpenseLocation0", "DummyExpenseLocation1", "DummyExpenseLocation2", "DummyExpenseLocation3"]
-    let dummyExpenseParticipant = [["도리스, 올리버"], ["올리버", "페페"], ["니코", "해나", "도리스"]]
+    let dummyExpenseParticipantArray = [["도리스, 올리버"], ["올리버", "페페"], ["니코", "해나", "도리스"]]
     let dummyExpensePaymentMethod = Int.random(in: -1...1)
     let dummyExpensePayAmount = Double(Int.random(in: 1000...30000))
     let dummyExpenseCategory = Int.random(in: -1...5)
@@ -126,8 +127,9 @@ class TempSave {
         tempExpense.currency = Int64(dummyExpenseCurrency)
         tempExpense.exchangeRate = Double(dummyExpenseExchangeRate)
         tempExpense.info = dummyExpenseInfo.randomElement()
+        tempExpense.country = Int64(dummyExpenseCountry)
         tempExpense.location = dummyExpenseLocation.randomElement()
-        tempExpense.participant = dummyExpenseParticipant.randomElement()
+        tempExpense.participantArray = dummyExpenseParticipantArray.randomElement()
         tempExpense.paymentMethod = Int64(dummyExpensePaymentMethod)
         tempExpense.payAmount = Double(dummyExpensePayAmount)
         tempExpense.payDate = dummyExpensePayDate

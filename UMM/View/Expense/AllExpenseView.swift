@@ -35,7 +35,6 @@ struct AllExpenseView: View {
                         
             Button {
                 expenseViewModel.addExpense(travel: selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
-                findCurrentTravel()
             } label: {
                 Text("지출 추가")
             }

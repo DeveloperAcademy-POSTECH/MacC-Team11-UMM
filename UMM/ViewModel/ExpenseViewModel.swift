@@ -40,7 +40,7 @@ class ExpenseViewModel: ObservableObject {
     
     func addExpense(travel: Travel) {
         let infos = ["여행", "쇼핑", "관광"]
-        let participants = [["John", "Alice"], ["Bob"], ["Charlie"]]
+        let participantArray = [["John", "Alice"], ["Bob"], ["Charlie"]]
         let payAmounts = [50.0, 1000.25, 80.0]
 //        let paymentMethods = [Int64(0), Int64(1), Int64(2), Int64(3)]
 //        let voiceRecordFiles = ["voice1.mp3", "voice2.mp3", "voice3.mp3"]
@@ -53,7 +53,7 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.exchangeRate = exchangeRates.randomElement() ?? 0.5
         tempExpense.info = infos.randomElement()
         tempExpense.location = locations.randomElement()
-        tempExpense.participant = participants.randomElement()
+        tempExpense.participantArray = participantArray.randomElement()
         tempExpense.paymentMethod = Int64(Int.random(in: -1...2))
         tempExpense.payAmount = Double(payAmounts.randomElement() ?? 300.0)
         tempExpense.payDate = Date()
