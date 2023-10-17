@@ -9,8 +9,11 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date())
+    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
     @Environment(\.dismiss) private var dismiss
+    @State private var modalDate = Date()
+    @State private var showStartModal = false
+    @State private var showEndModal = false
 
     var body: some View {
         VStack {
@@ -22,22 +25,41 @@ struct AddTravelView: View {
             Spacer()
             
             VStack {
+                Spacer()
+                
                 calendarHeader
                 calendarGridView
+                
+                Spacer()
             }
+            .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
             .padding(20)
             .overlay {
                 RoundedRectangle(cornerRadius: 21.49123)
                     .inset(by: 0.51)
-                    .stroke(Color.gray, lineWidth: 1.02)
-                    .frame(width: UIScreen.main.bounds.size.width-15, height: .none)
+                    .stroke(Color.gray200, lineWidth: 1.02)
+                    .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
             }
             
             Spacer()
             
-            nextButton
-            
-            Spacer()
+            HStack {
+                Spacer()
+                
+                if viewModel.startDate != nil {
+                    NavigationLink(destination: AddMemberView(participantArr: nil)) {
+                        NextButtonActive(title: "다음", action: {
+                            
+                        })
+                        .disabled(true)
+                    }
+                } else {
+                    NextButtonUnactive(title: "다음", action: {
+                        
+                    })
+                    .disabled(true)
+                }
+            }
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -45,48 +67,110 @@ struct AddTravelView: View {
     }
 
     private var headerView: some View {
-
-        VStack(alignment: .leading, spacing: 10) {
-
-            Text("기간을 입력해주세요")
-                .font(.title)
-                .fontWeight(.bold)
-
-            Text("여행의 시작일과 종료일을 설정해주세요.")
-
+        
+        VStack(alignment: .leading) {
+            VStack(alignment: .leading) {
+                Spacer()
+                
+                Text("기간을 입력해주세요")
+                    .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
+                
+                Spacer()
+                
+                Text("여행의 시작일과 종료일을 설정해주세요.")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                    .foregroundStyle(Color.gray300)
+                
+                Spacer()
+            }
+            
             HStack {
                 Text("시작일*")
                 
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 95, height: 25)
-                        .cornerRadius(3)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 3)
-                                .inset(by: 0.5)
-                                .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
-                        )
-                    Text(viewModel.startDateToString(in: viewModel.startDate))
+                Button {
+                    self.showStartModal = true
+                } label: {
+                    ZStack {
+                        Text(viewModel.startDateToString(in: viewModel.startDate))
+                            .font(.custom(FontsManager.Pretendard.regular, size: 14))
+                            .foregroundStyle(Color(0x6C6C6C))
+                        
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 95, height: 25)
+                            .cornerRadius(3)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .inset(by: 0.5)
+                                    .stroke(Color.black, lineWidth: 1)
+                            )
+                        
+                    }
+                }
+                .sheet(isPresented: $showStartModal) {
+                    startDatePickerModalView
+                        .presentationDetents([.height(354), .height(354)])
                 }
                 
                 Text("-")
                 
                 Text("종료일")
                 
-                ZStack {
-                    Rectangle()
-                      .foregroundColor(.clear)
-                      .frame(width: 95, height: 25)
-                      .cornerRadius(3)
-                      .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                          .inset(by: 0.5)
-                          .stroke(.black, lineWidth: 1)
-                      )
-                    Text(viewModel.endDateToString(in: viewModel.endDate))
+                Button {
+                    self.showEndModal = true
+                } label: {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 95, height: 25)
+                            .cornerRadius(3)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .inset(by: 0.5)
+                                    .stroke(Color.black, lineWidth: 1)
+                            )
+                        Text(viewModel.endDateToString(in: viewModel.endDate))
+                            .font(.custom(FontsManager.Pretendard.regular, size: 14))
+                            .foregroundStyle(Color(0x6C6C6C))
+                    }
+                }
+                .sheet(isPresented: $showEndModal) {
+                    endDatePickerModalView
+                        .presentationDetents([.height(354), .height(354)])
                 }
             }
+            
+            Spacer()
+        }
+    }
+
+    private var startDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showStartModal = false
+                viewModel.startDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.startDate ?? Date()
+        }
+    }
+    
+    private var endDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showEndModal = false
+                viewModel.endDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.endDate ?? Date()
         }
     }
 
@@ -103,16 +187,23 @@ struct AddTravelView: View {
                         .font(.title)
                         .foregroundStyle(Color.black)
                 }
-
+                
                 Spacer()
-
+                
+                Text(viewModel.year, formatter: AddTravelViewModel.dateYearFormatter)
+                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .foregroundStyle(Color(0x333333))
+                +
+                Text(".")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .foregroundStyle(Color(0x333333))
+                +
                 Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
-                    .font(.title)
-                + Text("월")
-                    .font(.title)
-
+                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .foregroundStyle(Color(0x333333))
+                
                 Spacer()
-
+                
                 Button {
                     viewModel.changeMonth(by: 1)
                 } label: {
@@ -175,23 +266,22 @@ struct AddTravelView: View {
     }
 
     private struct CellView: View {
-
+        
         private var day: Int
         private var date: Date?
         private var textColor: Color
         @ObservedObject private var viewModel: AddTravelViewModel
-
+        
         init(day: Int, viewModel: AddTravelViewModel, date: Date?, textColor: Color) {
             self.day = day
             self.viewModel = viewModel
             self.date = date
             self.textColor = textColor
         }
-
+        
         var body: some View {
             VStack {
                 Button {
-                    
                     let result = viewModel.startDateEndDate(in: viewModel.startDate, endDate: viewModel.endDate, selectDate: date!-1)
                     viewModel.startDate = result[0]
                     viewModel.endDate = result[1]
@@ -205,13 +295,30 @@ struct AddTravelView: View {
                         .foregroundStyle(textColor)
                         .overlay {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
-                                Circle()
-                                    .opacity(0.5)
-                            } else {
-                                Circle()
-                                    .opacity(0)
+                                ZStack {
+                                    
+                                    Circle()
+                                        .stroke(Color.black)
+                                        .fill(Color.mainPink)
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    
+                                    Circle()
+                                        .stroke(Color.black)
+                                        .fill(Color.mainPink)
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
                             }
-                            
                         }
                 }
             }
@@ -219,7 +326,7 @@ struct AddTravelView: View {
     }
     
     var nextButton: some View {
-        NavigationLink(destination: AddMemberView()) {
+        NavigationLink(destination: AddMemberView(participantArr: nil)) {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)
@@ -229,21 +336,20 @@ struct AddTravelView: View {
                 Text("다음")
                     .foregroundStyle(Color.white)
             }
-                
-        }.disabled(!viewModel.isSelectedStartDate)
+        }
     }
     
     var backButton: some View {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .imageScale(.large)
-                    .foregroundColor(Color.black)
-            }
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
+    }
 }
 
-#Preview {
-    AddTravelView()
-}
+// #Preview {
+//     AddTravelView()
+// }

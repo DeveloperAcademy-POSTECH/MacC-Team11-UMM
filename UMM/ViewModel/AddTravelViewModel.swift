@@ -10,6 +10,7 @@ import Foundation
 class AddTravelViewModel: ObservableObject {
 
     @Published var month: Date
+    @Published var year: Date
     @Published var prevMonth: Date
     @Published var nextMonth: Date
     @Published var startDate: Date?
@@ -22,7 +23,15 @@ class AddTravelViewModel: ObservableObject {
     static let dateFormatter: DateFormatter = {
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "M"
+        formatter.dateFormat = "MM"
+
+        return formatter
+    }()
+    
+    static let dateYearFormatter: DateFormatter = {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY"
 
         return formatter
     }()
@@ -43,8 +52,9 @@ class AddTravelViewModel: ObservableObject {
         return formatter
     }()
 
-    init(currentMonth: Date) {
+    init(currentMonth: Date, currentYear: Date) {
         self.month = currentMonth
+        self.year = currentYear
         self.prevMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
         self.nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
         self.startDate = nil
@@ -107,6 +117,18 @@ class AddTravelViewModel: ObservableObject {
             self.nextMonth = nextMonth
         }
     }
+    
+    // 12월 -> 1월 year + 1
+    // 1월 -> 12월 year -1
+//    func changeYear(by value: Int) {
+//        let calendar = Calendar.current
+//        
+//        if let newYear = calendar.date(byAdding: .month, value: value, to: month),
+//            let prevYear = calendar.date(byAdding: .month, value: value - 1, to: month),
+//           let nextYear= calendar.date(byAdding: .month, value: value + 1, to: month) {
+//            self.year = newYear
+//        }
+//    }
 
     func dateToDay(in date: Date) -> String {
         return AddTravelViewModel.dateToDayFormatter.string(from: date)

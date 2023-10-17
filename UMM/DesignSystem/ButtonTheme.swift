@@ -134,7 +134,7 @@ struct MediumButtonUnactive: View {
 
 struct NextButtonActive: View {
     
-    var title: String = "다음"
+    var title: String
     var action: () -> Void
     
     var body: some View {
@@ -159,7 +159,7 @@ struct NextButtonActive: View {
 
 struct NextButtonUnactive: View {
     
-    var title: String = "다음"
+    var title: String
     var action: () -> Void
     
     var body: some View {
@@ -221,8 +221,7 @@ struct DoneButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.trailing, 16)
-        .padding(.bottom, 45)
-        
+        .padding(.bottom, 45)        
     }
 }
 
@@ -243,8 +242,8 @@ struct ButtonThemeTemplate: View {
             }
 
             HStack {
-                NextButtonActive {}
-                NextButtonUnactive {}
+                NextButtonActive(title: "다음") {}
+                NextButtonUnactive(title: "다음") {}
             }
             
             HStack {
