@@ -46,8 +46,15 @@ struct AddTravelView: View {
             HStack {
                 Spacer()
                 
-                NavigationLink(destination: AddMemberView()) {
-                    NextButtonActive(title: "다음", action: {
+                if viewModel.startDate != nil {
+                    NavigationLink(destination: AddMemberView()) {
+                        NextButtonActive(title: "다음", action: {
+                            
+                        })
+                        .disabled(true)
+                    }
+                } else {
+                    NextButtonUnactive(title: "다음", action: {
                         
                     })
                     .disabled(true)
@@ -130,6 +137,7 @@ struct AddTravelView: View {
                         .presentationDetents([.height(354), .height(354)])
                 }
             }
+            
             Spacer()
         }
     }

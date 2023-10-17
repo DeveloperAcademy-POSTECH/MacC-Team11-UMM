@@ -13,6 +13,13 @@ struct AddMemberView: View {
             
             Text("AddMemberView")
             
+            NavigationLink(destination: CompleteAddTravelView()) {
+                NextButtonActive(title: "다음", action: {
+                    
+                })
+                .disabled(true)
+            }
+            
         }
     }
 }

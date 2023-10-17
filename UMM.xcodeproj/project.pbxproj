@@ -45,6 +45,7 @@
 		C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179660D2ADD6BF90036E866 /* Color+Extension.swift */; };
 		C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */; };
 		C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */; };
+		C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
 		E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05D2ADD922000907501 /* DummyRecordView.swift */; };
 		E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05F2ADD922700907501 /* ExpenseView.swift */; };
@@ -99,6 +100,7 @@
 		C179660D2ADD6BF90036E866 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
 		C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberView.swift; sourceTree = "<group>"; };
 		C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTheme.swift; sourceTree = "<group>"; };
+		C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelView.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2D5C05D2ADD922000907501 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2D5C05F2ADD922700907501 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				C17550512AD54FB000A61BE5 /* TravelListView.swift */,
 				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
 				C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */,
+				C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */,
 			);
 			path = Travel;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */,
 				E2D5C0622ADD923000907501 /* TodayExpenseView.swift in Sources */,
 				E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */,
+				C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
 				E2D5C0662ADD924100907501 /* AllExpenseView.swift in Sources */,
 				E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */,
