@@ -11,6 +11,9 @@ struct AddTravelView: View {
     
     @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date())
     @Environment(\.dismiss) private var dismiss
+    @State private var modalDate = Date()
+    @State private var showStartModal = false
+    @State private var showEndModal = false
 
     var body: some View {
         VStack {
@@ -40,7 +43,7 @@ struct AddTravelView: View {
                 
                 NavigationLink(destination: AddMemberView()) {
                     NextButtonActive(title: "다음", action: {
-                        print("sfdsf")
+//                        print("sfdsf")
                     })
                 }
             }
@@ -65,36 +68,83 @@ struct AddTravelView: View {
             HStack {
                 Text("시작일*")
                 
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 95, height: 25)
-                        .cornerRadius(3)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 3)
-                                .inset(by: 0.5)
-                                .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
-                        )
-                    Text(viewModel.startDateToString(in: viewModel.startDate))
+                Button {
+                    self.showStartModal = true
+                } label: {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 95, height: 25)
+                            .cornerRadius(3)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .inset(by: 0.5)
+                                    .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
+                            )
+                        Text(viewModel.startDateToString(in: viewModel.startDate))
+                            .foregroundStyle(Color.black)
+                    }
+                }
+                .sheet(isPresented: $showStartModal) {
+                    startDatePickerModalView
+                        .presentationDetents([.height(354), .height(354)])
                 }
                 
                 Text("-")
                 
                 Text("종료일")
                 
-                ZStack {
-                    Rectangle()
-                      .foregroundColor(.clear)
-                      .frame(width: 95, height: 25)
-                      .cornerRadius(3)
-                      .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                          .inset(by: 0.5)
-                          .stroke(.black, lineWidth: 1)
-                      )
-                    Text(viewModel.endDateToString(in: viewModel.endDate))
+                Button {
+                    self.showEndModal = true
+                } label: {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 95, height: 25)
+                            .cornerRadius(3)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .inset(by: 0.5)
+                                    .stroke(Color(red: 0.98, green: 0.22, blue: 0.36), lineWidth: 1)
+                            )
+                        Text(viewModel.endDateToString(in: viewModel.endDate))
+                            .foregroundStyle(Color.black)
+                    }
                 }
-            }
+                .sheet(isPresented: $showEndModal) {
+                    endDatePickerModalView
+                        .presentationDetents([.height(354), .height(354)])
+                }            }
+        }
+    }
+
+    private var startDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showEndModal = false
+                viewModel.startDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.startDate ?? Date()
+        }
+    }
+    
+    private var endDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showEndModal = false
+                viewModel.endDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.endDate ?? Date()
         }
     }
 

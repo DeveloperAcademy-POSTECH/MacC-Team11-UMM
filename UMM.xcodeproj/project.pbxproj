@@ -346,11 +346,12 @@
 			};
 			buildConfigurationList = 571A42612ACE857500FA3D2B /* Build configuration list for PBXProject "UMM" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 571A425D2ACE857500FA3D2B;
 			productRefGroup = 571A42672ACE857500FA3D2B /* Products */;
