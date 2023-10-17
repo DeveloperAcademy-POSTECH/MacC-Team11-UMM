@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date())
+    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
     @Environment(\.dismiss) private var dismiss
     @State private var modalDate = Date()
     @State private var showStartModal = false

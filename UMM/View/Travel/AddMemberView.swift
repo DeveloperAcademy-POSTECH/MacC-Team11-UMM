@@ -12,7 +12,9 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
-    @State private var tempNm = ""
+//    @State private var tempNm = ""
+//    @State private var tempNmList: [String]?
+    @State private var tempNmList = ["", "", "", ""]
     @State var participantArr: [String]?
     @State private var participantCnt = 0
     
@@ -22,6 +24,8 @@ struct AddMemberView: View {
             Spacer()
             
             headerView
+            
+            Spacer()
             
             selectBoxView
             
@@ -61,12 +65,12 @@ struct AddMemberView: View {
     
     private var headerView: some View {
         VStack(alignment: .leading) {
-//            Spacer()
+            Spacer()
             
             Text("누구와 함께하나요?")
                 .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
             
-//            Spacer()
+            Spacer()
             
             Text("여행 정산을 함께 할 참여자를 설정해요.")
                 .font(.custom(FontsManager.Pretendard.medium, size: 24))
@@ -147,7 +151,7 @@ struct AddMemberView: View {
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.white)
                             +
-                            Text("나")
+                            Text(" 나")
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
                         }
@@ -156,6 +160,7 @@ struct AddMemberView: View {
                         
                         Button {
                             participantCnt += 1
+                            
                         } label: {
                             ZStack {
                                 Rectangle()
@@ -184,22 +189,18 @@ struct AddMemberView: View {
         HStack {
             if participantCnt != 0 {
                 ForEach(0..<participantCnt, id: \.self) { index in
+                    
                     HStack {
-//                        ZStack {
-//                            Rectangle()
-//                                .foregroundColor(.clear)
-//                                .frame(width: 76, height: 30)
-//                                .background(Color.gray200)
-//                                .cornerRadius(15)
-                            
-                            // 텍스트 필드
-                            TextField("참여자 \(index+1)", text: $tempNm)
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                                .foregroundStyle(Color.black)
-                                .textFieldStyle(CustomTextFieldStyle())
-                        }
-//                    }
+                        
+                        TextField("참여자 \(index+1)", text: $tempNmList[index])
+                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                            .foregroundStyle(Color.black)
+                            .textFieldStyle(CustomTextFieldStyle())
+                    }
                 }
+                
+            } else {
+               Text("  ")
             }
         }
     }
