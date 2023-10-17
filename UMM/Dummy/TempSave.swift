@@ -99,7 +99,7 @@ class TempSave {
         }
     }
     
-    // dummy Travel을 추가하는 함수
+    // default Travel을 추가하는 함수
     func addDefaultTravel() {
         let tempTravel = Travel(context: viewContext)
         tempTravel.id = UUID()

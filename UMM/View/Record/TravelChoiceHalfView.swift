@@ -11,7 +11,12 @@ struct TravelChoiceHalfView: View {
     let viewModel: RecordViewModel
 
     var body: some View {
-        Text("TravelChoiceHalfView")
+        Text("aaa")
+//        ScrollView {
+//            LazyHStack {
+//                ForEach
+//            }
+//        }
     }
 }
 

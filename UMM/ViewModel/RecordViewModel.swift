@@ -27,14 +27,22 @@ final class RecordViewModel: ObservableObject {
     @Published var paymentMethod: PaymentMethod = .unknown
     
     @Published var completeRecordModalIsShown = false
-    @Published var travelChoiceHalfModalIsShown = false
-    @Published var manualRecordModalIsShown = false
-    
-    @Published var nonOptionalInfo: String = "" {
-        didSet {
-            info = nonOptionalInfo
+    @Published var travelChoiceHalfModalIsShown = false {
+        willSet {
+            if newValue {
+                do {
+                    travelArray = try viewContext.fetch(Travel.fetchRequest())
+                } catch {
+                    print("error fetching travelArray: \(error.localizedDescription)")
+                }
+            }
         }
     }
+    @Published var manualRecordModalIsShown = false
+    @Published var recordButtonIsFocused = false
+    @Published var alertViewIsShown = false
+    
+    @Published var travelArray: [Travel] = []
     @Published var chosenTravel: Travel?
     @Published var participantArray: [String]? = []
     @Published var payDate: Date = Date()
@@ -458,7 +466,6 @@ final class RecordViewModel: ObservableObject {
         } else {
             infoCategory = .unknown
         }
-        
     }
     
     private func getExpenseInfoCagetory(stringLabel: String) -> ExpenseInfoCategory {
@@ -483,6 +490,10 @@ final class RecordViewModel: ObservableObject {
     // MARK: 녹음 기능
     func updateTranscribedString(transcribedString: String) {
         voiceSentence = transcribedString
+    }
+    
+    func resetTranscribedString() {
+        voiceSentence = ""
     }
     
     func startSTT() throws {
@@ -536,7 +547,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     func startRecording() {
-        
         let recordingSession = AVAudioSession.sharedInstance()
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
