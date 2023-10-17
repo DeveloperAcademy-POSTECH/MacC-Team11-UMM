@@ -80,7 +80,7 @@ struct AllExpenseDetailView: View {
     
     // 최종 배열을 그리는 함수입니다.
     private func drawExpensesDetail(expenses: [Expense]) -> some View {
-        ForEach(expenses, id: \.id){ expense in
+        ForEach(expenses, id: \.id) { expense in
             VStack {
                 Text(expense.description)
             }.padding()
