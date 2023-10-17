@@ -54,7 +54,9 @@ class FindCurrentTravelHandler: ObservableObject {
         for travel in allTravels {
             if let startDate = travel.startDate, let endDate = travel.endDate {
                 if (startDate <= todayDate) && (todayDate <= endDate) {
-                    currentTravels.append(travel)
+                    if travel.name != "Default" {
+                        currentTravels.append(travel)
+                    }
                 }
             }
         }
@@ -68,6 +70,7 @@ class FindCurrentTravelHandler: ObservableObject {
             }
         }
         // 여행 중이 아님
+        // 여기에 DefaultTravel 사용 ^^^
         print("여행 중X: currentTravel: \(String(describing: currentTravel))")
         return
     }

@@ -57,6 +57,7 @@ struct TodayExpenseView: View {
             dummyRecordViewModel.fetchDummyTravel()
             findCurrentTravelHandler.findCurrentTravel()
             expenseViewModel.selectedTravel = findCurrentTravelHandler.currentTravel
+            print("TodayExpenseView OnAppear Done!")
         }
     }
     
