@@ -1,5 +1,5 @@
 //
-//  FindCurrentTravelHandler.swift
+//  findCurrentTravel.swift
 //  UMM
 //
 //  Created by 김태현 on 10/14/23.
@@ -34,44 +34,33 @@
 import Foundation
 import CoreData
 
-class FindCurrentTravelHandler: ObservableObject {
-    private let viewContext = PersistenceController.shared.container.viewContext
-    private let dummyRecordViewModel = DummyRecordViewModel()
-    @Published var currentTravel: Travel?
+func findCurrentTravel() -> Travel? {
+    let dummyRecordViewModel = DummyRecordViewModel()
+    var currentTravel: Travel?
     
-    func convertStringToDate(_ dateString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.date(from: dateString)
-    }
-    
-    func findCurrentTravel() {
-        dummyRecordViewModel.fetchDummyTravel()
-        let allTravels = dummyRecordViewModel.savedTravels
-        let todayDate = Date()
-        var currentTravels: [Travel] = []
-        // 여행 중인 경우 여기에 해당하는 코드를 구현
-        for travel in allTravels {
-            if let startDate = travel.startDate, let endDate = travel.endDate {
-                if (startDate <= todayDate) && (todayDate <= endDate) {
-                    if travel.name != "Default" {
-                        currentTravels.append(travel)
-                    }
-                }
+    dummyRecordViewModel.fetchDummyTravel()
+    let allTravels = dummyRecordViewModel.savedTravels
+    let todayDate = Date()
+    var currentTravels: [Travel] = []
+    // 여행 중인 경우 여기에 해당하는 코드를 구현
+    for travel in allTravels {
+        if let startDate = travel.startDate, let endDate = travel.endDate {
+            if (startDate <= todayDate) && (todayDate <= endDate) {
+                currentTravels.append(travel)
             }
         }
-        // 여행 중
-        if !currentTravels.isEmpty {
-            currentTravels.sort { $0.lastUpdate ?? Date.distantPast > $1.lastUpdate ?? Date.distantPast }
-            if let lastestTravel = currentTravels.first {
-                self.currentTravel = lastestTravel
-                print("여행 중: currentTravel: \(String(describing: currentTravel))")
-                return
-            }
-        }
-        // 여행 중이 아님
-        // 여기에 DefaultTravel 사용 ^^^
-        print("여행 중X: currentTravel: \(String(describing: currentTravel))")
-        return
     }
+    // 여행 중
+    if !currentTravels.isEmpty {
+        currentTravels.sort { $0.lastUpdate ?? Date.distantPast > $1.lastUpdate ?? Date.distantPast }
+        if let lastestTravel = currentTravels.first {
+            currentTravel = lastestTravel
+            print("여행 중: currentTravel: \(String(describing: currentTravel))")
+            return currentTravel
+        }
+    }
+    // 여행 중이 아님
+    // 여기에 DefaultTravel 사용 ^^^
+    let defaultTravel = allTravels.first(where: { $0.name == "Default" })
+    return defaultTravel
 }

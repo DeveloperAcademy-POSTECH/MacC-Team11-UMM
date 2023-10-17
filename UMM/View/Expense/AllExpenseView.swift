@@ -10,7 +10,7 @@ import SwiftUI
 struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
-    @ObservedObject var findCurrentTravelHandler = FindCurrentTravelHandler()
+
     @State private var selectedTravel: Travel?
 
     init() {
@@ -35,7 +35,7 @@ struct AllExpenseView: View {
                         
             Button {
                 expenseViewModel.addExpense(travel: selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
-                findCurrentTravelHandler.findCurrentTravel()
+                findCurrentTravel()
             } label: {
                 Text("지출 추가")
             }
@@ -53,8 +53,7 @@ struct AllExpenseView: View {
             print("TodayExpenseView Appeared")
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
-            findCurrentTravelHandler.findCurrentTravel()
-            self.selectedTravel = findCurrentTravelHandler.currentTravel
+            self.selectedTravel = findCurrentTravel()
         }
     }
 }

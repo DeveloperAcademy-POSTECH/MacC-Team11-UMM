@@ -11,7 +11,6 @@ import CoreData
 struct TodayExpenseDetailView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
-    @ObservedObject var findCurrentTravelHandler = FindCurrentTravelHandler()
     
     @Binding private var selectedTravel: Travel?
     @Binding private var selectedDate: Date
@@ -57,8 +56,7 @@ struct TodayExpenseDetailView: View {
         .onAppear {
             self.expenseViewModel.fetchExpense()
             self.dummyRecordViewModel.fetchDummyTravel()
-            findCurrentTravelHandler.findCurrentTravel()
-            expenseViewModel.selectedTravel = findCurrentTravelHandler.currentTravel
+            expenseViewModel.selectedTravel = findCurrentTravel()
             expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
         }
     }

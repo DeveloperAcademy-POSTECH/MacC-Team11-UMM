@@ -62,10 +62,9 @@ class ExpenseViewModel: ObservableObject {
         // 현재 선택된 여행에 추가할 수 있도록
         dummyRecordViewModel.fetchDummyTravel()
         if let targetTravel = dummyRecordViewModel.savedTravels.first(where: { $0.id == travel.id}) {
-            print("1 targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
             targetTravel.addToExpenseArray(tempExpense)
             targetTravel.lastUpdate = Date()
-            print("2 targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
+            print("targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
             saveExpense()
         } else {
             print("Error while addExpense")
