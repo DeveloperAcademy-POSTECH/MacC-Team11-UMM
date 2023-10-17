@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension Color {
-    init(_ hex: UInt, alpha: Double = 1){
+    init(_ hex: UInt, alpha: Double = 1) {
         self.init(
             .sRGB,
         red: Double((hex>>16) & 0xFF) / 255,
