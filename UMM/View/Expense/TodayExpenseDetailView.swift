@@ -39,10 +39,6 @@ struct TodayExpenseDetailView: View {
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
             expenseViewModel.filteredExpenses = getFilteredExpenses()
-            print("TodayExpenseDetailView | selectedTravel: \(String(describing: selectedTravel))")
-            print("TodayExpenseDetailView | selectedDate: \(selectedDate)")
-            print("TodayExpenseDetailView | selectedCountry: \(selectedCountry)")
-            print("TodayExpenseDetailView | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
     }
     
@@ -66,22 +62,16 @@ struct TodayExpenseDetailView: View {
         let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByDate, country: selectedCountry)
         print("Filtered by Country: \(filteredByCountry.count)")
         
-        
         if selectedPaymentMethod == -2 {
-            print("case -2")
-            print("Filtered by PaymentMethod: \(filteredByCountry.count)")
             return filteredByCountry
         } else {
             let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
-            print("case -1, 0, 1")
-            print("Filtered by PaymentMethod: \(filterByPaymentMethod.count)")
             return filterByPaymentMethod
         }
         
         
     }
 }
-
 //  #Preview {
 //      TodayExpenseDetailView()
 //  }

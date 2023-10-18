@@ -76,13 +76,13 @@ struct TodayExpenseView: View {
         let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
         
         return ForEach(countryArray, id: \.self) { country in
-            let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
             let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
+            let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
             let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
             VStack {
                 Text("나라: \(country)").font(.title3)
                 NavigationLink {
-                    TodayExpenseDetailView (
+                    TodayExpenseDetailView(
                         selectedTravel: expenseViewModel.selectedTravel,
                         selectedDate: expenseViewModel.selectedDate,
                         selectedCountry: country,

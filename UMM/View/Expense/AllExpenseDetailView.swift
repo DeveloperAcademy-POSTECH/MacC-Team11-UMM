@@ -14,19 +14,18 @@ struct AllExpenseDetailView: View {
     var selectedTravel: Travel?
     var selectedCategory: Int64
     var selectedCountry: Int64
-    @State var selectedPaymentMethod: Int64
+    @State var selectedPaymentMethod: Int64 = -1
     
     var body: some View {
         ScrollView {
             Picker("현재 결제 수단", selection: $selectedPaymentMethod) {
-                ForEach(0...2, id: \.self) { index in
+                ForEach(-1...1, id: \.self) { index in
                     Text("\(index)").tag(Int64(index))
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .onChange(of: selectedPaymentMethod) { newValue in
-                print("Picker | onChange() | newValue: \(newValue)")
-                expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: newValue)
+            .onChange(of: selectedPaymentMethod) { _ in
+                expenseViewModel.filteredExpenses = getFilteredExpenses()
             }
             
             Spacer()
@@ -38,7 +37,7 @@ struct AllExpenseDetailView: View {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
+            expenseViewModel.filteredExpenses = getFilteredExpenses()
         }
     }
     
@@ -52,8 +51,7 @@ struct AllExpenseDetailView: View {
     }
     
     // 최종 배열
-    func getFilteredExpenses(selectedPaymentMethod: Int64) -> [Expense] {
-        expenseViewModel.fetchExpense()
+    func getFilteredExpenses() -> [Expense] {
         
         let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         print("Filtered by travel.count: \(filteredByTravel.count)")
@@ -64,10 +62,11 @@ struct AllExpenseDetailView: View {
         let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByCategory, country: selectedCountry)
         print("Filtered by Country.count: \(filteredByCountry.count)")
         
-        if selectedPaymentMethod == -1 {
+        if selectedPaymentMethod == -2 {
             return filteredByCountry
         } else {
-            return expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
+            let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
+            return filterByPaymentMethod
         }
     }
 }
