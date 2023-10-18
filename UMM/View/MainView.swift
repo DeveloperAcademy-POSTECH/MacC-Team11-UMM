@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        NavigationStack {
+        HStack {
             TabView {
                 TravelListView(month: Date())
                     .tabItem {
