@@ -170,9 +170,9 @@ struct AddTravelView: View {
                 viewModel.endDate = modalDate
             })
         }
-//        .onAppear {
-//            modalDate = viewModel.endDate ?? Date()
-//        }
+        .onAppear {
+            modalDate = viewModel.endDate ?? Date()
+        }
     }
 
     private var calendarHeader: some View {

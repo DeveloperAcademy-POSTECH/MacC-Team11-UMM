@@ -15,6 +15,8 @@ class AddMemberViewModel: ObservableObject {
     @Published var participantArr: [String]?
     @Published var startDate: Date?
     @Published var endDate: Date?
+    @Published var travelName: String?
+    @Published var travelID = UUID()
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -30,6 +32,8 @@ class AddMemberViewModel: ObservableObject {
         travel.participantArray = participantArr
         travel.startDate = startDate
         travel.endDate = endDate
+        travel.name = travelName
+        travel.id = travelID
         saveTravel()
     }
     

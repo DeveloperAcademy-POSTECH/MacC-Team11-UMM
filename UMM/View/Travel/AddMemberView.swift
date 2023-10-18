@@ -14,6 +14,8 @@ struct AddMemberView: View {
     @State private var isSelectedTogether = false
     @ObservedObject private var viewModel = AddMemberViewModel()
     @State var participantArr: [String]
+    @State var travelName: String?
+    @State var travelID = UUID()
     @Binding var startDate: Date?
     @Binding var endDate: Date?
     @State private var participantCnt = 0
@@ -45,8 +47,19 @@ struct AddMemberView: View {
             viewModel.participantArr = participantArr
             viewModel.startDate = startDate
             viewModel.endDate = endDate
+            viewModel.travelName = participantArr[0] + "외 \(participantCnt)명"
+            viewModel.travelID = travelID
             viewModel.addTravel()
             viewModel.saveTravel()
+            
+            // 저장 Test 코드
+//            var fetchedTravel: Travel?
+//            do {
+//                fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.id == viewModel.travelID }.first
+//            } catch {
+//                print("err: \(error.localizedDescription)")
+//            }
+//            print("fetchedTravel.name: \(fetchedTravel?.id ?? UUID())")
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -220,21 +233,7 @@ struct AddMemberView: View {
             } else {
                 NavigationLink(destination: CompleteAddTravelView()) {
                     DoneButtonActive(title: "완료", action: {
-//                        viewModel.participantArr = participantArr
-//                        viewModel.startDate = startDate
-//                        viewModel.endDate = endDate
-//                        viewModel.addTravel()
-//                        viewModel.saveTravel()
-                        
-                        // 저장 Test 코드
-//                        var fetchedTravel: Travel?
-//                        do {
-//                            fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.participantArray == viewModel.participantArr }.first
-//                        } catch {
-//                            print("err: \(error.localizedDescription)")
-//                        }
-//                        print("fetchedTravel.name: \(fetchedTravel?.endDate ?? Date())")
-                        
+                    
                     })
                     .disabled(true)
                 }
