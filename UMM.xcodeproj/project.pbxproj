@@ -48,6 +48,7 @@
 		C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */; };
 		C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */; };
 		C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */; };
+		C19AFAE12ADF709E0037A5F5 /* AddMemberViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE02ADF709E0037A5F5 /* AddMemberViewModel.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
 		E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05D2ADD922000907501 /* DummyRecordView.swift */; };
 		E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05F2ADD922700907501 /* ExpenseView.swift */; };
@@ -105,6 +106,7 @@
 		C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberView.swift; sourceTree = "<group>"; };
 		C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTheme.swift; sourceTree = "<group>"; };
 		C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelView.swift; sourceTree = "<group>"; };
+		C19AFAE02ADF709E0037A5F5 /* AddMemberViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberViewModel.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2D5C05D2ADD922000907501 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2D5C05F2ADD922700907501 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 				57A65D112AD7D5D500131266 /* RecordViewModel.swift */,
 				E2D5C0692ADD925C00907501 /* DummyRecordViewModel.swift */,
 				E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */,
+				C19AFAE02ADF709E0037A5F5 /* AddMemberViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -449,6 +452,7 @@
 				5760066B2ADD42D3006CD8DF /* CompleteRecordView.swift in Sources */,
 				E2D5C0682ADD924800907501 /* AllExpenseDetailView.swift in Sources */,
 				57A65D0E2AD7D51600131266 /* SplitVariety.swift in Sources */,
+				C19AFAE12ADF709E0037A5F5 /* AddMemberViewModel.swift in Sources */,
 				57A65D102AD7D52700131266 /* String+Extension.swift in Sources */,
 				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,

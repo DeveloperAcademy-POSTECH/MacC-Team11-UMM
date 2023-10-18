@@ -12,10 +12,9 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
-//    @State private var tempNm = ""
-//    @State private var tempNmList: [String]?
-    @State private var tempNmList = ["", "", "", ""]
-    @State var participantArr: [String]?
+    @ObservedObject private var viewModel = AddMemberViewModel()
+//    @State private var tempNmList: [String]
+    @State var participantArr: [String]
     @State private var participantCnt = 0
     
     var body: some View {
@@ -39,7 +38,7 @@ struct AddMemberView: View {
             
         }
         .onAppear {
-            print(participantArr?.count as Any)
+            print(participantArr.count as Any)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -143,6 +142,8 @@ struct AddMemberView: View {
                         
                         Button {
                             participantCnt += 1
+                            participantArr.append("")
+//                            print("tempNmList", tempNmList)
                             
                         } label: {
                             ZStack {
@@ -175,7 +176,7 @@ struct AddMemberView: View {
                     
                     HStack {
                         
-                        TextField("참여자 \(index+1)", text: $tempNmList[index])
+                        TextField("참여자 \(index+1)", text: $participantArr[index])
                             .font(.custom(FontsManager.Pretendard.medium, size: 16))
                             .foregroundStyle(Color.black)
                             .textFieldStyle(CustomTextFieldStyle())
@@ -208,13 +209,24 @@ struct AddMemberView: View {
                     
                 })
                 .disabled(true)
-                
+                  
             } else {
                 NavigationLink(destination: CompleteAddTravelView()) {
                     DoneButtonActive(title: "완료", action: {
+                        viewModel.participantArr = participantArr
+                        viewModel.addTravel()
+                        viewModel.saveTravel()
+//                        print("viewModel.testNM", viewModel.testNM)
+                        var fetchedTravel: Travel?
+                        do {
+                            fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.participantArray == viewModel.participantArr }.first
+                        } catch {
+                            print("err: \(error.localizedDescription)")
+                        }
+                        print("fetchedTravel.name: \(fetchedTravel?.participantArray ?? ["nil"])")
                         
                     })
-                    .disabled(true)
+//                    .disabled(true)
                 }
             }
         }

@@ -47,7 +47,7 @@ struct AddTravelView: View {
                 Spacer()
                 
                 if viewModel.startDate != nil {
-                    NavigationLink(destination: AddMemberView(participantArr: nil)) {
+                    NavigationLink(destination: AddMemberView(participantArr: [""])) {
                         NextButtonActive(title: "다음", action: {
                             
                         })
@@ -326,7 +326,7 @@ struct AddTravelView: View {
     }
     
     var nextButton: some View {
-        NavigationLink(destination: AddMemberView(participantArr: nil)) {
+        NavigationLink(destination: AddMemberView(participantArr: [""])) {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)
