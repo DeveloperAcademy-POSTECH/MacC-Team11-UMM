@@ -12,4 +12,8 @@ class CompleteAddTravelViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     
     @Published var travelID = UUID()
+    @Published var startDate: Date?
+    @Published var endDate: Date?
+    @Published var travelName: String?
+    
 }

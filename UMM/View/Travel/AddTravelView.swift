@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
+    @ObservedObject var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
     @Environment(\.dismiss) private var dismiss
     @State private var modalDate = Date()
     @State private var showStartModal = false
@@ -49,7 +49,7 @@ struct AddTravelView: View {
                     Spacer()
                     
                     if viewModel.startDate != nil {
-                        NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+                        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
                             NextButtonActive(title: "다음", action: {
                                 
                             })
@@ -330,7 +330,7 @@ struct AddTravelView: View {
     }
     
     var nextButton: some View {
-        NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)

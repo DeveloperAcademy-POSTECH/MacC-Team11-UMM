@@ -10,6 +10,8 @@ import SwiftUI
 struct CompleteAddTravelView: View {
     
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var viewModel = CompleteAddTravelViewModel()
+    @ObservedObject var addViewModel: AddTravelViewModel
     
     var body: some View {
         VStack {
@@ -28,6 +30,10 @@ struct CompleteAddTravelView: View {
                 MediumButtonUnactive(title: "홈으로 가기", action: {
                     // 선택값 초기화
                     NavigationUtil.popToRootView()
+//                    viewModel.startDate = Date()
+//                    viewModel.endDate = nil
+                    addViewModel.startDate = Date()
+                    addViewModel.endDate = nil
                 })
                 
                 MediumButtonActive(title: "기록하기", action: {
@@ -46,6 +52,6 @@ struct CompleteAddTravelView: View {
     }
 }
 
-#Preview {
-    CompleteAddTravelView()
-}
+//#Preview {
+//    CompleteAddTravelView()
+//}

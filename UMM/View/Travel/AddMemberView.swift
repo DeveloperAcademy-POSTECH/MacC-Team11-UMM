@@ -13,6 +13,7 @@ struct AddMemberView: View {
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
     @ObservedObject private var viewModel = AddMemberViewModel()
+    @ObservedObject var addViewModel: AddTravelViewModel
     @State var participantArr: [String]
     @State var travelName: String?
     @State var travelID = UUID()
@@ -231,7 +232,7 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView()) {
+                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel)) {
                     DoneButtonActive(title: "완료", action: {
                     
                     })
