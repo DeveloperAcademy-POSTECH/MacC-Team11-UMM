@@ -11,9 +11,10 @@ import CoreData
 class AddMemberViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     
-    @Published var participantArr: [String]?
-    @Published var testNM: String?
     @Published var savedParticipant: [Travel] = []
+    @Published var participantArr: [String]?
+    @Published var startDate: Date?
+    @Published var endDate: Date?
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -24,16 +25,11 @@ class AddMemberViewModel: ObservableObject {
         }
     }
     
-//    func addParticipant(name: String) {
-//        let travel = Travel(context: viewContext)
-//        participantArr?.append(name)
-//        
-//    }
-    
     func addTravel() {
         let travel = Travel(context: viewContext)
         travel.participantArray = participantArr
-        travel.name = testNM
+        travel.startDate = startDate
+        travel.endDate = endDate
         saveTravel()
     }
     

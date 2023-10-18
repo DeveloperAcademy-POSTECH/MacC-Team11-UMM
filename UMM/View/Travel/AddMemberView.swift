@@ -13,8 +13,9 @@ struct AddMemberView: View {
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
     @ObservedObject private var viewModel = AddMemberViewModel()
-//    @State private var tempNmList: [String]
     @State var participantArr: [String]
+    @Binding var startDate: Date?
+    @Binding var endDate: Date?
     @State private var participantCnt = 0
     
     var body: some View {
@@ -39,6 +40,13 @@ struct AddMemberView: View {
         }
         .onAppear {
             print(participantArr.count as Any)
+        }
+        .onDisappear {
+            viewModel.participantArr = participantArr
+            viewModel.startDate = startDate
+            viewModel.endDate = endDate
+            viewModel.addTravel()
+            viewModel.saveTravel()
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -143,7 +151,6 @@ struct AddMemberView: View {
                         Button {
                             participantCnt += 1
                             participantArr.append("")
-//                            print("tempNmList", tempNmList)
                             
                         } label: {
                             ZStack {
@@ -213,20 +220,23 @@ struct AddMemberView: View {
             } else {
                 NavigationLink(destination: CompleteAddTravelView()) {
                     DoneButtonActive(title: "완료", action: {
-                        viewModel.participantArr = participantArr
-                        viewModel.addTravel()
-                        viewModel.saveTravel()
-//                        print("viewModel.testNM", viewModel.testNM)
-                        var fetchedTravel: Travel?
-                        do {
-                            fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.participantArray == viewModel.participantArr }.first
-                        } catch {
-                            print("err: \(error.localizedDescription)")
-                        }
-                        print("fetchedTravel.name: \(fetchedTravel?.participantArray ?? ["nil"])")
+//                        viewModel.participantArr = participantArr
+//                        viewModel.startDate = startDate
+//                        viewModel.endDate = endDate
+//                        viewModel.addTravel()
+//                        viewModel.saveTravel()
+                        
+                        // 저장 Test 코드
+//                        var fetchedTravel: Travel?
+//                        do {
+//                            fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.participantArray == viewModel.participantArr }.first
+//                        } catch {
+//                            print("err: \(error.localizedDescription)")
+//                        }
+//                        print("fetchedTravel.name: \(fetchedTravel?.endDate ?? Date())")
                         
                     })
-//                    .disabled(true)
+                    .disabled(true)
                 }
             }
         }
