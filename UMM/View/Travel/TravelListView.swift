@@ -14,7 +14,11 @@ struct TravelListView: View {
     var body: some View {
         NavigationStack {
             NavigationLink(destination: AddTravelView(), label: {
-                Text("+")
+                
+                VStack {
+                    Text("+")
+                }
+                
             })
         }
     }

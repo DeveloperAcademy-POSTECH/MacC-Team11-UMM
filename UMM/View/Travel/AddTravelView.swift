@@ -14,7 +14,8 @@ struct AddTravelView: View {
     @State private var modalDate = Date()
     @State private var showStartModal = false
     @State private var showEndModal = false
-
+    @State private var isButtonOn = false
+    
     var body: some View {
         VStack {
             
@@ -47,7 +48,7 @@ struct AddTravelView: View {
                 Spacer()
                 
                 if viewModel.startDate != nil {
-                    NavigationLink(destination: AddMemberView(participantArr: nil)) {
+                    NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
                         NextButtonActive(title: "다음", action: {
                             
                         })
@@ -326,7 +327,7 @@ struct AddTravelView: View {
     }
     
     var nextButton: some View {
-        NavigationLink(destination: AddMemberView(participantArr: nil)) {
+        NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)

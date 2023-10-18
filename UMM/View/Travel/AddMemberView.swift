@@ -12,10 +12,12 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
-//    @State private var tempNm = ""
-//    @State private var tempNmList: [String]?
-    @State private var tempNmList = ["", "", "", ""]
-    @State var participantArr: [String]?
+    @ObservedObject private var viewModel = AddMemberViewModel()
+    @State var participantArr: [String]
+    @State var travelName: String?
+    @State var travelID = UUID()
+    @Binding var startDate: Date?
+    @Binding var endDate: Date?
     @State private var participantCnt = 0
     
     var body: some View {
@@ -35,28 +37,29 @@ struct AddMemberView: View {
             
             Spacer()
             
-            HStack {
-                Spacer()
-                
-                if isSelectedTogether == true && participantCnt == 0 {
-                    DoneButtonUnactive(title: "완료", action: {
-                        
-                    })
-                    .disabled(true)
-                    
-                } else {
-                    NavigationLink(destination: CompleteAddTravelView()) {
-                        DoneButtonActive(title: "완료", action: {
-                            
-                        })
-                        .disabled(true)
-                    }
-                }
-            }
+            doneButton
             
         }
         .onAppear {
-            print(participantArr?.count as Any)
+            print(participantArr.count as Any)
+        }
+        .onDisappear {
+            viewModel.participantArr = participantArr
+            viewModel.startDate = startDate
+            viewModel.endDate = endDate
+            viewModel.travelName = participantArr[0] + "외 \(participantCnt)명"
+            viewModel.travelID = travelID
+            viewModel.addTravel()
+            viewModel.saveTravel()
+            
+            // 저장 Test 코드
+//            var fetchedTravel: Travel?
+//            do {
+//                fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.id == viewModel.travelID }.first
+//            } catch {
+//                print("err: \(error.localizedDescription)")
+//            }
+//            print("fetchedTravel.name: \(fetchedTravel?.id ?? UUID())")
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -160,6 +163,7 @@ struct AddMemberView: View {
                         
                         Button {
                             participantCnt += 1
+                            participantArr.append("")
                             
                         } label: {
                             ZStack {
@@ -192,7 +196,7 @@ struct AddMemberView: View {
                     
                     HStack {
                         
-                        TextField("참여자 \(index+1)", text: $tempNmList[index])
+                        TextField("참여자 \(index+1)", text: $participantArr[index])
                             .font(.custom(FontsManager.Pretendard.medium, size: 16))
                             .foregroundStyle(Color.black)
                             .textFieldStyle(CustomTextFieldStyle())
@@ -213,6 +217,27 @@ struct AddMemberView: View {
                 .frame(width: 83, height: 30)
                 .background(Color(0xD9D9D9))
                 .cornerRadius(15)
+        }
+    }
+    
+    private var doneButton: some View {
+        HStack {
+            Spacer()
+            
+            if isSelectedTogether == true && participantCnt == 0 {
+                DoneButtonUnactive(title: "완료", action: {
+                    
+                })
+                .disabled(true)
+                  
+            } else {
+                NavigationLink(destination: CompleteAddTravelView()) {
+                    DoneButtonActive(title: "완료", action: {
+                    
+                    })
+                    .disabled(true)
+                }
+            }
         }
     }
     
