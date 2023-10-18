@@ -94,7 +94,7 @@ struct AllExpenseView: View {
                             selectedCountry: country,
                             selectedPaymentMethod: -2
                         )
-                    } label:{
+                    } label: {
                         VStack {
                             Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
                             Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
@@ -106,7 +106,6 @@ struct AllExpenseView: View {
         }
     }
 
-    
     func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
         let filteredExpenseArrayArray = categoryArray.map { category in
             expenseArray.filter {

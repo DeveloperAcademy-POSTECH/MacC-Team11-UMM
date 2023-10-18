@@ -67,9 +67,7 @@ struct TodayExpenseDetailView: View {
         } else {
             let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
             return filterByPaymentMethod
-        }
-        
-        
+        }        
     }
 }
 //  #Preview {
