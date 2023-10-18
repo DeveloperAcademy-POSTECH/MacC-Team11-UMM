@@ -18,15 +18,6 @@ class AddMemberViewModel: ObservableObject {
     @Published var travelName: String?
     @Published var travelID = UUID()
     
-//    func fetchTravel() {
-//        let request = NSFetchRequest<Travel>(entityName: "Travel")
-//        do {
-//            savedParticipant = try viewContext.fetch(request)
-//        } catch let error {
-//            print("Error while fetchTravel : \(error.localizedDescription)")
-//        }
-//    }
-    
     func addTravel() {
         let travel = Travel(context: viewContext)
         travel.participantArray = participantArr

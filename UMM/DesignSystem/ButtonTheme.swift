@@ -72,6 +72,7 @@ struct MediumButtonWhite: View {
         .background(Color.white)
         .cornerRadius(12)
         .padding(.leading, 16)
+        .padding(.bottom, 45)
     }
 }
 
@@ -91,6 +92,7 @@ struct MediumButtonMain: View {
         .background(Color.red)
         .cornerRadius(12)
         .padding(.trailing, 16)
+        .padding(.bottom, 45)
     }
 }
 
@@ -110,6 +112,7 @@ struct MediumButtonActive: View {
         .background(Color.black)
         .cornerRadius(12)
         .padding(.trailing, 16)
+        .padding(.bottom, 45)
     }
 }
 
@@ -129,6 +132,7 @@ struct MediumButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.leading, 16)
+        .padding(.bottom, 45)
     }
 }
 

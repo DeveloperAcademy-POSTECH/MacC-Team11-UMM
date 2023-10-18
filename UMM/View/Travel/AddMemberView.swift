@@ -41,9 +41,9 @@ struct AddMemberView: View {
             doneButton
             
         }
-        .onAppear {
-            print(participantArr.count as Any)
-        }
+//        .onAppear {
+//            print(participantArr.count as Any)
+//        }
         .onDisappear {
             viewModel.participantArr = participantArr
             viewModel.startDate = startDate
@@ -52,7 +52,7 @@ struct AddMemberView: View {
             viewModel.travelID = travelID
             viewModel.addTravel()
             viewModel.saveTravel()
-            
+            print("memeber view TravelID", travelID)
             // 저장 Test 코드
 //            var fetchedTravel: Travel?
 //            do {
@@ -232,7 +232,7 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel)) {
+                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, travelID: $travelID, travelNM: travelName ?? "nil")) {
                     DoneButtonActive(title: "완료", action: {
                     
                     })
