@@ -35,24 +35,7 @@ struct AddMemberView: View {
             
             Spacer()
             
-            HStack {
-                Spacer()
-                
-                if isSelectedTogether == true && participantCnt == 0 {
-                    DoneButtonUnactive(title: "완료", action: {
-                        
-                    })
-                    .disabled(true)
-                    
-                } else {
-                    NavigationLink(destination: CompleteAddTravelView()) {
-                        DoneButtonActive(title: "완료", action: {
-                            
-                        })
-                        .disabled(true)
-                    }
-                }
-            }
+            doneButton
             
         }
         .onAppear {
@@ -213,6 +196,27 @@ struct AddMemberView: View {
                 .frame(width: 83, height: 30)
                 .background(Color(0xD9D9D9))
                 .cornerRadius(15)
+        }
+    }
+    
+    private var doneButton: some View {
+        HStack {
+            Spacer()
+            
+            if isSelectedTogether == true && participantCnt == 0 {
+                DoneButtonUnactive(title: "완료", action: {
+                    
+                })
+                .disabled(true)
+                
+            } else {
+                NavigationLink(destination: CompleteAddTravelView()) {
+                    DoneButtonActive(title: "완료", action: {
+                        
+                    })
+                    .disabled(true)
+                }
+            }
         }
     }
     
