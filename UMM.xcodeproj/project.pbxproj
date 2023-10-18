@@ -49,8 +49,9 @@
 		C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */; };
 		C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */; };
 		C19AFAE12ADF709E0037A5F5 /* AddMemberViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE02ADF709E0037A5F5 /* AddMemberViewModel.swift */; };
-		C19AFAE72ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */; };
 		C19AFAE32ADFB5AE0037A5F5 /* Font+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE22ADFB5AE0037A5F5 /* Font+Extension.swift */; };
+		C19AFAE72ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */; };
+		C19AFAEA2AE00A920037A5F5 /* NavigationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE92AE00A920037A5F5 /* NavigationUtils.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
 		E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05D2ADD922000907501 /* DummyRecordView.swift */; };
 		E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05F2ADD922700907501 /* ExpenseView.swift */; };
@@ -109,8 +110,9 @@
 		C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTheme.swift; sourceTree = "<group>"; };
 		C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelView.swift; sourceTree = "<group>"; };
 		C19AFAE02ADF709E0037A5F5 /* AddMemberViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberViewModel.swift; sourceTree = "<group>"; };
-		C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelViewModel.swift; sourceTree = "<group>"; };
 		C19AFAE22ADFB5AE0037A5F5 /* Font+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Extension.swift"; sourceTree = "<group>"; };
+		C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelViewModel.swift; sourceTree = "<group>"; };
+		C19AFAE92AE00A920037A5F5 /* NavigationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUtils.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2D5C05D2ADD922000907501 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2D5C05F2ADD922700907501 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		571A42682ACE857500FA3D2B /* UMM */ = {
 			isa = PBXGroup;
 			children = (
+				C19AFAE82AE00A7F0037A5F5 /* Utils */,
 				C179660A2ADD67440036E866 /* Info.plist */,
 				571A42692ACE857500FA3D2B /* UMMApp.swift */,
 				57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */,
@@ -310,6 +313,14 @@
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
+		C19AFAE82AE00A7F0037A5F5 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C19AFAE92AE00A920037A5F5 /* NavigationUtils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		E2D5C06D2ADD927000907501 /* Dummy */ = {
 			isa = PBXGroup;
 			children = (
@@ -431,6 +442,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				578858252ADBBCB2001B82FA /* InfoClassifier.mlmodel in Sources */,
+				C19AFAEA2AE00A920037A5F5 /* NavigationUtils.swift in Sources */,
 				57EA42202ADE38EE006CA587 /* Country.swift in Sources */,
 				57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */,
 				E2D5C05C2ADD921400907501 /* MainView.swift in Sources */,
