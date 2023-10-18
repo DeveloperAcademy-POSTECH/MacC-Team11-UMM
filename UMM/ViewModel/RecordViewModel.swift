@@ -17,8 +17,10 @@ final class RecordViewModel: ObservableObject {
     var infoPredictor: NLModel?
     @Published var voiceSentence = "" {
         didSet {
-            divideVoiceSentence()
-            classifyVoiceSentence()
+            DispatchQueue.main.async {
+                self.divideVoiceSentence()
+                self.classifyVoiceSentence()
+            }
         }
     }
     @Published var info: String?
@@ -497,7 +499,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     func startSTT() throws {
-        
         recognitionTask?.cancel()
         recognitionTask = nil
         
