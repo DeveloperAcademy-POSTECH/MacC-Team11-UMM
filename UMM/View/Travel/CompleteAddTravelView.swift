@@ -16,6 +16,18 @@ struct CompleteAddTravelView: View {
     @State var travelNM: String
     @State var selectedTravel: [Travel]?
     
+    @Binding var isDisappear: Bool 
+//    {
+//        didSet {
+//            if isDisappear {
+//                print("traveelID", travelID)
+//                viewModel.fetchTravel()
+//                self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
+//                print("selectedTravel", selectedTravel!)
+//            }
+//        }
+//    }
+    
 //    let filteredTravel = CompleteAddTravelViewModel.filterTravelByID(selectedTravelID: selectedTravel?.id ?? UUID())
     
     var body: some View {
@@ -48,6 +60,14 @@ struct CompleteAddTravelView: View {
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
                 print("selectedTravel", selectedTravel!)
+//                self.travelNM = ((selectedTravel?.first?.participantArray?[0]) ?? "나") + "와의 여행"
+    
+                if let participant = selectedTravel?.first?.participantArray?[0] {
+                    self.travelNM = participant + "와의 여행"
+                } else {
+                    self.travelNM = "나의 여행"
+                }
+
             }
         }
         .navigationTitle("새로운 여행 생성")
@@ -60,22 +80,30 @@ struct CompleteAddTravelView: View {
                 Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: 141, height: 141)
-                    .background(.black.opacity(0.2))
+                    .background(
+                        Image("testImage")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 141, height: 141) // 원하는 크기로 조정
+                            .cornerRadius(15.16129)
+                    )
                 
-                    .cornerRadius(15.16129)
-                
-                Text("\(selectedTravel)" as String)
+                Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 20))
+                    .padding(.top, 90)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white.opacity(0.75))
                 
             }
             
             HStack {
-                Spacer(minLength: 100)
+                Spacer(minLength: 123)
                 
-                TextField("코어데이터 여행 이름값", text: $travelNM)
+                TextField("나의 여행", text: $travelNM)
                 
                 Image(systemName: "pencil")
                 
-                Spacer(minLength: 100)
+                Spacer(minLength: 123)
             }
         }
     }

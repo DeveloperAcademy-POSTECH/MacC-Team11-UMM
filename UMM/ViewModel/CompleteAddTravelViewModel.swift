@@ -40,4 +40,12 @@ class CompleteAddTravelViewModel: ObservableObject {
             }
         }
     }
+    
+    func dateToString(in date: Date?) -> String {
+        if date == nil {
+            return ""
+        } else {
+            return AddTravelViewModel.startDateFormatter.string(from: date!)
+        }
+    }
 }
