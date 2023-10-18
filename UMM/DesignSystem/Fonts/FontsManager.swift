@@ -22,7 +22,6 @@ struct FontsManager {
     }
 }
 
-
 let display1 = Font.custom(FontsManager.Pretendard.semiBold, size: 20)
 let display2 = Font.custom(FontsManager.Pretendard.semiBold, size: 24)
 let display3 = Font.custom(FontsManager.Pretendard.semiBold, size: 28)
