@@ -8,30 +8,13 @@
 import SwiftUI
 
 struct AllExpenseDetailView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
-    @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
-    @Binding private var selectedTravel: Travel?
-    @Binding private var selectedCategory: Int64
-    @Binding private var selectedPaymentMethod: Int64
-    @Binding private var selectedCountry: Int64
-    
-    init(
-        selectedTravel: Binding<Travel?>,
-        selectedCategory: Binding<Int64>,
-        selectedPaymentMethod: Binding<Int64>,
-        selectedCountry: Binding<Int64>
-    ) {
-        self._selectedTravel = selectedTravel
-        self._selectedCategory = selectedCategory
-        self._selectedPaymentMethod = selectedPaymentMethod
-        self._selectedCountry = selectedCountry
-        
-        self.expenseViewModel = ExpenseViewModel()
-        self.dummyRecordViewModel = DummyRecordViewModel()
-        
-//        expenseViewModel.selectedPaymentMethod = selectedPaymentMethod.wrappedValue
-    }
+    var selectedTravel: Travel?
+    var selectedCategory: Int64
+    var selectedCountry: Int64
+    @State var selectedPaymentMethod: Int64
     
     var body: some View {
         ScrollView {
@@ -48,7 +31,7 @@ struct AllExpenseDetailView: View {
             
             Spacer()
             
-            drawExpensesDetail(expenses: expenseViewModel.filteredExpenses)
+            drawExpensesDetail
             
         }.onAppear {
             print("onAppear AllExpenseDetailView")
@@ -56,13 +39,23 @@ struct AllExpenseDetailView: View {
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
             expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
-            print("expenseViewModel.filteredExpenses.count: \(expenseViewModel.filteredExpenses.count)")
+        }
+    }
+    
+    // 최종 배열을 그리는 함수입니다.
+    private var drawExpensesDetail: some View {
+        ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
+            VStack {
+                Text(expense.description)
+            }.padding()
         }
     }
     
     // 최종 배열
     func getFilteredExpenses(selectedPaymentMethod: Int64) -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: selectedTravel?.id ?? UUID())
+        expenseViewModel.fetchExpense()
+        
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         print("Filtered by travel.count: \(filteredByTravel.count)")
         
         let filteredByCategory = expenseViewModel.filterExpensesByCategory(expenses: filteredByTravel, category: selectedCategory)
@@ -75,15 +68,6 @@ struct AllExpenseDetailView: View {
             return filteredByCountry
         } else {
             return expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
-        }
-    }
-    
-    // 최종 배열을 그리는 함수입니다.
-    private func drawExpensesDetail(expenses: [Expense]) -> some View {
-        ForEach(expenses, id: \.id) { expense in
-            VStack {
-                Text(expense.description)
-            }.padding()
         }
     }
 }

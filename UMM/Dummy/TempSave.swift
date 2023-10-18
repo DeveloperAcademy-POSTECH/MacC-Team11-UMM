@@ -38,7 +38,7 @@ class TempSave {
     let dummyExpenseCountry = Int.random(in: 1...5)
     let dummyExpenseLocation = ["DummyExpenseLocation0", "DummyExpenseLocation1", "DummyExpenseLocation2", "DummyExpenseLocation3"]
     let dummyExpenseParticipantArray = [["도리스, 올리버"], ["올리버", "페페"], ["니코", "해나", "도리스"]]
-    let dummyExpensePaymentMethod = Int.random(in: 0...2)
+    let dummyExpensePaymentMethod = Int.random(in: 0...1)
     let dummyExpensePayAmount = Double(Int.random(in: 1000...30000))
     let dummyExpenseCategory = Int.random(in: -1...5)
     

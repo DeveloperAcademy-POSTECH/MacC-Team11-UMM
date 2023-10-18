@@ -14,7 +14,7 @@ class ExpenseViewModel: ObservableObject {
     
     @Published var savedExpenses: [Expense] = []
     @Published var filteredExpenses: [Expense] = []
-
+    @Published var groupedExpenses: [Int64: [Expense]] = [:]
     @Published var selectedTravel: Travel?
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
@@ -56,11 +56,11 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.info = infos.randomElement()
         tempExpense.location = locations.randomElement()
         tempExpense.participantArray = participantArray.randomElement()
-        tempExpense.paymentMethod = Int64(Int.random(in: -1...2))
+        tempExpense.paymentMethod = Int64(Int.random(in: -1...1))
         tempExpense.payAmount = Double(payAmounts.randomElement() ?? 300.0)
         tempExpense.payDate = Date()
-        tempExpense.category = Int64(Int.random(in: 1...5))
-        tempExpense.country = Int64(Int.random(in: 1...5))
+        tempExpense.category = Int64(Int.random(in: 0...5))
+        tempExpense.country = Int64(Int.random(in: 0...5))
         
         // 현재 선택된 여행에 추가할 수 있도록
         dummyRecordViewModel.fetchDummyTravel()
@@ -74,8 +74,8 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func filterExpensesByTravel(selectedTravelID: UUID) -> [Expense] {
-        return savedExpenses.filter { $0.travel?.id == selectedTravelID }
+    func filterExpensesByTravel(expenses: [Expense], selectedTravelID: UUID) -> [Expense] {
+        return expenses.filter { $0.travel?.id == selectedTravelID }
     }
     
     func filterExpensesByLocation(expenses: [Expense], location: String) -> [Expense] {

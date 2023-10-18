@@ -10,6 +10,7 @@ import SwiftUI
 struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
+//    @State private var groupedExpenses = [Int64: [Expense]]()
     
     init() {
         self.expenseViewModel = ExpenseViewModel()
@@ -28,80 +29,83 @@ struct AllExpenseView: View {
                     }
                 }
                 .pickerStyle(MenuPickerStyle())
+                .onReceive(expenseViewModel.$selectedTravel) { _ in
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+                        print("TodayExpenseView | onReceive | done")
+                    }
+                }
                 
                 //  Picker : 국가별
                 Picker("나라 별로", selection: $expenseViewModel.selectedCountry) {
                     let allExpensesInSelectedTravel = expenseViewModel.savedExpenses
-                    let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })) // 중복 제거
-                    Text("모든 나라").tag(0 as Int64) // Add a picker item with a tag of 0
+                    let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
                     
                     ForEach(countries, id: \.self) { country in
                         Text("Country: \(country)").tag(Int64(country))
                     }
                 }
                 .pickerStyle(MenuPickerStyle())
-                .onChange(of: expenseViewModel.selectedCountry) { newValue in
-                    print("Picker | onChange() | newValue: \(newValue)")
-                    expenseViewModel.filteredExpenses = getFilteredExpenses(selectedCountry: expenseViewModel.selectedCountry)
+                .onReceive(expenseViewModel.$selectedCountry) { _ in
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+                    }
                 }
-                
+
                 Spacer()
                 
-                // 여행별 + 날짜별 리스트
-                // 국가별로 나눠서 보여줌
-                drawExpensesByCategory(expenses: expenseViewModel.filteredExpenses)
+                drawExpensesByCategory
             }
         }
         .onAppear {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            expenseViewModel.filteredExpenses = getFilteredExpenses(selectedCountry: expenseViewModel.selectedCountry)
-        }
-    }
-    
-    // 최종 배열
-    private func getFilteredExpenses(selectedCountry: Int64) -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
-        print("Filtered by travel: \(filteredByTravel.count)")
-        
-        if selectedCountry == 0 {
-            return filteredByTravel
-        } else {
-            return expenseViewModel.filterExpensesByCountry(expenses: filteredByTravel, country: selectedCountry)
+            
+            expenseViewModel.filteredExpenses = getFilteredExpenses()
+            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
         }
     }
     
     // 항목별로 비용 항목을 분류하여 표시
-    private func drawExpensesByCategory(expenses: [Expense]) -> some View {
-        let groupedExpenses = Dictionary(grouping: expenses, by: { $0.category })
-        
-        return ForEach(groupedExpenses.sorted(by: { $0.key < $1.key }), id: \.key) { category, expenses in
+    private var drawExpensesByCategory: some View {
+        ForEach(expenseViewModel.groupedExpenses.sorted(by: { $0.key < $1.key }), id: \.key) { category, expenses in
             Section(header: Text("카테고리: \(category)")) {
+                
                 ForEach(expenses, id: \.id) { expense in
-                    if let payDate = expense.payDate {
-                        NavigationLink(destination:
-                            AllExpenseDetailView(
-                                selectedTravel: $expenseViewModel.selectedTravel,
-                                selectedCategory: .constant(category),
-                                selectedPaymentMethod: $expenseViewModel.selectedPaymentMethod,
-                                selectedCountry: $expenseViewModel.selectedCountry
-                            )
-                        ) {
-                            VStack {
-                                Text(expense.info ?? "no info")
-                                Text("Category: \(expense.category)")
-                                Text("Country: \(expense.country)")
-                                Text("PaymentMethod: \(expense.paymentMethod)")
-                                Text(payDate.description)
-                            }
-                            .padding()
+                    NavigationLink(destination:
+                        AllExpenseDetailView(
+                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedCategory: category,
+                            selectedCountry: expenseViewModel.selectedCountry,
+                            selectedPaymentMethod: expenseViewModel.selectedPaymentMethod
+                        )
+                    ) {
+                        VStack {
+                            Text(expense.info ?? "no info")
+                            Text("Category: \(expense.category)")
+                            Text("Country: \(expense.country)")
+                            Text("PaymentMethod: \(expense.paymentMethod)")
                         }
+                        .padding()
                     }
                 }
                 Divider()
             }
         }
+    }
+    
+    // 최종 배열
+    private func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
+        print("Filtered by travel: \(filteredByTravel.count)")
+        
+        let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByTravel, country: expenseViewModel.selectedCountry)
+        print("Filtered by Country: \(filteredByCountry.count)")
+        
+        return filteredByCountry
     }
     
 }

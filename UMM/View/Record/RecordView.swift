@@ -106,13 +106,6 @@ struct RecordView: View {
                         Text("카드")
                     }
                     .foregroundStyle(.gray)
-                case .all:
-                    HStack {
-                        Text("현금")
-                        Text("/")
-                        Text("카드")
-                    }
-                    .foregroundStyle(.gray)
                 }
             }
         }

@@ -7,7 +7,6 @@
 
 enum PaymentMethod: Int {
     case unknown = -1
-    case all
     case card
     case cash
 }

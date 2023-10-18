@@ -9,81 +9,76 @@ import SwiftUI
 import CoreData
 
 struct TodayExpenseDetailView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
-    @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
-    @Binding private var selectedTravel: Travel?
-    @Binding private var selectedDate: Date
-    @Binding private var selectedLocation: String
-    @Binding private var selectedPaymentMethod: Int64
-
-    init(selectedTravel: Binding<Travel?>,
-         selectedDate: Binding<Date>,
-         selectedLocation: Binding<String>,
-         selectedPaymentMethod: Binding<Int64>
-    ) {
-        self._selectedTravel = selectedTravel
-        self._selectedDate = selectedDate
-        self._selectedLocation = selectedLocation
-        self._selectedPaymentMethod = selectedPaymentMethod
-        
-        self.expenseViewModel = ExpenseViewModel()
-        self.dummyRecordViewModel = DummyRecordViewModel()
-        
-        expenseViewModel.selectedPaymentMethod = selectedPaymentMethod.wrappedValue
-    }
+    var selectedTravel: Travel?
+    var selectedDate: Date
+    var selectedCountry: Int64
+    @State var selectedPaymentMethod: Int64 = -1
 
     var body: some View {
         ScrollView {
-            Picker("현재 결제 수단", selection: $expenseViewModel.selectedPaymentMethod) {
-                ForEach(0...2, id: \.self) { index in
+            Picker("현재 결제 수단", selection: $selectedPaymentMethod) {
+                ForEach(-1...1, id: \.self) { index in
                     Text("\(index)").tag(Int64(index))
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .onChange(of: expenseViewModel.selectedPaymentMethod) { newValue in
-                print("Picker | onChange() | newValue: \(newValue)")
-                expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: newValue)
+            .onChange(of: selectedPaymentMethod) { _ in
+                expenseViewModel.filteredExpenses = getFilteredExpenses()
             }
             
             Spacer()
 
-            drawExpensesDetail(expenses: expenseViewModel.filteredExpenses)
+            drawExpensesDetail
         }
         .onAppear {
             print("onAppear TodayExpenseDetailView")
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            expenseViewModel.filteredExpenses = getFilteredExpenses(selectedPaymentMethod: expenseViewModel.selectedPaymentMethod)
+            expenseViewModel.filteredExpenses = getFilteredExpenses()
+            print("TodayExpenseDetailView | selectedTravel: \(String(describing: selectedTravel))")
+            print("TodayExpenseDetailView | selectedDate: \(selectedDate)")
+            print("TodayExpenseDetailView | selectedCountry: \(selectedCountry)")
+            print("TodayExpenseDetailView | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
     }
     
+    // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
+    private var drawExpensesDetail: some View {
+      ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
+          VStack {
+              Text(expense.description)
+          }.padding()
+      }
+    }
+    
     // 최종 배열
-    private func getFilteredExpenses(selectedPaymentMethod: Int64) -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: selectedTravel?.id ?? UUID())
+    private func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         print("Filtered by travel: \(filteredByTravel.count)")
         
         let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         print("Filtered by date: \(filteredByDate.count)")
         
-        let filteredByLocation = expenseViewModel.filterExpensesByLocation(expenses: filteredByDate, location: selectedLocation)
-        print("Filtered by location: \(filteredByLocation.count)")
+        let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByDate, country: selectedCountry)
+        print("Filtered by Country: \(filteredByCountry.count)")
         
-        if selectedPaymentMethod == -1 {
-            return filteredByLocation
+        
+        if selectedPaymentMethod == -2 {
+            print("case -2")
+            print("Filtered by PaymentMethod: \(filteredByCountry.count)")
+            return filteredByCountry
         } else {
-            return expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByLocation, paymentMethod: selectedPaymentMethod)
+            let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
+            print("case -1, 0, 1")
+            print("Filtered by PaymentMethod: \(filterByPaymentMethod.count)")
+            return filterByPaymentMethod
         }
-    }
-
-    // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
-    private func drawExpensesDetail(expenses: [Expense]) -> some View {
-      ForEach(expenses, id: \.id) { expense in
-          VStack {
-              Text(expense.description)
-          }.padding()
-      }
+        
+        
     }
 }
 

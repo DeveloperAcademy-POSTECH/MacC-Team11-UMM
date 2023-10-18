@@ -28,108 +28,106 @@ struct TodayExpenseView: View {
                     }
                 }
                 .pickerStyle(MenuPickerStyle())
+                .onReceive(expenseViewModel.$selectedTravel) { _ in
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+                        print("TodayExpenseView | onReceive | done")
+                    }
+                }
                 
                 // Picker: 날짜별
                 DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
+                    .onReceive(expenseViewModel.$selectedDate) { _ in
+                        DispatchQueue.main.async {
+                            expenseViewModel.filteredExpenses = getFilteredExpenses()
+                            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+                        }
+                    }
                 
                 Button {
                     expenseViewModel.addExpense(travel: expenseViewModel.selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+                    }
                 } label: {
                     Text("지출 추가")
                 }
                 
                 Spacer()
                 
-                // 여행별 + 날짜별 리스트
-                // 국가별로 나눠서 보여줌
-                let filteredExpensesByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
-                let filteredExpensesByDate = expenseViewModel.filterExpensesByDate(expenses: filteredExpensesByTravel, selectedDate: expenseViewModel.selectedDate)
-                drawExpensesByLocation(expenses: filteredExpensesByDate)
-                
+                drawExpensesByCountry
             }
         }
         .onAppear {
-            print("####")
             print("TodayExpenseView Appeared")
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            print("TodayExpenseView OnAppear Done!")
+            
+            expenseViewModel.filteredExpenses = getFilteredExpenses()
+            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
         }
     }
     
     // 국가별 + 결제수단별 지출액 표시
-    private func drawExpensesByLocation(expenses: [Expense]) -> some View {
-        let groupedExpenses = Dictionary(grouping: expenses, by: { $0.location })
+    private var drawExpensesByCountry: some View {
+        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
         
-        return ForEach(groupedExpenses.sorted(by: { $0.key ?? "" < $1.key ?? "" }), id: \.key) { location, expenses in
-            let groupedExpensesByPaymentMethod = Dictionary(grouping: expenses, by: { $0.paymentMethod })
-            Section(header: Text(location ?? "")) {
-                
-                // 모든 결제 금액
-                let totalPayAmountForAllMethods = expenses.reduce(0.0) { $0 + ($1.payAmount)}
-                NavigationLink(destination:
-                    TodayExpenseDetailView(
-                        selectedTravel: $expenseViewModel.selectedTravel,
-                        selectedDate: $expenseViewModel.selectedDate,
-                        selectedLocation: .constant(location ?? "서울"),
-                        selectedPaymentMethod: .constant(Int64(0)) // nil to represent all methods.
+        return ForEach(countryArray, id: \.self) { country in
+            let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
+            let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
+            let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
+            VStack {
+                Text("나라: \(country)").font(.title3)
+                NavigationLink {
+                    TodayExpenseDetailView (
+                        selectedTravel: expenseViewModel.selectedTravel,
+                        selectedDate: expenseViewModel.selectedDate,
+                        selectedCountry: country,
+                        selectedPaymentMethod: -2 // paymentMethod와 상관 없이 모든 expense를 보여주기 위해 임의 값을 설정
                     )
-                ) {
+                } label: {
                     VStack {
-                        Text("All Payment Methods")
-                        Text("Total Pay Amount for All Methods : \(totalPayAmountForAllMethods)")
-                    }
-                    .padding()
-                }
-                
-                // 결제 수단별 금액
-                ForEach(groupedExpensesByPaymentMethod.sorted(by: { $0.key < $1.key }), id: \.key) { paymentMethod, expensesForPaymentMethod in
-                    let totalPayAmount = expensesForPaymentMethod.reduce(0.0) { $0 + ($1.payAmount)}
-                    NavigationLink(destination:
-                        TodayExpenseDetailView(
-                            selectedTravel: $expenseViewModel.selectedTravel,
-                            selectedDate: $expenseViewModel.selectedDate,
-                            selectedLocation: .constant(location ?? "서울"),
-                            selectedPaymentMethod: .constant(Int64(paymentMethod))
-                        )
-                    ) {
-                        VStack {
-                            Text("Payment Method: \(paymentMethod)")
-                            Text("Total Pay Amount: \(totalPayAmount)")
-                        }
-                        .padding()
+                        Text("결제 수단: all")
+                        Text("금액 합: \(totalSum)")
                     }
                 }
-                Divider()
+            }
+            
+            ForEach(paymentMethodArray, id: \.self) { paymentMethod in
+                let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
+                let sum = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+                NavigationLink {
+                    TodayExpenseDetailView(
+                        selectedTravel: expenseViewModel.selectedTravel,
+                        selectedDate: expenseViewModel.selectedDate,
+                        selectedCountry: country,
+                        selectedPaymentMethod: paymentMethod
+                    )
+                } label: {
+                    VStack {
+                        Text("결제 수단: \(paymentMethod)")
+                        Text("금액 합: \(sum)")
+                    }
+                }
+                Spacer()
             }
         }
     }
+    
+    private func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
+        print("Filtered by travel: \(filteredByTravel.count)")
+                
+        let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: expenseViewModel.selectedDate)
+        print("Filtered by date: \(filteredByDate.count)")
+        
+        return filteredByDate
+    }
+    
 }
-
-//
-//  국가별로 비용 항목을 분류하여 표시
-//  private func drawExpensesByLocation(expenses: [Expense]) -> some View {
-//      let groupedExpenses = Dictionary(grouping: expenses, by: { $0.paymentMethod })
-//
-//      return ForEach(groupedExpenses.sorted(by: { $0.key < $1.key }), id: \.key) { paymentMethod, expenses in
-//          Section(header: Text(paymentMethod)) {
-//              ForEach(expenses, id: \.id) { expense in
-//                  if let payDate = expense.payDate {
-//                      VStack {
-//                          HStack {
-//                              Text(expense.info ?? "no info")
-//                              Text(expense.paymentMethod ?? "no location")
-//                          }
-//                          Text(payDate.description)
-//                      }
-//                      .padding()
-//                  }
-//              }
-//              Divider()
-//          }
-//      }
-//  }
 
 #Preview {
     TodayExpenseView()
