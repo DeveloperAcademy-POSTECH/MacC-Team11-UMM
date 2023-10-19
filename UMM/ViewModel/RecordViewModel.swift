@@ -42,7 +42,8 @@ final class RecordViewModel: ObservableObject {
     }
     @Published var manualRecordModalIsShown = false
     @Published var recordButtonIsFocused = false
-    @Published var alertViewIsShown = false
+    @Published var alertView_emptyIsShown = false
+    @Published var alertView_shortIsShown = false
     
     @Published var travelArray: [Travel] = []
     @Published var chosenTravel: Travel?
