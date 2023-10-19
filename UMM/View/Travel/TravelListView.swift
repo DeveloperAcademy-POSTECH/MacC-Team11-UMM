@@ -10,10 +10,13 @@ import SwiftUI
 struct TravelListView: View {
 
     @State var month: Date
+    @ObservedObject var viewModel = TravelListViewModel()
+    @State var nowTravel: [Travel]?
+    @State private var travelCount: Int = 0
 
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 16) {
                 titleHeader
                 
                 nowTravelingView
@@ -23,6 +26,15 @@ struct TravelListView: View {
                 TravelTabView()
                 
                 Spacer()
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    viewModel.fetchTravel()
+                    self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                    self.travelCount = Int(nowTravel?.count ?? 0)
+//                    print("nowTravel", Int(nowTravel?.count ?? 0))
+                    
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -45,8 +57,7 @@ struct TravelListView: View {
     }
     
     private var titleHeader: some View {
-        VStack {
-            
+        VStack(spacing: 20) {
             HStack {
                 Text("여행 관리")
                     .font(.display2)
@@ -66,18 +77,40 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         // 가로스크롤뷰
-        Rectangle()
-          .foregroundColor(.clear)
-          .frame(width: 350, height: 137)
-          .background(
-            ZStack {
-                Color.gray100
-                Text("현재 진행 중인 여행이 없어요")
-                    .font(.body2)
-                    .foregroundStyle(Color(0xA6A6A6))
+        ZStack {
+            if travelCount == 0 {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: 350, height: 137)
+                    .background(
+                        ZStack {
+                            Color.gray100
+                            Text("현재 진행 중인 여행이 없어요")
+                                .font(.body2)
+                                .foregroundStyle(Color(0xA6A6A6))
+                        }
+                    )
+                    .cornerRadius(10)
+            } else {
+                TabView {
+                    ForEach(0..<travelCount, id: \.self) { index in
+                        Rectangle()
+                          .foregroundColor(.clear)
+                          .frame(width: 350, height: 137)
+                          .background(
+                            Image("testImage")
+                                .resizable()
+//                                .scaledToFit()
+                                .aspectRatio(contentMode: .fill)
+                                
+                          )
+                          .cornerRadius(10)
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle())
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
-          )
-          .cornerRadius(10)
+        }
     }
     
     private var tempTravelView: some View {
@@ -122,7 +155,7 @@ struct TabBarView: View {
         }
         .padding(.horizontal)
         .background(Color.white)
-        .frame(height: 80)
+        .frame(height: 40)
         .ignoresSafeArea(.all)
     }
 }
@@ -161,6 +194,6 @@ struct TabBarItem: View {
     }
 }
 
-#Preview {
-    TravelListView(month: Date())
-}
+//#Preview {
+//    TravelListView(month: Date())
+//}

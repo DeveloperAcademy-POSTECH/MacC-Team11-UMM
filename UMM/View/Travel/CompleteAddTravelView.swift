@@ -56,10 +56,10 @@ struct CompleteAddTravelView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                print("traveelID", travelID)
+//                print("traveelID", travelID)
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-                print("selectedTravel", selectedTravel!)
+//                print("selectedTravel", selectedTravel!)
                 self.travelNM = ((selectedTravel?.first?.participantArray?[0]) ?? "").isEmpty ? "나의 여행" : ((selectedTravel?.first?.participantArray?[0]) ?? "") + "와의 여행"
 
 //                if let participant = selectedTravel?.first?.participantArray?[0] {
