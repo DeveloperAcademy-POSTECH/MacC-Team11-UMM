@@ -81,7 +81,9 @@ struct TodayExpenseView: View {
                 let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
                 let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
                 
-                let allCurrencySums = calculateCurrencySums(from: expenseArray)
+                let allCurrencySums = expenseViewModel.calculateCurrencySums(from: expenseArray)
+                
+                let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
 
                 Text("나라: \(country)").font(.title3)
                 
@@ -90,8 +92,7 @@ struct TodayExpenseView: View {
                         selectedTravel: expenseViewModel.selectedTravel,
                         selectedDate: expenseViewModel.selectedDate,
                         selectedCountry: country,
-                        selectedPaymentMethod: -2, // paymentMethod와 상관 없이 모든 expense를 보여주기 위해 임의 값을 설정
-                        currencySums: allCurrencySums
+                        selectedPaymentMethod: -2 // paymentMethod와 상관 없이 모든 expense를 보여주기 위해 임의 값을 설정
                     )
                 } label: {
                     VStack {
@@ -100,7 +101,6 @@ struct TodayExpenseView: View {
                     }
                 }
                 
-                let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
                 ForEach(currencies, id:\.self) { currency in
                     let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                     Text("\(currency): \(sum)")
@@ -115,15 +115,14 @@ struct TodayExpenseView: View {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
                         let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
                         
-                        let allCurrencySums = calculateCurrencySums(from: filteredExpenseArray)
+                        let allCurrencySums = expenseViewModel.calculateCurrencySums(from: filteredExpenseArray)
 
                         NavigationLink {
                             TodayExpenseDetailView(
                                 selectedTravel: expenseViewModel.selectedTravel,
                                 selectedDate: expenseViewModel.selectedDate,
                                 selectedCountry: country,
-                                selectedPaymentMethod: paymentMethod,
-                                currencySums: allCurrencySums
+                                selectedPaymentMethod: paymentMethod
                             )
                         } label:{
                             VStack{
@@ -147,18 +146,6 @@ struct TodayExpenseView: View {
                 }
             }
         }
-    }
-    
-    private func calculateCurrencySums(from expenses: [Expense]) -> [CurrencySum] {
-        var currencySums = [CurrencySum]()
-        let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
-
-        for currency in currencies {
-            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            currencySums.append(CurrencySum(currency: currency, sum: sum))
-        }
-        
-        return currencySums
     }
 
     private func getFilteredExpenses() -> [Expense] {

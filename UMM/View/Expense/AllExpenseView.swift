@@ -73,34 +73,47 @@ struct AllExpenseView: View {
     private var drawExpensesByCategory: some View {
         let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
         return ForEach(countryArray, id: \.self) { country in
-            if country == expenseViewModel.selectedCountry {
-                let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
-                let expenseArray = expenseViewModel.filteredExpenses.filter { $0.country == country }
-                let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
-                let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenseArray)
-                
-                VStack {
-                    Text("나라 이름: \(country)")
-                    Text("전첵 금액 합: \(totalSum)")
-                    Text("categoryArray.count: \(categoryArray.count)")
-                    Text("countryArray.count: \(countryArray.count)")
-                }
-                
-                ForEach(0..<categoryArray.count, id: \.self) { index in
-                    NavigationLink {
-                        AllExpenseDetailView(
-                            selectedTravel: expenseViewModel.selectedTravel,
-                            selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
-                            selectedCountry: country,
-                            selectedPaymentMethod: -2
-                        )
-                    } label: {
-                        VStack {
-                            Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
-                            Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
-                        }
+            VStack {
+                if country == expenseViewModel.selectedCountry {
+                    let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
+                    let expenseArray = expenseViewModel.filteredExpenses.filter { $0.country == country }
+                    let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
+                    let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenseArray)
+                    let allCurrencySums = expenseViewModel.calculateCurrencySums(from: expenseArray)
+                    
+                    let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
+                    
+                    VStack {
+                        Text("나라 이름: \(country)")
+                        Text("전체 금액 합: \(totalSum)")
+                        Text("categoryArray.count: \(categoryArray.count)")
+                        Text("countryArray.count: \(countryArray.count)")
                     }
-                    Spacer()
+                    // 전체 기록 화폐 단위
+                    ForEach(currencies, id:\.self) { currency in
+                        let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                        Text("\(currency): \(sum)")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .padding(.bottom, 2)
+                    }
+                    
+                    ForEach(0..<categoryArray.count, id: \.self) { index in
+                        NavigationLink {
+                            AllExpenseDetailView(
+                                selectedTravel: expenseViewModel.selectedTravel,
+                                selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
+                                selectedCountry: country,
+                                selectedPaymentMethod: -2
+                            )
+                        } label: {
+                            VStack {
+                                Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
+                                Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
+                            }
+                        }
+                        Spacer()
+                    }
                 }
             }
         }

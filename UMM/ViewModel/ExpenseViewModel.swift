@@ -104,6 +104,18 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
+    func calculateCurrencySums(from expenses: [Expense]) -> [CurrencySum] {
+        var currencySums = [CurrencySum]()
+        let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
+
+        for currency in currencies {
+            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+            currencySums.append(CurrencySum(currency: currency, sum: sum))
+        }
+        
+        return currencySums
+    }
+    
     // MARK: - 아직 안 씀
     func groupExpensesByLocation(expenses: [Expense], location: String) -> [String?: [Expense]] {
         return Dictionary(grouping: expenses, by: { $0.location })
