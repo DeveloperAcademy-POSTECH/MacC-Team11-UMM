@@ -34,8 +34,6 @@ struct TravelListView: View {
                     viewModel.fetchTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
-//                    print("nowTravel", Int(nowTravel?.count ?? 0))
-                    
                 }
             }
             .toolbar {
@@ -198,7 +196,7 @@ struct TabBarView: View {
         }
         .padding(.horizontal)
         .background(Color.white)
-        .frame(height: 40)
+        .frame(height: 10)
         .ignoresSafeArea(.all)
     }
 }

@@ -12,8 +12,6 @@ import SwiftUI
 class TravelListViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
-    // 현재 진행 중인 여행의 개수
-    @Published var travelCount: Int = 3
     // 현재 진행 중인 여행들을 [Travel]에 다 저장
     @Published var nowTravel: [Travel] = []
     let now = Date()

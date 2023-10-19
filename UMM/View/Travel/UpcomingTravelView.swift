@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UpcomingTravelView: View {
     var body: some View {
-        Text("다가오는 여행")
+        Text("다가오는 여행 내역이 없어요")
     }
 }
 
