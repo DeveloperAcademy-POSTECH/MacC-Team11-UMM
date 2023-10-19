@@ -51,7 +51,7 @@ class ExpenseViewModel: ObservableObject {
         let exchangeRates = [1.0, 0.009, 1.1]
 
         let tempExpense = Expense(context: viewContext)
-        tempExpense.currency = Int64(currencies.randomElement() ?? 0)
+        tempExpense.currency = Int64(Int.random(in: -1...6))
         tempExpense.exchangeRate = exchangeRates.randomElement() ?? 0.5
         tempExpense.info = infos.randomElement()
         tempExpense.location = locations.randomElement()
@@ -59,8 +59,8 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.paymentMethod = Int64(Int.random(in: -1...1))
         tempExpense.payAmount = Double(payAmounts.randomElement() ?? 300.0)
         tempExpense.payDate = Date()
-        tempExpense.category = Int64(Int.random(in: 0...5))
-        tempExpense.country = Int64(Int.random(in: 0...5))
+        tempExpense.category = Int64(Int.random(in: -1...5))
+        tempExpense.country = Int64(Int.random(in: -1...5))
         
         // 현재 선택된 여행에 추가할 수 있도록
         dummyRecordViewModel.fetchDummyTravel()

@@ -16,6 +16,7 @@ struct TodayExpenseDetailView: View {
     var selectedDate: Date
     var selectedCountry: Int64
     @State var selectedPaymentMethod: Int64 = -1
+    var currencySums : [CurrencySum]
 
     var body: some View {
         ScrollView {
@@ -44,11 +45,20 @@ struct TodayExpenseDetailView: View {
     
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
-      ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
-          VStack {
-              Text(expense.description)
-          }.padding()
-      }
+        VStack {
+            ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
+                VStack {
+                    Text(expense.description)
+                }.padding()
+            }
+            
+            ForEach(currencySums , id:\.currency){ currencysum in
+                Text("\(currencysum.currency): \(currencysum.sum)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.bottom , 2)
+            }
+        }
     }
     
     // 최종 배열

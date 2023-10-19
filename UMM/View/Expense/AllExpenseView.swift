@@ -136,9 +136,6 @@ struct AllExpenseView: View {
     private func getFilteredExpenses() -> [Expense] {
         let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
         
-//        let filteredByCategory = expenseViewModel.filterExpensesByCategory(expenses: filteredByTravel, category: expenseViewModel.selectedCategory)
-//        print("Filtered by category: \(filteredByCategory.count)")
-
         return filteredByTravel
     }
     
