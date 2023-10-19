@@ -76,11 +76,14 @@ struct TodayExpenseView: View {
         let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
         
         return ForEach(countryArray, id: \.self) { country in
-            let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
-            let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
-            let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
             VStack {
+                let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
+                let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
+                let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
+                let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
+
                 Text("나라: \(country)").font(.title3)
+                
                 NavigationLink {
                     TodayExpenseDetailView(
                         selectedTravel: expenseViewModel.selectedTravel,
@@ -94,39 +97,67 @@ struct TodayExpenseView: View {
                         Text("금액 합: \(totalSum)")
                     }
                 }
-            }
-            
-            ForEach(paymentMethodArray, id: \.self) { paymentMethod in
-                let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                let sum = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
-                NavigationLink {
-                    TodayExpenseDetailView(
-                        selectedTravel: expenseViewModel.selectedTravel,
-                        selectedDate: expenseViewModel.selectedDate,
-                        selectedCountry: country,
-                        selectedPaymentMethod: paymentMethod
-                    )
-                } label: {
-                    VStack {
-                        Text("결제 수단: \(paymentMethod)")
-                        Text("금액 합: \(sum)")
-                    }
+                
+                ForEach(currencies, id: \.self) { currency in
+                    let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                    Text("\(currency): \(sum)")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.bottom, 2)
                 }
-                Spacer()
+                
+                // 결제 수단 별 합계
+                ForEach(paymentMethodArray, id: \.self) { paymentMethod in
+                    VStack {
+                        let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
+                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+
+                        NavigationLink {
+                            TodayExpenseDetailView(
+                                selectedTravel: expenseViewModel.selectedTravel,
+                                selectedDate: expenseViewModel.selectedDate,
+                                selectedCountry: country,
+                                selectedPaymentMethod: paymentMethod
+                            )
+                        } label: {
+                            VStack {
+                                Text("결제 수단 : \(paymentMethod)")
+                                    .font(.headline)
+                                    .padding(.bottom, 5)
+                                Text("금액 합 : \(sumPaymentMethod)")
+                            }
+                        }
+                        ForEach(currencies, id: \.self) { currency in
+                            let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                            Text("\(currency): \(sum)")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, 2)
+                        }
+                        
+                    }
+                    
+                    Spacer()
+                }
             }
         }
     }
-    
+
     private func getFilteredExpenses() -> [Expense] {
         let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
         print("Filtered by travel: \(filteredByTravel.count)")
-                
+        
         let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: expenseViewModel.selectedDate)
         print("Filtered by date: \(filteredByDate.count)")
         
         return filteredByDate
     }
     
+}
+
+struct CurrencySum {
+    let currency: Int64
+    let sum: Double
 }
 
 #Preview {

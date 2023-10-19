@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTravelView: View {
     
-    @ObservedObject private var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
+    @ObservedObject var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
     @Environment(\.dismiss) private var dismiss
     @State private var modalDate = Date()
     @State private var showStartModal = false
@@ -17,51 +17,54 @@ struct AddTravelView: View {
     @State private var isButtonOn = false
     
     var body: some View {
-        VStack {
-            
-            Spacer()
-            
-            headerView
-            
-            Spacer()
-            
+        NavigationStack {
             VStack {
-                Spacer()
-                
-                calendarHeader
-                calendarGridView
                 
                 Spacer()
-            }
-            .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
-            .padding(20)
-            .overlay {
-                RoundedRectangle(cornerRadius: 21.49123)
-                    .inset(by: 0.51)
-                    .stroke(Color.gray200, lineWidth: 1.02)
-                    .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
-            }
-            
-            Spacer()
-            
-            HStack {
+                
+                headerView
+                
                 Spacer()
                 
-                if viewModel.startDate != nil {
-                    NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
-                        NextButtonActive(title: "다음", action: {
+                VStack {
+                    Spacer()
+                    
+                    calendarHeader
+                    calendarGridView
+                    
+                    Spacer()
+                }
+                .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                .padding(20)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 21.49123)
+                        .inset(by: 0.51)
+                        .stroke(Color.gray200, lineWidth: 1.02)
+                        .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    if viewModel.startDate != nil {
+                        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+                            NextButtonActive(title: "다음", action: {
+                                
+                            })
+                            .disabled(true)
+                        }
+                    } else {
+                        NextButtonUnactive(title: "다음", action: {
                             
                         })
                         .disabled(true)
                     }
-                } else {
-                    NextButtonUnactive(title: "다음", action: {
-                        
-                    })
-                    .disabled(true)
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)
@@ -327,7 +330,7 @@ struct AddTravelView: View {
     }
     
     var nextButton: some View {
-        NavigationLink(destination: AddMemberView(participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)

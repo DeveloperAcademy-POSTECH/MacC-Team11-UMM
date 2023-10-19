@@ -13,12 +13,15 @@ struct AddMemberView: View {
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
     @ObservedObject private var viewModel = AddMemberViewModel()
+    @ObservedObject var addViewModel: AddTravelViewModel
     @State var participantArr: [String]
     @State var travelName: String?
     @State var travelID = UUID()
     @Binding var startDate: Date?
     @Binding var endDate: Date?
     @State private var participantCnt = 0
+    
+    @State var isDisappear = false
     
     var body: some View {
         VStack {
@@ -40,9 +43,6 @@ struct AddMemberView: View {
             doneButton
             
         }
-        .onAppear {
-            print(participantArr.count as Any)
-        }
         .onDisappear {
             viewModel.participantArr = participantArr
             viewModel.startDate = startDate
@@ -51,6 +51,8 @@ struct AddMemberView: View {
             viewModel.travelID = travelID
             viewModel.addTravel()
             viewModel.saveTravel()
+            isDisappear = true
+//            print("memeber view TravelID", travelID)
             
             // 저장 Test 코드
 //            var fetchedTravel: Travel?
@@ -231,7 +233,7 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView()) {
+                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, travelID: $travelID, travelNM: travelName ?? "nil", isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
                     
                     })

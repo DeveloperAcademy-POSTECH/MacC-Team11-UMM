@@ -15,6 +15,7 @@ struct AllExpenseDetailView: View {
     var selectedCategory: Int64
     var selectedCountry: Int64
     @State var selectedPaymentMethod: Int64 = -1
+    @State private var currencySums: [CurrencySum] = []
     
     var body: some View {
         ScrollView {
@@ -24,8 +25,9 @@ struct AllExpenseDetailView: View {
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .onChange(of: selectedPaymentMethod) { _ in
+            .onChange(of: selectedPaymentMethod) {
                 expenseViewModel.filteredExpenses = getFilteredExpenses()
+                currencySums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
             }
             
             Spacer()
@@ -37,16 +39,27 @@ struct AllExpenseDetailView: View {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
             expenseViewModel.selectedTravel = findCurrentTravel()
-            expenseViewModel.filteredExpenses = getFilteredExpenses()
+            
+            let filteredResult = getFilteredExpenses()
+            expenseViewModel.filteredExpenses = filteredResult
+            currencySums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
         }
     }
     
     // 최종 배열을 그리는 함수입니다.
     private var drawExpensesDetail: some View {
-        ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
-            VStack {
-                Text(expense.description)
-            }.padding()
+        VStack {
+            ForEach(currencySums, id: \.currency) { currencySum in
+                Text("\(currencySum.currency): \(currencySum.sum)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 2)
+            }
+            ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
+                VStack {
+                    Text(expense.description)
+                }.padding()
+            }
         }
     }
     
