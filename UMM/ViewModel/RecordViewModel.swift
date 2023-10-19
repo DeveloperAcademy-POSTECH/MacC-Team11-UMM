@@ -42,7 +42,8 @@ final class RecordViewModel: ObservableObject {
     }
     @Published var manualRecordModalIsShown = false
     @Published var recordButtonIsFocused = false
-    @Published var alertViewIsShown = false
+    @Published var alertView_emptyIsShown = false
+    @Published var alertView_shortIsShown = false
     
     @Published var travelArray: [Travel] = []
     @Published var chosenTravel: Travel?
@@ -57,8 +58,14 @@ final class RecordViewModel: ObservableObject {
     
     private var audioRecorder: AVAudioRecorder!
     private var audioPlayer: AVAudioPlayer!
+    
+    // to save record file
     var path: URL = URL(string: "http://www.apple.com")!
     var fileName: URL = URL(string: "http://www.apple.com")!
+    
+    // to evaluate record button pressing time
+    var startRecordTime = CFAbsoluteTimeGetCurrent()
+    var endRecordTime = CFAbsoluteTimeGetCurrent()
     
     init() {
         do {

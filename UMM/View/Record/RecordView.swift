@@ -18,10 +18,10 @@ struct RecordView: View {
         didSet {
             if isDetectingPress_showOnButton {
                 print("isDetectingPress_showOnButton is now true")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                withAnimation(.linear(duration: 0.01).delay(0.01)) {
                     isDetectingPress_letButtonBigger = true
-                    print("isDetectingPress_letButtonBigger is now true")
                 }
+                print("isDetectingPress_letButtonBigger is now true")
             }
         }
     }
@@ -29,10 +29,10 @@ struct RecordView: View {
         didSet {
             if !isDetectingPress_letButtonBigger {
                 print("isDetectingPress_letButtonBigger is now false")
-                DispatchQueue.main.asyncAfter(deadline: .now() + recordButtonAnimationLength) {
+                withAnimation(.linear(duration: 0.01).delay(recordButtonAnimationLength)) {
                     isDetectingPress_showOnButton = false
-                    print("isDetectingPress_showOnButton is now false")
                 }
+                print("isDetectingPress_showOnButton is now false")
             }
         }
     }
@@ -46,16 +46,20 @@ struct RecordView: View {
                 travelChoiceView
                 rawSentenceView
                 livePropertyView
-                manualRecordButtonView
                 Spacer()
             }
             .ignoresSafeArea()
             
-            alertView
-            recordButtonView
-                .offset(y: 274)
+            manualRecordButtonView
+                        
+            Group {
+                alertView_empty
+                alertView_short
+                speakWhilePressingView
+                recordButtonView
+            }
+            .ignoresSafeArea()
         }
-        
         .onAppear {
             viewModel.chosenTravel = findCurrentTravel()
         }
@@ -87,7 +91,7 @@ struct RecordView: View {
                 
                 HStack(spacing: 12) {
                     Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
                         .resizable()
@@ -105,14 +109,15 @@ struct RecordView: View {
     private var rawSentenceView: some View {
         ZStack {
             Text("0000\n0000\n0000\n0000")
-                .font(.custom(FontsManager.Pretendard.semiBold, size: 28))
+                .foregroundStyle(.gray300)
+                .font(.display3)
                 .padding(.vertical, 36)
                 .hidden()
             
             if !isDetectingPress {
                 Text("지출을 기록해주세요")
                     .foregroundStyle(.gray300)
-                    .font(.custom(FontsManager.Pretendard.semiBold, size: 28))
+                    .font(.display3)
                     .padding(.horizontal, 48)
             } else {
                 ZStack {
@@ -122,12 +127,12 @@ struct RecordView: View {
                     if viewModel.voiceSentence == "" {
                         Text("듣고 있어요")
                             .foregroundStyle(.gray200)
-                            .font(.custom(FontsManager.Pretendard.semiBold, size: 28))
+                            .font(.display3)
                             .padding(.horizontal, 48)
                     } else {
                         Text(viewModel.voiceSentence)
                             .foregroundStyle(.black)
-                            .font(.custom(FontsManager.Pretendard.semiBold, size: 28))
+                            .font(.display3)
                             .padding(.horizontal, 48)
                             .lineLimit(4)
                     }
@@ -147,7 +152,7 @@ struct RecordView: View {
                     
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 16)
                 }
@@ -162,7 +167,7 @@ struct RecordView: View {
                         .frame(width: 12)
                     Text(viewModel.info!)
                         .foregroundStyle(.black)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 18))
+                        .font(.subhead3_2)
                         .lineLimit(3)
                 } else {
                     Image("recordGray100Check")
@@ -173,7 +178,7 @@ struct RecordView: View {
                         .frame(width: 12)
                     Text("-")
                         .foregroundStyle(.gray200)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 18))
+                        .font(.subhead3_2)
                 }
                 Spacer()
                     .frame(minWidth: 0)
@@ -187,14 +192,14 @@ struct RecordView: View {
                     
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 16)
                         .hidden()
                     
                     Text("금액")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 16)
                 }
@@ -209,7 +214,7 @@ struct RecordView: View {
                         .frame(width: 12)
                     Text(String(format: "%.2f", viewModel.payAmount))
                         .foregroundStyle(.black)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 18))
+                        .font(.subhead3_2)
                         .lineLimit(3)
                 } else {
                     Image("recordGray100Check")
@@ -220,7 +225,7 @@ struct RecordView: View {
                         .frame(width: 12)
                     Text("-")
                         .foregroundStyle(.gray200)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 18))
+                        .font(.subhead3_2)
                 }
                 Spacer()
                     .frame(minWidth: 0)
@@ -234,14 +239,14 @@ struct RecordView: View {
                     
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 16)
                         .hidden()
                     
                     Text("결제 방식")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .font(.subhead2_2)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 16)
                 }
@@ -256,14 +261,16 @@ struct RecordView: View {
                             .frame(width: 24, height: 24)
                         Spacer()
                             .frame(width: 12)
-                        Text("현금")
-                            .foregroundStyle(.gray200)
-                        Text(" / ")
-                            .foregroundStyle(.gray200)
-                        Text("카드")
-                            .foregroundStyle(.black)
+                        Group {
+                            Text("현금")
+                                .foregroundStyle(.gray200)
+                            Text(" / ")
+                                .foregroundStyle(.gray200)
+                            Text("카드")
+                                .foregroundStyle(.black)
+                        }
+                        .font(.subhead3_2)
                     }
-                    .font(.custom(FontsManager.Pretendard.medium, size: 18))
                 case .cash:
                     HStack(spacing: 0) {
                         Image("recordMainPinkCheck")
@@ -272,14 +279,16 @@ struct RecordView: View {
                             .frame(width: 24, height: 24)
                         Spacer()
                             .frame(width: 12)
-                        Text("현금")
-                            .foregroundStyle(.black)
-                        Text(" / ")
-                            .foregroundStyle(.gray200)
-                        Text("카드")
-                            .foregroundStyle(.gray200)
+                        Group {
+                            Text("현금")
+                                .foregroundStyle(.black)
+                            Text(" / ")
+                                .foregroundStyle(.gray200)
+                            Text("카드")
+                                .foregroundStyle(.gray200)
+                        }
+                        .font(.subhead3_2)
                     }
-                    .font(.custom(FontsManager.Pretendard.medium, size: 18))
                 default:
                     HStack(spacing: 0) {
                         Image("recordGray100Check")
@@ -288,14 +297,16 @@ struct RecordView: View {
                             .frame(width: 24, height: 24)
                         Spacer()
                             .frame(width: 12)
-                        Text("현금")
-                            .foregroundStyle(.gray200)
-                        Text(" / ")
-                            .foregroundStyle(.gray200)
-                        Text("카드")
-                            .foregroundStyle(.gray200)
+                        Group {
+                            Text("현금")
+                                .foregroundStyle(.gray200)
+                            Text(" / ")
+                                .foregroundStyle(.gray200)
+                            Text("카드")
+                                .foregroundStyle(.gray200)
+                        }
+                        .font(.subhead3_2)
                     }
-                    .font(.custom(FontsManager.Pretendard.medium, size: 18))
                 }
                 Spacer()
                     .frame(minWidth: 0)
@@ -325,50 +336,55 @@ struct RecordView: View {
                         .frame(width: 16, height: 16)
                     Text("직접 기록")
                         .foregroundStyle(.gray400)
-                        .font(.custom(FontsManager.Pretendard.medium, size: 14))
+                        .font(.caption2)
                 }
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
             }
         }
         .opacity(isDetectingPress ? 0.000001 : 1)
+        .offset(y: 124.5)
         .disabled(isDetectingPress)
-        .padding(.top, 110)
     }
     
     private var recordButtonView: some View {
-        VStack {
-            ZStack {
-                Image("recordButtonOff")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 84, height: 84)
-                Image("recordButtonOn")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 84, height: 84)
-                    .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
-//                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
-                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
-                    .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
-                    .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
-            }
-            .gesture(continuousPress)
-            .onChange(of: isDetectingPress) { _, newValue in
-                if !newValue {
-                    print("녹음 끝")
-                    isDetectingPress_letButtonBigger = false
-                    viewModel.stopSTT()
-                    viewModel.stopRecording()
-                    if viewModel.info != nil || viewModel.payAmount != -1 {
-                        viewModel.manualRecordModalIsShown = true
-                    } else {
-                        viewModel.resetTranscribedString()
-                        viewModel.alertViewIsShown = true
-                    }
+        ZStack {
+            Image("recordButtonOff")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 84, height: 84)
+            Image("recordButtonOn")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 84, height: 84)
+                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
+            //                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
+                .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
+                .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
+                .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
+        }
+        .gesture(continuousPress)
+        .onChange(of: isDetectingPress) { oldValue, newValue in
+            if !oldValue && newValue {
+                // 녹음 시작 (지점 1: 녹음 끝과 순서 뒤집히는 오류 발생 가능)
+            } else if oldValue && !newValue {
+                // 녹음 끝
+                viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
+                print("녹음 끝")
+                isDetectingPress_letButtonBigger = false
+                viewModel.stopSTT()
+                viewModel.stopRecording()
+                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.0 {
+                    viewModel.alertView_shortIsShown = true
+                } else if viewModel.info != nil || viewModel.payAmount != -1 {
+                    viewModel.manualRecordModalIsShown = true
+                } else {
+                    viewModel.resetTranscribedString()
+                    viewModel.alertView_emptyIsShown = true
                 }
             }
         }
+        .offset(y: 292) // 계산상으로는 274가 맞는데...
     }
     
     private var continuousPress: some Gesture {
@@ -377,57 +393,99 @@ struct RecordView: View {
             .updating($isDetectingPress) { value, state, _ in
                 switch value {
                 case .second(true, nil):
+                    // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
+                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+                    print("녹음 시작")
                     DispatchQueue.main.async {
-                        print("녹음 시작")
                         isDetectingPress_showOnButton = true
+                        viewModel.alertView_emptyIsShown = false
+                        viewModel.alertView_shortIsShown = false
+                        viewModel.recordButtonIsFocused = true
+                        do {
+                            try viewModel.startSTT()
+                        } catch {
+                            print("error starting record: \(error.localizedDescription)")
+                        }
+                        viewModel.startRecording()
                     }
-                    viewModel.alertViewIsShown = false
-                    do {
-                        try viewModel.startSTT()
-                    } catch {
-                        print("error starting record: \(error.localizedDescription)")
-                    }
-                    viewModel.startRecording()
-                    viewModel.recordButtonIsFocused = true
                 default:
                     break
                 }
             }
     }
     
-    private var alertView: some View {
+    private var alertView_empty: some View {
         ZStack {
             Color(.white)
                 .opacity(0.0000001)
             ZStack {
                 RoundedRectangle(cornerRadius: 18)
+                    .foregroundStyle(.white)
+                    .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
+                    .shadow(color: Color(0xCCCCCC), radius: 5)
                     .layoutPriority(-1)
-                    .opacity(viewModel.alertViewIsShown ? 1 : 0.0000001)
-                    .shadow(color: Color(0xACACAC), radius: 5)
                 
                 VStack(spacing: 8) {
                     Image("recordAlert")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 24, height: 24)
-                    Text("소비내역이나 금액 중 한 가지는 반드시 기록해야 저장할 수 있어요")
+                    Text("소비내역이나 금액 중 한 가지는\n반드시 기록해야 저장할 수 있어요")
+                        .font(.subhead2_2)
+                        .foregroundStyle(.gray300)
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.black)
                         .padding(.horizontal, 41)
                 }
                 .padding(.top, 12)
                 .padding(.bottom, 16)
-                .opacity(viewModel.alertViewIsShown ? 1 : 0.0000001)
+                .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
             }
             .padding(.horizontal, 30)
-            .offset(y: 160)
+            .offset(y: 167)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .allowsHitTesting(viewModel.alertViewIsShown)
+        .allowsHitTesting(viewModel.alertView_emptyIsShown)
         .onTapGesture {
-            viewModel.alertViewIsShown = false
+            viewModel.alertView_emptyIsShown = false
         }
+    }
+    
+    private var alertView_short: some View {
+        ZStack {
+            Color(.white)
+                .opacity(0.0000001)
+            ZStack {
+                VStack(spacing: 9.34) {
+                    Image("recordAlert")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                    Text("길게 누른 채로 말해주세요")
+                        .font(.subhead3_2)
+                        .foregroundStyle(.gray300)
+                        .multilineTextAlignment(.center)
+                }
+                .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+            }
+            .offset(y: 191.5)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .allowsHitTesting(viewModel.alertView_shortIsShown)
+        .onTapGesture {
+            viewModel.alertView_shortIsShown = false
+        }
+    }
+    
+    private var speakWhilePressingView: some View {
+        Text("누르는 동안 말하기")
+            .font(.subhead3_2)
+            .foregroundStyle(.gray300)
+            .multilineTextAlignment(.center)
+            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+            .offset(y: 205.5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
     }
 }
 
@@ -437,7 +495,7 @@ struct ThreeDotsView: View {
     @State var level = 0
     @State var flicker = true
     
-    let frameLength = 0.5
+    let stepLength = 0.5
     
     func levelUp() {
         level = (level + 1) % 3
@@ -449,7 +507,7 @@ struct ThreeDotsView: View {
                 Color(.red)
                     .opacity(0.0000001)
                     .onAppear {
-                        timer = Timer.scheduledTimer(withTimeInterval: frameLength, repeats: true) { _ in
+                        timer = Timer.scheduledTimer(withTimeInterval: stepLength, repeats: true) { _ in
                             levelUp()
                         }
                     }
@@ -471,7 +529,7 @@ struct ThreeDotsView: View {
                         .frame(width: 8, height: 8)
                         .offset(y: level == 2 ? -9 : 0)
                 }
-                .animation(.bouncy(duration: frameLength), value: level)
+                .animation(.bouncy(duration: stepLength * 1.25), value: level)
             }
             .frame(width: 44, height: 17)
         }
