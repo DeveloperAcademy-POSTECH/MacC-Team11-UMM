@@ -60,15 +60,18 @@ struct CompleteAddTravelView: View {
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
                 print("selectedTravel", selectedTravel!)
-//                self.travelNM = ((selectedTravel?.first?.participantArray?[0]) ?? "나") + "와의 여행"
-    
-                if let participant = selectedTravel?.first?.participantArray?[0] {
-                    self.travelNM = participant + "와의 여행"
-                } else {
-                    self.travelNM = "나의 여행"
-                }
+                self.travelNM = ((selectedTravel?.first?.participantArray?[0]) ?? "").isEmpty ? "나의 여행" : ((selectedTravel?.first?.participantArray?[0]) ?? "") + "와의 여행"
+
+//                if let participant = selectedTravel?.first?.participantArray?[0] {
+//                    self.travelNM = participant + "와의 여행"
+//                } else {
+//                    self.travelNM = "나의 여행"
+//                }
 
             }
+        }
+        .onDisappear {
+           selectedTravel?.first?.name = travelNM
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -97,13 +100,13 @@ struct CompleteAddTravelView: View {
             }
             
             HStack {
-                Spacer(minLength: 123)
+                Spacer(minLength: 125)
                 
                 TextField("나의 여행", text: $travelNM)
                 
                 Image(systemName: "pencil")
                 
-                Spacer(minLength: 123)
+                Spacer(minLength: 125)
             }
         }
     }

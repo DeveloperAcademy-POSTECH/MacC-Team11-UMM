@@ -52,7 +52,7 @@ struct AddMemberView: View {
             viewModel.addTravel()
             viewModel.saveTravel()
             isDisappear = true
-            print("memeber view TravelID", travelID)
+//            print("memeber view TravelID", travelID)
             
             // 저장 Test 코드
 //            var fetchedTravel: Travel?
