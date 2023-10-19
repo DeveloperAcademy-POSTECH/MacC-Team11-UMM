@@ -18,8 +18,9 @@ struct PreviousTravelView: View {
         ZStack {
             if travelCnt == 0 {
                 Text("지난 여행 내역이 없어요")
+                    .foregroundStyle(Color(0xA6A6A6))
             } else {
-                VStack {
+                ScrollView {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             Rectangle()
@@ -29,6 +30,7 @@ struct PreviousTravelView: View {
                     }
                 }
                 .padding(.horizontal, 20)
+                .padding(.vertical, 32)
             }
             
         }

@@ -25,9 +25,9 @@ class PreviousTravelViewModel: ObservableObject {
     
     func filterPreviouTravel(todayDate: Date) -> [Travel] {
         return previousTravel.filter { travel in
-            if let startDate = travel.startDate {
+            if let endDate = travel.endDate {
                 print("filterPreviousTravel | travel.id \(String(describing: travel.id))")
-                return startDate < todayDate
+                return endDate < todayDate
             } else {
                 print("filterPreviousTravel | travel.id: nil")
                 return false

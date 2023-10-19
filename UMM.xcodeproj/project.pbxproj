@@ -57,6 +57,7 @@
 		C19AFAF22AE117430037A5F5 /* UpcomingTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */; };
 		C19AFAF42AE139CD0037A5F5 /* TravelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF32AE139CD0037A5F5 /* TravelListViewModel.swift */; };
 		C19AFAF62AE163990037A5F5 /* PreviousTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF52AE163990037A5F5 /* PreviousTravelViewModel.swift */; };
+		C19AFAF82AE16C600037A5F5 /* UpcomingTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
 		E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05D2ADD922000907501 /* DummyRecordView.swift */; };
 		E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05F2ADD922700907501 /* ExpenseView.swift */; };
@@ -123,6 +124,7 @@
 		C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingTravelView.swift; sourceTree = "<group>"; };
 		C19AFAF32AE139CD0037A5F5 /* TravelListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListViewModel.swift; sourceTree = "<group>"; };
 		C19AFAF52AE163990037A5F5 /* PreviousTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviousTravelViewModel.swift; sourceTree = "<group>"; };
+		C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingTravelViewModel.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2D5C05D2ADD922000907501 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2D5C05F2ADD922700907501 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 				C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */,
 				C19AFAF32AE139CD0037A5F5 /* TravelListViewModel.swift */,
 				C19AFAF52AE163990037A5F5 /* PreviousTravelViewModel.swift */,
+				C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -474,6 +477,7 @@
 				E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */,
 				C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
+				C19AFAF82AE16C600037A5F5 /* UpcomingTravelViewModel.swift in Sources */,
 				E2D5C0662ADD924100907501 /* AllExpenseView.swift in Sources */,
 				E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */,
 				57A65D182AD7DDA700131266 /* RecordView.swift in Sources */,
