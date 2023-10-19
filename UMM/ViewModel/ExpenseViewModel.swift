@@ -44,10 +44,7 @@ class ExpenseViewModel: ObservableObject {
         let infos = ["여행", "쇼핑", "관광"]
         let participantArray = [["John", "Alice"], ["Bob"], ["Charlie"]]
         let payAmounts = [50.0, 1000.25, 80.0]
-//        let paymentMethods = [Int64(0), Int64(1), Int64(2), Int64(3)]
-//        let voiceRecordFiles = ["voice1.mp3", "voice2.mp3", "voice3.mp3"]
         let locations = ["서울", "도쿄", "파리", "상파울루", "바그다드", "짐바브웨"]
-        let currencies = [0, 1, 2]
         let exchangeRates = [1.0, 0.009, 1.1]
 
         let tempExpense = Expense(context: viewContext)

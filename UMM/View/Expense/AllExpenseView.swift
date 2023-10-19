@@ -90,7 +90,7 @@ struct AllExpenseView: View {
                         Text("countryArray.count: \(countryArray.count)")
                     }
                     // 전체 기록 화폐 단위
-                    ForEach(currencies, id:\.self) { currency in
+                    ForEach(currencies, id: \.self) { currency in
                         let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                         Text("\(currency): \(sum)")
                             .font(.subheadline)

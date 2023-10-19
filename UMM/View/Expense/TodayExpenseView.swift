@@ -80,9 +80,6 @@ struct TodayExpenseView: View {
                 let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
                 let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
                 let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
-                
-                let allCurrencySums = expenseViewModel.calculateCurrencySums(from: expenseArray)
-                
                 let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
 
                 Text("나라: \(country)").font(.title3)
@@ -101,7 +98,7 @@ struct TodayExpenseView: View {
                     }
                 }
                 
-                ForEach(currencies, id:\.self) { currency in
+                ForEach(currencies, id: \.self) { currency in
                     let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                     Text("\(currency): \(sum)")
                         .font(.subheadline)
@@ -114,8 +111,6 @@ struct TodayExpenseView: View {
                     VStack {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
                         let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
-                        
-                        let allCurrencySums = expenseViewModel.calculateCurrencySums(from: filteredExpenseArray)
 
                         NavigationLink {
                             TodayExpenseDetailView(
@@ -124,15 +119,15 @@ struct TodayExpenseView: View {
                                 selectedCountry: country,
                                 selectedPaymentMethod: paymentMethod
                             )
-                        } label:{
-                            VStack{
+                        } label: {
+                            VStack {
                                 Text("결제 수단 : \(paymentMethod)")
                                     .font(.headline)
                                     .padding(.bottom, 5)
                                 Text("금액 합 : \(sumPaymentMethod)")
                             }
                         }
-                        ForEach(currencies, id:\.self) { currency in
+                        ForEach(currencies, id: \.self) { currency in
                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                             Text("\(currency): \(sum)")
                                 .font(.subheadline)
@@ -164,7 +159,6 @@ struct CurrencySum {
     let currency: Int64
     let sum: Double
 }
-
 
 #Preview {
     TodayExpenseView()
