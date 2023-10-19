@@ -10,74 +10,138 @@ import SwiftUI
 struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
-
-    @State private var selectedTravel: Travel?
-
+    @State private var selectedPaymentMethod: Int64 = -2
+    
     init() {
         self.expenseViewModel = ExpenseViewModel()
         self.dummyRecordViewModel = DummyRecordViewModel()
     }
-
+    
     var body: some View {
-        ScrollView {
-            Text("전체 지출")
-            
-            // Picker: 여행별
-            Picker("현재 여행", selection: $selectedTravel) {
-                ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
-                    Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
+        NavigationStack {
+            ScrollView {
+                Text("전체 지출")
+                
+                // Picker: 여행별
+                Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
+                    ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
+                        Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
+                    }
                 }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .onChange(of: selectedTravel) { newValue in
-                print(newValue?.name ?? "")
-            }
-                        
-            Button {
-                expenseViewModel.addExpense(travel: selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
-            } label: {
-                Text("지출 추가")
-            }
-            
-            Spacer()
-            
-            // 여행별 + 날짜별 리스트
-            // 국가별로 나눠서 보여줌
-            let filteredExpensesByTravel = expenseViewModel.filterExpensesByTravel(selectedTravelID: selectedTravel?.id ?? UUID())
-            drawExpensesByCategory(expenses: filteredExpensesByTravel)
+                .pickerStyle(MenuPickerStyle())
+                .onReceive(expenseViewModel.$selectedTravel) { _ in
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+                        print("TodayExpenseView | onReceive | done")
+                    }
+                }
+                
+                //  Picker : 국가별
+                Picker("나라 별로", selection: $expenseViewModel.selectedCountry) {
+                    let allExpensesInSelectedTravel = expenseViewModel.savedExpenses
+                    let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
+                    
+                    ForEach(countries, id: \.self) { country in
+                        Text("Country: \(country)").tag(Int64(country))
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .onReceive(expenseViewModel.$selectedCountry) { _ in
+                    DispatchQueue.main.async {
+                        expenseViewModel.filteredExpenses = getFilteredExpenses()
+                        expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+                    }
+                }
 
+                Spacer()
+                
+                drawExpensesByCategory
+            }
         }
         .onAppear {
-            print("####")
-            print("TodayExpenseView Appeared")
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
-            self.selectedTravel = findCurrentTravel()
+            expenseViewModel.selectedTravel = findCurrentTravel()
+            
+            expenseViewModel.filteredExpenses = getFilteredExpenses()
         }
     }
-}
-
-// 항목별로 비용 항목을 분류하여 표시
-private func drawExpensesByCategory(expenses: [Expense]) -> some View {
-    let groupedExpenses = Dictionary(grouping: expenses, by: { $0.category })
     
-    return ForEach(groupedExpenses.sorted(by: { $0.key < $1.key }), id: \.key) { category, expenses in
-        Section(header: Text("\(category)")) {
-            ForEach(expenses, id: \.id) { expense in
-                if let payDate = expense.payDate {
-                    VStack {
-                        HStack {
-                            Text(expense.info ?? "no info")
-                            Text("\(expense.category)")
+    // 1. 나라별
+    // 1-1. 항목별
+    private var drawExpensesByCategory: some View {
+        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
+        return ForEach(countryArray, id: \.self) { country in
+            if country == expenseViewModel.selectedCountry {
+                let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
+                let expenseArray = expenseViewModel.filteredExpenses.filter { $0.country == country }
+                let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
+                let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenseArray)
+                
+                VStack {
+                    Text("나라 이름: \(country)")
+                    Text("전첵 금액 합: \(totalSum)")
+                    Text("categoryArray.count: \(categoryArray.count)")
+                    Text("countryArray.count: \(countryArray.count)")
+                }
+                
+                ForEach(0..<categoryArray.count, id: \.self) { index in
+                    NavigationLink {
+                        AllExpenseDetailView(
+                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
+                            selectedCountry: country,
+                            selectedPaymentMethod: -2
+                        )
+                    } label: {
+                        VStack {
+                            Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
+                            Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
                         }
-                        Text(payDate.description)
                     }
-                    .padding()
+                    Spacer()
                 }
             }
-            Divider()
         }
     }
+
+    func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
+        let filteredExpenseArrayArray = categoryArray.map { category in
+            expenseArray.filter {
+                $0.category == category
+            }
+        }
+        
+        let sumArray = filteredExpenseArrayArray.map { expenseArray in
+            expenseArray.reduce(0) {
+                $0 + $1.payAmount
+            }
+        }
+        let indexedSumArray: [(Int64, Double)] = [
+            (categoryArray[0], sumArray[0]),
+            (categoryArray[1], sumArray[1]),
+            (categoryArray[2], sumArray[2]),
+            (categoryArray[3], sumArray[3]),
+            (categoryArray[4], sumArray[4]),
+            (categoryArray[5], sumArray[5]),
+            (categoryArray[6], sumArray[6])
+        ].sorted {
+                $0.1 <= $1.1
+            }
+        return indexedSumArray
+    }
+    
+    // 최종 배열
+    private func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
+        
+//        let filteredByCategory = expenseViewModel.filterExpensesByCategory(expenses: filteredByTravel, category: expenseViewModel.selectedCategory)
+//        print("Filtered by category: \(filteredByCategory.count)")
+
+        return filteredByTravel
+    }
+    
 }
 
 #Preview {

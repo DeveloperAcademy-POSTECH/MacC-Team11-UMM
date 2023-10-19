@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ManualRecordView: View {
     @ObservedObject var viewModel: RecordViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
