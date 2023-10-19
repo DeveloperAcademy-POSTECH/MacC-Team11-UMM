@@ -58,8 +58,14 @@ final class RecordViewModel: ObservableObject {
     
     private var audioRecorder: AVAudioRecorder!
     private var audioPlayer: AVAudioPlayer!
+    
+    // to save record file
     var path: URL = URL(string: "http://www.apple.com")!
     var fileName: URL = URL(string: "http://www.apple.com")!
+    
+    // to evaluate record button pressing time
+    var startRecordTime = CFAbsoluteTimeGetCurrent()
+    var endRecordTime = CFAbsoluteTimeGetCurrent()
     
     init() {
         do {

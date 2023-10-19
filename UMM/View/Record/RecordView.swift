@@ -18,10 +18,10 @@ struct RecordView: View {
         didSet {
             if isDetectingPress_showOnButton {
                 print("isDetectingPress_showOnButton is now true")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                withAnimation(.linear(duration: 0.01).delay(0.01)) {
                     isDetectingPress_letButtonBigger = true
-                    print("isDetectingPress_letButtonBigger is now true")
                 }
+                print("isDetectingPress_letButtonBigger is now true")
             }
         }
     }
@@ -29,10 +29,10 @@ struct RecordView: View {
         didSet {
             if !isDetectingPress_letButtonBigger {
                 print("isDetectingPress_letButtonBigger is now false")
-                DispatchQueue.main.asyncAfter(deadline: .now() + recordButtonAnimationLength) {
+                withAnimation(.linear(duration: 0.01).delay(recordButtonAnimationLength)) {
                     isDetectingPress_showOnButton = false
-                    print("isDetectingPress_showOnButton is now false")
                 }
+                print("isDetectingPress_showOnButton is now false")
             }
         }
     }
@@ -46,16 +46,20 @@ struct RecordView: View {
                 travelChoiceView
                 rawSentenceView
                 livePropertyView
-                manualRecordButtonView
                 Spacer()
             }
             .ignoresSafeArea()
             
-            alertView_empty
-            recordButtonView
-                .offset(y: 274)
+            manualRecordButtonView
+            
+            Group {
+                alertView_empty
+                alertView_short
+                speakWhilePressingView
+                recordButtonView
+            }
+            .ignoresSafeArea()
         }
-        
         .onAppear {
             viewModel.chosenTravel = findCurrentTravel()
         }
@@ -339,43 +343,48 @@ struct RecordView: View {
             }
         }
         .opacity(isDetectingPress ? 0.000001 : 1)
+        .offset(y: 124.5)
         .disabled(isDetectingPress)
-        .padding(.top, 110)
     }
     
     private var recordButtonView: some View {
-        VStack {
-            ZStack {
-                Image("recordButtonOff")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 84, height: 84)
-                Image("recordButtonOn")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 84, height: 84)
-                    .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
-//                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
-                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
-                    .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
-                    .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
-            }
-            .gesture(continuousPress)
-            .onChange(of: isDetectingPress) { _, newValue in
-                if !newValue {
-                    print("녹음 끝")
-                    isDetectingPress_letButtonBigger = false
-                    viewModel.stopSTT()
-                    viewModel.stopRecording()
-                    if viewModel.info != nil || viewModel.payAmount != -1 {
-                        viewModel.manualRecordModalIsShown = true
-                    } else {
-                        viewModel.resetTranscribedString()
-                        viewModel.alertView_emptyIsShown = true
-                    }
+        ZStack {
+            Image("recordButtonOff")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 84, height: 84)
+            Image("recordButtonOn")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 84, height: 84)
+                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
+            //                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
+                .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
+                .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
+                .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
+        }
+        .gesture(continuousPress)
+        .onChange(of: isDetectingPress) { oldValue, newValue in
+            if !oldValue && newValue {
+                // 녹음 시작 (지점 1: 녹음 끝과 순서 뒤집히는 오류 발생 가능)
+            } else if oldValue && !newValue {
+                // 녹음 끝
+                viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
+                print("녹음 끝")
+                isDetectingPress_letButtonBigger = false
+                viewModel.stopSTT()
+                viewModel.stopRecording()
+                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.0 {
+                    viewModel.alertView_shortIsShown = true
+                } else if viewModel.info != nil || viewModel.payAmount != -1 {
+                    viewModel.manualRecordModalIsShown = true
+                } else {
+                    viewModel.resetTranscribedString()
+                    viewModel.alertView_emptyIsShown = true
                 }
             }
         }
+        .offset(y: 292) // 계산상으로는 274가 맞는데...
     }
     
     private var continuousPress: some Gesture {
@@ -384,19 +393,22 @@ struct RecordView: View {
             .updating($isDetectingPress) { value, state, _ in
                 switch value {
                 case .second(true, nil):
+                    // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
+                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+                    print("녹음 시작")
                     DispatchQueue.main.async {
-                        print("녹음 시작")
                         isDetectingPress_showOnButton = true
+                        viewModel.alertView_emptyIsShown = false
+                        viewModel.alertView_shortIsShown = false
+                        viewModel.recordButtonIsFocused = true
+                        do {
+                            try viewModel.startSTT()
+                        } catch {
+                            print("error starting record: \(error.localizedDescription)")
+                        }
+                        viewModel.startRecording()
                     }
-                    viewModel.alertView_emptyIsShown = false
-                    do {
-                        try viewModel.startSTT()
-                    } catch {
-                        print("error starting record: \(error.localizedDescription)")
-                    }
-                    viewModel.startRecording()
-                    viewModel.recordButtonIsFocused = true
                 default:
                     break
                 }
@@ -419,7 +431,7 @@ struct RecordView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 24, height: 24)
-                    Text("소비내역이나 금액 중 한 가지는 반드시 기록해야 저장할 수 있어요")
+                    Text("소비내역이나 금액 중 한 가지는\n반드시 기록해야 저장할 수 있어요")
                         .font(.subhead2_2)
                         .foregroundStyle(.gray300)
                         .multilineTextAlignment(.center)
@@ -430,7 +442,7 @@ struct RecordView: View {
                 .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
             }
             .padding(.horizontal, 30)
-            .offset(y: 160)
+            .offset(y: 167)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .allowsHitTesting(viewModel.alertView_emptyIsShown)
@@ -439,7 +451,42 @@ struct RecordView: View {
         }
     }
     
-    private var alertView_short: some View { Text("") }
+    private var alertView_short: some View {
+        ZStack {
+            Color(.white)
+                .opacity(0.0000001)
+            ZStack {
+                VStack(spacing: 9.34) {
+                    Image("recordAlert")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                    Text("길게 누른 채로 말해주세요")
+                        .font(.subhead3_2)
+                        .foregroundStyle(.gray300)
+                        .multilineTextAlignment(.center)
+                }
+                .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+            }
+            .offset(y: 191.5)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .allowsHitTesting(viewModel.alertView_shortIsShown)
+        .onTapGesture {
+            viewModel.alertView_shortIsShown = false
+        }
+    }
+    
+    private var speakWhilePressingView: some View {
+        Text("누르는 동안 말하기")
+            .font(.subhead3_2)
+            .foregroundStyle(.gray300)
+            .multilineTextAlignment(.center)
+            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+            .offset(y: 205.5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
+    }
 }
 
 struct ThreeDotsView: View {
