@@ -20,7 +20,7 @@ struct TravelListView: View {
                 
                 tempTravelView
                 
-                travelTabView
+                TravelTabView()
                 
                 Spacer()
             }
@@ -83,9 +83,81 @@ struct TravelListView: View {
     private var tempTravelView: some View {
         Text("")
     }
+}
+
+struct TravelTabView: View {
     
-    private var travelTabView: some View {
-        Text("")
+    @State var currentTab: Int = 0
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            TabView(selection: self.$currentTab) {
+                PreviousTravelView().tag(0)
+                
+                UpcomingTravelView().tag(1)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            
+            TabBarView(currentTab: self.$currentTab)
+        }
+    }
+}
+
+struct TabBarView: View {
+    @Binding var currentTab: Int
+    @Namespace var namespace
+    
+    var tabBarOptions: [String] = ["지난 여행", "다가오는 여행"]
+    var body: some View {
+        HStack(spacing: 20) {
+            ForEach(Array(zip(self.tabBarOptions.indices,
+                              self.tabBarOptions)),
+                    id: \.0,
+            content: { index, name in
+                TabBarItem(currentTab: self.$currentTab,
+                           namespace: namespace.self,
+                           tabBarItemName: name,
+                           tab: index)
+            })
+        }
+        .padding(.horizontal)
+        .background(Color.white)
+        .frame(height: 80)
+        .ignoresSafeArea(.all)
+    }
+}
+
+struct TabBarItem: View {
+    
+    @Binding var currentTab: Int
+    
+    let namespace: Namespace.ID
+    let tabBarItemName: String
+    var tab: Int
+    
+    var body: some View {
+        Button {
+            self.currentTab = tab
+        } label: {
+            VStack {
+                
+                Spacer()
+                
+                Text(tabBarItemName)
+                
+                if currentTab == tab {
+                    Color.black
+                        .frame(height: 2)
+                        .matchedGeometryEffect(id: "underline",
+                                               in: namespace,
+                                               properties: .frame)
+                } else {
+                    Color.clear.frame(height: 2)
+                }
+            }
+            .animation(.spring(), value: self.currentTab)
+        }
+        .buttonStyle(.plain)
     }
 }
 

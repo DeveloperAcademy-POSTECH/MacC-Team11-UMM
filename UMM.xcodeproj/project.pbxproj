@@ -53,6 +53,8 @@
 		C19AFAE72ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */; };
 		C19AFAEA2AE00A920037A5F5 /* NavigationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAE92AE00A920037A5F5 /* NavigationUtils.swift */; };
 		C19AFAEC2AE107460037A5F5 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAEB2AE107460037A5F5 /* SettingView.swift */; };
+		C19AFAF02AE116FF0037A5F5 /* PreviousTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAEF2AE116FF0037A5F5 /* PreviousTravelView.swift */; };
+		C19AFAF22AE117430037A5F5 /* UpcomingTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
 		E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05D2ADD922000907501 /* DummyRecordView.swift */; };
 		E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05F2ADD922700907501 /* ExpenseView.swift */; };
@@ -115,6 +117,8 @@
 		C19AFAE62ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteAddTravelViewModel.swift; sourceTree = "<group>"; };
 		C19AFAE92AE00A920037A5F5 /* NavigationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUtils.swift; sourceTree = "<group>"; };
 		C19AFAEB2AE107460037A5F5 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		C19AFAEF2AE116FF0037A5F5 /* PreviousTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviousTravelView.swift; sourceTree = "<group>"; };
+		C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingTravelView.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E2D5C05D2ADD922000907501 /* DummyRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRecordView.swift; sourceTree = "<group>"; };
 		E2D5C05F2ADD922700907501 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -228,6 +232,8 @@
 				C17550532AD54FC900A61BE5 /* AddTravelView.swift */,
 				C190C2022ADAAE2C0099EE3A /* AddMemberView.swift */,
 				C19AFADE2ADEAEC70037A5F5 /* CompleteAddTravelView.swift */,
+				C19AFAEF2AE116FF0037A5F5 /* PreviousTravelView.swift */,
+				C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */,
 			);
 			path = Travel;
 			sourceTree = "<group>";
@@ -457,6 +463,7 @@
 				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
 				C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */,
 				E2D5C0622ADD923000907501 /* TodayExpenseView.swift in Sources */,
+				C19AFAF22AE117430037A5F5 /* UpcomingTravelView.swift in Sources */,
 				57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */,
 				E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */,
 				C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */,
@@ -468,6 +475,7 @@
 				C19AFAEC2AE107460037A5F5 /* SettingView.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
+				C19AFAF02AE116FF0037A5F5 /* PreviousTravelView.swift in Sources */,
 				C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */,
 				5760066F2ADD4355006CD8DF /* TravelChoiceHalfView.swift in Sources */,
 				57A65D0A2AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift in Sources */,
