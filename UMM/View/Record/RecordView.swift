@@ -51,7 +51,7 @@ struct RecordView: View {
             .ignoresSafeArea()
             
             manualRecordButtonView
-            
+                        
             Group {
                 alertView_empty
                 alertView_short
