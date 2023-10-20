@@ -27,7 +27,7 @@ struct TravelListView: View {
                 
                 TravelTabView()
                 
-                Spacer()
+//                Spacer()
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

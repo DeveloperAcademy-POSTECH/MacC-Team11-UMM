@@ -23,9 +23,16 @@ struct PreviousTravelView: View {
                 ScrollView {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
-                            Rectangle()
-                                .foregroundColor(.red)
-                                .frame(width: 110, height: 80)
+                            VStack {
+                                Rectangle()
+                                    .foregroundColor(.red)
+                                    .frame(width: 110, height: 80)
+                                    .cornerRadius(10)
+                                
+                                Text(previousTravel?[index].name ?? "제목 미정")
+                                    .font(.subhead1)
+                                    .lineLimit(1)
+                            }
                         }
                     }
                 }
