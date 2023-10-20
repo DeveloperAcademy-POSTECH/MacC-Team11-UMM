@@ -52,7 +52,6 @@ struct CustomDatePicker: View {
                     Image(systemName: "chevron.right")
                 }
         }
-        .border(.red)
     }
 }
 

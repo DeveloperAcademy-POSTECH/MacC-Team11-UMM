@@ -239,7 +239,6 @@ struct TodayExpenseView: View {
             }
             .padding(.top, 20)
             .padding(.bottom, 10)
-            .border(.red)
         }
     } // draw
 }

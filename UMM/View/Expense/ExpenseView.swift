@@ -19,7 +19,6 @@ struct ExpenseView: View {
                 AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                     .tag(1)
             }
-            .border(.red)
         }
     }
 }
