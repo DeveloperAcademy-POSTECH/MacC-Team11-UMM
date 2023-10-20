@@ -41,7 +41,6 @@ struct RecordView: View {
         NavigationStack {
             ZStack {
                 Color(.white)
-                    .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
                     travelChoiceView
@@ -49,7 +48,6 @@ struct RecordView: View {
                     livePropertyView
                     Spacer()
                 }
-                .ignoresSafeArea()
                 
                 manualRecordButtonView
                 
@@ -59,10 +57,12 @@ struct RecordView: View {
                     speakWhilePressingView
                     recordButtonView
                 }
-                .ignoresSafeArea()
             }
+            .ignoresSafeArea()
             .onAppear {
+                viewModel.resetInStringProperties()
                 viewModel.chosenTravel = findCurrentTravel()
+                viewModel.needToFill = true
             }
             .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceHalfView(viewModel: viewModel)
@@ -211,10 +211,20 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    Text(String(format: "%.2f", viewModel.payAmount))
-                        .foregroundStyle(.black)
-                        .font(.subhead3_2)
-                        .lineLimit(3)
+                    let isClean0 = viewModel.payAmount - Double(Int(viewModel.payAmount)) == 0.0
+                    let isClean2 = viewModel.payAmount * 100.0 - Double(Int(viewModel.payAmount * 100.0)) == 0.0
+                    Group {
+                        if isClean0 {
+                            Text(String(format: "%.0f", viewModel.payAmount))
+                        } else if isClean2 {
+                            Text(String(format: "%.2f", viewModel.payAmount))
+                        } else {
+                            Text(String(format: "%.4f", viewModel.payAmount))
+                        }
+                    }
+                    .foregroundStyle(.black)
+                    .font(.subhead3_2)
+                    .lineLimit(3)
                 } else {
                     Image("recordGray100Check")
                         .resizable()
@@ -317,6 +327,7 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
+            viewModel.needToFill = false
             viewModel.manualRecordViewIsShown = true
         } label: {
             ZStack {
@@ -373,17 +384,22 @@ struct RecordView: View {
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
                 viewModel.stopRecording()
-                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.0 {
-                    viewModel.alertView_shortIsShown = true
-                } else if viewModel.info != nil || viewModel.payAmount != -1 {
-                    viewModel.manualRecordViewIsShown = true
-                } else {
+                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
+                    DispatchQueue.main.async {
+                        viewModel.alertView_shortIsShown = true
+                        viewModel.resetInStringProperties()
+                    }
+                } else if viewModel.info == nil && viewModel.payAmount == -1 {
                     viewModel.resetTranscribedString()
                     viewModel.alertView_emptyIsShown = true
+                    viewModel.resetInStringProperties()
+                } else {
+                    viewModel.manualRecordViewIsShown = true
                 }
             }
         }
-        .offset(y: 292) // 계산상으로는 274가 맞는데...
+        .offset(y: 274)
     }
     
     private var continuousPress: some Gesture {
@@ -395,9 +411,9 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     print("녹음 시작")
+                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
                     Task {
                         await viewModel.startRecording()
-                        viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
                     }
                     DispatchQueue.main.async {
                         do {

@@ -12,9 +12,9 @@ struct ManualRecordView: View {
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     
-    init(prevViewModel: RecordViewModel, needToFill: Bool) {
-        if needToFill {
-            viewModel = ManualRecordViewModel()
+    init(prevViewModel: RecordViewModel) {
+        viewModel = ManualRecordViewModel()
+        if prevViewModel.needToFill {
             viewModel.payAmount = prevViewModel.payAmount
             //        viewModel.payAmountInWon = ...
             viewModel.payAmountInWon = prevViewModel.payAmount * 9.1
@@ -67,6 +67,7 @@ struct ManualRecordView: View {
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
+        .navigationBarBackButtonHidden()
     }
     
     private var titleBlockView: some View {
@@ -79,7 +80,7 @@ struct ManualRecordView: View {
                 ZStack {
                     HStack(spacing: 0) {
                         Button {
-                            _ = 0
+                            dismiss()
                         } label: {
                             Image("manualRecordTitleLeftChevron")
                                 .resizable()

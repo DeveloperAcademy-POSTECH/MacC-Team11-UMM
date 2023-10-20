@@ -51,6 +51,7 @@ final class RecordViewModel: ObservableObject {
     
     // view state
     @Published var recordButtonIsFocused = false
+    var needToFill = true
     
     // STT
     private let audioEngine = AVAudioEngine()
@@ -59,8 +60,8 @@ final class RecordViewModel: ObservableObject {
     private var recognitionTask: SFSpeechRecognitionTask?
     
     // record
-    private var audioRecorder: AVAudioRecorder!
-    private var audioPlayer: AVAudioPlayer!
+    private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
     
     // variables to save record file
     var path: URL = URL(string: "http://www.apple.com")!
@@ -586,17 +587,15 @@ final class RecordViewModel: ObservableObject {
         
         do {
             audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
-            audioRecorder.prepareToRecord()
-            audioRecorder.record()
+            audioRecorder?.prepareToRecord()
+            audioRecorder?.record()
         } catch {
             print("Failed to Setup the Recording")
         }
     }
     
     func stopRecording() {
-        if audioRecorder.isRecording {
-            audioRecorder.stop()
-        }
+        audioRecorder?.stop()
     }
     
     func startPlayingAudio(url: URL) {
@@ -611,8 +610,8 @@ final class RecordViewModel: ObservableObject {
             
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
                 
         } catch {
             print("Playing Failed")
@@ -620,6 +619,16 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopPlayingAudio(url: URL) {
-        audioPlayer.stop()
+        audioPlayer?.stop()
+    }
+    
+    // MARK: - 프로퍼티 관리
+    
+    func resetInStringProperties() {
+        voiceSentence = ""
+        info = nil
+        infoCategory = .unknown
+        payAmount = -1
+        paymentMethod = .unknown
     }
 }

@@ -27,7 +27,7 @@ class ManualRecordViewModel: ObservableObject {
     
     // MARK: - not-in-string property
     
-    @Published var chosenTravel: Travel? = nil {
+    @Published var chosenTravel: Travel? {
         didSet {
             if let chosenTravel {
                 if let participantArrayInChosenTravel = chosenTravel.participantArray {
