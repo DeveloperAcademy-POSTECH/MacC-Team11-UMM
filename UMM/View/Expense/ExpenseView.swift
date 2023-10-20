@@ -23,7 +23,7 @@ struct ExpenseView: View {
     }
 }
 
-struct TabBarItem: View {
+struct ExpenseTabBarItem: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     

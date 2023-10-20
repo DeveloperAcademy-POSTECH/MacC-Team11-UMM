@@ -117,7 +117,7 @@ struct TodayExpenseView: View {
     private var tabViewButton: some View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
-                TabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
                     .padding(.top, 8)
             }
         }
