@@ -12,6 +12,7 @@ struct TodayExpenseView: View {
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
+    var pickerId: String { "picker" }
     
     init(selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = ExpenseViewModel()
@@ -117,20 +118,14 @@ struct TodayExpenseView: View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
                 TabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                .padding(.top, 8)
+                    .padding(.top, 8)
             }
         }
         .padding(.top, 32)
     }
-
+    
     private var datePicker: some View {
-        DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
-            .onReceive(expenseViewModel.$selectedDate) { _ in
-                DispatchQueue.main.async {
-                    expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-                    expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-                }
-            }
+        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId)
             .padding(.top, 16)
             .padding(.bottom, 20)
     }
@@ -246,7 +241,7 @@ struct TodayExpenseView: View {
             .padding(.bottom, 10)
             .border(.red)
         }
-    }
+    } // draw
 }
 
 struct CurrencySum {

@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
@@ -138,5 +139,17 @@ class ExpenseViewModel: ObservableObject {
         let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
+    }
+    
+    // MARK: - 커스텀 Date Picker를 위한 함수
+    func triggerDatePickerPopover(pickerId: String) {
+        if
+            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = scene.windows.first,
+            let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject,
+            let button = picker.buttonAccessibilityDescendant() as? NSObject
+        {
+            button.accessibilityActivate()
+        }
     }
 }
