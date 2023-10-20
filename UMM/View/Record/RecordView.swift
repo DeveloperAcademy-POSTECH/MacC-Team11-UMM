@@ -395,19 +395,21 @@ struct RecordView: View {
                 case .second(true, nil):
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
-                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
                     print("녹음 시작")
+                    Task {
+                        await viewModel.startRecording()
+                        viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+                    }
                     DispatchQueue.main.async {
-                        isDetectingPress_showOnButton = true
-                        viewModel.alertView_emptyIsShown = false
-                        viewModel.alertView_shortIsShown = false
-                        viewModel.recordButtonIsFocused = true
                         do {
                             try viewModel.startSTT()
                         } catch {
                             print("error starting record: \(error.localizedDescription)")
                         }
-                        viewModel.startRecording()
+                        isDetectingPress_showOnButton = true
+                        viewModel.alertView_emptyIsShown = false
+                        viewModel.alertView_shortIsShown = false
+                        viewModel.recordButtonIsFocused = true
                     }
                 default:
                     break
