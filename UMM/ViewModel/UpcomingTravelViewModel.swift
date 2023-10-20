@@ -34,4 +34,12 @@ class UpcomingTravelViewModel: ObservableObject {
             }
         }
     }
+    
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YY.MM.dd"
+        
+        return formatter
+    }()
+
 }

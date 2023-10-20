@@ -71,7 +71,7 @@ struct CompleteAddTravelView: View {
             }
         }
         .onDisappear {
-           selectedTravel?.first?.name = travelNM
+            selectedTravel?.first?.name = travelNM
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)

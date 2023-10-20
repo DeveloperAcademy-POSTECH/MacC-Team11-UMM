@@ -34,6 +34,7 @@ struct TravelListView: View {
                     viewModel.fetchTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
+                    print("onAppear")
                 }
             }
             .toolbar {

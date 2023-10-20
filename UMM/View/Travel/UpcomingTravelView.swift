@@ -23,10 +23,25 @@ struct UpcomingTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                Rectangle()
-                                    .foregroundColor(.blue)
-                                    .frame(width: 110, height: 80)
-                                    .cornerRadius(10)
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundColor(.blue)
+                                        .frame(width: 110, height: 80)
+                                        .cornerRadius(10)
+                                    
+                                    Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                    +
+                                    Text("~ \n")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                        
+                                    +
+                                    Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                }
                                 
                                 Text(upcomingTravel?[index].name ?? "제목 미정")
                                     .font(.subhead1)
