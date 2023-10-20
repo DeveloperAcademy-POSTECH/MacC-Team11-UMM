@@ -15,7 +15,7 @@ struct MainView: View {
                     .tabItem {
                         Label("여행 관리", systemImage: "person.crop.circle.fill")
                     }
-                    RecordView()
+                RecordView()
                     .tabItem {
                         Label("녹음", systemImage: "mic")
                     }

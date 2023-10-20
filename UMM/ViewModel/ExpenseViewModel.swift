@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
@@ -22,6 +23,14 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedCountry: Int64 = 0
     @Published var selectedCategory: Int64 = 0
     
+    @Published var travelChoiceHalfModalIsShown = false {
+        willSet {
+            if newValue {
+                filteredExpenses = getFilteredExpenses()
+                groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
+            }
+        }
+    }
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
@@ -113,12 +122,30 @@ class ExpenseViewModel: ObservableObject {
         return currencySums
     }
     
-    // MARK: - 아직 안 씀
-    func groupExpensesByLocation(expenses: [Expense], location: String) -> [String?: [Expense]] {
-        return Dictionary(grouping: expenses, by: { $0.location })
+    // 소수점 두 자리로 반올림, 소수점 아래 값이 없으면 정수형처럼 반환
+    func formatSum(_ sum: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
+        formatter.maximumFractionDigits = 2 // 최대 허용되는 소수점 자릿수
+        
+        return formatter.string(from: NSNumber(value: sum)) ?? ""
     }
     
-    func groupExpensesByCategory(expenses: [Expense], category: Int64) -> [Int64?: [Expense]] {
-        return Dictionary(grouping: expenses, by: { $0.category })
+    func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
+        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        return filteredByDate
+    }
+    
+    // MARK: - 커스텀 Date Picker를 위한 함수
+    func triggerDatePickerPopover(pickerId: String) {
+        if
+            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = scene.windows.first,
+            let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject,
+            let button = picker.buttonAccessibilityDescendant() as? NSObject
+        {
+            button.accessibilityActivate()
+        }
     }
 }

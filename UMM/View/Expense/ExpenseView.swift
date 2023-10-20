@@ -9,45 +9,64 @@ import SwiftUI
 
 struct ExpenseView: View {
     @State var selectedTab = 0
+    @Namespace var namespace
+    
     var body: some View {
-        VStack {
-            Text("ExpenseView")
-            ZStack {
-                HStack {
-                    ForEach((TabbedItems.allCases), id: \.self) {item in
-                        Button {
-                            selectedTab = item.rawValue
-                        } label: {
-                            customTabItem(title: item.title, isActive: (selectedTab == item.rawValue))
-                        }
-                    }
-                }
-            }
-            Spacer()
+        NavigationStack {
             TabView(selection: $selectedTab) {
-                TodayExpenseView()
+                TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
                     .tag(0)
-                AllExpenseView()
+                AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                     .tag(1)
             }
         }
     }
 }
 
-private func customTabItem(title: String, isActive: Bool) -> some View {
-    HStack(spacing: 10) {
-        Spacer()
-        Text(title)
-            .font(.system(size: 14))
-            .foregroundStyle(isActive ? .black : .gray)
-        Spacer()
+struct ExpenseTabBarItem: View {
+    @Binding var selectedTab: Int
+    let namespace: Namespace.ID
+    
+    var title: String
+    var tab: Int
+    
+    var body: some View {
+        Button {
+            selectedTab = tab
+        } label: {
+            VStack {
+                Text(title)
+                    .font(.subhead3_1)
+                    .foregroundStyle(selectedTab == tab ? .black : .gray300)
+
+                ZStack {
+                    Divider()
+                        .padding(.top, 12)
+                        .frame(height: 2)
+                    if selectedTab == tab {
+                        Color.black
+                            .frame(height: 2)
+                            .matchedGeometryEffect(id: "underline", in: namespace.self)
+                            .padding(.top, 11)
+                            .padding(.horizontal)
+                    } else {
+                        Color.gray300
+                            .frame(height: 2)
+                            .padding(.top, 11)
+                            .padding(.horizontal)
+                    }
+                }
+            }
+            .animation(.spring(), value: selectedTab)
+        }
+        .buttonStyle(.plain)
     }
-    .frame(width: 80, height: 40)
 }
 
 enum TabbedItems: Int, CaseIterable {
     case todayExpense
     case allExpense
+    
     var title: String {
         switch self {
         case .todayExpense:
@@ -59,5 +78,5 @@ enum TabbedItems: Int, CaseIterable {
 }
 
 #Preview {
-    ExpenseView()
+   ExpenseView()
 }
