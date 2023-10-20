@@ -98,11 +98,11 @@ struct TodayExpenseView: View {
     }
     
     private var settingView: some View {
-        Button(action: {}) {
+        Button(action: {}, label: {
             Image(systemName: "wifi")
                 .font(.system(size: 16))
                 .foregroundStyle(.gray300)
-        }
+        })
     }
     
     private var todayExpenseHeader: some View {
@@ -186,7 +186,7 @@ struct TodayExpenseView: View {
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+                        // let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
                         
                         NavigationLink {
                             TodayExpenseDetailView(
@@ -248,5 +248,3 @@ struct CurrencySum {
     let currency: Int64
     let sum: Double
 }
-
-//2

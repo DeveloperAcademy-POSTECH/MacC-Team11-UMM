@@ -22,7 +22,6 @@ struct AllExpenseView: View {
     }
     
     var body: some View {
-        // TODO: - 최신
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 travelPicker
@@ -115,11 +114,11 @@ struct AllExpenseView: View {
     }
     
     private var settingView: some View {
-        Button(action: {}) {
+        Button(action: {}, label: {
             Image(systemName: "wifi")
                 .font(.system(size: 16))
                 .foregroundStyle(.gray300)
-        }
+        })
     }
     
     private var todayExpenseHeader: some View {
@@ -135,7 +134,7 @@ struct AllExpenseView: View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
                 TabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                .padding(.top, 8)
+                    .padding(.top, 8)
             }
         }
         .padding(.top, 32)
@@ -237,6 +236,6 @@ struct AllExpenseView: View {
     
 }
 
-//#Preview {
-//    AllExpenseView(selectedTab: .constant(1), namespace: Namespace.ID)
-//}
+//  #Preview {
+//      AllExpenseView(selectedTab: .constant(1), namespace: Namespace.ID)
+//  }

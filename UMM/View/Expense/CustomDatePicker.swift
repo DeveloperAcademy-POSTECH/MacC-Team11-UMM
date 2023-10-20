@@ -21,9 +21,10 @@ struct CustomDatePicker: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Button(action: {self.expenseViewModel.selectedDate.addTimeInterval(-86400)}) {
+            Button(action: {self.expenseViewModel.selectedDate.addTimeInterval(-86400)}, label: {
                 Image(systemName: "chevron.left")
-            }
+            })
+            
             ZStack {
                 Button {
                     expenseViewModel.triggerDatePickerPopover(pickerId: pickerId)
@@ -46,9 +47,10 @@ struct CustomDatePicker: View {
                     .opacity(0)
             }
             
-            Button(action:{self.selectedDate.addTimeInterval(86400)}){
-                Image(systemName:"chevron.right")
-            }
+            Button { self.selectedDate.addTimeInterval(86400)
+                } label: {
+                    Image(systemName: "chevron.right")
+                }
         }
         .border(.red)
     }

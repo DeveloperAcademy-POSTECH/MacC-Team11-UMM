@@ -26,12 +26,8 @@ class ExpenseViewModel: ObservableObject {
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
             if newValue {
-                do {
-                    filteredExpenses = getFilteredExpenses()
-                    groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
-                } catch {
-                    print("error fetching travelArray: \(error.localizedDescription)")
-                }
+                filteredExpenses = getFilteredExpenses()
+                groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
             }
         }
     }
