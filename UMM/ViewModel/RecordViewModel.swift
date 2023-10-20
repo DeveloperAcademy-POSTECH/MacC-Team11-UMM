@@ -23,12 +23,17 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
+    // these variables are updated by divideVoiceSentence()
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
     
-    @Published var completeRecordModalIsShown = false
+    // travels
+    @Published var chosenTravel: Travel?
+    @Published var travelArray: [Travel] = []
+    
+    // shows other views
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
             if newValue {
@@ -40,30 +45,28 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
-    @Published var manualRecordModalIsShown = false
-    @Published var recordButtonIsFocused = false
+    @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
     
-    @Published var travelArray: [Travel] = []
-    @Published var chosenTravel: Travel?
-    @Published var participantArray: [String]? = []
-    @Published var payDate: Date = Date()
-    @Published var location: String = "일본 도쿄"
+    // view state
+    @Published var recordButtonIsFocused = false
     
+    // STT
     private let audioEngine = AVAudioEngine()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
     private var recognitionTask: SFSpeechRecognitionTask?
     
+    // record
     private var audioRecorder: AVAudioRecorder!
     private var audioPlayer: AVAudioPlayer!
     
-    // to save record file
+    // variables to save record file
     var path: URL = URL(string: "http://www.apple.com")!
     var fileName: URL = URL(string: "http://www.apple.com")!
     
-    // to evaluate record button pressing time
+    // variables to evaluate record button pressing time
     var startRecordTime = CFAbsoluteTimeGetCurrent()
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     

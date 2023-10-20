@@ -38,40 +38,39 @@ struct RecordView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color(.white)
+        NavigationStack {
+            ZStack {
+                Color(.white)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    travelChoiceView
+                    rawSentenceView
+                    livePropertyView
+                    Spacer()
+                }
                 .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                travelChoiceView
-                rawSentenceView
-                livePropertyView
-                Spacer()
+                
+                manualRecordButtonView
+                
+                Group {
+                    alertView_empty
+                    alertView_short
+                    speakWhilePressingView
+                    recordButtonView
+                }
+                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
-            
-            manualRecordButtonView
-                        
-            Group {
-                alertView_empty
-                alertView_short
-                speakWhilePressingView
-                recordButtonView
+            .onAppear {
+                viewModel.chosenTravel = findCurrentTravel()
             }
-            .ignoresSafeArea()
-        }
-        .onAppear {
-            viewModel.chosenTravel = findCurrentTravel()
-        }
-        .sheet(isPresented: $viewModel.manualRecordModalIsShown) {
-            ManualRecordView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $viewModel.completeRecordModalIsShown) {
-            CompleteRecordView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceHalfView(viewModel: viewModel)
-                .presentationDetents([.height(226)])
+            .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
+                TravelChoiceHalfView(viewModel: viewModel)
+                    .presentationDetents([.height(226)])
+            }
+            .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
+                ManualRecordView(prevViewModel: viewModel)
+            }
         }
     }
     
@@ -318,7 +317,7 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
-            viewModel.manualRecordModalIsShown = true
+            viewModel.manualRecordViewIsShown = true
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 11)
@@ -377,7 +376,7 @@ struct RecordView: View {
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.0 {
                     viewModel.alertView_shortIsShown = true
                 } else if viewModel.info != nil || viewModel.payAmount != -1 {
-                    viewModel.manualRecordModalIsShown = true
+                    viewModel.manualRecordViewIsShown = true
                 } else {
                     viewModel.resetTranscribedString()
                     viewModel.alertView_emptyIsShown = true
