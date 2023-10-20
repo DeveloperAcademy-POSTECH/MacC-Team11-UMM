@@ -10,44 +10,34 @@ import SwiftUI
 struct ExpenseView: View {
     @State var selectedTab = 0
     var body: some View {
-        VStack {
-            Text("ExpenseView")
-            ZStack {
-                HStack {
-                    ForEach((TabbedItems.allCases), id: \.self) {item in
-                        Button {
-                            selectedTab = item.rawValue
-                        } label: {
-                            customTabItem(title: item.title, isActive: (selectedTab == item.rawValue))
-                        }
-                    }
+        NavigationStack {
+            VStack {
+                TabView(selection: $selectedTab) {
+                    TodayExpenseView(selectedTab: $selectedTab)
+                        .tag(0)
+                    AllExpenseView(selectedTab: $selectedTab)
+                        .tag(1)
                 }
-            }
-            Spacer()
-            TabView(selection: $selectedTab) {
-                TodayExpenseView()
-                    .tag(0)
-                AllExpenseView()
-                    .tag(1)
+                .border(.red)
             }
         }
     }
 }
 
-private func customTabItem(title: String, isActive: Bool) -> some View {
+func customTabItem(title: String, isActive: Bool) -> some View {
     HStack(spacing: 10) {
         Spacer()
         Text(title)
-            .font(.system(size: 14))
-            .foregroundStyle(isActive ? .black : .gray)
+            .font(.subhead3_1)
+            .foregroundStyle(.black)
         Spacer()
     }
-    .frame(width: 80, height: 40)
 }
 
 enum TabbedItems: Int, CaseIterable {
     case todayExpense
     case allExpense
+    
     var title: String {
         switch self {
         case .todayExpense:
@@ -59,5 +49,5 @@ enum TabbedItems: Int, CaseIterable {
 }
 
 #Preview {
-    ExpenseView()
+   ExpenseView()
 }

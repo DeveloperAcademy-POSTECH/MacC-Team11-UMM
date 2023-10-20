@@ -11,16 +11,28 @@ struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
     @State private var selectedPaymentMethod: Int64 = -2
+    @Binding var selectedTab: Int
     
-    init() {
+    init(selectedTab: Binding<Int>) {
         self.expenseViewModel = ExpenseViewModel()
         self.dummyRecordViewModel = DummyRecordViewModel()
+        self._selectedTab = selectedTab
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                Text("전체 지출")
+        ScrollView {
+            LazyVStack {
+                // 탭 버튼
+                HStack {
+                    ForEach((TabbedItems.allCases), id: \.self) {item in
+                        Button {
+                            selectedTab = item.rawValue
+                        } label: {
+                            customTabItem(title: item.title, isActive: (selectedTab == item.rawValue))
+                        }
+                    }
+                }
+                .border(.red)
                 
                 // Picker: 여행별
                 Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
@@ -53,12 +65,12 @@ struct AllExpenseView: View {
                         expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
                     }
                 }
-
+                
                 Spacer()
                 
                 drawExpensesByCategory
             }
-        }
+        } // ScrollView
         .onAppear {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
@@ -77,10 +89,8 @@ struct AllExpenseView: View {
                 if country == expenseViewModel.selectedCountry {
                     let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
                     let expenseArray = expenseViewModel.filteredExpenses.filter { $0.country == country }
-                    let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
+                    let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount } // 모든 결제 수단 합계
                     let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenseArray)
-                    let allCurrencySums = expenseViewModel.calculateCurrencySums(from: expenseArray)
-                    
                     let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
                     
                     VStack {
@@ -91,7 +101,7 @@ struct AllExpenseView: View {
                     }
                     // 전체 기록 화폐 단위
                     ForEach(currencies, id: \.self) { currency in
-                        let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                        let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount } // 결제 수단 별로 합계
                         Text("\(currency): \(sum)")
                             .font(.subheadline)
                             .foregroundColor(.gray)
@@ -118,7 +128,7 @@ struct AllExpenseView: View {
             }
         }
     }
-
+    
     func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
         let filteredExpenseArrayArray = categoryArray.map { category in
             expenseArray.filter {
@@ -140,8 +150,8 @@ struct AllExpenseView: View {
             (categoryArray[5], sumArray[5]),
             (categoryArray[6], sumArray[6])
         ].sorted {
-                $0.1 <= $1.1
-            }
+            $0.1 <= $1.1
+        }
         return indexedSumArray
     }
     
@@ -155,5 +165,5 @@ struct AllExpenseView: View {
 }
 
 #Preview {
-    AllExpenseView()
+    AllExpenseView(selectedTab: .constant(1))
 }
