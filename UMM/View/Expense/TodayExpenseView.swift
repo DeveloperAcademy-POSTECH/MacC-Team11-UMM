@@ -11,11 +11,13 @@ struct TodayExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @ObservedObject var dummyRecordViewModel: DummyRecordViewModel
     @Binding var selectedTab: Int
+    let namespace: Namespace.ID
     
-    init(selectedTab: Binding<Int>) {
+    init(selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = ExpenseViewModel()
         self.dummyRecordViewModel = DummyRecordViewModel()
         self._selectedTab = selectedTab
+        self.namespace = namespace
     }
     
     var body: some View {
@@ -112,23 +114,15 @@ struct TodayExpenseView: View {
     }
     
     private var tabViewButton: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                ForEach((TabbedItems.allCases), id: \.self) {item in
-                    Button {
-                        selectedTab = item.rawValue
-                    } label: {
-                        customTabItem(title: item.title, isActive: (selectedTab == item.rawValue))
-                    }
-                    .padding(.top, 8)
-                }
+        HStack(spacing: 0) {
+            ForEach((TabbedItems.allCases), id: \.self) { item in
+                TabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+                .padding(.top, 8)
             }
-            Divider()
-                .padding(.top, 11)
         }
         .padding(.top, 32)
     }
-    
+
     private var datePicker: some View {
         DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
             .onReceive(expenseViewModel.$selectedDate) { _ in
@@ -188,6 +182,7 @@ struct TodayExpenseView: View {
                                 .padding(.leading, 16)
                                 .foregroundStyle(.gray300)
                         }
+                        .padding(.top, 8)
                     }
                 }
                 .padding(.bottom, 16)
@@ -259,6 +254,4 @@ struct CurrencySum {
     let sum: Double
 }
 
-#Preview {
-    TodayExpenseView(selectedTab: .constant(0))
-}
+//2
