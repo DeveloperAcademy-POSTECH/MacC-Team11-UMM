@@ -137,6 +137,8 @@ class ExpenseViewModel: ObservableObject {
         return filteredByDate
     }
     
+    func calculateDay() {}
+    
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
         if
