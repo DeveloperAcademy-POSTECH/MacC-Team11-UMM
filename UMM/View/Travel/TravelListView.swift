@@ -122,11 +122,14 @@ struct TravelListView: View {
                                     .padding(.leading, 16)
                                 
                                 HStack {
-                                    Text("날짜")
-                                        .font(.subhead2_2)
-                                        .foregroundStyle(Color.white)
-                                        .opacity(0.75)
-                                        .padding(.leading, 16)
+                                    Group {
+                                        Text(nowTravel?[index].startDate ?? Date(), formatter: TravelListViewModel.dateFormatter) +
+                                        Text(" ~ ") +
+                                        Text(nowTravel?[index].endDate ?? Date(), formatter: TravelListViewModel.dateFormatter)
+                                    }
+                                    .font(.subhead2_2)
+                                    .foregroundStyle(Color.white.opacity(0.75))
+                                    .padding(.leading, 16)
                                     
                                     Spacer()
                                     
@@ -137,7 +140,7 @@ struct TravelListView: View {
                                         Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
                                             .font(.caption2)
                                             .foregroundStyle(Color.white)
-                                            
+                                        
                                     }
                                     .padding(.trailing, 16)
                                 }
