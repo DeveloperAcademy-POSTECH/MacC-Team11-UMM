@@ -12,17 +12,7 @@ struct CustomDatePicker: View {
     @Binding var selectedDate: Date
     var pickerId: String
     
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yy.MM.dd (E)"
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter
-    }()
-    
     var body: some View {
-        
-        
-        
         HStack(spacing: 0) {
             Button(action: {self.expenseViewModel.selectedDate.addTimeInterval(-86400)}, label: {
                 Image(systemName: "chevron.left")
@@ -32,7 +22,7 @@ struct CustomDatePicker: View {
                 Button {
                     expenseViewModel.triggerDatePickerPopover(pickerId: pickerId)
                 } label: {
-                    Text("\(expenseViewModel.selectedDate, formatter: dateFormatter)")
+                    Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
                         .foregroundStyle(.black)
                 }
                 .padding(.horizontal, 8)
