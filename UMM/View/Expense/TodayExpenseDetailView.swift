@@ -19,6 +19,11 @@ struct TodayExpenseDetailView: View {
     @State private var currencySums: [CurrencySum] = []
     
     var body: some View {
+        
+//        VStack {
+//            TravelPicker
+//            
+//        }      
         ScrollView {
             Picker("현재 결제 수단", selection: $selectedPaymentMethod) {
                 ForEach(-1...1, id: \.self) { index in

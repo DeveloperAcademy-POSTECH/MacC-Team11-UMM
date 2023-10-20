@@ -30,9 +30,9 @@ struct TodayExpenseView: View {
             }
             todayExpenseHeader
             tabViewButton
-            datePicker
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
+                    datePicker
                     drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
                     // dummyExpenseAddButton
                 }
@@ -126,8 +126,8 @@ struct TodayExpenseView: View {
     
     private var datePicker: some View {
         CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId)
-            .padding(.top, 16)
-            .padding(.bottom, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
     }
     
     private var dummyExpenseAddButton: some View {

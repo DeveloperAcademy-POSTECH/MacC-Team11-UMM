@@ -20,6 +20,9 @@ struct CustomDatePicker: View {
     }()
     
     var body: some View {
+        
+        
+        
         HStack(spacing: 0) {
             Button(action: {self.expenseViewModel.selectedDate.addTimeInterval(-86400)}, label: {
                 Image(systemName: "chevron.left")
