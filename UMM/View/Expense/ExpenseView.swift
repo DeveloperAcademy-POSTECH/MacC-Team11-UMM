@@ -11,15 +11,13 @@ struct ExpenseView: View {
     @State var selectedTab = 0
     var body: some View {
         NavigationStack {
-            VStack {
-                TabView(selection: $selectedTab) {
-                    TodayExpenseView(selectedTab: $selectedTab)
-                        .tag(0)
-                    AllExpenseView(selectedTab: $selectedTab)
-                        .tag(1)
-                }
-                .border(.red)
+            TabView(selection: $selectedTab) {
+                TodayExpenseView(selectedTab: $selectedTab)
+                    .tag(0)
+                AllExpenseView(selectedTab: $selectedTab)
+                    .tag(1)
             }
+            .border(.red)
         }
     }
 }

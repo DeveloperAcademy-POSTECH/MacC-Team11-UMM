@@ -19,18 +19,20 @@ struct TodayExpenseView: View {
     }
     
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 0) {
-                    travelPicker
-                    Spacer()
-                    settingView
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 0) {
+                travelPicker
+                Spacer()
+                settingView
+            }
+            todayExpenseHeader
+            tabViewButton
+            datePicker
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
+                    // dummyExpenseAddButton
                 }
-                todayExpenseHeader
-                tabViewButton
-                datePicker
-                drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
-                // dummyExpenseAddButton
             }
         }
         .frame(maxWidth: .infinity)
@@ -136,6 +138,7 @@ struct TodayExpenseView: View {
                 }
             }
             .padding(.top, 16)
+            .padding(.bottom, 20)
     }
     
     private var dummyExpenseAddButton: some View {
@@ -212,11 +215,20 @@ struct TodayExpenseView: View {
                                     }
                                     // 결제 수단: 개별, 화폐: 개별: 합계
                                     HStack(spacing: 0) {
-                                        ForEach(currencies, id: \.self) { currency in
+                                        ForEach(currencies.indices, id: \.self) { index in
+                                            let currency = currencies[index]
                                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                                            
                                             Text("\(currency): \(expenseViewModel.formatSum(sum))")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
+                                            
+                                            if index != currencies.count - 1 {
+                                                Divider()
+                                                    .font(.subhead2_1)
+                                                    .foregroundStyle(.gray200)
+                                                    .padding(.horizontal, 5)
+                                            }
                                         }
                                     }
                                     .padding(.top, 12)
