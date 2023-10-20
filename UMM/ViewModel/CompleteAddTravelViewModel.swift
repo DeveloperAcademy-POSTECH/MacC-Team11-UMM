@@ -22,7 +22,7 @@ class CompleteAddTravelViewModel: ObservableObject {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
         do {
             savedTravel = try viewContext.fetch(request)
-            print("fetchTravel | savedTravel.count: \(savedTravel.count)")
+//            print("fetchTravel | savedTravel.count: \(savedTravel.count)")
         } catch let error {
             print("Error while fetchTravel : \(error.localizedDescription)")
         }
