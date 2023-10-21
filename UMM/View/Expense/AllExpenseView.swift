@@ -28,10 +28,14 @@ struct AllExpenseView: View {
                 Spacer()
                 settingView
             }
-            todayExpenseHeader
+            allExpenseTitle
             tabViewButton
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
+                    countryPicker
+                    allExpenseSummary
+                    allExpenseBarGraph
+                    Divider()
                     drawExpensesByCategory
                 }
             }
@@ -94,6 +98,33 @@ struct AllExpenseView: View {
         }
     }
     
+    private var settingView: some View {
+        Button(action: {}, label: {
+            Image(systemName: "wifi")
+                .font(.system(size: 16))
+                .foregroundStyle(.gray300)
+        })
+    }
+    
+    private var allExpenseTitle: some View {
+        HStack(spacing: 0) {
+            Text("지출 관리")
+                .font(.display2)
+                .padding(.top, 12)
+            Spacer()
+        }
+    }
+    
+    private var tabViewButton: some View {
+        HStack(spacing: 0) {
+            ForEach((TabbedItems.allCases), id: \.self) { item in
+                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+                    .padding(.top, 8)
+            }
+        }
+        .padding(.top, 32)
+    }
+    
     private var countryPicker: some View {
         Picker("나라 별로", selection: $expenseViewModel.selectedCountry) {
             let allExpensesInSelectedTravel = expenseViewModel.savedExpenses
@@ -112,31 +143,12 @@ struct AllExpenseView: View {
         }
     }
     
-    private var settingView: some View {
-        Button(action: {}, label: {
-            Image(systemName: "wifi")
-                .font(.system(size: 16))
-                .foregroundStyle(.gray300)
-        })
+    private var allExpenseSummary: some View {
+        Text("allExpenseSummary")
     }
     
-    private var todayExpenseHeader: some View {
-        HStack(spacing: 0) {
-            Text("지출 관리")
-                .font(.display2)
-                .padding(.top, 12)
-            Spacer()
-        }
-    }
-    
-    private var tabViewButton: some View {
-        HStack(spacing: 0) {
-            ForEach((TabbedItems.allCases), id: \.self) { item in
-                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                    .padding(.top, 8)
-            }
-        }
-        .padding(.top, 32)
+    private var allExpenseBarGraph: some View {
+        Text("allExpenseBarGraph")
     }
     
     // 1. 나라별
