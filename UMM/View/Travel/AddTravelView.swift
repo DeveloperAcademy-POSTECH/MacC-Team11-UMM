@@ -72,76 +72,123 @@ struct AddTravelView: View {
 
     private var headerView: some View {
         
-        VStack(alignment: .leading) {
+        VStack {
             VStack(alignment: .leading) {
                 Spacer()
                 
-                Text("기간을 입력해주세요")
-                    .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
+                HStack {
+                    Text("기간을 입력해주세요")
+                        .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
+                    
+                    Spacer()
+                }
                 
                 Spacer()
                 
-                Text("여행의 시작일과 종료일을 설정해주세요.")
-                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                    .foregroundStyle(Color.gray300)
+                HStack {
+                    Text("여행의 시작일과 종료일을 설정해주세요.")
+                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .foregroundStyle(Color.gray300)
+                    
+                    Spacer()
+                }
                 
                 Spacer()
             }
+            .padding(.horizontal, 20)
             
-            HStack {
-                Text("시작일*")
+            Spacer()
+            
+            VStack {
+                HStack {
+                    HStack {
+                        Text("시작일")
+                            .font(.subhead1)
+                        +
+                        Text("*")
+                            .font(.subhead1)
+                            .foregroundStyle(Color.mainPink)
+                    }
+//                    .padding(.trailing, 5)
+                    
+                    Rectangle()
+                        .stroke(Color.white, lineWidth: 1)
+                        .frame(width: 104, height: 1)
+                        .overlay(
+                            LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.white]),
+                                           startPoint: .leading, endPoint: .trailing)
+                        )
+                    
+                    Text("종료일")
+                        .font(.subhead1)
+//                        .padding(.leading, 5)
+                }
                 
-                Button {
-                    self.showStartModal = true
-                } label: {
-                    ZStack {
-                        Text(viewModel.startDateToString(in: viewModel.startDate))
-                            .font(.custom(FontsManager.Pretendard.regular, size: 14))
-                            .foregroundStyle(Color(0x6C6C6C))
-                        
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 95, height: 25)
-                            .cornerRadius(3)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .inset(by: 0.5)
-                                    .stroke(Color.black, lineWidth: 1)
-                            )
-                        
+                HStack {
+                    Button {
+                        self.showStartModal = true
+                    } label: {
+                        ZStack {
+                    
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 132, height: 28, alignment: .leading)
+                                .cornerRadius(4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .inset(by: 0.5)
+                                        .stroke(Color.black, lineWidth: 1)
+                                )
+                            
+                            HStack {
+                                Text(viewModel.startDateToString(in: viewModel.startDate))
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 14))
+                                    .foregroundStyle(Color(0x6C6C6C))
+                                    .padding(.leading, 20)
+                                    .padding(.vertical, 6)
+                                
+                                Spacer()
+                            }
+                            
+                        }
+                    }
+                    .sheet(isPresented: $showStartModal) {
+                        startDatePickerModalView
+                            .presentationDetents([.height(354), .height(354)])
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        self.showEndModal = true
+                    } label: {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 132, height: 28, alignment: .leading)
+                                .cornerRadius(4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .inset(by: 0.5)
+                                        .stroke(Color.black, lineWidth: 1)
+                                )
+                            
+                            HStack {
+                                Text(viewModel.endDateToString(in: viewModel.endDate))
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 14))
+                                    .foregroundStyle(Color(0x6C6C6C))
+                                    .padding(.leading, 20)
+                                    .padding(.vertical, 6)
+                                Spacer()
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $showEndModal) {
+                        endDatePickerModalView
+                            .presentationDetents([.height(354), .height(354)])
                     }
                 }
-                .sheet(isPresented: $showStartModal) {
-                    startDatePickerModalView
-                        .presentationDetents([.height(354), .height(354)])
-                }
-                
-                Text("-")
-                
-                Text("종료일")
-                
-                Button {
-                    self.showEndModal = true
-                } label: {
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 95, height: 25)
-                            .cornerRadius(3)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .inset(by: 0.5)
-                                    .stroke(Color.black, lineWidth: 1)
-                            )
-                        Text(viewModel.endDateToString(in: viewModel.endDate))
-                            .font(.custom(FontsManager.Pretendard.regular, size: 14))
-                            .foregroundStyle(Color(0x6C6C6C))
-                    }
-                }
-                .sheet(isPresented: $showEndModal) {
-                    endDatePickerModalView
-                        .presentationDetents([.height(354), .height(354)])
-                }
+                .padding(.horizontal, 40)
             }
             
             Spacer()
@@ -187,23 +234,21 @@ struct AddTravelView: View {
                 Button {
                     viewModel.changeMonth(by: -1)
                 } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.title)
-                        .foregroundStyle(Color.black)
+                    Image("calendar_left")
                 }
                 
                 Spacer()
                 
                 Text(viewModel.year, formatter: AddTravelViewModel.dateYearFormatter)
-                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .font(.calendar1)
                     .foregroundStyle(Color(0x333333))
                 +
                 Text(".")
-                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .font(.calendar1)
                     .foregroundStyle(Color(0x333333))
                 +
                 Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
-                    .font(.custom(FontsManager.Pretendard.medium, size: 20.47))
+                    .font(.calendar1)
                     .foregroundStyle(Color(0x333333))
                 
                 Spacer()
@@ -211,21 +256,20 @@ struct AddTravelView: View {
                 Button {
                     viewModel.changeMonth(by: 1)
                 } label: {
-                    Image(systemName: "chevron.right")
-                        .padding(1.0)
-                        .font(.title)
-                        .foregroundStyle(Color.black)
+                    Image("calendar_right")
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 30)
 
             HStack {
                 ForEach(koreanWeekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
-                        .foregroundStyle(Color.gray)
+                        .font(.caption2)
+                        .foregroundStyle(Color.gray300)
                         .frame(maxWidth: .infinity)
                 }
             }
+            .padding(.horizontal, 18)
         }
     }
 
@@ -244,7 +288,7 @@ struct AddTravelView: View {
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = total - (firstWeekday - index - 1)
                         
-                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray200)
                             .disabled(true)
                         
                     } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
@@ -261,11 +305,12 @@ struct AddTravelView: View {
                         let date = viewModel.getDate(for: index - firstWeekday + 1)
                         let day = maxNum - (daysInMonth + firstWeekday) - tmp + 1
                         
-                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray)
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray200)
                             .disabled(true)
                     }
                 }
             }
+            .padding(.horizontal, 18)
         }
     }
 
@@ -295,7 +340,8 @@ struct AddTravelView: View {
                 } label: {
                     Text(String(day))
                         .padding(9.81)
-                        .frame(width: 45, height: 41)
+                        .font(.calendar2)
+                        .frame(width: 45, height: 45)
                         .foregroundStyle(textColor)
                         .overlay {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
@@ -307,7 +353,7 @@ struct AddTravelView: View {
                                     
                                     Text(String(day))
                                         .padding(9.81)
-                                        .frame(width: 45, height: 41)
+                                        .frame(width: 45, height: 45)
                                         .foregroundStyle(Color.white)
                                 }
                             } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
@@ -318,8 +364,9 @@ struct AddTravelView: View {
                                         .fill(Color.mainPink)
                                     
                                     Text(String(day))
+                                        .font(.calendar2)
                                         .padding(9.81)
-                                        .frame(width: 45, height: 41)
+                                        .frame(width: 45, height: 45)
                                         .foregroundStyle(Color.white)
                                 }
                             }
@@ -334,10 +381,11 @@ struct AddTravelView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 134, height: 45)
-                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray)
+                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray200)
                     .cornerRadius(16)
                 
                 Text("다음")
+                    .font(.subhead3_2)
                     .foregroundStyle(Color.white)
             }
         }
