@@ -15,7 +15,7 @@ struct TodayExpenseDetailView: View {
     var selectedTravel: Travel?
     var selectedDate: Date
     var selectedCountry: Int64
-    @State var selectedPaymentMethod: Int64 = -1
+    @State var selectedPaymentMethod: Int64 = -2
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false

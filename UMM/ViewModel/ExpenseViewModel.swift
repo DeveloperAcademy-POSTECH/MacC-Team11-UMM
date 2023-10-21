@@ -20,7 +20,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
-    @Published var selectedCountry: Int64 = 0
+    @Published var selectedCountry: Int64 = -2
     @Published var selectedCategory: Int64 = 0
     
     @Published var travelChoiceHalfModalIsShown = false {
