@@ -208,6 +208,7 @@ struct TodayExpenseDetailView: View {
                                 .font(.subhead2_1)
                             Text("\(expenseViewModel.formatSum(expense.payAmount, 2))")
                                 .font(.subhead2_1)
+                                .padding(.leading, 3)
                         }
                         Text("원화로 환산된 금액")
                             .font(.caption2)
