@@ -47,7 +47,7 @@ class AddTravelViewModel: ObservableObject {
     static let startDateFormatter: DateFormatter = {
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY. MM. dd"
+        formatter.dateFormat = "yy.MM.dd(E)"
 
         return formatter
     }()

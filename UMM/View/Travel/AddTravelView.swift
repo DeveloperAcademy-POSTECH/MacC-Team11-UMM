@@ -108,7 +108,6 @@ struct AddTravelView: View {
                             .font(.subhead1)
                             .foregroundStyle(Color.mainPink)
                     }
-//                    .padding(.trailing, 5)
                     
                     Rectangle()
                         .stroke(Color.white, lineWidth: 1)
@@ -120,7 +119,6 @@ struct AddTravelView: View {
                     
                     Text("종료일")
                         .font(.subhead1)
-//                        .padding(.leading, 5)
                 }
                 
                 HStack {
@@ -141,7 +139,7 @@ struct AddTravelView: View {
                             
                             HStack {
                                 Text(viewModel.startDateToString(in: viewModel.startDate))
-                                    .font(.body)
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 16))
                                     .foregroundStyle(Color.gray300)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
@@ -174,7 +172,7 @@ struct AddTravelView: View {
                             
                             HStack {
                                 Text(viewModel.endDateToString(in: viewModel.endDate))
-                                    .font(.body)
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 16))
                                     .foregroundStyle(Color.gray300)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
