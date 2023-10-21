@@ -30,7 +30,6 @@ struct AllExpenseView: View {
             }
             todayExpenseHeader
             tabViewButton
-            datePicker
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     drawExpensesByCategory
@@ -138,18 +137,6 @@ struct AllExpenseView: View {
             }
         }
         .padding(.top, 32)
-    }
-    
-    private var datePicker: some View {
-        DatePicker("날짜", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
-            .onReceive(expenseViewModel.$selectedDate) { _ in
-                DispatchQueue.main.async {
-                    expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-                    expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-                }
-            }
-            .padding(.top, 16)
-            .padding(.bottom, 20)
     }
     
     // 1. 나라별

@@ -34,23 +34,18 @@ struct ExpenseTabBarItem: View {
         Button {
             selectedTab = tab
         } label: {
-            VStack {
+            VStack(spacing: 0) {
                 Text(title)
                     .font(.subhead3_1)
                     .foregroundStyle(selectedTab == tab ? .black : .gray300)
 
                 ZStack {
                     Divider()
-                        .padding(.top, 12)
                         .frame(height: 2)
+                        .padding(.top, 11)
                     if selectedTab == tab {
                         Color.black
-                            .frame(height: 2)
                             .matchedGeometryEffect(id: "underline", in: namespace.self)
-                            .padding(.top, 11)
-                            .padding(.horizontal)
-                    } else {
-                        Color.gray300
                             .frame(height: 2)
                             .padding(.top, 11)
                             .padding(.horizontal)

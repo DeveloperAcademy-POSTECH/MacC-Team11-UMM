@@ -12,6 +12,7 @@ extension Font {
     static let display1 = Font.custom(FontsManager.Pretendard.semiBold, size: 20)
     static let display2 = Font.custom(FontsManager.Pretendard.semiBold, size: 24)
     static let display3 = Font.custom(FontsManager.Pretendard.semiBold, size: 28)
+    static let display4 = Font.custom(FontsManager.Pretendard.semiBold, size: 32)
     
     static let subhead1 = Font.custom(FontsManager.Pretendard.semiBold, size: 14)
     static let subhead2_1 = Font.custom(FontsManager.Pretendard.semiBold, size: 16)

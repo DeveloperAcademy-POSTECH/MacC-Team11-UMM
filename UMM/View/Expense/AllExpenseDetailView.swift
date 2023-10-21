@@ -15,7 +15,7 @@ struct AllExpenseDetailView: View {
     var selectedCategory: Int64
     var selectedCountry: Int64
     @State var selectedPaymentMethod: Int64 = -1
-    @State private var currencySums: [CurrencySum] = []
+    @State private var currencySums: [CurrencyAndSum] = []
     
     var body: some View {
         ScrollView {

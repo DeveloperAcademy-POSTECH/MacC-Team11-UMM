@@ -30,9 +30,9 @@ struct TodayExpenseView: View {
             }
             todayExpenseHeader
             tabViewButton
-            datePicker
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
+                    datePicker
                     drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
                     // dummyExpenseAddButton
                 }
@@ -126,8 +126,8 @@ struct TodayExpenseView: View {
     
     private var datePicker: some View {
         CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId)
-            .padding(.top, 16)
-            .padding(.bottom, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
     }
     
     private var dummyExpenseAddButton: some View {
@@ -165,11 +165,12 @@ struct TodayExpenseView: View {
                             selectedTravel: expenseViewModel.selectedTravel,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
-                            selectedPaymentMethod: -2 // paymentMethod와 상관 없이 모든 expense를 보여주기 위해 임의 값을 설정
+                            selectedPaymentMethod: -2,
+                            sumPaymentMethod: totalSum
                         )
                     } label: {
                         HStack(spacing: 0) {
-                            Text("금액 합: \(expenseViewModel.formatSum(totalSum))")
+                            Text("금액 합: \(expenseViewModel.formatSum(totalSum, 2))")
                                 .font(.display3)
                                 .foregroundStyle(.black)
                             Image(systemName: "wifi")
@@ -186,14 +187,15 @@ struct TodayExpenseView: View {
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                        // let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+                         let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
                         
                         NavigationLink {
                             TodayExpenseDetailView(
                                 selectedTravel: expenseViewModel.selectedTravel,
                                 selectedDate: expenseViewModel.selectedDate,
                                 selectedCountry: country,
-                                selectedPaymentMethod: paymentMethod
+                                selectedPaymentMethod: paymentMethod,
+                                sumPaymentMethod: sumPaymentMethod
                             )
                         } label: {
                             HStack(alignment: .center, spacing: 0) {
@@ -209,7 +211,7 @@ struct TodayExpenseView: View {
                                             let currency = currencies[index]
                                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                                             
-                                            Text("\(currency): \(expenseViewModel.formatSum(sum))")
+                                            Text("\(currency): \(expenseViewModel.formatSum(sum, 2))")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
                                             
@@ -243,7 +245,7 @@ struct TodayExpenseView: View {
     } // draw
 }
 
-struct CurrencySum {
+struct CurrencyAndSum {
     let currency: Int64
     let sum: Double
 }
