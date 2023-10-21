@@ -123,7 +123,7 @@ class ExpenseViewModel: ObservableObject {
     }
     
     // 소수점 두 자리로 반올림, 소수점 아래 값이 없으면 정수형처럼 반환
-    func formatSum(_ sum: Double,_ to: Int) -> String {
+    func formatSum(_ sum: Double, _ to: Int) -> String {
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
         formatter.maximumFractionDigits = to // 최대 허용되는 소수점 자릿수
@@ -148,7 +148,6 @@ class ExpenseViewModel: ObservableObject {
         return calculatedDay
     }
 
-    
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
         if
