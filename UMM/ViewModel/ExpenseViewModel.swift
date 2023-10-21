@@ -110,23 +110,23 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func calculateCurrencySums(from expenses: [Expense]) -> [CurrencySum] {
-        var currencySums = [CurrencySum]()
+    func calculateCurrencyAndSums(from expenses: [Expense]) -> [CurrencyAndSum] {
+        var currencyAndSums = [CurrencyAndSum]()
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
 
         for currency in currencies {
             let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            currencySums.append(CurrencySum(currency: currency, sum: sum))
+            currencyAndSums.append(CurrencyAndSum(currency: currency, sum: sum))
         }
         
-        return currencySums
+        return currencyAndSums
     }
     
     // 소수점 두 자리로 반올림, 소수점 아래 값이 없으면 정수형처럼 반환
-    func formatSum(_ sum: Double) -> String {
+    func formatSum(_ sum: Double, _ to: Int) -> String {
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
-        formatter.maximumFractionDigits = 2 // 최대 허용되는 소수점 자릿수
+        formatter.maximumFractionDigits = to // 최대 허용되는 소수점 자릿수
         
         return formatter.string(from: NSNumber(value: sum)) ?? ""
     }
@@ -135,6 +135,17 @@ class ExpenseViewModel: ObservableObject {
         let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
+    }
+    
+    func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {
+        guard let startDate = selectedTravel.startDate else { return 0 }
+        let calendar = Calendar.current
+        let startOfDayStartDate = calendar.startOfDay(for: startDate)
+        let startOfDayEndDate = calendar.startOfDay(for: selectedDate)
+        let components = calendar.dateComponents([.day], from: startOfDayStartDate, to: startOfDayEndDate)
+        guard let calculatedDay = components.day else {return 0 }
+
+        return calculatedDay
     }
     
     // MARK: - 커스텀 Date Picker를 위한 함수

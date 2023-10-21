@@ -92,7 +92,6 @@ struct TodayExpenseView: View {
             DispatchQueue.main.async {
                 expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
                 expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-                print("TodayExpenseView | onReceive | done")
             }
         }
     }
@@ -243,7 +242,7 @@ struct TodayExpenseView: View {
     } // draw
 }
 
-struct CurrencySum {
+struct CurrencyAndSum {
     let currency: Int64
     let sum: Double
 }
