@@ -43,7 +43,7 @@ struct ManualRecordView: View {
         if prevViewModel.needToFill {
             viewModel.payAmount = prevViewModel.payAmount
             //        viewModel.payAmountInWon = ...
-            viewModel.payAmountInWon = prevViewModel.payAmount * 9.1 // ^^^
+            viewModel.payAmountInWon = prevViewModel.payAmount * viewModel.currency.rate // ^^^
             viewModel.info = prevViewModel.info
             viewModel.category = prevViewModel.infoCategory
             viewModel.paymentMethod = prevViewModel.paymentMethod
@@ -200,14 +200,9 @@ struct ManualRecordView: View {
                     ZStack {
 //                        높이 설정용 히든 뷰
                         ZStack {
-                            RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(.black, lineWidth: 1.0)
-                                .layoutPriority(-1)
-                            
-                            Text("현금")
+                            Text("금")
                                 .foregroundStyle(.black)
                                 .font(.subhead2_1)
-                                .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
                         }
                         .hidden()
@@ -239,14 +234,9 @@ struct ManualRecordView: View {
                     ZStack {
                         // 높이 설정용 히든 뷰
                         ZStack {
-                            RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(.black, lineWidth: 1.0)
-                                .layoutPriority(-1)
-                            
-                            Text("현금")
+                            Text("금")
                                 .foregroundStyle(.black)
                                 .font(.subhead2_1)
-                                .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
                         }
                         .hidden()
@@ -355,7 +345,184 @@ struct ManualRecordView: View {
         HStack {
             Spacer()
                 .frame(width: 20)
-            Text("not-in-string properties...")
+            VStack(spacing: 20) {
+                HStack(spacing: 0) {
+                    ZStack(alignment: .leading) {
+                        Spacer()
+                            .frame(width: 116, height: 1)
+                        Text("여행 제목")
+                            .foregroundStyle(.gray300)
+                            .font(.caption2)
+                    }
+                    ZStack {
+                        // 높이 설정용 히든 뷰
+                        ZStack {
+                            Text("금")
+                                .foregroundStyle(.black)
+                                .font(.subhead2_1)
+                                .padding(.vertical, 6)
+                        }
+                        .hidden()
+                        
+                        Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
+                            .lineLimit(nil)
+                            .foregroundStyle(.black)
+                            .font(.subhead2_1)
+                    }
+                    Spacer()
+                    Button {
+                        print("여행 제목 수정 버튼")
+                    } label: {
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                }
+                HStack(spacing: 0) {
+                    ZStack(alignment: .leading) {
+                        Spacer()
+                            .frame(width: 116, height: 1)
+                        Text("결제 인원")
+                            .foregroundStyle(.gray300)
+                            .font(.caption2)
+                    }
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 6) {
+                            ForEach(viewModel.participantTupleArray + viewModel.additionalParticipantTupleArray, id: \.0.self) { tuple in
+                                Button {
+                                    print("참여 인원(\(tuple.0)) 참여 여부 설정 버튼")
+                                    print("pa: \(viewModel.participantTupleArray)")
+                                    print("apa: \(viewModel.additionalParticipantTupleArray)")
+                                } label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .foregroundStyle(tuple.1 == true ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
+                                            .layoutPriority(-1)
+                                        
+                                        // 높이 설정용 히든 뷰
+                                        Text("금")
+                                            .lineLimit(1)
+                                            .font(.subhead2_2)
+                                            .padding(.vertical, 6)
+                                            .hidden()
+                                        
+                                        HStack(spacing: 4) {
+                                            if tuple.0 == "나" {
+                                                Text("me")
+                                                    .lineLimit(1)
+                                                    .foregroundStyle(tuple.1 ? .gray200 : .gray300)
+                                                    .font(.subhead2_1)
+                                            }
+                                            Text(tuple.0)
+                                                .lineLimit(1)
+                                                .foregroundStyle(tuple.1 ? .white : .gray300)
+                                                .font(.subhead2_2)
+                                        }
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 12)
+                                    }
+                                }
+                            }
+                            Button {
+                                print("결제 인원 추가 버튼")
+                            } label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .foregroundStyle(.gray100)
+                                        .layoutPriority(-1)
+                                    
+                                    // 높이 설정용 히든 뷰
+                                    Text("금")
+                                        .lineLimit(1)
+                                        .font(.subhead2_2)
+                                        .padding(.vertical, 6)
+                                        .hidden()
+                                    
+                                    Image("manualRecordParticipantAdd")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 16, height: 16)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 8)
+                                }
+                            }
+                        }
+                    }
+                    .scrollIndicators(.never)
+
+                }
+                HStack(spacing: 0) {
+                    ZStack(alignment: .leading) {
+                        Spacer()
+                            .frame(width: 116, height: 1)
+                        Text("지출 일시")
+                            .foregroundStyle(.gray300)
+                            .font(.caption2)
+                    }
+                    ZStack {
+                        // 높이 설정용 히든 뷰
+                        Text("금")
+                            .lineLimit(1)
+                            .font(.subhead2_2)
+                            .padding(.vertical, 6)
+                            .hidden()
+                        
+                        Text(viewModel.payDate.toString(dateFormat: "yyyy년 M월 d일 a hh:mm"))
+                            .foregroundStyle(.black)
+                            .font(.subhead2_2)
+                    }
+                    Spacer()
+                    Button {
+                        print("지출 일시 수정 버튼")
+                    } label: {
+                        Image("manualRecordPencil")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                }
+                HStack(spacing: 0) {
+                    ZStack(alignment: .leading) {
+                        Spacer()
+                            .frame(width: 116, height: 1)
+                        Text("지출 위치")
+                            .foregroundStyle(.gray300)
+                            .font(.caption2)
+                    }
+                    ZStack {
+                        // 높이 설정용 히든 뷰
+                        Text("금")
+                            .lineLimit(1)
+                            .font(.subhead2_2)
+                            .padding(.vertical, 6)
+                            .hidden()
+                        
+                        HStack(spacing: 8) {
+                            ZStack {
+                                Image("manualRecordExampleJapan") // country와 연동하기
+                                    .resizable()
+                                    .scaledToFit()
+                                
+                                Circle()
+                                    .strokeBorder(.gray200, lineWidth: 1.0)
+                            }
+                            .frame(width: 24, height: 24)
+                            Text(viewModel.locationExpression)
+                        }
+                    }
+                    
+                    Spacer()
+                    Button {
+                        print("지출 위치 수정 버튼")
+                    } label: {
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                }
+            }
             Spacer()
                 .frame(width: 20)
         }

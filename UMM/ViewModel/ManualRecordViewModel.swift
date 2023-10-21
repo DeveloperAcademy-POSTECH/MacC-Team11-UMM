@@ -16,10 +16,10 @@ class ManualRecordViewModel: ObservableObject {
     @Published var payAmount: Double = -1 {
         didSet {
 //            payAmountInWon = ...
-            payAmountInWon = payAmount * 9.1 // ^^^
+            payAmountInWon = payAmount * currency.rate // ^^^
         }
     }
-    @Published var payAmountInWon: Double = -1
+    @Published var payAmountInWon: Double = -1 // passive
 
     @Published var info: String?
     @Published var category: ExpenseInfoCategory = .unknown
@@ -56,7 +56,7 @@ class ManualRecordViewModel: ObservableObject {
     }
     @Published var travelArray: [Travel] = []
     
-    @Published var participantTupleArray: [(String, Bool)] = [("나", true)]
+    @Published var participantTupleArray: [(String, Bool)] = [("나", true)] // passive
     @Published var additionalParticipantTupleArray: [(String, Bool)] = []
     
     @Published var payDate: Date = Date()
@@ -64,20 +64,41 @@ class ManualRecordViewModel: ObservableObject {
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = country.name
+            locationExpression = country.name // country와 연동하기 ^^^
+            
+            if country == .usa {
+                currencyCandidateArray = [.usd, .krw]
+            } else {
+                currencyCandidateArray = country.relatedCurrencyArray
+                if !currencyCandidateArray.contains(.usd) {
+                    currencyCandidateArray.append(.usd)
+                }
+                if !currencyCandidateArray.contains(.krw) {
+                    currencyCandidateArray.append(.krw)
+                }
+            }
+            
+            if currency == .usd && country != .usa {
+                return
+            } else if currency == .krw && country != .korea {
+                return
+            } else {
+                currency = currencyCandidateArray.first ?? .usd
+            }
         }
     }
-    @Published var locationExpression: String = "일본 도쿄"
-    var currentCountry: Country = .japan
-    var currentLocation: String = "일본 도쿄"
-    @Published var otherCountryCandidateArray: [Country] = [.usa]
+    @Published var locationExpression: String = "" // passive
+    var currentCountry: Country = .unknown
+    var currentLocation: String = ""
+    @Published var otherCountryCandidateArray: [Country] = [] // passive
     
-    @Published var currency: Currency = .jpy {
+    @Published var currency: Currency = .unknown {
         didSet {
 //            payAmountInWon = ...
-            payAmountInWon = payAmount * 910.0 // ^^^
+            payAmountInWon = payAmount * currency.rate // ^^^
         }
     }
+    @Published var currencyCandidateArray: [Currency] = []
     
     init() {
 //        country = LocationHandler.shared.getCurrentCounty()
@@ -85,11 +106,23 @@ class ManualRecordViewModel: ObservableObject {
 //        locationExpression = LocationHandler.shared.getCurrentLocation()
 //        currentLocation = locationExpression
 //        currency = CurrencyHandler.shard.getCurrency(country)
-        country = .japan
-        currentCountry = country
-        locationExpression = "일본 도쿄"
-        currentLocation = locationExpression
-        currency = .jpy
+        // MARK: - 현재 위치 정보와 연동
+        currentCountry = .japan
+        country = country
+        currentLocation = "일본 도쿄"
+        locationExpression = currentLocation
+        currency = currentCountry.relatedCurrencyArray.first ?? .usd
+        if currentCountry == .usa {
+            currencyCandidateArray = [.usd, .krw]
+        } else {
+            currencyCandidateArray = currentCountry.relatedCurrencyArray
+            if !currencyCandidateArray.contains(.usd) {
+                currencyCandidateArray.append(.usd)
+            }
+            if !currencyCandidateArray.contains(.krw) {
+                currencyCandidateArray.append(.krw)
+            }
+        }
     }
     
     func save() {
@@ -98,11 +131,10 @@ class ManualRecordViewModel: ObservableObject {
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country.rawValue)
         expense.currency = Int64(currency.rawValue)
-//        expense.exchangeRate = CurrencyHandler.getExchangeRate(currency)
-        expense.exchangeRate = 9.1 // ^^^
+        expense.exchangeRate = currency.rate // ^^^
         expense.info = info
         expense.location = locationExpression
-        expense.participantArray = participantTupleArray.filter { $0.1 == true }.map { $0.0 }
+        expense.participantArray = (participantTupleArray + additionalParticipantTupleArray).filter { $0.1 == true }.map { $0.0 }
         expense.payAmount = payAmount
         expense.payDate = payDate
         expense.paymentMethod = Int64(paymentMethod.rawValue)

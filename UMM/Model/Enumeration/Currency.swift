@@ -25,4 +25,27 @@ enum Currency: Int {
     case cny
     // 베트남 동
     case vnd
+    
+    var rate: Double {
+        switch self {
+        case .unknown:
+            return 0
+        case .krw:
+            return 1
+        case .usd:
+            return 1353
+        case .jpy:
+            return 9.03
+        case .eur:
+            return 1433.37
+        case .gbp:
+            return 1645.86
+        case .twd:
+            return 41.83
+        case .cny:
+            return 184.65
+        case .vnd:
+            return 0.06
+        }
+    }
 }

@@ -340,7 +340,7 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 8) {
-                    Image("manualRecordPencil")
+                    Image("manualRecordBlackPencil")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)

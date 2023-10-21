@@ -44,5 +44,32 @@ enum Country: Int {
         default:
             return "-"
         }
-    } 
+    }
+    
+    var relatedCurrencyArray: [Currency] {
+        switch self {
+        case .unknown:
+            return []
+        case .korea:
+            return [.krw]
+        case .japan:
+            return [.jpy]
+        case .germany:
+            return [.eur]
+        case .uk:
+            return [.gbp]
+        case .usa:
+            return [.usd]
+        case .france:
+            return [.eur]
+        case .taiwan:
+            return [.twd]
+        case .china:
+            return [.cny]
+        case .vietnam:
+            return [.vnd]
+        default:
+            return []
+        }
+    }
 }
