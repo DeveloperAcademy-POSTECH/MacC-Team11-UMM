@@ -548,13 +548,21 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopSTT() {
-        self.audioEngine.stop()
+        audioEngine.stop()
+        recognitionRequest?.endAudio()
         audioEngine.inputNode.removeTap(onBus: 0)
-        self.recognitionRequest = nil
-        self.recognitionTask = nil
+        recognitionRequest = nil
+        recognitionTask = nil
+
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+        } catch {
+            print("Error deactivating audio session: \(error)")
+        }
     }
     
-    func startRecording() {
+    func startRecording() async {
         let recordingSession = AVAudioSession.sharedInstance()
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
@@ -583,7 +591,9 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopRecording() {
-        audioRecorder.stop()
+        if audioRecorder.isRecording {
+            audioRecorder.stop()
+        }
     }
     
     func startPlayingAudio(url: URL) {
