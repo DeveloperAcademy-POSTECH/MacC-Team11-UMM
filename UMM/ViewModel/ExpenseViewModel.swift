@@ -110,7 +110,7 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func calculateCurrencyAndSums(from expenses: [Expense]) -> [CurrencyAndSum] {
+    func calculateCurrencySums(from expenses: [Expense]) -> [CurrencyAndSum] {
         var currencyAndSums = [CurrencyAndSum]()
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
 
@@ -147,7 +147,7 @@ class ExpenseViewModel: ObservableObject {
 
         return calculatedDay
     }
-    
+
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
         if
