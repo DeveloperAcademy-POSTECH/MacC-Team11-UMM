@@ -27,7 +27,6 @@ struct AddTravelView: View {
                 Spacer()
                 
                 VStack {
-                    Spacer()
                     
                     calendarHeader
                     calendarGridView
@@ -271,6 +270,7 @@ struct AddTravelView: View {
             }
             .padding(.horizontal, 18)
         }
+        .padding(.top, 24)
     }
 
     private var calendarGridView: some View {
@@ -341,7 +341,7 @@ struct AddTravelView: View {
                     Text(String(day))
                         .padding(9.81)
                         .font(.calendar2)
-                        .frame(width: 45, height: 45)
+                        .frame(width: 45, height: 41)
                         .foregroundStyle(textColor)
                         .overlay {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
@@ -353,7 +353,7 @@ struct AddTravelView: View {
                                     
                                     Text(String(day))
                                         .padding(9.81)
-                                        .frame(width: 45, height: 45)
+                                        .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
                             } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
@@ -366,7 +366,7 @@ struct AddTravelView: View {
                                     Text(String(day))
                                         .font(.calendar2)
                                         .padding(9.81)
-                                        .frame(width: 45, height: 45)
+                                        .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
                             }
