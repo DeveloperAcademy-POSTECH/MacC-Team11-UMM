@@ -32,4 +32,41 @@ enum ExpenseInfoCategory: Int {
             return "unknown"
         }
     }
+    
+    var visibleDescription: String {
+        switch self {
+        case .plane:
+            return "plane"
+        case .room:
+            return "room"
+        case .transportation:
+            return "transportation"
+        case .food:
+            return "food"
+        case .fun:
+            return "fun"
+        case .shopping:
+            return "shopping"
+        default:
+            return "unknown"
+        }
+    }
+    var manualRecordImageString: String {
+        switch self {
+        case .plane:
+            return "manualRecordCategoryPlane"
+        case .room:
+            return "manualRecordCategoryRoom"
+        case .transportation:
+            return "manualRecordCategoryTransportation"
+        case .food:
+            return "manualRecordCategoryFood"
+        case .fun:
+            return "manualRecordCategoryFun"
+        case .shopping:
+            return "manualRecordCategoryShopping"
+        default:
+            return "manualRecordCategoryUnknown"
+        }
+    }
 }

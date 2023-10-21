@@ -130,7 +130,7 @@ struct CircleLabelView: View {
         if let chosenTravel, travel.id == chosenTravel.id {
             ZStack {
                 Circle()
-                    .fill(Color(0x7b61ff))
+                    .fill(Color(0x7b61ff)) // 색상 디자인 시스템 형식으로 고치기 ^^^
                     .frame(width: 19, height: 19)
                     .overlay(
                         Circle()

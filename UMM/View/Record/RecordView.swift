@@ -388,15 +388,22 @@ struct RecordView: View {
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
                     DispatchQueue.main.async {
                         viewModel.alertView_shortIsShown = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         viewModel.resetInStringProperties()
                     }
-                } else if viewModel.info == nil && viewModel.payAmount == -1 {
-                    viewModel.resetTranscribedString()
-                    viewModel.alertView_emptyIsShown = true
-                    viewModel.resetInStringProperties()
                 } else {
-                    viewModel.manualRecordViewIsShown = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        if viewModel.info == nil && viewModel.payAmount == -1 {
+                            viewModel.resetTranscribedString()
+                            viewModel.alertView_emptyIsShown = true
+                            viewModel.resetInStringProperties()
+                        } else {
+                            viewModel.manualRecordViewIsShown = true
+                        }
+                    }
                 }
+                    
             }
         }
         .offset(y: 274)
