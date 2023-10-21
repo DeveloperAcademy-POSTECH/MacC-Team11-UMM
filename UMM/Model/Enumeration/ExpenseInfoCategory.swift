@@ -5,31 +5,56 @@
 //  Created by Wonil Lee on 10/12/23.
 //
 
+import SwiftUI
+
 enum ExpenseInfoCategory: Int {
     case unknown = -1
     case plane
     case room
     case transportation
     case food
-    case fun
+    case tour
     case shopping
     
     var description: String {
         switch self {
         case .plane:
-            return "plane"
+            return "항공"
         case .room:
-            return "room"
+            return "숙소"
         case .transportation:
-            return "transportation"
+            return "교통"
         case .food:
-            return "food"
-        case .fun:
-            return "fun"
+            return "식비"
+        case .tour:
+            return "관광"
         case .shopping:
-            return "shopping"
-        default:
-            return "unknown"
+            return "쇼핑"
+        case .unknown:
+            return "기타"
         }
+    }
+    
+    var color: Color {
+        switch self {
+        case .plane:
+            return Color("graphCyan")
+        case .room:
+            return Color("graphMagenta")
+        case .transportation:
+            return Color("graphYellow")
+        case .food:
+            return Color("graphOrange")
+        case .tour:
+            return Color("graphRed")
+        case .shopping:
+            return Color("graphPurple")
+        case .unknown:
+            return Color("gray200")
+        }
+    }
+    
+    static func descriptionFor(rawValue: Int) -> String {
+        return ExpenseInfoCategory(rawValue: rawValue)?.description ?? "전체"
     }
 }

@@ -137,7 +137,7 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(currencyAndSums.reduce(0) { $0 + $1.sum }, 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum }, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -145,7 +145,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencySum = currencyAndSums[idx]
-                    Text("\(currencySum.currency): \(expenseViewModel.formatSum(currencySum.sum, 2))")
+                    Text("\(currencySum.currency): \(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -206,7 +206,7 @@ struct TodayExpenseDetailView: View {
                         HStack(alignment: .center, spacing: 0) {
                             Text("\(expense.currency)")
                                 .font(.subhead2_1)
-                            Text("\(expenseViewModel.formatSum(expense.payAmount, 2))")
+                            Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
                                 .font(.subhead2_1)
                                 .padding(.leading, 3)
                         }

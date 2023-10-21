@@ -169,7 +169,7 @@ struct TodayExpenseView: View {
                         )
                     } label: {
                         HStack(spacing: 0) {
-                            Text("금액 합: \(expenseViewModel.formatSum(totalSum, 2))")
+                            Text("금액 합: \(expenseViewModel.formatSum(from: totalSum, to: 2))")
                                 .font(.display3)
                                 .foregroundStyle(.black)
                             Image(systemName: "wifi")
@@ -210,7 +210,7 @@ struct TodayExpenseView: View {
                                             let currency = currencies[index]
                                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                                             
-                                            Text("\(currency): \(expenseViewModel.formatSum(sum, 2))")
+                                            Text("\(currency): \(expenseViewModel.formatSum(from: sum, to: 2))")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
                                             

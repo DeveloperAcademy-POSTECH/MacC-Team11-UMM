@@ -122,11 +122,12 @@ class ExpenseViewModel: ObservableObject {
         return currencyAndSums
     }
     
-    // 소수점 두 자리로 반올림, 소수점 아래 값이 없으면 정수형처럼 반환
-    func formatSum(_ sum: Double, _ to: Int) -> String {
+    // parameter: 변환할 Double, 표시할 소수점 아래 자리 수
+    func formatSum(from sum: Double, to num: Int) -> String {
         let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
-        formatter.maximumFractionDigits = to // 최대 허용되는 소수점 자릿수
+        formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
         
         return formatter.string(from: NSNumber(value: sum)) ?? ""
     }

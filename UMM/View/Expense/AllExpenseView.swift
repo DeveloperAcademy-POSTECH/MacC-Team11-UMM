@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts
 
 struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
@@ -33,8 +34,6 @@ struct AllExpenseView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     countryPicker
-                    allExpenseSummary
-                    allExpenseBarGraph
                     Divider()
                     drawExpensesByCategory
                 }
@@ -141,23 +140,28 @@ struct AllExpenseView: View {
                             expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
                             print("countryPicker | expenseViewModel.groupedExpenses: \(expenseViewModel.groupedExpenses.count)")
                         }
-                    }) {
-                        Text("Country: \(country)")
-                            .padding()
-                            .background(expenseViewModel.selectedCountry == country ? Color.blue : Color.clear)
-                            .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white : Color.black)
-                    }
+                    }, label: {
+                        HStack(spacing: 0) {
+                            Image(systemName: "wifi")
+                                .font(.system(size: 16))
+                            Text("나라")
+                                .padding(.leading, 4)
+                        }
+                        .font(.caption2)
+                        .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
+                        .padding(.vertical, 7)
+                        .background(expenseViewModel.selectedCountry == country ? Color.black : Color.white)
+                        .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white : Color.gray300)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray200, lineWidth: 2)
+                        )
+                    })
                 }
             }
+            .padding(.top, 16)
         }
-    }
-    
-    private var allExpenseSummary: some View {
-        Text("allExpenseSummary")
-    }
-    
-    private var allExpenseBarGraph: some View {
-        Text("allExpenseBarGraph")
     }
     
     private func getExpenseArray(for country: Int64) -> [Expense] {
@@ -191,39 +195,115 @@ struct AllExpenseView: View {
     // 1. 나라별
     // 1-1. 항목별
     private func drawExpenseContent(for country: Int64, with expenses: [Expense]) -> some View {
-        let categoryArray = [Int64]([-1, 0, 1, 2, 7, 4, 5])
+        let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
         let totalSum = expenses.reduce(0) { $0 + $1.payAmount } // 모든 결제 수단 합계
         let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray,
                                                                                    expenseArray: expenses)
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
-        
-        return VStack {
-            Text("나라 이름 : \(country)")
-            Text("전체 금액 합 : \(totalSum)")
+
+        return VStack(alignment: .leading, spacing: 0) {
             
-            ForEach(currencies, id:\.self) { currency in
-                let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount } // 결제 수단 별로 합계
-                Text("\(currency): \(sum)")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .padding(.bottom, 2)
+            // allExpenseSummary: 합계
+            HStack(spacing: 0) {
+                Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                    .font(.display4)
+                Image(systemName: "wifi")
+                    .font(.system(size: 24))
+                    .padding(.leading, 16)
             }
+            .padding(.top, 32)
             
-            ForEach(0..<categoryArray.count, id: \.self) { index in
-                NavigationLink {
-                    AllExpenseDetailView(
-                        selectedTravel: expenseViewModel.selectedTravel,
-                        selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
-                        selectedCountry: country,
-                        selectedPaymentMethod: -2
-                    )
-                } label: {
-                    VStack {
-                        Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
-                        Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
+            // allExpenseSummary: 화폐별
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    ForEach(currencies.indices, id: \.self) { idx in
+                        let currency = currencies[idx]
+                        let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount } // 결제 수단 별로 합계
+                        
+                        Text("\(currency): \(expenseViewModel.formatSum(from: sum, to: 2))")
+                            .font(.caption2)
+                            .foregroundStyle(.gray300)
+                        if idx != currencies.count - 1 {
+                            Circle()
+                                .frame(width: 3, height: 3)
+                                .foregroundStyle(.gray300)
+                                .padding(.horizontal, 3)
+                        }
                     }
                 }
-                Spacer()
+                .padding(.top, 10)
+            }
+            
+            // allExpenseBarGraph
+            Text("allExpenseBarGraph")
+                .padding(.top, 22)
+            
+            BarGraph(data: indexedSumArrayInPayAmountOrder)
+
+//            ForEach(0..<categoryArray.count, id: \.self) { index in
+//                NavigationLink {
+//                    AllExpenseDetailView(
+//                        selectedTravel: expenseViewModel.selectedTravel,
+//                        selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
+//                        selectedCountry: country,
+//                        selectedPaymentMethod: -2
+//                    )
+//                } label: {
+//                    VStack {
+//                        Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
+//                        Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
+//                    }
+//                }
+//                Spacer()
+//            }
+            
+            Divider()
+                .padding(.top, 20)
+            
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(0..<categoryArray.count, id: \.self) { index in
+                    let categoryName = indexedSumArrayInPayAmountOrder[index].0
+                    let categorySum = indexedSumArrayInPayAmountOrder[index].1
+                    
+                    NavigationLink {
+                        AllExpenseDetailView(
+                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedCategory: categoryName,
+                            selectedCountry: country,
+                            selectedPaymentMethod: -2
+                        )
+                    } label: {
+                        HStack(alignment: .center, spacing: 0) {
+                            Image(systemName: "wifi")
+                                .font(.system(size: 36))
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text("\(ExpenseInfoCategory.descriptionFor(rawValue: Int(categoryName)))")
+                                    .font(.subhead2_1)
+                                    .foregroundStyle(.black)
+                                HStack(alignment: .center, spacing: 0) {
+                                    Text("비율")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray300)
+                                }
+                                .padding(.top, 4)
+                            }
+                            .padding(.leading, 10)
+                            
+                            Spacer()
+                            
+                            HStack(alignment: .center, spacing: 0) {
+                                Text("\(expenseViewModel.formatSum(from: categorySum, to: 0))원")
+                                    .font(.subhead3_1)
+                                    .foregroundStyle(.black)
+                                    .padding(.leading, 3)
+                                    .padding(.trailing, 28)
+                            }
+                        }
+                    }
+                    .padding(.top, 20)
+                }
+                .padding(.bottom, 24)
             }
         }
     }
@@ -257,9 +337,53 @@ private func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expens
         (categoryArray[5], sumArray[5]),
         (categoryArray[6], sumArray[6])
     ].sorted {
-        $0.1 <= $1.1
+        $0.1 >= $1.1
     }
     return indexedSumArray
+}
+
+struct CurrencyForChart: Identifiable, Hashable {
+    let id = UUID()
+    let currency: Int64
+    let sum: Double
+
+    init(currency: Int64, sum: Double) {
+        self.currency = currency
+        self.sum = sum
+    }
+}
+
+struct ExpenseForChart: Identifiable, Hashable {
+    let id = UUID()
+    let name: Int64
+    let value: Double
+
+    init(_ tuple: (Int64, Double)) {
+        self.name = tuple.0
+        self.value = tuple.1
+    }
+}
+
+struct BarGraph: View {
+    var data: [(Int64, Double)]
+    
+    private var totalSum: Double {
+        return data.map { $0.1 }.reduce(0, +)
+    }
+    
+    var body: some View {
+        let totalWidth = UIScreen.main.bounds.size.width
+        
+        HStack(spacing: 0) {
+            ForEach(data, id: \.0) { categoryRawValue, value in
+                Rectangle()
+                    .fill(ExpenseInfoCategory(rawValue:Int(categoryRawValue))?.color ?? Color.gray)
+                    .frame(width:(CGFloat(value / totalSum) * totalWidth), height :60 )
+                    .cornerRadius(data.first?.0 == categoryRawValue ? 10 : 0 ,corners:[.topLeft,.bottomLeft])
+                    .cornerRadius(data.last?.0 == categoryRawValue ? 10 : 0,corners:[.topRight,.bottomRight])
+            }
+        }
+    }
 }
 
 //  #Preview {
