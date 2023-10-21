@@ -111,24 +111,14 @@ class AddTravelViewModel: ObservableObject {
         
         if let newMonth = calendar.date(byAdding: .month, value: value, to: month),
             let prevMonth = calendar.date(byAdding: .month, value: value - 1, to: month),
-           let nextMonth = calendar.date(byAdding: .month, value: value + 1, to: month) {
+           let nextMonth = calendar.date(byAdding: .month, value: value + 1, to: month),
+           let newYearDate = calendar.date(from: calendar.dateComponents([.year], from: newMonth)) {
             self.month = newMonth
             self.prevMonth = prevMonth
             self.nextMonth = nextMonth
+            self.year = newYearDate
         }
     }
-    
-    // 12월 -> 1월 year + 1
-    // 1월 -> 12월 year -1
-//    func changeYear(by value: Int) {
-//        let calendar = Calendar.current
-//        
-//        if let newYear = calendar.date(byAdding: .month, value: value, to: month),
-//            let prevYear = calendar.date(byAdding: .month, value: value - 1, to: month),
-//           let nextYear= calendar.date(byAdding: .month, value: value + 1, to: month) {
-//            self.year = newYear
-//        }
-//    }
 
     func dateToDay(in date: Date) -> String {
         return AddTravelViewModel.dateToDayFormatter.string(from: date)

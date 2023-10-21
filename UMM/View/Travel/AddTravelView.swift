@@ -141,8 +141,8 @@ struct AddTravelView: View {
                             
                             HStack {
                                 Text(viewModel.startDateToString(in: viewModel.startDate))
-                                    .font(.custom(FontsManager.Pretendard.regular, size: 14))
-                                    .foregroundStyle(Color(0x6C6C6C))
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray300)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
                                 
@@ -174,8 +174,8 @@ struct AddTravelView: View {
                             
                             HStack {
                                 Text(viewModel.endDateToString(in: viewModel.endDate))
-                                    .font(.custom(FontsManager.Pretendard.regular, size: 14))
-                                    .foregroundStyle(Color(0x6C6C6C))
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray300)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
                                 Spacer()
