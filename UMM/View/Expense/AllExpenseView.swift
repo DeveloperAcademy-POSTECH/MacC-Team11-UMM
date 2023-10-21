@@ -67,7 +67,7 @@ struct AllExpenseView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
+                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-": "-")
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
@@ -150,8 +150,8 @@ struct AllExpenseView: View {
                         .font(.caption2)
                         .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
                         .padding(.vertical, 7)
-                        .background(expenseViewModel.selectedCountry == country ? Color.black : Color.white)
-                        .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white : Color.gray300)
+                        .background(expenseViewModel.selectedCountry == country ? Color.black: Color.white)
+                        .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
@@ -235,10 +235,8 @@ struct AllExpenseView: View {
             }
             
             // allExpenseBarGraph
-            Text("allExpenseBarGraph")
-                .padding(.top, 22)
-            
             BarGraph(data: indexedSumArrayInPayAmountOrder)
+                .padding(.top, 22)
 
 //            ForEach(0..<categoryArray.count, id: \.self) { index in
 //                NavigationLink {
@@ -250,8 +248,8 @@ struct AllExpenseView: View {
 //                    )
 //                } label: {
 //                    VStack {
-//                        Text("카테고리 이름 : \(indexedSumArrayInPayAmountOrder[index].0)")
-//                        Text("카테고리별 금액 합 : \(indexedSumArrayInPayAmountOrder[index].1)")
+//                        Text("카테고리 이름: \(indexedSumArrayInPayAmountOrder[index].0)")
+//                        Text("카테고리별 금액 합: \(indexedSumArrayInPayAmountOrder[index].1)")
 //                    }
 //                }
 //                Spacer()
@@ -372,17 +370,54 @@ struct BarGraph: View {
     }
     
     var body: some View {
-        let totalWidth = UIScreen.main.bounds.size.width
+        let totalWidth = UIScreen.main.bounds.size.width - 40
         
         HStack(spacing: 0) {
             ForEach(data, id: \.0) { categoryRawValue, value in
-                Rectangle()
-                    .fill(ExpenseInfoCategory(rawValue:Int(categoryRawValue))?.color ?? Color.gray)
-                    .frame(width:(CGFloat(value / totalSum) * totalWidth), height :60 )
-                    .cornerRadius(data.first?.0 == categoryRawValue ? 10 : 0 ,corners:[.topLeft,.bottomLeft])
-                    .cornerRadius(data.last?.0 == categoryRawValue ? 10 : 0,corners:[.topRight,.bottomRight])
+                BarElement(
+                    color: ExpenseInfoCategory(rawValue: Int(categoryRawValue))?.color ?? Color.gray,
+                    width: (CGFloat(value / totalSum) * totalWidth),
+                    isFirstElement: data.first?.0 == categoryRawValue,
+                    isLastElement: data.last?.0 == categoryRawValue
+                )
             }
         }
+    }
+}
+
+struct BarElement: View {
+    
+    let color: Color
+    let width: CGFloat
+    let isFirstElement: Bool
+    let isLastElement: Bool
+    
+   var body: some View {
+       Rectangle()
+           .fill(color)
+           .frame(width: max(0, width), height: 24)
+           .cornerRadius(isFirstElement ? 6 : 0, corners: [.topLeft, .bottomLeft])
+           .cornerRadius(isLastElement ? 6 : 0, corners: [.topRight, .bottomRight])
+           .padding(.trailing, 2)
+   }
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}
+
+struct RoundedCorner: Shape {
+
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect,
+                                byRoundingCorners: corners,
+                                cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
 
