@@ -71,7 +71,7 @@ struct AddTravelView: View {
 
     private var headerView: some View {
         
-        VStack {
+        return VStack {
             VStack(alignment: .leading) {
                 Spacer()
                 
@@ -81,8 +81,9 @@ struct AddTravelView: View {
                     
                     Spacer()
                 }
+                .padding(.bottom, 10)
                 
-                Spacer()
+//                Spacer()
                 
                 HStack {
                     Text("여행의 시작일과 종료일을 설정해주세요.")
@@ -113,7 +114,7 @@ struct AddTravelView: View {
                         .stroke(Color.white, lineWidth: 1)
                         .frame(width: 104, height: 1)
                         .overlay(
-                            LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.white]),
+                            LinearGradient(gradient: Gradient(colors: [Color.mainPink, viewModel.endDate != nil ? Color.mainPink : Color.white]),
                                            startPoint: .leading, endPoint: .trailing)
                         )
                     
@@ -132,15 +133,16 @@ struct AddTravelView: View {
                                 .frame(width: 132, height: 28, alignment: .leading)
                                 .cornerRadius(4)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 3)
+                                    RoundedRectangle(cornerRadius: 4)
                                         .inset(by: 0.5)
-                                        .stroke(Color.black, lineWidth: 1)
+                                        .stroke(viewModel.startDate != nil ? LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.mainOrange]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.gray200, Color.gray200]), startPoint: .topLeading, endPoint: .bottomTrailing),
+                                                lineWidth: viewModel.startDate != nil ? 2.0 : 1.0)
                                 )
                             
                             HStack {
                                 Text(viewModel.startDateToString(in: viewModel.startDate))
                                     .font(.custom(FontsManager.Pretendard.regular, size: 16))
-                                    .foregroundStyle(Color.gray300)
+                                    .foregroundStyle(Color.black)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
                                 
@@ -165,15 +167,16 @@ struct AddTravelView: View {
                                 .frame(width: 132, height: 28, alignment: .leading)
                                 .cornerRadius(4)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 3)
+                                    RoundedRectangle(cornerRadius: 4)
                                         .inset(by: 0.5)
-                                        .stroke(Color.black, lineWidth: 1)
+                                        .stroke(viewModel.endDate != nil ? LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.mainOrange]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.gray200, Color.gray200]), startPoint: .topLeading, endPoint: .bottomTrailing),
+                                                lineWidth: viewModel.endDate != nil ? 2.0 : 1.0)
                                 )
                             
                             HStack {
                                 Text(viewModel.endDateToString(in: viewModel.endDate))
                                     .font(.custom(FontsManager.Pretendard.regular, size: 16))
-                                    .foregroundStyle(Color.gray300)
+                                    .foregroundStyle(Color.black)
                                     .padding(.leading, 20)
                                     .padding(.vertical, 6)
                                 Spacer()
