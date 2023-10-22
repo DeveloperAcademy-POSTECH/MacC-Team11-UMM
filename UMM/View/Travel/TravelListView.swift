@@ -16,7 +16,7 @@ struct TravelListView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            VStack {
                 titleHeader
                 
                 nowTravelingView
@@ -27,7 +27,6 @@ struct TravelListView: View {
                 
                 TravelTabView()
                 
-//                Spacer()
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -78,7 +77,7 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         // 가로스크롤뷰
-        ZStack {
+        ZStack(alignment: .top) {
             if travelCount == 0 {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -95,7 +94,11 @@ struct TravelListView: View {
             } else {
                 TabView {
                     ForEach(0..<travelCount, id: \.self) { index in
-                        ZStack {
+                        ZStack(alignment: .top) {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 350, height: 137 + 46)
+                            
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: 350, height: 137)
@@ -107,10 +110,25 @@ struct TravelListView: View {
                                 )
                                 .cornerRadius(10)
                             
+                            Rectangle()
+                              .foregroundColor(.clear)
+                              .frame(width: 350, height: 137)
+                              .background(
+                                LinearGradient(
+                                  stops: [
+                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                  ],
+                                  startPoint: UnitPoint(x: 0.5, y: 0),
+                                  endPoint: UnitPoint(x: 0.5, y: 1)
+                                )
+                              )
+                              .cornerRadius(10)
+                            
                             VStack(alignment: .leading) {
                                 Spacer()
                                 
-                                Text("Day 3 ! 수정 해야됨 !")
+                                Text("Day 3❌")
                                     .font(.caption1)
                                     .foregroundStyle(Color.white)
                                     .opacity(0.75)
@@ -145,8 +163,8 @@ struct TravelListView: View {
                                     .padding(.trailing, 16)
                                 }
                             }
-                            .frame(width: 350, height: 137)
                             .padding(.bottom, 16)
+                            .frame(width: 350, height: 137)
                             
                         }
                     }
@@ -166,13 +184,22 @@ struct TravelListView: View {
 struct TravelTabView: View {
     
     @State var currentTab: Int = 0
+//    @State var disableGesture = false
     
     var body: some View {
         ZStack(alignment: .top) {
             TabView(selection: self.$currentTab) {
-                PreviousTravelView().tag(0)
+                PreviousTravelView()
+                    .gesture(DragGesture().onChanged { _ in
+                        // PreviousTravelView에서 DragGesture가 시작될 때의 동작
+                    })
+                    .tag(0)
                 
-                UpcomingTravelView().tag(1)
+                UpcomingTravelView()
+                    .gesture(DragGesture().onChanged { _ in
+                        // PreviousTravelView에서 DragGesture가 시작될 때의 동작
+                    })
+                    .tag(1)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             
@@ -199,7 +226,7 @@ struct TabBarView: View {
             })
         }
         .padding(.horizontal)
-        .background(Color.white)
+        .background(Color.clear)
         .frame(height: 10)
         .ignoresSafeArea(.all)
     }
@@ -217,20 +244,34 @@ struct TabBarItem: View {
         Button {
             self.currentTab = tab
         } label: {
-            VStack {
-                
-                Spacer()
-                
-                Text(tabBarItemName)
-                
+       
+            HStack {
                 if currentTab == tab {
-                    Color.black
-                        .frame(height: 2)
-                        .matchedGeometryEffect(id: "underline",
-                                               in: namespace,
-                                               properties: .frame)
+                    VStack {
+                        
+                        Spacer()
+                        
+                        Text(tabBarItemName)
+                            .font(.subhead3_1)
+                        
+                        Color.black
+                            .frame(width: 136, height: 2)
+                            .matchedGeometryEffect(id: "underline",
+                                                   in: namespace,
+                                                   properties: .frame)
+                    }
                 } else {
-                    Color.clear.frame(height: 2)
+                    
+                    VStack {
+                        
+                        Spacer()
+                        
+                        Text(tabBarItemName)
+                            .foregroundStyle(Color.gray300)
+                            .font(.subhead3_1)
+                        
+                        Color.clear.frame(width: 136, height: 2)
+                    }
                 }
             }
             .animation(.spring(), value: self.currentTab)
