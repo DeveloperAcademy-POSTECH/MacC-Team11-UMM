@@ -34,7 +34,6 @@ struct AllExpenseView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     countryPicker
-                    Divider()
                     drawExpensesByCategory
                 }
             }
@@ -44,7 +43,7 @@ struct AllExpenseView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             dummyRecordViewModel.fetchDummyTravel()
-            expenseViewModel.selectedTravel = findCurrentTravel()
+//            expenseViewModel.selectedTravel = findCurrentTravel()
             
             expenseViewModel.filteredExpenses = getFilteredExpenses()
             expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
@@ -139,12 +138,14 @@ struct AllExpenseView: View {
                             expenseViewModel.filteredExpenses = getFilteredExpenses()
                             expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
                             print("countryPicker | expenseViewModel.groupedExpenses: \(expenseViewModel.groupedExpenses.count)")
+                            print("countryPicker | expenseViewModel.selectedCountry: \(expenseViewModel.selectedCountry)")
+                            print("countryPicker | country: \(country)")
                         }
                     }, label: {
                         HStack(spacing: 0) {
                             Image(systemName: "wifi")
                                 .font(.system(size: 16))
-                            Text("나라")
+                            Text("\(Country.titleFor(rawValue: Int(country)))")
                                 .padding(.leading, 4)
                         }
                         .font(.caption2)
@@ -204,14 +205,26 @@ struct AllExpenseView: View {
         return VStack(alignment: .leading, spacing: 0) {
             
             // allExpenseSummary: 합계
-            HStack(spacing: 0) {
-                Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                    .font(.display4)
-                Image(systemName: "wifi")
-                    .font(.system(size: 24))
-                    .padding(.leading, 16)
+            NavigationLink {
+                AllExpenseDetailView(
+                    selectedTravel: expenseViewModel.selectedTravel,
+                    selectedCategory: -2,
+                    selectedCountry: expenseViewModel.selectedCountry,
+                    selectedPaymentMethod: -2
+                )
+            } label: {
+                HStack(spacing: 0) {
+                    Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                        .font(.display4)
+                        .foregroundStyle(.black)
+                    Image(systemName: "wifi")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.gray200)
+                        .padding(.leading, 16)
+                }
+                .padding(.top, 32)
             }
-            .padding(.top, 32)
+
             
             // allExpenseSummary: 화폐별
             ScrollView(.horizontal, showsIndicators: false) {
@@ -237,23 +250,6 @@ struct AllExpenseView: View {
             // allExpenseBarGraph
             BarGraph(data: indexedSumArrayInPayAmountOrder)
                 .padding(.top, 22)
-
-//            ForEach(0..<categoryArray.count, id: \.self) { index in
-//                NavigationLink {
-//                    AllExpenseDetailView(
-//                        selectedTravel: expenseViewModel.selectedTravel,
-//                        selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
-//                        selectedCountry: country,
-//                        selectedPaymentMethod: -2
-//                    )
-//                } label: {
-//                    VStack {
-//                        Text("카테고리 이름: \(indexedSumArrayInPayAmountOrder[index].0)")
-//                        Text("카테고리별 금액 합: \(indexedSumArrayInPayAmountOrder[index].1)")
-//                    }
-//                }
-//                Spacer()
-//            }
             
             Divider()
                 .padding(.top, 20)
@@ -262,12 +258,13 @@ struct AllExpenseView: View {
                 ForEach(0..<categoryArray.count, id: \.self) { index in
                     let categoryName = indexedSumArrayInPayAmountOrder[index].0
                     let categorySum = indexedSumArrayInPayAmountOrder[index].1
+                    let totalSum = indexedSumArrayInPayAmountOrder.map { $0.1 }.reduce(0, +)
                     
                     NavigationLink {
                         AllExpenseDetailView(
                             selectedTravel: expenseViewModel.selectedTravel,
-                            selectedCategory: categoryName,
-                            selectedCountry: country,
+                            selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
+                            selectedCountry: expenseViewModel.selectedCountry,
                             selectedPaymentMethod: -2
                         )
                     } label: {
@@ -280,7 +277,7 @@ struct AllExpenseView: View {
                                     .font(.subhead2_1)
                                     .foregroundStyle(.black)
                                 HStack(alignment: .center, spacing: 0) {
-                                    Text("비율")
+                                    Text("\(expenseViewModel.formatSum(from: categorySum / totalSum * 100, to: 1))%")
                                         .font(.caption2)
                                         .foregroundStyle(.gray300)
                                 }
@@ -295,7 +292,11 @@ struct AllExpenseView: View {
                                     .font(.subhead3_1)
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)
-                                    .padding(.trailing, 28)
+                                    .padding(.trailing, 12)
+                                Image(systemName: "wifi")
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.gray300)
+                                    
                             }
                         }
                     }

@@ -23,7 +23,7 @@ struct TodayExpenseDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             paymentModal
-            totalHeader
+            todayExpenseSummary
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -125,7 +125,7 @@ struct TodayExpenseDetailView: View {
         }
     }
 
-    private var totalHeader: some View {
+    private var todayExpenseSummary: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 나라 이름
             HStack(alignment: .center, spacing: 0) {
@@ -187,7 +187,7 @@ struct TodayExpenseDetailView: View {
                         Text("\(expense.info ?? "info: unknown")")
                             .font(.subhead2_1)
                         HStack(alignment: .center, spacing: 0) {
-                            Text("\(dateFormmaterWithHourMiniute(date: expense.payDate ?? Date()))")
+                            Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
                                 .font(.caption2)
                                 .foregroundStyle(.gray300)
                             Divider()
