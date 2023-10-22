@@ -11,7 +11,7 @@ enum ExpenseInfoCategory: Int {
     case room
     case transportation
     case food
-    case fun
+    case tour
     case shopping
     
     var description: String {
@@ -24,8 +24,8 @@ enum ExpenseInfoCategory: Int {
             return "transportation"
         case .food:
             return "food"
-        case .fun:
-            return "fun"
+        case .tour:
+            return "tour"
         case .shopping:
             return "shopping"
         default:
@@ -43,7 +43,7 @@ enum ExpenseInfoCategory: Int {
             return "교통"
         case .food:
             return "식비"
-        case .fun:
+        case .tour:
             return "관광"
         case .shopping:
             return "쇼핑"
@@ -61,7 +61,7 @@ enum ExpenseInfoCategory: Int {
             return "manualRecordCategoryTransportation"
         case .food:
             return "manualRecordCategoryFood"
-        case .fun:
+        case .tour:
             return "manualRecordCategoryFun"
         case .shopping:
             return "manualRecordCategoryShopping"
@@ -80,7 +80,7 @@ enum ExpenseInfoCategory: Int {
             return "modalCategoryTransportation"
         case .food:
             return "modalCategoryFood"
-        case .fun:
+        case .tour:
             return "modalCategoryFun"
         case .shopping:
             return "modalCategoryShopping"

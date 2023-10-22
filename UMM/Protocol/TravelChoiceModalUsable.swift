@@ -1,5 +1,5 @@
 //
-//  TravelChoiceModalSharable.swift
+//  TravelChoiceModalUsable.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/22/23.

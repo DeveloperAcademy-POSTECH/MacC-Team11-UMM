@@ -492,8 +492,8 @@ final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
             return .transportation
         case "food":
             return .food
-        case "fun":
-            return .fun
+        case "tour":
+            return .tour
         case "shopping":
             return .shopping
         default:

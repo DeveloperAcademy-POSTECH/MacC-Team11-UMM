@@ -12,13 +12,17 @@ struct TravelChoiceModal: View {
     var viewModel: TravelChoiceModalUsable
     
     var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: 32)
-            titleView
-            Spacer()
-                .frame(height: 24)
-            travelScrollView
+        ZStack {
+            Color(.white)
+                .ignoresSafeArea()
+            VStack {
+                Spacer()
+                    .frame(height: 32)
+                titleView
+                Spacer()
+                    .frame(height: 24)
+                travelScrollView
+            }
         }
     }
     

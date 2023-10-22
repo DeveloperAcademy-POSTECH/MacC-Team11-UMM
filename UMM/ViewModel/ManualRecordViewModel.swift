@@ -13,7 +13,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     
     // MARK: - in-string property
     
-    @Published var payAmount: Double = -1 {
+    @Published var payAmount: Double = -1 { // passive
         didSet {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
@@ -22,9 +22,28 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
             }
         }
     }
+    @Published var payAmountString = "" {
+        didSet {
+            if payAmountString == "" {
+                payAmount = -1
+            } else {
+                payAmount = Double(payAmountString) ?? -1
+            }
+        }
+    }
     @Published var payAmountInWon: Double = -1 // passive
 
-    @Published var info: String?
+    @Published var info: String? // passive
+    @Published var infoString: String = "" {
+        didSet {
+            if infoString == "" {
+                info = nil
+            } else {
+                info = infoString
+            }
+        }
+    }
+    
     @Published var category: ExpenseInfoCategory = .unknown
     @Published var paymentMethod: PaymentMethod = .unknown
     
@@ -105,6 +124,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
         }
     }
     @Published var currencyCandidateArray: [Currency] = []
+    @Published var newNameString: String = ""
     
     init() {
     }
@@ -146,6 +166,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
+    @Published var addingParticipant = false
     
     // MARK: - 프로퍼티 관리
     

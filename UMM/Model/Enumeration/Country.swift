@@ -41,8 +41,6 @@ enum Country: Int {
             return "중국"
         case .vietnam:
             return "베트남"
-        default:
-            return "-"
         }
     }
     
@@ -68,8 +66,6 @@ enum Country: Int {
             return [.cny]
         case .vietnam:
             return [.vnd]
-        default:
-            return []
         }
     }
 }

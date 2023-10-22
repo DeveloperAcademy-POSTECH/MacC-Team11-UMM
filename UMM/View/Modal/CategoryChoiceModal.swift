@@ -14,13 +14,18 @@ struct CategoryChoiceModal: View {
     var viewModel: CategoryChoiceModalUsable
     
     var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: 32)
-            titleView
-            Spacer()
-                .frame(height: 24)
-            categoryView
+        ZStack {
+            Color(.white)
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                    .frame(height: 32)
+                titleView
+                Spacer()
+                    .frame(height: 24)
+                categoryView
+            }
         }
     }
     
@@ -40,7 +45,7 @@ struct CategoryChoiceModal: View {
             Spacer()
                 .frame(width: 20)
             // 식비 관광 교통 쇼핑 항공 숙소 기타
-            let array0: [ExpenseInfoCategory] = [.food, .fun, .transportation, .shopping]
+            let array0: [ExpenseInfoCategory] = [.food, .tour, .transportation, .shopping]
             let array1: [ExpenseInfoCategory] = [.plane, .room, .unknown]
             VStack(spacing: 0) {
                 HStack {
