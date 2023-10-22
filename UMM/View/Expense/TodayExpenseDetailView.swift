@@ -107,9 +107,8 @@ struct TodayExpenseDetailView: View {
                                     .font(.subhead3_1)
                                     .foregroundStyle(.black)
                                 Spacer()
-                                Image(systemName: "wifi")
-                                    .foregroundStyle(.mainPink)
-                                    .font(.system(size: 24))
+                                Image("check")
+//                                    .font(.system(size: 24))
                             }
                         } else {
                             Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))
