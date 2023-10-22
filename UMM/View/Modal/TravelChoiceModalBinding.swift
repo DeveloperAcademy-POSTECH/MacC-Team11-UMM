@@ -80,6 +80,6 @@ struct TravelChoiceModalBinding: View {
     }
 }
 
-//#Preview {
-//    TravelChoiceModalBinding(viewModel: ManualRecordViewModel())
-//}
+// #Preview {
+//     TravelChoiceModalBinding(viewModel: ManualRecordViewModel())
+// }

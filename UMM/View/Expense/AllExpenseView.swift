@@ -25,11 +25,10 @@ struct AllExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
-                travelChoiceView
+//                travelChoiceView
                 Spacer()
-                settingView
             }
-            allExpenseTitle
+//            allExpenseTitle
             tabViewButton
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
@@ -55,36 +54,36 @@ struct AllExpenseView: View {
     }
     
     // MARK: - 뷰
-    private var travelChoiceView: some View {
-        Button {
-            expenseViewModel.travelChoiceHalfModalIsShown = true
-            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
-        } label: {
-            ZStack {
-                Capsule()
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                Capsule()
-                    .strokeBorder(.mainPink, lineWidth: 1.0)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 12) {
-                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-": "-")
-                        .font(.subhead2_2)
-                        .foregroundStyle(.black)
-                    Image("recordTravelChoiceDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                }
-                .padding(.vertical, 6)
-                .padding(.leading, 16)
-                .padding(.trailing, 12)
-            }
-        }
-        .padding(.top, 80)
-    }
+//    private var travelChoiceView: some View {
+//        Button {
+//            expenseViewModel.travelChoiceHalfModalIsShown = true
+//            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
+//        } label: {
+//            ZStack {
+//                Capsule()
+//                    .foregroundStyle(.white)
+//                    .layoutPriority(-1)
+//                
+//                Capsule()
+//                    .strokeBorder(.mainPink, lineWidth: 1.0)
+//                    .layoutPriority(-1)
+//                
+//                HStack(spacing: 12) {
+//                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-": "-")
+//                        .font(.subhead2_2)
+//                        .foregroundStyle(.black)
+//                    Image("recordTravelChoiceDownChevron")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 16, height: 16)
+//                }
+//                .padding(.vertical, 6)
+//                .padding(.leading, 16)
+//                .padding(.trailing, 12)
+//            }
+//        }
+//        .padding(.top, 80)
+//    }
     
     private var travelPicker: some View {
         Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
@@ -102,22 +101,22 @@ struct AllExpenseView: View {
         }
     }
     
-    private var settingView: some View {
-        Button(action: {}, label: {
-            Image(systemName: "wifi")
-                .font(.system(size: 16))
-                .foregroundStyle(.gray300)
-        })
-    }
+//    private var settingView: some View {
+//        Button(action: {}, label: {
+//            Image(systemName: "wifi")
+//                .font(.system(size: 16))
+//                .foregroundStyle(.gray300)
+//        })
+//    }
     
-    private var allExpenseTitle: some View {
-        HStack(spacing: 0) {
-            Text("지출 관리")
-                .font(.display2)
-                .padding(.top, 12)
-            Spacer()
-        }
-    }
+//    private var allExpenseTitle: some View {
+//        HStack(spacing: 0) {
+//            Text("지출 관리")
+//                .font(.display2)
+//                .padding(.top, 12)
+//            Spacer()
+//        }
+//    }
     
     private var tabViewButton: some View {
         HStack(spacing: 0) {
