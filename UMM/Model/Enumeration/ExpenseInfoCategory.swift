@@ -36,19 +36,19 @@ enum ExpenseInfoCategory: Int {
     var visibleDescription: String {
         switch self {
         case .plane:
-            return "plane"
+            return "항공"
         case .room:
-            return "room"
+            return "숙소"
         case .transportation:
-            return "transportation"
+            return "교통"
         case .food:
-            return "food"
+            return "식비"
         case .fun:
-            return "fun"
+            return "관광"
         case .shopping:
-            return "shopping"
+            return "쇼핑"
         default:
-            return "unknown"
+            return "기타"
         }
     }
     var manualRecordImageString: String {
@@ -67,6 +67,25 @@ enum ExpenseInfoCategory: Int {
             return "manualRecordCategoryShopping"
         default:
             return "manualRecordCategoryUnknown"
+        }
+    }
+    
+    var modalImageString: String {
+        switch self {
+        case .plane:
+            return "modalCategoryPlane"
+        case .room:
+            return "modalCategoryRoom"
+        case .transportation:
+            return "modalCategoryTransportation"
+        case .food:
+            return "modalCategoryFood"
+        case .fun:
+            return "modalCategoryFun"
+        case .shopping:
+            return "modalCategoryShopping"
+        default:
+            return "modalCategoryUnknown"
         }
     }
 }

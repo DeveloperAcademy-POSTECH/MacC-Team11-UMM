@@ -61,12 +61,11 @@ struct RecordView: View {
             .ignoresSafeArea()
             .onAppear {
                 viewModel.resetInStringProperties()
-                viewModel.chosenTravel = findCurrentTravel()
                 viewModel.needToFill = true
             }
-            .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
-                TravelChoiceHalfView(viewModel: viewModel)
-                    .presentationDetents([.height(226)])
+            .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
+                TravelChoiceModal(viewModel: viewModel)
+                    .presentationDetents([.height(289 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 ManualRecordView(prevViewModel: viewModel)
@@ -76,8 +75,8 @@ struct RecordView: View {
     
     private var travelChoiceView: some View {
         Button {
-            viewModel.travelChoiceHalfModalIsShown = true
-            print("viewModel.travelChoiceHalfModalIsShown = true")
+            viewModel.travelChoiceModalIsShown = true
+            print("viewModel.travelChoiceModalIsShown = true")
         } label: {
             ZStack {
                 Capsule()
@@ -368,7 +367,6 @@ struct RecordView: View {
                 .scaledToFit()
                 .frame(width: 84, height: 84)
                 .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
-            //                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
                 .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
                 .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
                 .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
@@ -383,7 +381,7 @@ struct RecordView: View {
                 print("녹음 끝")
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
-                viewModel.stopRecording()
+//                viewModel.stopRecording()
                 print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
                     DispatchQueue.main.async {
@@ -419,9 +417,9 @@ struct RecordView: View {
                     state = true
                     print("녹음 시작")
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-                    Task {
-                        await viewModel.startRecording()
-                    }
+//                    Task {
+//                        await viewModel.startRecording()
+//                    }
                     DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()

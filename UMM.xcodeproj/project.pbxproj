@@ -11,11 +11,15 @@
 		571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571A426B2ACE857500FA3D2B /* ContentView.swift */; };
 		571A426E2ACE857600FA3D2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A426D2ACE857600FA3D2B /* Assets.xcassets */; };
 		571A42712ACE857600FA3D2B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 571A42702ACE857600FA3D2B /* Preview Assets.xcassets */; };
+		571C52D12AE49C5B00C10377 /* TravelChoiceModalUsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571C52D02AE49C5B00C10377 /* TravelChoiceModalUsable.swift */; };
+		572BE1E82AE49FB5005933E7 /* Redrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E72AE49FB5005933E7 /* Redrawer.swift */; };
+		572BE1EA2AE4BB3A005933E7 /* CategoryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */; };
+		572BE1EC2AE4BB5F005933E7 /* CategoryChoiceModalUsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1EB2AE4BB5F005933E7 /* CategoryChoiceModalUsable.swift */; };
 		572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */; };
 		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
 		5760066B2ADD42D3006CD8DF /* CompleteRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */; };
 		5760066D2ADD42FA006CD8DF /* ManualRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */; };
-		5760066F2ADD4355006CD8DF /* TravelChoiceHalfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066E2ADD4355006CD8DF /* TravelChoiceHalfView.swift */; };
+		5760066F2ADD4355006CD8DF /* TravelChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066E2ADD4355006CD8DF /* TravelChoiceModal.swift */; };
 		578858252ADBBCB2001B82FA /* InfoClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 578858242ADBBCB2001B82FA /* InfoClassifier.mlmodel */; };
 		57A65D002AD7D3DF00131266 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */; };
 		57A65D052AD7D4A900131266 /* Character+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D042AD7D4A900131266 /* Character+Extension.swift */; };
@@ -78,11 +82,15 @@
 		571A426B2ACE857500FA3D2B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		571A426D2ACE857600FA3D2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		571A42702ACE857600FA3D2B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		571C52D02AE49C5B00C10377 /* TravelChoiceModalUsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceModalUsable.swift; sourceTree = "<group>"; };
+		572BE1E72AE49FB5005933E7 /* Redrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Redrawer.swift; sourceTree = "<group>"; };
+		572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChoiceModal.swift; sourceTree = "<group>"; };
+		572BE1EB2AE4BB5F005933E7 /* CategoryChoiceModalUsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChoiceModalUsable.swift; sourceTree = "<group>"; };
 		572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordViewModel.swift; sourceTree = "<group>"; };
 		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
 		5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteRecordView.swift; sourceTree = "<group>"; };
 		5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordView.swift; sourceTree = "<group>"; };
-		5760066E2ADD4355006CD8DF /* TravelChoiceHalfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceHalfView.swift; sourceTree = "<group>"; };
+		5760066E2ADD4355006CD8DF /* TravelChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceModal.swift; sourceTree = "<group>"; };
 		578858242ADBBCB2001B82FA /* InfoClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = InfoClassifier.mlmodel; sourceTree = "<group>"; };
 		57A65CFF2AD7D3DF00131266 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		57A65D042AD7D4A900131266 /* Character+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Extension.swift"; sourceTree = "<group>"; };
@@ -177,6 +185,7 @@
 				578858262ADBBED5001B82FA /* Model */,
 				C17550562AD5518C00A61BE5 /* View */,
 				C17550572AD5519800A61BE5 /* ViewModel */,
+				571C52CF2AE49C4100C10377 /* Protocol */,
 				57A65D032AD7D49100131266 /* Extension */,
 				E2D5C0702ADD928100907501 /* Handler */,
 				E2D5C06D2ADD927000907501 /* Dummy */,
@@ -193,6 +202,24 @@
 				571A42702ACE857600FA3D2B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		571C52CC2AE49ACB00C10377 /* Modal */ = {
+			isa = PBXGroup;
+			children = (
+				5760066E2ADD4355006CD8DF /* TravelChoiceModal.swift */,
+				572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */,
+			);
+			path = Modal;
+			sourceTree = "<group>";
+		};
+		571C52CF2AE49C4100C10377 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				571C52D02AE49C5B00C10377 /* TravelChoiceModalUsable.swift */,
+				572BE1EB2AE4BB5F005933E7 /* CategoryChoiceModalUsable.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 		578858262ADBBED5001B82FA /* Model */ = {
@@ -252,7 +279,6 @@
 				57A65D172AD7DDA700131266 /* RecordView.swift */,
 				5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */,
 				5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */,
-				5760066E2ADD4355006CD8DF /* TravelChoiceHalfView.swift */,
 			);
 			path = Record;
 			sourceTree = "<group>";
@@ -286,6 +312,7 @@
 				57EA421D2ADE1127006CA587 /* Expense */,
 				57EA421C2ADE1122006CA587 /* Record */,
 				57EA421B2ADE1107006CA587 /* Travel */,
+				571C52CC2AE49ACB00C10377 /* Modal */,
 				57EA421E2ADE112B006CA587 /* Other */,
 			);
 			path = View;
@@ -304,6 +331,7 @@
 				C19AFAF32AE139CD0037A5F5 /* TravelListViewModel.swift */,
 				C19AFAF52AE163990037A5F5 /* PreviousTravelViewModel.swift */,
 				C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */,
+				572BE1E72AE49FB5005933E7 /* Redrawer.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -478,6 +506,8 @@
 				E2D5C0622ADD923000907501 /* TodayExpenseView.swift in Sources */,
 				C19AFAF22AE117430037A5F5 /* UpcomingTravelView.swift in Sources */,
 				57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */,
+				571C52D12AE49C5B00C10377 /* TravelChoiceModalUsable.swift in Sources */,
+				572BE1EC2AE4BB5F005933E7 /* CategoryChoiceModalUsable.swift in Sources */,
 				E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */,
 				C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
@@ -490,12 +520,14 @@
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
 				C19AFAF02AE116FF0037A5F5 /* PreviousTravelView.swift in Sources */,
+				572BE1E82AE49FB5005933E7 /* Redrawer.swift in Sources */,
 				C190C2032ADAAE2C0099EE3A /* AddMemberView.swift in Sources */,
-				5760066F2ADD4355006CD8DF /* TravelChoiceHalfView.swift in Sources */,
+				5760066F2ADD4355006CD8DF /* TravelChoiceModal.swift in Sources */,
 				57A65D0A2AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift in Sources */,
 				C19AFAE72ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift in Sources */,
 				C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */,
 				5760066B2ADD42D3006CD8DF /* CompleteRecordView.swift in Sources */,
+				572BE1EA2AE4BB3A005933E7 /* CategoryChoiceModal.swift in Sources */,
 				E2D5C0682ADD924800907501 /* AllExpenseDetailView.swift in Sources */,
 				C19AFAF62AE163990037A5F5 /* PreviousTravelViewModel.swift in Sources */,
 				57A65D0E2AD7D51600131266 /* SplitVariety.swift in Sources */,

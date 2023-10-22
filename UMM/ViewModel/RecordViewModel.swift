@@ -11,7 +11,7 @@ import NaturalLanguage
 import Speech
 import SwiftUI
 
-final class RecordViewModel: ObservableObject {
+final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
@@ -34,7 +34,7 @@ final class RecordViewModel: ObservableObject {
     @Published var travelArray: [Travel] = []
     
     // shows other views
-    @Published var travelChoiceHalfModalIsShown = false {
+    @Published var travelChoiceModalIsShown = false {
         willSet {
             if newValue {
                 do {
@@ -82,6 +82,7 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
+        chosenTravel = findCurrentTravel()
     }
     
     func divideVoiceSentence() {
@@ -630,5 +631,9 @@ final class RecordViewModel: ObservableObject {
         infoCategory = .unknown
         payAmount = -1
         paymentMethod = .unknown
+    }
+    
+    func setChosenTravel(as travel: Travel) {
+        chosenTravel = travel
     }
 }

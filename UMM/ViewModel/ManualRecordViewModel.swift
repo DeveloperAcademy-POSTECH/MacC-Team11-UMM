@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ManualRecordViewModel: ObservableObject {
+class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, CategoryChoiceModalUsable {
     
     let viewContext = PersistenceController.shared.container.viewContext
     
@@ -15,8 +15,11 @@ class ManualRecordViewModel: ObservableObject {
     
     @Published var payAmount: Double = -1 {
         didSet {
-//            payAmountInWon = ...
-            payAmountInWon = payAmount * currency.rate // ^^^
+            if payAmount == -1 || currency == .unknown {
+                payAmountInWon = -1
+            } else {
+                payAmountInWon = payAmount * currency.rate // ^^^
+            }
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
@@ -94,35 +97,16 @@ class ManualRecordViewModel: ObservableObject {
     
     @Published var currency: Currency = .unknown {
         didSet {
-//            payAmountInWon = ...
-            payAmountInWon = payAmount * currency.rate // ^^^
+            if payAmount == -1 || currency == .unknown {
+                payAmountInWon = -1
+            } else {
+                payAmountInWon = payAmount * currency.rate // ^^^
+            }
         }
     }
     @Published var currencyCandidateArray: [Currency] = []
     
     init() {
-//        country = LocationHandler.shared.getCurrentCounty()
-//        currentCountry = country
-//        locationExpression = LocationHandler.shared.getCurrentLocation()
-//        currentLocation = locationExpression
-//        currency = CurrencyHandler.shard.getCurrency(country)
-        // MARK: - 현재 위치 정보와 연동
-        currentCountry = .japan
-        country = country
-        currentLocation = "일본 도쿄"
-        locationExpression = currentLocation
-        currency = currentCountry.relatedCurrencyArray.first ?? .usd
-        if currentCountry == .usa {
-            currencyCandidateArray = [.usd, .krw]
-        } else {
-            currencyCandidateArray = currentCountry.relatedCurrencyArray
-            if !currencyCandidateArray.contains(.usd) {
-                currencyCandidateArray.append(.usd)
-            }
-            if !currencyCandidateArray.contains(.krw) {
-                currencyCandidateArray.append(.krw)
-            }
-        }
     }
     
     func save() {
@@ -156,5 +140,20 @@ class ManualRecordViewModel: ObservableObject {
         } catch {
             print("error saving expense: \(error.localizedDescription)")
         }
+    }
+    
+    // MARK: - view state
+    
+    @Published var travelChoiceModalIsShown = false
+    @Published var categoryChoiceModalIsShown = false
+    
+    // MARK: - 프로퍼티 관리
+    
+    func setChosenTravel(as travel: Travel) {
+        chosenTravel = travel
+    }
+    
+    func setCategory(as category: ExpenseInfoCategory) {
+        self.category = category
     }
 }
