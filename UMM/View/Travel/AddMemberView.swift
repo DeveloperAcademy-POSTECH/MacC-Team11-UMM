@@ -26,15 +26,11 @@ struct AddMemberView: View {
     var body: some View {
         VStack {
             
-            Spacer()
-            
             headerView
-            
-            Spacer()
+                .padding(.bottom, 45)
             
             selectBoxView
-            
-            Spacer()
+                .padding(.bottom, 26)
             
             isTogetherView
             
@@ -70,20 +66,27 @@ struct AddMemberView: View {
     }
     
     private var headerView: some View {
-        VStack(alignment: .leading) {
-            Spacer()
+        VStack {
             
-            Text("누구와 함께하나요?")
-                .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
+            HStack {
+                Text("누구와 함께하나요?")
+                    .font(.display2)
+                
+                Spacer()
+            }
+            .padding(.leading, 20)
+            .padding(.bottom, 10)
             
-            Spacer()
-            
-            Text("여행 정산을 함께 할 참여자를 설정해요.")
-                .font(.custom(FontsManager.Pretendard.medium, size: 24))
-                .foregroundStyle(Color.gray300)
-            
-            Spacer()
+            HStack {
+                Text("여행 정산을 함께 할 참여자를 설정해요.")
+                    .font(.subhead2_2)
+                    .foregroundStyle(Color.gray300)
+                
+                Spacer()
+            }
+            .padding(.leading, 20)
         }
+        .padding(.top, 36)
     }
     
     private var selectBoxView: some View {
@@ -95,16 +98,16 @@ struct AddMemberView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .inset(by: 1)
-                        .stroke(isSelectedAlone ? Color.mainPink : Color.gray300, lineWidth: 2)
+                        .stroke(isSelectedAlone ? Color.mainPink : Color.gray200, lineWidth: 1)
                         .frame(width: 350, height: 53)
                     
                     HStack {
-                        Circle()
-                            .foregroundStyle(isSelectedAlone ? Color.mainPink : Color.gray300)
+                        Image(isSelectedTogether ? "selectUnacitve" : "selectActive")
                             .frame(width: 21)
                         
                         Text("정산이 필요 없어요")
                             .foregroundStyle(isSelectedAlone ? Color.black : Color.gray300)
+                            .font(.subhead2_1)
                         
                         Spacer()
                     }
@@ -120,16 +123,16 @@ struct AddMemberView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .inset(by: 1)
-                        .stroke(isSelectedTogether ? Color.mainPink : Color.gray300, lineWidth: 2)
+                        .stroke(isSelectedTogether ? Color.mainPink : Color.gray200, lineWidth: 1)
                         .frame(width: 350, height: 53)
                     
                     HStack {
-                        Circle()
-                            .foregroundStyle(isSelectedTogether ? Color.mainPink : Color.gray300)
+                        Image(isSelectedAlone ? "selectUnacitve" : "selectActive")
                             .frame(width: 21)
                         
                         Text("여러 명이서 정산이 필요한 여행이에요")
                             .foregroundStyle(isSelectedTogether ? Color.black : Color.gray300)
+                            .font(.subhead2_1)
                         
                         Spacer()
                     }
@@ -143,14 +146,14 @@ struct AddMemberView: View {
     private var isTogetherView: some View {
         
         VStack {
-            HStack {
+            ScrollView(.horizontal, showsIndicators: false) {
                 if self.isSelectedTogether == true {
                     HStack {
                         ZStack {
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: 76, height: 30)
-                                .background(Color.gray200)
+                                .background(Color.gray100)
                                 .cornerRadius(15)
                             
                             Text("me")
@@ -186,7 +189,10 @@ struct AddMemberView: View {
                         }
                     }
                 }
+                Spacer()
             }
+            .padding(.leading, 36)
+            
             Spacer()
         }
     }
@@ -207,7 +213,7 @@ struct AddMemberView: View {
                 }
                 
             } else {
-               Text("  ")
+               Text(" ")
             }
         }
     }
@@ -218,7 +224,7 @@ struct AddMemberView: View {
                 .padding(10)
                 .foregroundColor(.black)
                 .frame(width: 83, height: 30)
-                .background(Color(0xD9D9D9))
+                .background(Color.gray100)
                 .cornerRadius(15)
         }
     }
