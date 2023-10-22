@@ -22,7 +22,6 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedPaymentMethod: Int64 = 0
     @Published var selectedCountry: Int64 = -2
     @Published var selectedCategory: Int64 = 0
-    
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
             if newValue {

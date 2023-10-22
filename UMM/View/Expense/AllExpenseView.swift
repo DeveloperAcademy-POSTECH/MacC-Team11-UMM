@@ -25,7 +25,7 @@ struct AllExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
-                travelPicker
+                travelChoiceView
                 Spacer()
                 settingView
             }
@@ -47,6 +47,10 @@ struct AllExpenseView: View {
             
             expenseViewModel.filteredExpenses = getFilteredExpenses()
             expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+        }
+        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
+            TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
+                .presentationDetents([.height(289 - 34)])
         }
     }
     

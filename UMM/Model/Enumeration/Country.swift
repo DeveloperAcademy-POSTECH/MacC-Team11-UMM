@@ -67,7 +67,8 @@ enum Country: Int {
         case .vietnam:
             return [.vnd]
         }
-      
+    }
+        
     static func titleFor(rawValue: Int) -> String {
         return Country(rawValue: rawValue)?.title ?? "전체"
     }
