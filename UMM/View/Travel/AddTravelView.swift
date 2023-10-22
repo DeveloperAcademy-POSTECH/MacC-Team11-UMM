@@ -53,12 +53,14 @@ struct AddTravelView: View {
                                 
                             })
                             .disabled(true)
+                            .ignoresSafeArea()
                         }
                     } else {
                         NextButtonUnactive(title: "다음", action: {
                             
                         })
                         .disabled(true)
+                        .ignoresSafeArea()
                     }
                 }
             }
@@ -348,21 +350,43 @@ struct AddTravelView: View {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
                                 ZStack {
                                     
-                                    Circle()
-                                        .stroke(Color.black)
-                                        .fill(Color.mainPink)
+                                    ZStack {
+                                        
+//                                        Rectangle()
+//                                            .frame(width: 80, height: 33)
+//                                            .foregroundStyle(
+//                                                    LinearGradient(
+//                                                        gradient: Gradient(colors: [Color.mainPink.opacity(1), Color.mainPink.opacity(0)]),
+//                                                        startPoint: .leading,
+//                                                        endPoint: .trailing
+//                                                    )
+//                                                )
+//                                            .offset(x: 40)
+                                        
+                                        Circle()
+                                            .frame(width: 33, height: 33)
+                                            .overlay(
+                                            Circle()
+                                                .stroke(Color.white)
+                                                .fill(Color.mainPink)
+                                            )
+                                    }
                                     
                                     Text(String(day))
                                         .padding(9.81)
+                                        .font(.calendar2)
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
                             } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
                                 ZStack {
-                                    
                                     Circle()
-                                        .stroke(Color.black)
-                                        .fill(Color.mainPink)
+                                        .frame(width: 33, height: 33)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white)
+                                                .fill(Color.mainPink)
+                                        )
                                     
                                     Text(String(day))
                                         .font(.calendar2)
