@@ -19,6 +19,7 @@ struct ExpenseView: View {
                 AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                     .tag(1)
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
     }
 }
@@ -46,6 +47,11 @@ struct ExpenseTabBarItem: View {
                     if selectedTab == tab {
                         Color.black
                             .matchedGeometryEffect(id: "underline", in: namespace.self)
+                            .frame(height: 2)
+                            .padding(.top, 11)
+                            .padding(.horizontal)
+                    } else {
+                        Color.clear
                             .frame(height: 2)
                             .padding(.top, 11)
                             .padding(.horizontal)

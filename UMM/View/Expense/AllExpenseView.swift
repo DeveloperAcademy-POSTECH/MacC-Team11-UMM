@@ -272,7 +272,7 @@ struct AllExpenseView: View {
                         )
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
-                            Image(systemName: "wifi")
+                            Image(ExpenseInfoCategory(rawValue: Int(categoryName))?.modalImageString ?? "nil")
                                 .font(.system(size: 36))
                             
                             VStack(alignment: .leading, spacing: 0) {

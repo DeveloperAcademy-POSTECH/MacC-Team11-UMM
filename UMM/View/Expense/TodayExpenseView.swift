@@ -23,11 +23,8 @@ struct TodayExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
-                travelChoiceView
-                Spacer()
-                settingView
-            }
+            travelChoiceView
+            
             todayExpenseHeader
             tabViewButton
             ScrollView {
@@ -35,6 +32,19 @@ struct TodayExpenseView: View {
                     datePicker
                     drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
                     // dummyExpenseAddButton
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack {
+                    Spacer()
+                    
+                    NavigationLink(destination: SettingView(), label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(Color.gray300)
+                    })
                 }
             }
         }

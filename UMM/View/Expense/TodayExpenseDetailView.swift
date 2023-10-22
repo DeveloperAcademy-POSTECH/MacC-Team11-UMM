@@ -45,36 +45,36 @@ struct TodayExpenseDetailView: View {
         }
     }
     
-    private var travelChoiceView: some View {
-        Button {
-            expenseViewModel.travelChoiceHalfModalIsShown = true
-            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
-        } label: {
-            ZStack {
-                Capsule()
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                Capsule()
-                    .strokeBorder(.mainPink, lineWidth: 1.0)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 12) {
-                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
-                        .font(.subhead2_2)
-                        .foregroundStyle(.black)
-                    Image("recordTravelChoiceDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                }
-                .padding(.vertical, 6)
-                .padding(.leading, 16)
-                .padding(.trailing, 12)
-            }
-        }
-        .padding(.top, 80)
-    }
+//    private var travelChoiceView: some View {
+//        Button {
+//            expenseViewModel.travelChoiceHalfModalIsShown = true
+//            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
+//        } label: {
+//            ZStack {
+//                Capsule()
+//                    .foregroundStyle(.white)
+//                    .layoutPriority(-1)
+//                
+//                Capsule()
+//                    .strokeBorder(.mainPink, lineWidth: 1.0)
+//                    .layoutPriority(-1)
+//                
+//                HStack(spacing: 12) {
+//                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
+//                        .font(.subhead2_2)
+//                        .foregroundStyle(.black)
+//                    Image("recordTravelChoiceDownChevron")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 16, height: 16)
+//                }
+//                .padding(.vertical, 6)
+//                .padding(.leading, 16)
+//                .padding(.trailing, 12)
+//            }
+//        }
+//        .padding(.top, 80)
+//    }
     
     private var paymentModal: some View {
         Button(action: {
@@ -85,7 +85,7 @@ struct TodayExpenseDetailView: View {
                     .font(.subhead2_2)
                     .foregroundStyle(.gray400)
                     .padding(.vertical, 28)
-                Image(systemName: "wifi")
+                Image("recordTravelChoiceDownChevron")
                     .font(.system(size: 9))
                     .padding(.leading, 6)
             }
@@ -183,7 +183,7 @@ struct TodayExpenseDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
                 HStack(alignment: .center, spacing: 0) {
-                    Image(systemName: "wifi")
+                    Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
                         .font(.system(size: 36))
                     
                     VStack(alignment: .leading, spacing: 0) {
