@@ -86,7 +86,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = country.name // country와 연동하기 ^^^
+            locationExpression = country.title // country와 연동하기 ^^^
             
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]

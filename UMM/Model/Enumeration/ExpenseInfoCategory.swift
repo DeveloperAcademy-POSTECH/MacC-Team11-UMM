@@ -109,6 +109,7 @@ enum ExpenseInfoCategory: Int {
         default:
             return "modalCategoryUnknown"
         }
+    }
       
     static func descriptionFor(rawValue: Int) -> String {
         return ExpenseInfoCategory(rawValue: rawValue)?.description ?? "전체"
