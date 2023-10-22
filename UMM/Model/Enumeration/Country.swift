@@ -19,12 +19,12 @@ enum Country: Int {
     case china
     case vietnam
     
-    var name: String {
+    var title: String {
         switch self {
         case .unknown:
-            return "-"
+            return "미분류"
         case .korea:
-            return "대한민국"
+            return "한국"
         case .japan:
             return "일본"
         case .germany:
@@ -67,5 +67,8 @@ enum Country: Int {
         case .vietnam:
             return [.vnd]
         }
+      
+    static func titleFor(rawValue: Int) -> String {
+        return Country(rawValue: rawValue)?.title ?? "전체"
     }
 }

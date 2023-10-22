@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
@@ -19,9 +20,17 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
-    @Published var selectedCountry: Int64 = 0
+    @Published var selectedCountry: Int64 = -2
     @Published var selectedCategory: Int64 = 0
     
+    @Published var travelChoiceHalfModalIsShown = false {
+        willSet {
+            if newValue {
+                filteredExpenses = getFilteredExpenses()
+                groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
+            }
+        }
+    }
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
@@ -101,24 +110,54 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func calculateCurrencySums(from expenses: [Expense]) -> [CurrencySum] {
-        var currencySums = [CurrencySum]()
+    func calculateCurrencySums(from expenses: [Expense]) -> [CurrencyAndSum] {
+        var currencyAndSums = [CurrencyAndSum]()
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
 
         for currency in currencies {
             let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            currencySums.append(CurrencySum(currency: currency, sum: sum))
+            currencyAndSums.append(CurrencyAndSum(currency: currency, sum: sum))
         }
         
-        return currencySums
+        return currencyAndSums
     }
     
-    // MARK: - 아직 안 씀
-    func groupExpensesByLocation(expenses: [Expense], location: String) -> [String?: [Expense]] {
-        return Dictionary(grouping: expenses, by: { $0.location })
+    // parameter: 변환할 Double, 표시할 소수점 아래 자리 수
+    func formatSum(from sum: Double, to num: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
+        formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
+        
+        return formatter.string(from: NSNumber(value: sum)) ?? ""
     }
     
-    func groupExpensesByCategory(expenses: [Expense], category: Int64) -> [Int64?: [Expense]] {
-        return Dictionary(grouping: expenses, by: { $0.category })
+    func getFilteredExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
+        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        return filteredByDate
+    }
+    
+    func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {
+        guard let startDate = selectedTravel.startDate else { return 0 }
+        let calendar = Calendar.current
+        let startOfDayStartDate = calendar.startOfDay(for: startDate)
+        let startOfDayEndDate = calendar.startOfDay(for: selectedDate)
+        let components = calendar.dateComponents([.day], from: startOfDayStartDate, to: startOfDayEndDate)
+        guard let calculatedDay = components.day else {return 0 }
+
+        return calculatedDay
+    }
+
+    // MARK: - 커스텀 Date Picker를 위한 함수
+    func triggerDatePickerPopover(pickerId: String) {
+        if
+            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = scene.windows.first,
+            let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject,
+            let button = picker.buttonAccessibilityDescendant() as? NSObject
+        {
+            button.accessibilityActivate()
+        }
     }
 }
