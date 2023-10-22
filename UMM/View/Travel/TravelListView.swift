@@ -240,21 +240,34 @@ struct TabBarItem: View {
         Button {
             self.currentTab = tab
         } label: {
-            VStack {
-                
-                Spacer()
-                
-                Text(tabBarItemName)
-                    .font(.subhead3_1)
-                
+       
+            HStack {
                 if currentTab == tab {
-                    Color.black
-                        .frame(width: 136, height: 2)
-                        .matchedGeometryEffect(id: "underline",
-                                               in: namespace,
-                                               properties: .frame)
+                    VStack {
+                        
+                        Spacer()
+                        
+                        Text(tabBarItemName)
+                            .font(.subhead3_1)
+                        
+                        Color.black
+                            .frame(width: 136, height: 2)
+                            .matchedGeometryEffect(id: "underline",
+                                                   in: namespace,
+                                                   properties: .frame)
+                    }
                 } else {
-                    Color.clear.frame(width: 136, height: 2)
+                    
+                    VStack {
+                        
+                        Spacer()
+                        
+                        Text(tabBarItemName)
+                            .foregroundStyle(Color.gray300)
+                            .font(.subhead3_1)
+                        
+                        Color.clear.frame(width: 136, height: 2)
+                    }
                 }
             }
             .animation(.spring(), value: self.currentTab)

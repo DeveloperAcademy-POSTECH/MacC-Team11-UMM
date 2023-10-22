@@ -44,7 +44,8 @@ struct AddMemberView: View {
             
         }
         .onDisappear {
-            viewModel.participantArr = participantArr
+            let updateArr = Array(participantArr.dropLast())
+            viewModel.participantArr = updateArr
             viewModel.startDate = startDate
             viewModel.endDate = endDate
             viewModel.travelName = participantArr[0] + "외 \(participantCnt)명"
@@ -167,7 +168,6 @@ struct AddMemberView: View {
                         Button {
                             participantCnt += 1
                             participantArr.append("")
-                            
                         } label: {
                             ZStack {
                                 Rectangle()
