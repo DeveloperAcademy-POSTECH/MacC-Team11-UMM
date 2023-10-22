@@ -157,9 +157,17 @@ struct TodayExpenseView: View {
             VStack(alignment: .leading, spacing: 0) {
                 // 국기 + 국가명
                 VStack(alignment: .leading, spacing: 0) {
-                    HStack(spacing: 0) {
-                        Text("국기: \(country)").font(.subhead3_1)
-                        Text("나라: \(country)").font(.subhead3_1)
+                    HStack(spacing: 8) {
+                        Spacer()
+                            .frame(width: 4) // 디자이너 몰래 살짝 움직였다
+                        Image(Country(rawValue: Int(country))?.flagImageString ?? "")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                            .shadow(color: .gray, radius: 3)
+                        Text(Country(rawValue: Int(country))?.title ?? "-")
+                            .foregroundStyle(.black)
+                            .font(.subhead3_1)
                     }
                     
                     // 결제 수단: 전체: 합계
@@ -172,16 +180,10 @@ struct TodayExpenseView: View {
                             sumPaymentMethod: totalSum
                         )
                     } label: {
-                        HStack(spacing: 0) {
-                            Text("금액 합: \(expenseViewModel.formatSum(from: totalSum, to: 2))")
-                                .font(.display3)
-                                .foregroundStyle(.black)
-                            Image(systemName: "wifi")
-                                .font(.system(size: 16))
-                                .padding(.leading, 16)
-                                .foregroundStyle(.gray300)
-                        }
-                        .padding(.top, 8)
+                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 2))원")
+                            .font(.display3)
+                            .foregroundStyle(.black)
+                            .padding(.top, 8)
                     }
                 }
                 .padding(.bottom, 16)
@@ -204,7 +206,7 @@ struct TodayExpenseView: View {
                             HStack(alignment: .center, spacing: 0) {
                                 VStack(alignment: .leading, spacing: 0) {
                                     HStack(spacing: 0) {
-                                        Text("결제 수단 : \(paymentMethod)")
+                                        Text(PaymentMethod(rawValue: Int(paymentMethod))?.title ?? "-")
                                             .font(.subhead2_1)
                                             .foregroundStyle(.gray300)
                                     }
@@ -214,7 +216,7 @@ struct TodayExpenseView: View {
                                             let currency = currencies[index]
                                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
                                             
-                                            Text("\(currency): \(expenseViewModel.formatSum(from: sum, to: 2))")
+                                            Text((Currency(rawValue: Int(currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: sum, to: 2))")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
                                             

@@ -63,4 +63,27 @@ enum Currency: Int {
             return 0.06
         }
     }
+    
+    var officialSymbol: String {
+        switch self {
+        case .unknown:
+            return "?"
+        case .krw:
+            return "₩"
+        case .jpy:
+            return "¥"
+        case .eur:
+            return "€"
+        case .gbp:
+            return "£"
+        case .usd:
+            return "$"
+        case .twd:
+            return "$"
+        case .cny:
+            return "元"
+        case .vnd:
+            return "₫"
+        }
+    }
 }

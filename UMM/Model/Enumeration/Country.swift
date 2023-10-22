@@ -68,6 +68,31 @@ enum Country: Int {
             return [.vnd]
         }
     }
+    
+    var flagImageString: String {
+        switch self {
+        case .unknown:
+            return "unknownFlag"
+        case .korea:
+            return "koreaFlag"
+        case .japan:
+            return "japanFlag"
+        case .germany:
+            return "germanyFlag"
+        case .uk:
+            return "ukFlag"
+        case .usa:
+            return "usaFlag"
+        case .france:
+            return "franceFlag"
+        case .taiwan:
+            return "taiwanFlag"
+        case .china:
+            return "chinaFlag"
+        case .vietnam:
+            return "vietnamFlag"
+        }
+    }
         
     static func titleFor(rawValue: Int) -> String {
         return Country(rawValue: rawValue)?.title ?? "전체"

@@ -128,9 +128,12 @@ struct TodayExpenseDetailView: View {
     private var todayExpenseSummary: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 나라 이름
-            HStack(alignment: .center, spacing: 0) {
-                Image(systemName: "wifi")
-                    .font(.system(size: 24))
+            HStack(alignment: .center, spacing: 8) {
+                Image(Country(rawValue: Int(selectedCountry))?.flagImageString ?? "")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .shadow(color: .gray, radius: 3)
                 Text("\(Country.titleFor(rawValue: Int(selectedCountry)))")
                     .font(.display1)
                     .padding(.leading, 8)
@@ -145,7 +148,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencySum = currencyAndSums[idx]
-                    Text("\(currencySum.currency): \(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
+                    Text((Currency(rawValue: Int(currencySum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -204,7 +207,7 @@ struct TodayExpenseDetailView: View {
                     
                     VStack(alignment: .trailing, spacing: 0) {
                         HStack(alignment: .center, spacing: 0) {
-                            Text("\(expense.currency)")
+                            Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
                                 .font(.subhead2_1)
                             Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
                                 .font(.subhead2_1)
