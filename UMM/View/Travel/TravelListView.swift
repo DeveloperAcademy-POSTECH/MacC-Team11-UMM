@@ -27,7 +27,6 @@ struct TravelListView: View {
                 
                 TravelTabView()
                 
-//                Spacer()
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -107,10 +106,25 @@ struct TravelListView: View {
                                 )
                                 .cornerRadius(10)
                             
+                            Rectangle()
+                              .foregroundColor(.clear)
+                              .frame(width: 350, height: 137)
+                              .background(
+                                LinearGradient(
+                                  stops: [
+                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                  ],
+                                  startPoint: UnitPoint(x: 0.5, y: 0),
+                                  endPoint: UnitPoint(x: 0.5, y: 1)
+                                )
+                              )
+                              .cornerRadius(10)
+                            
                             VStack(alignment: .leading) {
                                 Spacer()
                                 
-                                Text("Day 3 ! 수정 해야됨 !")
+                                Text("Day 3❌")
                                     .font(.caption1)
                                     .foregroundStyle(Color.white)
                                     .opacity(0.75)
@@ -166,6 +180,7 @@ struct TravelListView: View {
 struct TravelTabView: View {
     
     @State var currentTab: Int = 0
+    @State var disableGesture = false
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -174,6 +189,7 @@ struct TravelTabView: View {
                 
                 UpcomingTravelView().tag(1)
             }
+//            .allowsHitTesting(false) 
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             TabBarView(currentTab: self.$currentTab)
@@ -199,7 +215,7 @@ struct TabBarView: View {
             })
         }
         .padding(.horizontal)
-        .background(Color.white)
+        .background(Color.clear)
         .frame(height: 10)
         .ignoresSafeArea(.all)
     }
@@ -222,15 +238,16 @@ struct TabBarItem: View {
                 Spacer()
                 
                 Text(tabBarItemName)
+                    .font(.subhead3_1)
                 
                 if currentTab == tab {
                     Color.black
-                        .frame(height: 2)
+                        .frame(width: 136, height: 2)
                         .matchedGeometryEffect(id: "underline",
                                                in: namespace,
                                                properties: .frame)
                 } else {
-                    Color.clear.frame(height: 2)
+                    Color.clear.frame(width: 136, height: 2)
                 }
             }
             .animation(.spring(), value: self.currentTab)
