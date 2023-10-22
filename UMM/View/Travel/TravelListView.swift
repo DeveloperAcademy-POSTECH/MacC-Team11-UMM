@@ -16,7 +16,7 @@ struct TravelListView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            VStack {
                 titleHeader
                 
                 nowTravelingView
@@ -180,16 +180,23 @@ struct TravelListView: View {
 struct TravelTabView: View {
     
     @State var currentTab: Int = 0
-    @State var disableGesture = false
+//    @State var disableGesture = false
     
     var body: some View {
         ZStack(alignment: .top) {
             TabView(selection: self.$currentTab) {
-                PreviousTravelView().tag(0)
+                PreviousTravelView()
+                    .gesture(DragGesture().onChanged { _ in
+                        // PreviousTravelView에서 DragGesture가 시작될 때의 동작
+                    })
+                    .tag(0)
                 
-                UpcomingTravelView().tag(1)
+                UpcomingTravelView()
+                    .gesture(DragGesture().onChanged { _ in
+                        // PreviousTravelView에서 DragGesture가 시작될 때의 동작
+                    })
+                    .tag(1)
             }
-//            .allowsHitTesting(false) 
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             TabBarView(currentTab: self.$currentTab)
