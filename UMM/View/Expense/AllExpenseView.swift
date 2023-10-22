@@ -146,12 +146,12 @@ struct AllExpenseView: View {
                             print("countryPicker | country: \(country)")
                         }
                     }, label: {
-                        HStack(spacing: 0) {
-                            Image(systemName: "wifi")
-                                .font(.system(size: 16))
+//                        HStack(spacing: 0) {
+//                            Image(systemName: "wifi")
+//                                .font(.system(size: 16))
                             Text("\(Country.titleFor(rawValue: Int(country)))")
                                 .padding(.leading, 4)
-                        }
+//                        }
                         .font(.caption2)
                         .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
                         .padding(.vertical, 7)
@@ -221,7 +221,7 @@ struct AllExpenseView: View {
                     Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
                         .font(.display4)
                         .foregroundStyle(.black)
-                    Image(systemName: "wifi")
+                    Image(systemName: "chevron.right")
                         .font(.system(size: 24))
                         .foregroundStyle(.gray200)
                         .padding(.leading, 16)
@@ -296,7 +296,7 @@ struct AllExpenseView: View {
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)
                                     .padding(.trailing, 12)
-                                Image(systemName: "wifi")
+                                Image(systemName: "chevron.right")
                                     .font(.system(size: 16))
                                     .foregroundStyle(.gray300)
                                     

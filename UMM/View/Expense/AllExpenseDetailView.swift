@@ -56,7 +56,7 @@ struct AllExpenseDetailView: View {
                     .font(.subhead2_2)
                     .foregroundStyle(.gray400)
                     .padding(.vertical, 28)
-                Image(systemName: "wifi")
+                Image("recordTravelChoiceDownChevron")
                     .font(.system(size: 9))
                     .padding(.leading, 6)
             }
@@ -78,9 +78,7 @@ struct AllExpenseDetailView: View {
                                     .font(.subhead3_1)
                                     .foregroundStyle(.black)
                                 Spacer()
-                                Image(systemName: "wifi")
-                                    .foregroundStyle(.mainPink)
-                                    .font(.system(size: 24))
+                                Image("check")
                             }
                         } else {
                             Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))

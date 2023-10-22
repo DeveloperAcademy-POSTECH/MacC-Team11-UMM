@@ -241,9 +241,7 @@ struct TodayExpenseView: View {
                                     .padding(.top, 12)
                                 }
                                 Spacer()
-                                Image(systemName: "wifi")
-                                    .font(.system(size: 16))
-                                    .foregroundStyle(.gray300)
+                                
                             }
                             .padding(16)
                             .frame(maxWidth: .infinity)
