@@ -15,7 +15,7 @@ struct TodayExpenseDetailView: View {
     var selectedTravel: Travel?
     var selectedDate: Date
     var selectedCountry: Int64
-    @State var selectedPaymentMethod: Int64 = -1
+    @State var selectedPaymentMethod: Int64 = -2
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
@@ -23,7 +23,7 @@ struct TodayExpenseDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             paymentModal
-            totalHeader
+            todayExpenseSummary
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -125,7 +125,7 @@ struct TodayExpenseDetailView: View {
         }
     }
 
-    private var totalHeader: some View {
+    private var todayExpenseSummary: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 나라 이름
             HStack(alignment: .center, spacing: 0) {
@@ -137,7 +137,7 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(currencyAndSums.reduce(0) { $0 + $1.sum }, 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum }, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -145,7 +145,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencySum = currencyAndSums[idx]
-                    Text("\(currencySum.currency): \(expenseViewModel.formatSum(currencySum.sum, 2))")
+                    Text("\(currencySum.currency): \(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -187,7 +187,7 @@ struct TodayExpenseDetailView: View {
                         Text("\(expense.info ?? "info: unknown")")
                             .font(.subhead2_1)
                         HStack(alignment: .center, spacing: 0) {
-                            Text("\(dateFormmaterWithHourMiniute(date: expense.payDate ?? Date()))")
+                            Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
                                 .font(.caption2)
                                 .foregroundStyle(.gray300)
                             Divider()
@@ -206,7 +206,7 @@ struct TodayExpenseDetailView: View {
                         HStack(alignment: .center, spacing: 0) {
                             Text("\(expense.currency)")
                                 .font(.subhead2_1)
-                            Text("\(expenseViewModel.formatSum(expense.payAmount, 2))")
+                            Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
                                 .font(.subhead2_1)
                                 .padding(.leading, 3)
                         }
@@ -237,7 +237,7 @@ struct TodayExpenseDetailView: View {
         } else {
             let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
             return filterByPaymentMethod
-        }        
+        }
     }
 }
 //  #Preview {

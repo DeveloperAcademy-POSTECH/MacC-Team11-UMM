@@ -20,7 +20,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
-    @Published var selectedCountry: Int64 = 0
+    @Published var selectedCountry: Int64 = -2
     @Published var selectedCategory: Int64 = 0
     
     @Published var travelChoiceHalfModalIsShown = false {
@@ -122,11 +122,12 @@ class ExpenseViewModel: ObservableObject {
         return currencyAndSums
     }
     
-    // 소수점 두 자리로 반올림, 소수점 아래 값이 없으면 정수형처럼 반환
-    func formatSum(_ sum: Double,_ to: Int) -> String {
+    // parameter: 변환할 Double, 표시할 소수점 아래 자리 수
+    func formatSum(from sum: Double, to num: Int) -> String {
         let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
-        formatter.maximumFractionDigits = to // 최대 허용되는 소수점 자릿수
+        formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
         
         return formatter.string(from: NSNumber(value: sum)) ?? ""
     }
@@ -144,11 +145,10 @@ class ExpenseViewModel: ObservableObject {
         let startOfDayEndDate = calendar.startOfDay(for: selectedDate)
         let components = calendar.dateComponents([.day], from: startOfDayStartDate, to: startOfDayEndDate)
         guard let calculatedDay = components.day else {return 0 }
-        
+
         return calculatedDay
     }
 
-    
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
         if

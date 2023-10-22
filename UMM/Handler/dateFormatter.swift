@@ -14,7 +14,7 @@ let dateFormatterWithDay: DateFormatter = {
     return formatter
 }()
 
-func dateFormmaterWithHourMiniute(date: Date) -> String {
+func dateFormatterWithHourMiniute(date: Date) -> String {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm"
     let timeString = formatter.string(from: date)
