@@ -27,29 +27,11 @@ struct AllExpenseDetailView: View {
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
-//                    dayField
                     drawExpensesDetail
                 }
             }
         }
 
-//        ScrollView {
-//            Picker("현재 결제 수단", selection: $selectedPaymentMethod) {
-//                ForEach(-1...1, id: \.self) { index in
-//                    Text("\(index)").tag(Int64(index))
-//                }
-//            }
-//            .pickerStyle(MenuPickerStyle())
-//            .onChange(of: selectedPaymentMethod) {
-//                expenseViewModel.filteredExpenses = getFilteredExpenses()
-//                currencySums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
-//            }
-//            
-//            Spacer()
-//            
-//            drawExpensesDetail
-//            
-//        }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
@@ -234,26 +216,21 @@ struct AllExpenseDetailView: View {
 
     // 최종 배열
     func getFilteredExpenses() -> [Expense] {
+        var filteredExpenses = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
         
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
-        print("Filtered by travel.count: \(filteredByTravel.count)")
-        
-        let filteredByCategory = expenseViewModel.filterExpensesByCategory(expenses: filteredByTravel, category: selectedCategory)
-        print("Filtered by category.count: \(filteredByCategory.count)")
-
-        let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByCategory, country: selectedCountry)
-        print("Filtered by Country.count: \(filteredByCountry.count)")
-        print("Filtered by selectedPaymentMethod: \(selectedPaymentMethod)")
-        
-        if selectedCategory == -2 {
-            return filteredByTravel
-        } else {
-            if selectedCountry == -2 {
-                return filteredByCategory
-            } else {
-                return filteredByCountry
-            }
+        if selectedPaymentMethod != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredExpenses, paymentMethod: selectedPaymentMethod)
         }
+        
+        if selectedCategory != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByCategory(expenses: filteredExpenses, category: selectedCategory)
+        }
+
+        if selectedCountry != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByCountry(expenses: filteredExpenses, country: selectedCountry)
+        }
+        
+        return filteredExpenses
     }
 }
 
