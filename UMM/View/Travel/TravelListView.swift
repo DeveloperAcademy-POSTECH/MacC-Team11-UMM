@@ -77,7 +77,7 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         // 가로스크롤뷰
-        ZStack {
+        ZStack(alignment: .top) {
             if travelCount == 0 {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -94,7 +94,11 @@ struct TravelListView: View {
             } else {
                 TabView {
                     ForEach(0..<travelCount, id: \.self) { index in
-                        ZStack {
+                        ZStack(alignment: .top) {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 350, height: 137 + 46)
+                            
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: 350, height: 137)
@@ -159,8 +163,8 @@ struct TravelListView: View {
                                     .padding(.trailing, 16)
                                 }
                             }
-                            .frame(width: 350, height: 137)
                             .padding(.bottom, 16)
+                            .frame(width: 350, height: 137)
                             
                         }
                     }
