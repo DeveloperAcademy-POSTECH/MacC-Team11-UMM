@@ -54,6 +54,62 @@ enum ExpenseInfoCategory: Int {
         }
     }
     
+    var visibleDescription: String {
+        switch self {
+        case .plane:
+            return "항공"
+        case .room:
+            return "숙소"
+        case .transportation:
+            return "교통"
+        case .food:
+            return "식비"
+        case .tour:
+            return "관광"
+        case .shopping:
+            return "쇼핑"
+        default:
+            return "기타"
+        }
+    }
+  
+    var manualRecordImageString: String {
+        switch self {
+        case .plane:
+            return "manualRecordCategoryPlane"
+        case .room:
+            return "manualRecordCategoryRoom"
+        case .transportation:
+            return "manualRecordCategoryTransportation"
+        case .food:
+            return "manualRecordCategoryFood"
+        case .tour:
+            return "manualRecordCategoryFun"
+        case .shopping:
+            return "manualRecordCategoryShopping"
+        default:
+            return "manualRecordCategoryUnknown"
+        }
+    }
+    
+    var modalImageString: String {
+        switch self {
+        case .plane:
+            return "modalCategoryPlane"
+        case .room:
+            return "modalCategoryRoom"
+        case .transportation:
+            return "modalCategoryTransportation"
+        case .food:
+            return "modalCategoryFood"
+        case .tour:
+            return "modalCategoryFun"
+        case .shopping:
+            return "modalCategoryShopping"
+        default:
+            return "modalCategoryUnknown"
+        }
+      
     static func descriptionFor(rawValue: Int) -> String {
         return ExpenseInfoCategory(rawValue: rawValue)?.description ?? "전체"
     }

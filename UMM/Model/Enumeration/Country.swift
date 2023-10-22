@@ -44,6 +44,30 @@ enum Country: Int {
         }
     }
     
+    var relatedCurrencyArray: [Currency] {
+        switch self {
+        case .unknown:
+            return []
+        case .korea:
+            return [.krw]
+        case .japan:
+            return [.jpy]
+        case .germany:
+            return [.eur]
+        case .uk:
+            return [.gbp]
+        case .usa:
+            return [.usd]
+        case .france:
+            return [.eur]
+        case .taiwan:
+            return [.twd]
+        case .china:
+            return [.cny]
+        case .vietnam:
+            return [.vnd]
+        }
+      
     static func titleFor(rawValue: Int) -> String {
         return Country(rawValue: rawValue)?.title ?? "전체"
     }

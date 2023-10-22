@@ -11,7 +11,7 @@ import NaturalLanguage
 import Speech
 import SwiftUI
 
-final class RecordViewModel: ObservableObject {
+final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
@@ -23,13 +23,18 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
+    // these variables are updated by divideVoiceSentence()
     @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown
     
-    @Published var completeRecordModalIsShown = false
-    @Published var travelChoiceHalfModalIsShown = false {
+    // travels
+    @Published var chosenTravel: Travel?
+    @Published var travelArray: [Travel] = []
+    
+    // shows other views
+    @Published var travelChoiceModalIsShown = false {
         willSet {
             if newValue {
                 do {
@@ -40,30 +45,29 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
-    @Published var manualRecordModalIsShown = false
-    @Published var recordButtonIsFocused = false
+    @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
     
-    @Published var travelArray: [Travel] = []
-    @Published var chosenTravel: Travel?
-    @Published var participantArray: [String]? = []
-    @Published var payDate: Date = Date()
-    @Published var location: String = "일본 도쿄"
+    // view state
+    @Published var recordButtonIsFocused = false
+    var needToFill = true
     
+    // STT
     private let audioEngine = AVAudioEngine()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko_KR"))
     private var recognitionTask: SFSpeechRecognitionTask?
     
-    private var audioRecorder: AVAudioRecorder!
-    private var audioPlayer: AVAudioPlayer!
+    // record
+    private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
     
-    // to save record file
+    // variables to save record file
     var path: URL = URL(string: "http://www.apple.com")!
     var fileName: URL = URL(string: "http://www.apple.com")!
     
-    // to evaluate record button pressing time
+    // variables to evaluate record button pressing time
     var startRecordTime = CFAbsoluteTimeGetCurrent()
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     
@@ -78,6 +82,7 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
+        chosenTravel = findCurrentTravel()
     }
     
     func divideVoiceSentence() {
@@ -583,17 +588,15 @@ final class RecordViewModel: ObservableObject {
         
         do {
             audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
-            audioRecorder.prepareToRecord()
-            audioRecorder.record()
+            audioRecorder?.prepareToRecord()
+            audioRecorder?.record()
         } catch {
             print("Failed to Setup the Recording")
         }
     }
     
     func stopRecording() {
-        if audioRecorder.isRecording {
-            audioRecorder.stop()
-        }
+        audioRecorder?.stop()
     }
     
     func startPlayingAudio(url: URL) {
@@ -608,8 +611,8 @@ final class RecordViewModel: ObservableObject {
             
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
                 
         } catch {
             print("Playing Failed")
@@ -617,6 +620,20 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopPlayingAudio(url: URL) {
-        audioPlayer.stop()
+        audioPlayer?.stop()
+    }
+    
+    // MARK: - 프로퍼티 관리
+    
+    func resetInStringProperties() {
+        voiceSentence = ""
+        info = nil
+        infoCategory = .unknown
+        payAmount = -1
+        paymentMethod = .unknown
+    }
+    
+    func setChosenTravel(as travel: Travel) {
+        chosenTravel = travel
     }
 }

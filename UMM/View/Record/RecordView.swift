@@ -38,47 +38,45 @@ struct RecordView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color(.white)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                travelChoiceView
-                rawSentenceView
-                livePropertyView
-                Spacer()
+        NavigationStack {
+            ZStack {
+                Color(.white)
+                
+                VStack(spacing: 0) {
+                    travelChoiceView
+                    rawSentenceView
+                    livePropertyView
+                    Spacer()
+                }
+                
+                manualRecordButtonView
+                
+                Group {
+                    alertView_empty
+                    alertView_short
+                    speakWhilePressingView
+                    recordButtonView
+                }
             }
             .ignoresSafeArea()
-            
-            manualRecordButtonView
-                        
-            Group {
-                alertView_empty
-                alertView_short
-                speakWhilePressingView
-                recordButtonView
+            .onAppear {
+                viewModel.resetInStringProperties()
+                viewModel.needToFill = true
             }
-            .ignoresSafeArea()
-        }
-        .onAppear {
-            viewModel.chosenTravel = findCurrentTravel()
-        }
-        .sheet(isPresented: $viewModel.manualRecordModalIsShown) {
-            ManualRecordView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $viewModel.completeRecordModalIsShown) {
-            CompleteRecordView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $viewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceHalfView(viewModel: viewModel)
-                .presentationDetents([.height(226)])
+            .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
+                TravelChoiceModal(viewModel: viewModel)
+                    .presentationDetents([.height(289 - 34)])
+            }
+            .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
+                ManualRecordView(prevViewModel: viewModel)
+            }
         }
     }
     
     private var travelChoiceView: some View {
         Button {
-            viewModel.travelChoiceHalfModalIsShown = true
-            print("viewModel.travelChoiceHalfModalIsShown = true")
+            viewModel.travelChoiceModalIsShown = true
+            print("viewModel.travelChoiceModalIsShown = true")
         } label: {
             ZStack {
                 Capsule()
@@ -212,10 +210,20 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    Text(String(format: "%.2f", viewModel.payAmount))
-                        .foregroundStyle(.black)
-                        .font(.subhead3_2)
-                        .lineLimit(3)
+                    let isClean0 = viewModel.payAmount - Double(Int(viewModel.payAmount)) == 0.0
+                    let isClean2 = viewModel.payAmount * 100.0 - Double(Int(viewModel.payAmount * 100.0)) == 0.0
+                    Group {
+                        if isClean0 {
+                            Text(String(format: "%.0f", viewModel.payAmount))
+                        } else if isClean2 {
+                            Text(String(format: "%.2f", viewModel.payAmount))
+                        } else {
+                            Text(String(format: "%.4f", viewModel.payAmount))
+                        }
+                    }
+                    .foregroundStyle(.black)
+                    .font(.subhead3_2)
+                    .lineLimit(3)
                 } else {
                     Image("recordGray100Check")
                         .resizable()
@@ -318,7 +326,8 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
-            viewModel.manualRecordModalIsShown = true
+            viewModel.needToFill = false
+            viewModel.manualRecordViewIsShown = true
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 11)
@@ -330,7 +339,7 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 8) {
-                    Image("manualRecordPencil")
+                    Image("manualRecordBlackPencil")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
@@ -358,7 +367,6 @@ struct RecordView: View {
                 .scaledToFit()
                 .frame(width: 84, height: 84)
                 .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
-            //                    .scaleEffect(isDetectingPress_letButtonBigger ? 1 * (164.0 / 84.0) : (28.0 / 84.0) * (164.0 / 84.0))
                 .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
                 .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
                 .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
@@ -373,18 +381,30 @@ struct RecordView: View {
                 print("녹음 끝")
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
-                viewModel.stopRecording()
-                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.0 {
-                    viewModel.alertView_shortIsShown = true
-                } else if viewModel.info != nil || viewModel.payAmount != -1 {
-                    viewModel.manualRecordModalIsShown = true
+//                viewModel.stopRecording()
+                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
+                    DispatchQueue.main.async {
+                        viewModel.alertView_shortIsShown = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        viewModel.resetInStringProperties()
+                    }
                 } else {
-                    viewModel.resetTranscribedString()
-                    viewModel.alertView_emptyIsShown = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        if viewModel.info == nil && viewModel.payAmount == -1 {
+                            viewModel.resetTranscribedString()
+                            viewModel.alertView_emptyIsShown = true
+                            viewModel.resetInStringProperties()
+                        } else {
+                            viewModel.manualRecordViewIsShown = true
+                        }
+                    }
                 }
+                    
             }
         }
-        .offset(y: 292) // 계산상으로는 274가 맞는데...
+        .offset(y: 274)
     }
     
     private var continuousPress: some Gesture {
@@ -396,10 +416,10 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     print("녹음 시작")
-                    Task {
-                        await viewModel.startRecording()
-                        viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-                    }
+                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+//                    Task {
+//                        await viewModel.startRecording()
+//                    }
                     DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()
