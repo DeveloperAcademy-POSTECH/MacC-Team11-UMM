@@ -187,18 +187,18 @@ struct AllExpenseDetailView: View {
                             Image(systemName: "wifi")
                                 .font(.system(size: 36))
                             
-                            VStack(alignment:.leading, spacing : 0){
+                            VStack(alignment: .leading, spacing: 0) {
                                 Text("\(expense.info ?? "info : unknown")")
                                     .font(.subhead2_1)
                                 
-                                HStack(alignment:.center ,spacing : 0){
-                                    Text("\(dateFormatterWithHourMiniute(date : expense.payDate ?? Date()))")
+                                HStack(alignment: .center, spacing: 0) {
+                                    Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
                                         .font(.caption2)
                                         .foregroundStyle(.gray300)
                                     Divider()
-                                        .padding(.horizontal ,3 )
+                                        .padding(.horizontal, 3 )
                                     
-                                    Text("\(PaymentMethod.titleFor(rawValue:Int(expense.paymentMethod)))")
+                                    Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                         .font(.caption2)
                                         .foregroundStyle(.gray300)
                                 }
@@ -208,20 +208,20 @@ struct AllExpenseDetailView: View {
                             
                             Spacer()
                             
-                            VStack(alignment:.trailing ,spacing : 0){
-                                HStack(alignment:.center ,spacing : 0){
+                            VStack(alignment: .trailing, spacing: 0) {
+                                HStack(alignment: .center, spacing: 0) {
                                     Text("\(expense.currency)")
                                         .font(.subhead2_1)
                                     
                                     Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
                                         .font(.subhead2_1)
-                                        .padding(.leading,3 )
+                                        .padding(.leading, 3 )
                                 }
                                 
                                 Text("원화로 환산된 금액")
                                     .font(.caption2)
                                     .foregroundStyle(.gray200)
-                                    .padding(.top,4 )
+                                    .padding(.top, 4 )
                             }
                         }
                     }
@@ -232,7 +232,6 @@ struct AllExpenseDetailView: View {
         }
     }
 
-    
     // 최종 배열
     func getFilteredExpenses() -> [Expense] {
         

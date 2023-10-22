@@ -225,7 +225,6 @@ struct AllExpenseView: View {
                 .padding(.top, 32)
             }
 
-            
             // allExpenseSummary: 화폐별
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 0) {
