@@ -171,32 +171,36 @@ struct ManualRecordView: View {
                         ZStack {
                             Text(viewModel.payAmountString == "" ? "  -  " : viewModel.payAmountString)
                                 .lineLimit(1)
-                                .font(.display3) // 4로 고치기 ^^^
+                                .font(.display4)
                                 .hidden()
                             
                             TextField(" - ", text: $viewModel.payAmountString)
                                 .lineLimit(1)
                                 .foregroundStyle(.black)
-                                .font(.display3) // 4로 고치기 ^^^
+                                .font(.display4)
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
                         }
                         
-                        Button {
-                            print("통화 수정 버튼")
-                            // 드롭다운 피커로 구현하기 ^^^
-                        } label: {
+                        ZStack {
+                            Picker("화폐", selection: $viewModel.currency) {
+                                ForEach(viewModel.currencyCandidateArray, id: \.self) { currency in
+                                    Text(currency.title + " " + currency.officialSymbol)
+                                }
+                            }
+                            
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
-                                Text("엔" + " " + "￥") // viewModel.currency에 연동하기 ^^^
+                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol) // viewModel.currency에 연동하기 ^^^
                                     .foregroundStyle(.gray400)
                                     .font(.display2)
                                     .padding(.vertical, 4)
                                     .padding(.horizontal, 8)
                             }
+                            .allowsHitTesting(false)
                         }
                     }
                     
@@ -304,15 +308,15 @@ struct ManualRecordView: View {
                         }
                     }
                     Spacer()
-                    Button {
-                        print("카테고리 수정 버튼")
-                        viewModel.categoryChoiceModalIsShown = true
-                    } label: {
-                        Image("manualRecordDownChevron")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                    }
+                    Image("manualRecordDownChevron")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .onTapGesture {
+                            print("카테고리 수정 버튼")
+                            viewModel.categoryChoiceModalIsShown = true
+                        }
+                    
                 }
                 
                 HStack(spacing: 0) {
@@ -323,14 +327,8 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     }
-                    Button {
-                        print("현금 선택 버튼")
-                        if viewModel.paymentMethod == .cash {
-                            viewModel.paymentMethod = .unknown
-                        } else {
-                            viewModel.paymentMethod = .cash
-                        }
-                    } label: {
+                    
+                    Group {
                         if viewModel.paymentMethod == .cash {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
@@ -357,18 +355,19 @@ struct ManualRecordView: View {
                             }
                         }
                     }
+                    .onTapGesture {
+                        print("현금 선택 버튼")
+                        if viewModel.paymentMethod == .cash {
+                            viewModel.paymentMethod = .unknown
+                        } else {
+                            viewModel.paymentMethod = .cash
+                        }
+                    }
                     
                     Spacer()
                         .frame(width: 6)
                     
-                    Button {
-                        print("카드 선택 버튼")
-                        if viewModel.paymentMethod == .card {
-                            viewModel.paymentMethod = .unknown
-                        } else {
-                            viewModel.paymentMethod = .card
-                        }
-                    } label: {
+                    Group {
                         if viewModel.paymentMethod == .card {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
@@ -393,6 +392,14 @@ struct ManualRecordView: View {
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
+                        }
+                    }
+                    .onTapGesture {
+                        print("카드 선택 버튼")
+                        if viewModel.paymentMethod == .card {
+                            viewModel.paymentMethod = .unknown
+                        } else {
+                            viewModel.paymentMethod = .card
                         }
                     }
                     
@@ -433,15 +440,16 @@ struct ManualRecordView: View {
                             .font(.subhead2_1)
                     }
                     Spacer()
-                    Button {
-                        print("여행 선택 버튼")
-                        viewModel.travelChoiceModalIsShown = true
-                    } label: {
-                        Image("manualRecordDownChevron")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                    }
+
+                    Image("manualRecordDownChevron")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .onTapGesture {
+                            print("여행 선택 버튼")
+                            viewModel.travelChoiceModalIsShown = true
+                        }
+                    
                 }
                 HStack(spacing: 0) {
                     ZStack(alignment: .leading) {
@@ -457,40 +465,39 @@ struct ManualRecordView: View {
                                 let isBasicParticipant = index < viewModel.participantTupleArray.count
                                 let tuple: (String, Bool) = isBasicParticipant ? viewModel.participantTupleArray[index] : viewModel.additionalParticipantTupleArray[index - viewModel.participantTupleArray.count]
                                 
-                                Button {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .foregroundStyle(tuple.1 == true ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
+                                        .layoutPriority(-1)
+                                    
+                                    // 높이 설정용 히든 뷰
+                                    Text("금")
+                                        .lineLimit(1)
+                                        .font(.subhead2_2)
+                                        .padding(.vertical, 6)
+                                        .hidden()
+                                    
+                                    HStack(spacing: 4) {
+                                        if tuple.0 == "나" {
+                                            Text("me")
+                                                .lineLimit(1)
+                                                .foregroundStyle(tuple.1 ? .gray200 : .gray300)
+                                                .font(.subhead2_1)
+                                        }
+                                        Text(tuple.0)
+                                            .lineLimit(1)
+                                            .foregroundStyle(tuple.1 ? .white : .gray300)
+                                            .font(.subhead2_2)
+                                    }
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 12)
+                                }
+                                .onTapGesture {
                                     print("참여 인원(\(tuple.0)) 참여 여부 설정 버튼")
                                     if isBasicParticipant {
                                         viewModel.participantTupleArray[index].1.toggle()
                                     } else {
                                         viewModel.additionalParticipantTupleArray[index - viewModel.participantTupleArray.count].1.toggle()
-                                    }
-                                } label: {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 6)
-                                            .foregroundStyle(tuple.1 == true ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                                            .layoutPriority(-1)
-                                        
-                                        // 높이 설정용 히든 뷰
-                                        Text("금")
-                                            .lineLimit(1)
-                                            .font(.subhead2_2)
-                                            .padding(.vertical, 6)
-                                            .hidden()
-                                        
-                                        HStack(spacing: 4) {
-                                            if tuple.0 == "나" {
-                                                Text("me")
-                                                    .lineLimit(1)
-                                                    .foregroundStyle(tuple.1 ? .gray200 : .gray300)
-                                                    .font(.subhead2_1)
-                                            }
-                                            Text(tuple.0)
-                                                .lineLimit(1)
-                                                .foregroundStyle(tuple.1 ? .white : .gray300)
-                                                .font(.subhead2_2)
-                                        }
-                                        .padding(.vertical, 6)
-                                        .padding(.horizontal, 12)
                                     }
                                 }
                             }
@@ -552,14 +559,14 @@ struct ManualRecordView: View {
                             .font(.subhead2_2)
                     }
                     Spacer()
-                    Button {
-                        print("지출 일시 수정 버튼")
-                    } label: {
-                        Image("manualRecordPencil")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                    }
+                    
+                    Image("manualRecordPencil")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .onTapGesture {
+                            print("지출 일시 수정 버튼")
+                        }
                 }
                 HStack(spacing: 0) {
                     ZStack(alignment: .leading) {
@@ -592,15 +599,16 @@ struct ManualRecordView: View {
                     }
                     
                     Spacer()
-                    Button {
-                        print("지출 위치 수정 버튼")
-                    } label: {
-                        Image("manualRecordDownChevron")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                    }
+                    
+                    Image("manualRecordDownChevron")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .onTapGesture {
+                            print("지출 위치 수정 버튼")
+                        }
                 }
+                
             }
             Spacer()
                 .frame(width: 20)
