@@ -39,15 +39,30 @@ struct AddMemberView: View {
             doneButton
             
         }
+        .onAppear {
+            print("addMemberview")
+        }
         .onDisappear {
-            let updateArr = Array(participantArr.dropLast())
-            viewModel.participantArr = updateArr
+            if participantArr.count > 0 {
+                participantCnt -= 1
+                let updateArr = Array(participantArr.dropLast())
+                viewModel.participantArr = updateArr
+            } else {
+                viewModel.participantArr = participantArr
+            }
             viewModel.startDate = startDate
             viewModel.endDate = endDate
-            viewModel.travelName = participantArr[0] + "외 \(participantCnt)명"
+            if let arr = viewModel.participantArr {
+                if arr.count > 0 {
+                    viewModel.travelName = arr[0] + "외 \(participantCnt)명"
+                } else {
+                    viewModel.travelName = "나의 여행"
+                }
+            }
             viewModel.travelID = travelID
+            print("addmemberview| not stop before add")
             viewModel.addTravel()
-            viewModel.saveTravel()
+//            viewModel. saveTravel()
             isDisappear = true
             print("onDisappear")
 //            print("memeber view TravelID", travelID)
@@ -95,6 +110,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedAlone = true
                 self.isSelectedTogether = false
+                print("정산이 필요 없어요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -103,7 +119,7 @@ struct AddMemberView: View {
                         .frame(width: 350, height: 53)
                     
                     HStack {
-                        Image(isSelectedTogether ? "selectUnacitve" : "selectActive")
+                        Image(isSelectedTogether ? "selectUnactive" : "selectActive")
                             .frame(width: 21)
                         
                         Text("정산이 필요 없어요")
@@ -120,6 +136,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedTogether = true
                 self.isSelectedAlone = false
+                print("여러 명이서 정산이 필요한 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -128,7 +145,7 @@ struct AddMemberView: View {
                         .frame(width: 350, height: 53)
                     
                     HStack {
-                        Image(isSelectedAlone ? "selectUnacitve" : "selectActive")
+                        Image(isSelectedAlone ? "selectUnactive" : "selectActive")
                             .frame(width: 21)
                         
                         Text("여러 명이서 정산이 필요한 여행이에요")
@@ -169,8 +186,9 @@ struct AddMemberView: View {
                         participantListView
                         
                         Button {
-                            participantCnt += 1
                             participantArr.append("")
+                            participantCnt += 1
+                            print("participantArr", $viewModel.participantArr)
                         } label: {
                             ZStack {
                                 Rectangle()

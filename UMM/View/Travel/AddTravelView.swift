@@ -401,21 +401,21 @@ struct AddTravelView: View {
         }
     }
     
-    var nextButton: some View {
-        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
-            ZStack {
-                Rectangle()
-                    .frame(width: 134, height: 45)
-                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray200)
-                    .cornerRadius(16)
-                
-                Text("다음")
-                    .font(.subhead3_2)
-                    .foregroundStyle(Color.white)
-            }
-        }
-    }
-    
+//    var nextButton: some View {
+//        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+//            ZStack {
+//                Rectangle()
+//                    .frame(width: 134, height: 45)
+//                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray200)
+//                    .cornerRadius(16)
+//                
+//                Text("다음")
+//                    .font(.subhead3_2)
+//                    .foregroundStyle(Color.white)
+//            }
+//        }
+//    }
+//    
     var backButton: some View {
         Button {
             dismiss()
