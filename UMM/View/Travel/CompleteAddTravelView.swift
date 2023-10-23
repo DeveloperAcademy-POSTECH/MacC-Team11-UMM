@@ -55,7 +55,9 @@ struct CompleteAddTravelView: View {
             }
         }
         .onAppear {
+            print("CompleteAddTravelView")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                print("dispatchQueue.main.asyncAfter")
 //                print("traveelID", travelID)
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)

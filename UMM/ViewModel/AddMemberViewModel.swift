@@ -12,7 +12,7 @@ class AddMemberViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     
     @Published var savedParticipant: [Travel] = []
-    @Published var participantArr: [String]?
+    @Published var participantArr: [String]? = []
     @Published var startDate: Date?
     @Published var endDate: Date?
     @Published var travelName: String?
