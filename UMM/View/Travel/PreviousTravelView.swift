@@ -24,9 +24,21 @@ struct PreviousTravelView: View {
                     ForEach(0 ..< travelCnt, id: \.self) { index in
                         VStack {
                             ZStack {
-                                Rectangle()
-                                    .foregroundColor(.red)
+                                Image("basicImage")
+                                    .resizable()
+                                    .scaledToFill()
                                     .frame(width: 110, height: 80)
+                                    .cornerRadius(10)
+                                    .background(
+                                        LinearGradient(
+                                            stops: [
+                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                            ],
+                                            startPoint: UnitPoint(x: 0.5, y: 0),
+                                            endPoint: UnitPoint(x: 0.5, y: 1)
+                                        )
+                                    )
                                     .cornerRadius(10)
                                 
                                 Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
@@ -59,9 +71,21 @@ struct PreviousTravelView: View {
                             ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
                                 VStack {
                                     ZStack {
-                                        Rectangle()
-                                            .foregroundColor(.red)
+                                        Image("basicImage")
+                                            .resizable()
+                                            .scaledToFill()
                                             .frame(width: 110, height: 80)
+                                            .cornerRadius(10)
+                                            .background(
+                                                LinearGradient(
+                                                    stops: [
+                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                    ],
+                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                )
+                                            )
                                             .cornerRadius(10)
                                         
                                         Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
