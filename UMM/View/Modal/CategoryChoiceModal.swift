@@ -50,28 +50,27 @@ struct CategoryChoiceModal: View {
             VStack(spacing: 0) {
                 HStack {
                     ForEach(array0, id: \.self) { category in
-                        Button {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(.gray100)
+                                .opacity(viewModel.category == category ? 1.0 : 0.0000001)
+                                .layoutPriority(-1)
+                            
+                            VStack(spacing: 8) {
+                                Image(category.modalImageString)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 36, height: 36)
+                                Text(category.visibleDescription)
+                                    .foregroundStyle(.black)
+                                    .font(.subhead2_2)
+                            }
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                        }
+                        .onTapGesture {
                             viewModel.setCategory(as: category)
                             redrawer.redraw()
-                        } label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundStyle(.gray100)
-                                    .opacity(viewModel.category == category ? 1.0 : 0.0000001)
-                                    .layoutPriority(-1)
-                                
-                                VStack(spacing: 8) {
-                                    Image(category.modalImageString)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 36, height: 36)
-                                    Text(category.visibleDescription)
-                                        .foregroundStyle(.black)
-                                        .font(.subhead2_2)
-                                }
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                            }
                         }
                     }
                 }
@@ -79,28 +78,27 @@ struct CategoryChoiceModal: View {
                     .frame(height: 10)
                 HStack {
                     ForEach(array1, id: \.self) { category in
-                        Button {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(.gray100)
+                                .opacity(viewModel.category == category ? 1.0 : 0.0000001)
+                                .layoutPriority(-1)
+                            
+                            VStack(spacing: 8) {
+                                Image(category.modalImageString)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 36, height: 36)
+                                Text(category.visibleDescription)
+                                    .foregroundStyle(.black)
+                                    .font(.subhead2_2)
+                            }
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                        }
+                        .onTapGesture {
                             viewModel.setCategory(as: category)
                             redrawer.redraw()
-                        } label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundStyle(.gray100)
-                                    .opacity(viewModel.category == category ? 1.0 : 0.0000001)
-                                    .layoutPriority(-1)
-                                
-                                VStack(spacing: 8) {
-                                    Image(category.modalImageString)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 36, height: 36)
-                                    Text(category.visibleDescription)
-                                        .foregroundStyle(.black)
-                                        .font(.subhead2_2)
-                                }
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                            }
                         }
                     }
                     Rectangle()
