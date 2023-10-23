@@ -28,16 +28,16 @@ struct CustomDatePicker: View {
                 .padding(.horizontal, 8)
                 
                 // 안 보이게 하고 Button으로 호출
-//                DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
-//                    .labelsHidden()
-//                    .accessibilityIdentifier(pickerId)
-//                    .onReceive(expenseViewModel.$selectedDate) { _ in
-//                        DispatchQueue.main.async {
-//                            expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-//                            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-//                        }
-//                    }
-//                    .opacity(0)
+                DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
+                    .labelsHidden()
+                    .accessibilityIdentifier(pickerId)
+                    .onReceive(expenseViewModel.$selectedDate) { _ in
+                        DispatchQueue.main.async {
+                            expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
+                            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+                        }
+                    }
+                    .opacity(0)
             }
             
             Button { self.selectedDate.addTimeInterval(86400)
