@@ -201,8 +201,6 @@ struct ManualRecordView: View {
                                     .padding(.horizontal, 8)
                             }
                             .allowsHitTesting(false)
-                            
-
                         }
                     }
                     
