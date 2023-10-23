@@ -43,7 +43,7 @@ class TravelListViewModel: ObservableObject {
         var res = ""
         for index in 0..<partArray.count {
             res += partArray[index]
-            if index < partArray.count - 2 {
+            if index < partArray.count - 1 {
                 res += ","
             }
         }
