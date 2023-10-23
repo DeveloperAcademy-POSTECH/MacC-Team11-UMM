@@ -19,68 +19,76 @@ struct UpcomingTravelView: View {
                 Text("다가오는 여행 내역이 없어요")
                     .foregroundStyle(Color(0xA6A6A6))
             } else if travelCnt <= 6 {
-                LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                    ForEach(0 ..< travelCnt, id: \.self) { index in
-                        VStack {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.blue)
-                                    .frame(width: 110, height: 80)
-                                    .cornerRadius(10)
+                VStack {
+                    LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                        ForEach(0 ..< travelCnt, id: \.self) { index in
+                            VStack {
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundColor(.blue)
+                                        .frame(width: 110, height: 80)
+                                        .cornerRadius(10)
+                                    
+                                    Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                    +
+                                    Text("~ \n")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                    
+                                    +
+                                    Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
+                                }
                                 
-                                Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                    .font(.caption2)
-                                    .foregroundStyle(Color.white.opacity(0.75))
-                                +
-                                Text("~ \n")
-                                    .font(.caption2)
-                                    .foregroundStyle(Color.white.opacity(0.75))
-                                
-                                +
-                                Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                    .font(.caption2)
-                                    .foregroundStyle(Color.white.opacity(0.75))
+                                Text(upcomingTravel?[index].name ?? "제목 미정")
+                                    .font(.subhead1)
+                                    .lineLimit(1)
                             }
-                            
-                            Text(upcomingTravel?[index].name ?? "제목 미정")
-                                .font(.subhead1)
-                                .lineLimit(1)
                         }
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 32)
+                    
+                    Spacer()
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 32)
             } else {
                 TabView {
                     ForEach(0 ..< (travelCnt+5)/6, id: \.self) { page in
-                        LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                            ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
-                                VStack {
-                                    ZStack {
-                                        Rectangle()
-                                            .foregroundColor(.blue)
-                                            .frame(width: 110, height: 80)
-                                            .cornerRadius(10)
+                        VStack {
+                            LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                                ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
+                                    VStack {
+                                        ZStack {
+                                            Rectangle()
+                                                .foregroundColor(.blue)
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                            
+                                            Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
+                                            +
+                                            Text("~ \n")
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
+                                            
+                                            +
+                                            Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
+                                        }
                                         
-                                        Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                            .font(.caption2)
-                                            .foregroundStyle(Color.white.opacity(0.75))
-                                        +
-                                        Text("~ \n")
-                                            .font(.caption2)
-                                            .foregroundStyle(Color.white.opacity(0.75))
-                                        
-                                        +
-                                        Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                            .font(.caption2)
-                                            .foregroundStyle(Color.white.opacity(0.75))
+                                        Text(upcomingTravel?[index].name ?? "제목 미정")
+                                            .font(.subhead1)
+                                            .lineLimit(1)
                                     }
-                                    
-                                    Text(upcomingTravel?[index].name ?? "제목 미정")
-                                        .font(.subhead1)
-                                        .lineLimit(1)
                                 }
                             }
+                            
+                            Spacer()
                         }
                     }
                 }
@@ -90,6 +98,7 @@ struct UpcomingTravelView: View {
                 .padding(.vertical, 32)
             }
         }
+        .padding(.top, 12)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 viewModel.fetchTravel()
