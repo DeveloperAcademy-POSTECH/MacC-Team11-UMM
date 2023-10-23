@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "노마드월렛.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
