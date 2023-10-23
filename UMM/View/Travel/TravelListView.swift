@@ -76,7 +76,6 @@ struct TravelListView: View {
     }
     
     private var nowTravelingView: some View {
-        // 가로스크롤뷰
         ZStack(alignment: .top) {
             if travelCount == 0 {
                 Rectangle()
@@ -162,6 +161,7 @@ struct TravelListView: View {
                                     }
                                     .padding(.trailing, 16)
                                 }
+                                
                             }
                             .padding(.bottom, 16)
                             .frame(width: 350, height: 137)
