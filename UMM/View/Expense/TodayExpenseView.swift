@@ -28,6 +28,7 @@ struct TodayExpenseView: View {
 //            todayExpenseHeader
             
             tabViewButton
+            
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     datePicker
@@ -131,17 +132,17 @@ struct TodayExpenseView: View {
             .padding(.bottom, 12)
     }
     
-    private var dummyExpenseAddButton: some View {
-        Button {
-            expenseViewModel.addExpense(travel: expenseViewModel.selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
-            DispatchQueue.main.async {
-                expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-            }
-        } label: {
-            Text("지출 추가")
-        }
-    }
+//    private var dummyExpenseAddButton: some View {
+//        Button {
+//            expenseViewModel.addExpense(travel: expenseViewModel.selectedTravel ?? Travel(context: dummyRecordViewModel.viewContext))
+//            DispatchQueue.main.async {
+//                expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
+//                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+//            }
+//        } label: {
+//            Text("지출 추가")
+//        }
+//    }
     
     // 국가별 + 결제수단별 지출액 표시
     private var drawExpensesByCountry: some View {

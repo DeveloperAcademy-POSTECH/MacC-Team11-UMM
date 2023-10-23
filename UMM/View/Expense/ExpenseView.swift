@@ -25,8 +25,14 @@ struct ExpenseView: View {
                 TabView(selection: $selectedTab) {
                     TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(0)
+                        .contentShape(Rectangle())
+                        .gesture(DragGesture().onChanged({_ in}))
+                        .simultaneousGesture(TapGesture())
                     AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(1)
+                        .contentShape(Rectangle())
+                        .gesture(DragGesture().onChanged({_ in}))
+                        .simultaneousGesture(TapGesture())
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
