@@ -13,10 +13,10 @@ struct MainView: View {
     
     var body: some View {
         TabView(selection: $selection) {
-            VStack(spacing: 0) {
+//            VStack(spacing: 0) {
                 TravelListView(month: Date())
-                Divider()
-            }
+//                Divider()
+//            }
             .tabItem {
                 VStack {
                     if selection == 0 {
@@ -30,10 +30,10 @@ struct MainView: View {
             }
             .tag(0)
             
-            VStack(spacing: 0) {
+//            VStack(spacing: 0) {
                 RecordView()
-                Divider()
-            }
+//                Divider()
+//            }
             .tabItem {
                 VStack {
                     if selection == 1 {
@@ -48,10 +48,10 @@ struct MainView: View {
             }
             .tag(1)
             
-            VStack(spacing: 0) {
+//            VStack(spacing: 0) {
                 ExpenseView()
-                Divider()
-            }
+//                Divider()
+//            }
             .tabItem {
                 VStack {
                     if selection == 2 {

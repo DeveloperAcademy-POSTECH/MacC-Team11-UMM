@@ -55,21 +55,14 @@ struct CompleteAddTravelView: View {
             }
         }
         .onAppear {
-            print("CompleteAddTravelView")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                print("dispatchQueue.main.asyncAfter")
-//                print("traveelID", travelID)
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-//                print("selectedTravel", selectedTravel!)
-                self.travelNM = ((selectedTravel?.first?.participantArray?[0]) ?? "").isEmpty ? "나의 여행" : ((selectedTravel?.first?.participantArray?[0]) ?? "") + "와의 여행"
-
-//                if let participant = selectedTravel?.first?.participantArray?[0] {
-//                    self.travelNM = participant + "와의 여행"
-//                } else {
-//                    self.travelNM = "나의 여행"
-//                }
-
+                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
+                    self.travelNM = firstParticipant + "와의 여행"
+                } else {
+                    self.travelNM = "나의 여행"
+                }
             }
         }
         .onDisappear {
