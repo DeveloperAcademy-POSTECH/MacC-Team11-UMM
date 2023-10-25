@@ -128,11 +128,15 @@ struct TravelListView: View {
                                     VStack(alignment: .leading) {
                                         Spacer()
                                         
-                                        Text("Day 3❌")
-                                            .font(.caption1)
-                                            .foregroundStyle(Color.white)
-                                            .opacity(0.75)
-                                            .padding(.leading, 16)
+                                        Group {
+                                            Text("Day ")
+                                            +
+                                            Text("\(viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()))")
+                                        }
+                                        .font(.caption1)
+                                        .foregroundStyle(Color.white)
+                                        .opacity(0.75)
+                                        .padding(.leading, 16)
                                         
                                         Text(nowTravel?[index].name ?? "제목 미정")
                                             .font(.display1)
