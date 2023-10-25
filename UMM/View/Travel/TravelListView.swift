@@ -13,7 +13,6 @@ struct TravelListView: View {
     @ObservedObject var viewModel = TravelListViewModel()
     @State var nowTravel: [Travel]?
     @State private var travelCount: Int = 0
-//    @State var offset: CGFloat = 0
     @State private var currentPage = 0
     
     var body: some View {
@@ -23,9 +22,7 @@ struct TravelListView: View {
                 
                 nowTravelingView
                 
-                tempTravelView
-                
-                Spacer()
+                TempTravelView()
                 
                 TravelTabView()
                 
@@ -175,24 +172,7 @@ struct TravelListView: View {
                         }
                         .frame(width: 350, height: 230)
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                        //                    .overlay(
-                        //                        HStack(spacing: 15) {
-                        //                            ForEach(0..<travelCount, id: \.self) { index in
-                        //                                Capsule()
-                        //                                    .fill(Color.black)
-                        //                                    .frame(width: 7, height: 7)
-                        //                                    .opacity(currentPage == index ? 1 : 0.5)
-                        //                            }
-                        //                        }
-                        //                            .frame(width: 0, height: 0), alignment: .bottom
-                        //
-                        //                    )
-                        //                    .onAppear {
-                        //                        let screenWidth = getWidth()
-                        //                        self.currentPage = Int(round(offset / screenWidth))
-                        //                    }
                     }
-                    //                    .background(Color.black)
                     HStack(spacing: 6) {
                         ForEach(0..<travelCount, id: \.self) { index in
                             Capsule()
@@ -211,23 +191,31 @@ struct TravelListView: View {
         }
     }
     
-    func getWidth() -> CGFloat {
+    private func getWidth() -> CGFloat {
         return UIScreen.main.bounds.width
     }
     
-    var offset: CGFloat {
+    private var offset: CGFloat {
         let screenWidth = getWidth()
         return CGFloat(currentPage) * screenWidth
     }
     
-    private var tempTravelView: some View {
-        EmptyView()
-    }
+//    private var tempTravelView: some View {
+//        Rectangle()
+//            .frame(width: 250, height: 68)
+//    }
 }
 
 extension View {
     func getWidth() -> CGFloat {
         return UIScreen.main.bounds.width
+    }
+}
+
+struct TempTravelView: View {
+    var body: some View {
+        Rectangle()
+            .frame(width: 250, height: 0)
     }
 }
 
@@ -250,11 +238,12 @@ struct TravelTabView: View {
                     })
                     .tag(1)
             }
+            .padding(.top, 12)
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             Divider()
                 .frame(height: 1)
-                .padding(.top, 24)
+                .padding(.top, 44)
             
             TabBarView(currentTab: self.$currentTab)
         }
@@ -279,7 +268,8 @@ struct TabBarView: View {
             })
         }
         .background(Color.clear)
-        .frame(height: 10)
+        .frame(height: 30)
+        .padding(.top, 8)
         .ignoresSafeArea(.all)
     }
 }
