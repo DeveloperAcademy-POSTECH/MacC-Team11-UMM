@@ -312,6 +312,9 @@ struct AddTravelView: View {
                             .disabled(true)
                     }
                 }
+                .onChange(of: viewModel.endDate) {
+                    print("onChange")
+                }
             }
             .padding(.horizontal, 18)
         }
@@ -344,31 +347,30 @@ struct AddTravelView: View {
                     Text(String(day))
                         .padding(9.81)
                         .font(.calendar2)
-                        .frame(width: 45, height: 41)
+                        .frame(width: 45)
+//                        .background(Color.red)
                         .foregroundStyle(textColor)
                         .overlay {
                             if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
                                 ZStack {
-                                    
                                     ZStack {
-                                        
-//                                        Rectangle()
-//                                            .frame(width: 80, height: 33)
-//                                            .foregroundStyle(
-//                                                    LinearGradient(
-//                                                        gradient: Gradient(colors: [Color.mainPink.opacity(1), Color.mainPink.opacity(0)]),
-//                                                        startPoint: .leading,
-//                                                        endPoint: .trailing
-//                                                    )
-//                                                )
-//                                            .offset(x: 40)
+                                        Rectangle()
+                                            .frame(width: 80, height: 33)
+                                            .foregroundStyle(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [Color.mainPink.opacity(1), Color.mainPink.opacity(0)]),
+                                                    startPoint: .leading,
+                                                    endPoint: .trailing
+                                                )
+                                            )
+                                            .offset(x: 40)
                                         
                                         Circle()
                                             .frame(width: 33, height: 33)
                                             .overlay(
-                                            Circle()
-                                                .stroke(Color.white)
-                                                .fill(Color.mainPink)
+                                                Circle()
+                                                    .stroke(Color.white)
+                                                    .fill(Color.mainPink)
                                             )
                                     }
                                     
@@ -401,21 +403,6 @@ struct AddTravelView: View {
         }
     }
     
-//    var nextButton: some View {
-//        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
-//            ZStack {
-//                Rectangle()
-//                    .frame(width: 134, height: 45)
-//                    .foregroundStyle(viewModel.isSelectedStartDate ? Color.black : Color.gray200)
-//                    .cornerRadius(16)
-//                
-//                Text("다음")
-//                    .font(.subhead3_2)
-//                    .foregroundStyle(Color.white)
-//            }
-//        }
-//    }
-//    
     var backButton: some View {
         Button {
             dismiss()

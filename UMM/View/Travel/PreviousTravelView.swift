@@ -25,7 +25,7 @@ struct PreviousTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                ZStack {
+                                ZStack(alignment: .top) {
                                     Image("basicImage")
                                         .resizable()
                                         .scaledToFill()
@@ -42,20 +42,22 @@ struct PreviousTravelView: View {
                                             )
                                         )
                                         .cornerRadius(10)
+                                        
+                                    VStack {
+                                        Spacer()
+                                        
+                                        HStack {
+                                            Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                     
-                                    Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                            Text("~")
+                                        }
                                         .font(.caption2)
                                         .foregroundStyle(Color.white.opacity(0.75))
-                                    +
-                                    Text("~ \n")
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
-                                    
-                                    +
-                                    Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
-                                    
+                                        
+                                        Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                            .font(.caption2)
+                                            .foregroundStyle(Color.white.opacity(0.75))
+                                    }
                                 }
                                 
                                 Text(previousTravel?[index].name ?? "제목 미정")
@@ -133,7 +135,8 @@ struct PreviousTravelView: View {
                                 .frame(width: 5, height: 5)
                         }
                     }
-                    .offset(y: 85)
+                    // TempView 가 있을 땐 125 없을 땐 85
+                    .offset(y: 125)
                 }
             }
         }

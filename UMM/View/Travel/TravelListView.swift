@@ -24,6 +24,8 @@ struct TravelListView: View {
                 
                 TempTravelView()
                 
+                Spacer(minLength: 16)
+                
                 TravelTabView()
                 
             }
@@ -217,9 +219,37 @@ extension View {
 }
 
 struct TempTravelView: View {
+    @State var isTempTravelExist = true
+    
     var body: some View {
-        Rectangle()
-            .frame(width: 250, height: 0)
+        if !isTempTravelExist {
+            Rectangle()
+                .frame(width: 250, height: 0)
+        } else {
+            HStack(alignment: .center, spacing: 45) {
+                Image("franceFlag")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 36, height: 36)
+                    .background(.white)
+                    .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("분류가 필요한 지출 내역 1개")
+                        .font(.subhead2_1)
+                        .foregroundColor(Color.black)
+                    
+                    Text("최근 지출 11,650원")
+                        .font(.caption2)
+                        .foregroundColor(Color.gray300)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 15)
+            .frame(width: 350, alignment: .leading)
+            .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+            .cornerRadius(10)
+        }
     }
 }
 

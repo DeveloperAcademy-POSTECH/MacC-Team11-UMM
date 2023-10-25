@@ -132,7 +132,8 @@ struct UpcomingTravelView: View {
                                 .frame(width: 5, height: 5)
                         }
                     }
-                    .offset(y: 85)
+                    // TempView 가 있을 땐 125 없을 땐 85
+                    .offset(y: 125)
                 }
             }
         }
