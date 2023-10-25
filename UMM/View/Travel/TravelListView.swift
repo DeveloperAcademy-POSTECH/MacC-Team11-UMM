@@ -184,7 +184,6 @@ struct TravelListView: View {
 struct TravelTabView: View {
     
     @State var currentTab: Int = 0
-//    @State var disableGesture = false
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -203,6 +202,10 @@ struct TravelTabView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             
+            Divider()
+                .frame(height: 1)
+                .padding(.top, 24)
+            
             TabBarView(currentTab: self.$currentTab)
         }
     }
@@ -214,7 +217,7 @@ struct TabBarView: View {
     
     var tabBarOptions: [String] = ["지난 여행", "다가오는 여행"]
     var body: some View {
-        HStack(spacing: 20) {
+        HStack {
             ForEach(Array(zip(self.tabBarOptions.indices,
                               self.tabBarOptions)),
                     id: \.0,
@@ -225,7 +228,6 @@ struct TabBarView: View {
                            tab: index)
             })
         }
-        .padding(.horizontal)
         .background(Color.clear)
         .frame(height: 10)
         .ignoresSafeArea(.all)
