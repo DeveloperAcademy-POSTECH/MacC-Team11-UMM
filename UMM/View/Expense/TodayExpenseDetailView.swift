@@ -10,7 +10,6 @@ import CoreData
 
 struct TodayExpenseDetailView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
-    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
     var selectedTravel: Travel?
     var selectedDate: Date
@@ -36,7 +35,7 @@ struct TodayExpenseDetailView: View {
         .padding(.horizontal, 20)
         .onAppear {
             expenseViewModel.fetchExpense()
-            dummyRecordViewModel.fetchDummyTravel()
+            expenseViewModel.fetchTravel()
             expenseViewModel.selectedTravel = selectedTravel
             
             let filteredResult = getFilteredExpenses()
@@ -44,37 +43,6 @@ struct TodayExpenseDetailView: View {
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
         }
     }
-    
-//    private var travelChoiceView: some View {
-//        Button {
-//            expenseViewModel.travelChoiceHalfModalIsShown = true
-//            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
-//        } label: {
-//            ZStack {
-//                Capsule()
-//                    .foregroundStyle(.white)
-//                    .layoutPriority(-1)
-//                
-//                Capsule()
-//                    .strokeBorder(.mainPink, lineWidth: 1.0)
-//                    .layoutPriority(-1)
-//                
-//                HStack(spacing: 12) {
-//                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
-//                        .font(.subhead2_2)
-//                        .foregroundStyle(.black)
-//                    Image("recordTravelChoiceDownChevron")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 16, height: 16)
-//                }
-//                .padding(.vertical, 6)
-//                .padding(.leading, 16)
-//                .padding(.trailing, 12)
-//            }
-//        }
-//        .padding(.top, 80)
-//    }
     
     private var paymentModal: some View {
         Button(action: {

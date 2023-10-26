@@ -11,8 +11,8 @@ import SwiftUI
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
-    let dummyRecordViewModel = DummyRecordViewModel()
-    
+
+    @Published var savedTravels: [Travel] = []
     @Published var savedExpenses: [Expense] = []
     @Published var filteredExpenses: [Expense] = []
     @Published var groupedExpenses: [Int64: [Expense]] = [:]
@@ -30,6 +30,16 @@ class ExpenseViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchTravel() {
+        let request = NSFetchRequest<Travel>(entityName: "Travel")
+        do {
+            savedTravels = try viewContext.fetch(request)
+        } catch let error {
+            print("Error during fetchTravel: \(error.localizedDescription)")
+        }
+    }
+    
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
@@ -68,8 +78,8 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.country = Int64(Int.random(in: -1...5))
         
         // 현재 선택된 여행에 추가할 수 있도록
-        dummyRecordViewModel.fetchDummyTravel()
-        if let targetTravel = dummyRecordViewModel.savedTravels.first(where: { $0.id == travel.id}) {
+        self.fetchTravel()
+        if let targetTravel = self.savedTravels.first(where: { $0.id == travel.id}) {
             targetTravel.addToExpenseArray(tempExpense)
             targetTravel.lastUpdate = Date()
             print("targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")

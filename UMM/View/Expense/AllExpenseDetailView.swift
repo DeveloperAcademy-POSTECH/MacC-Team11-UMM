@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AllExpenseDetailView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
-    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
     var selectedTravel: Travel?
     var selectedCategory: Int64
@@ -35,12 +34,8 @@ struct AllExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            print("onAppear AllExpenseDetailView")
-            print("AllExpenseDetailView | selected Country: \(selectedCountry)")
-            print("AllExpenseDetailView | selected Travel: \(String(describing: selectedTravel?.expenseArray?.count))")
-            print("AllExpenseDetailView | type of selected Country: \(type(of: selectedCountry))")
             expenseViewModel.fetchExpense()
-            dummyRecordViewModel.fetchDummyTravel()
+            expenseViewModel.fetchTravel()
             
             expenseViewModel.filteredExpenses = getFilteredExpenses()
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)

@@ -11,7 +11,6 @@ struct ExpenseView: View {
     @State var selectedTab = 0
     @Namespace var namespace
     @ObservedObject var expenseViewModel = ExpenseViewModel()
-    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
     var body: some View {
         NavigationStack {
@@ -23,12 +22,12 @@ struct ExpenseView: View {
                 Spacer()
                 
                 TabView(selection: $selectedTab) {
-                    TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                    TodayExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
                         .tag(0)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
                         .simultaneousGesture(TapGesture())
-                    AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                    AllExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
                         .tag(1)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
@@ -38,8 +37,9 @@ struct ExpenseView: View {
             }
             .onAppear {
                 expenseViewModel.fetchExpense()
-                dummyRecordViewModel.fetchDummyTravel()
+                expenseViewModel.fetchTravel()
                 expenseViewModel.selectedTravel = findCurrentTravel()
+                print("ExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
                 
                 expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
                 expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
@@ -77,7 +77,10 @@ struct ExpenseView: View {
     private var travelChoiceView: some View {
         Button {
             expenseViewModel.travelChoiceHalfModalIsShown = true
-            print("expenseViewModel.travelChoiceHalfModalIsShown = true")
+            DispatchQueue.main.async {
+                expenseViewModel.fetchExpense()
+                expenseViewModel.fetchTravel()
+            }
         } label: {
             ZStack {
                 Capsule()

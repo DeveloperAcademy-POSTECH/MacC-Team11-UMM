@@ -35,11 +35,11 @@ import Foundation
 import CoreData
 
 func findCurrentTravel() -> Travel? {
-    let dummyRecordViewModel = DummyRecordViewModel()
+    let expenseViewModel = ExpenseViewModel()
     var currentTravel: Travel?
     
-    dummyRecordViewModel.fetchDummyTravel()
-    let allTravels = dummyRecordViewModel.savedTravels
+    expenseViewModel.fetchTravel()
+    let allTravels = expenseViewModel.savedTravels
     let todayDate = Date()
     var currentTravels: [Travel] = []
     // 여행 중인 경우 여기에 해당하는 코드를 구현
