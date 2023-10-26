@@ -42,4 +42,9 @@ class UpcomingTravelViewModel: ObservableObject {
         return formatter
     }()
 
+    func differenceBetweenToday(today: Date, startDate: Date) -> Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: startDate, to: today)
+        return components.day ?? 0
+    }
 }

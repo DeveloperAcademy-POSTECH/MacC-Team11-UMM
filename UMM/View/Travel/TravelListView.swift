@@ -98,7 +98,12 @@ struct TravelListView: View {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
-                                NavigationLink(destination: TravelDetailView(), label: {
+                                NavigationLink(destination: TravelDetailView(travelName: nowTravel?[index].name ?? "",
+                                                                             startDate: nowTravel?[index].startDate ?? Date(),
+                                                                             endDate: nowTravel?[index].endDate ?? Date(),
+                                                                             dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
+                                                                             participantCnt: nowTravel?[index].participantArray?.count ?? 0,
+                                                                             participantArr: nowTravel?[index].participantArray ?? []), label: {
                                     ZStack(alignment: .top) {
                                         Rectangle()
                                             .foregroundColor(.clear)

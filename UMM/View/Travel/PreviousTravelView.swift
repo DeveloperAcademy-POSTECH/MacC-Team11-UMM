@@ -25,7 +25,12 @@ struct PreviousTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                NavigationLink(destination: TravelDetailView(), label: {
+                                NavigationLink(destination: TravelDetailView(travelName: previousTravel?[index].name ?? "",
+                                                                             startDate: previousTravel?[index].startDate ?? Date(),
+                                                                             endDate: previousTravel?[index].endDate ?? Date(),
+                                                                             dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
+                                                                             participantCnt: previousTravel?[index].participantArray?.count ?? 0,
+                                                                             participantArr: previousTravel?[index].participantArray ?? []), label: {
                                     ZStack {
                                         Image("basicImage")
                                             .resizable()
@@ -81,7 +86,12 @@ struct PreviousTravelView: View {
                             LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                                 ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
                                     VStack {
-                                        NavigationLink(destination: TravelDetailView(), label: {
+                                        NavigationLink(destination: TravelDetailView(travelName: previousTravel?[index].name ?? "",
+                                                                                     startDate: previousTravel?[index].startDate ?? Date(),
+                                                                                     endDate: previousTravel?[index].endDate ?? Date(),
+                                                                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
+                                                                                     participantCnt: previousTravel?[index].participantArray?.count ?? 0,
+                                                                                     participantArr: previousTravel?[index].participantArray ?? []), label: {
                                             ZStack {
                                                 Image("basicImage")
                                                     .resizable()

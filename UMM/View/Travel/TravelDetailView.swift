@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct TravelDetailView: View {
+    
+    @State var travelName: String
+    @State var startDate: Date
+    @State var endDate: Date
+    @State var dayCnt: Int
+    @State var participantCnt: Int
+    @State var participantArr: [String]
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -80,14 +88,18 @@ struct TravelDetailView: View {
             .background(.white)
             .cornerRadius(5)
             
-            Text("❌DAY 3❌")
+            Group {
+                Text("DAY")
+                +
+                Text("\(dayCnt)")
+            }
                 .font(.subhead2_1)
                 .foregroundStyle(Color.white)
         }
     }
     
     private var travelTitle: some View {
-        Text("여행 제목")
+        Text("\(travelName)")
             .font(.display3)
             .foregroundStyle(Color.white)
     }
@@ -114,11 +126,11 @@ struct TravelDetailView: View {
             HStack {
                 Spacer()
                 
-                VStack {
+                VStack(alignment: .leading) {
                     Text("시작일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
-                    Text("시작 date")
+                    Text(startDate, formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
@@ -128,11 +140,11 @@ struct TravelDetailView: View {
                 .frame(width: 1, height: 49)
                 .background(.white)
                 
-                VStack {
+                VStack(alignment: .leading) {
                     Text("종료일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
-                    Text("종료 date")
+                    Text(endDate, formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
@@ -173,12 +185,25 @@ struct TravelDetailView: View {
                 .background(.white.opacity(0.25))
                 .cornerRadius(18.07692)
                 
-                Text("me 나 는 디폴트, 옆으로 참여자 추가되도록 ")
+                ForEach(0..<participantCnt, id: \.self) { index in
+                    HStack(alignment: .center, spacing: 10) {
+                        Text("\(participantArr[index])")
+                            .font(
+                                Font.custom("Pretendard", size: 16)
+                                    .weight(.medium)
+                            )
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(.white.opacity(0.25))
+                    .cornerRadius(18.07692)
+                }
             }
         }
     }
 }
 
-#Preview {
-    TravelDetailView()
-}
+// #Preview {
+//     TravelDetailView()
+// }
