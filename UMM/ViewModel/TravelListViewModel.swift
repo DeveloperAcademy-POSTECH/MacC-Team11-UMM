@@ -14,6 +14,7 @@ class TravelListViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     // 현재 진행 중인 여행들을 [Travel]에 다 저장
     @Published var nowTravel: [Travel] = []
+    @Published var defaultTravel: [Travel] = []
     let now = Date()
     let calendar = Calendar.current
     
@@ -48,6 +49,17 @@ class TravelListViewModel: ObservableObject {
             }
         }
         return res
+    }
+    
+    // 여행 이름이 Default인 여행
+    func findTravelNameDefault() -> [Travel] {
+        return defaultTravel.filter { travel in
+            if let name = travel.name {
+                return name == "Default"
+            } else {
+                return false
+            }
+        }
     }
 
     static let dateFormatter: DateFormatter = {

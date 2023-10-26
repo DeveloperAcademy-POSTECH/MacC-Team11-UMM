@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct TravelListView: View {
-
+    
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
     @State var nowTravel: [Travel]?
     @State private var travelCount: Int = 0
-
+    @State var defaultTravel: [Travel]?
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -33,6 +34,7 @@ struct TravelListView: View {
                     viewModel.fetchTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
+                    self.defaultTravel = viewModel.findTravelNameDefault()
                     print("onAppear")
                 }
             }
@@ -65,7 +67,7 @@ struct TravelListView: View {
                 
                 Spacer()
             }
-        
+            
             HStack {
                 Text("진행 중인 여행")
                     .padding(.leading, 20)
@@ -110,19 +112,19 @@ struct TravelListView: View {
                                 .cornerRadius(10)
                             
                             Rectangle()
-                              .foregroundColor(.clear)
-                              .frame(width: 350, height: 137)
-                              .background(
-                                LinearGradient(
-                                  stops: [
-                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                  ],
-                                  startPoint: UnitPoint(x: 0.5, y: 0),
-                                  endPoint: UnitPoint(x: 0.5, y: 1)
+                                .foregroundColor(.clear)
+                                .frame(width: 350, height: 137)
+                                .background(
+                                    LinearGradient(
+                                        stops: [
+                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                        ],
+                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                    )
                                 )
-                              )
-                              .cornerRadius(10)
+                                .cornerRadius(10)
                             
                             VStack(alignment: .leading) {
                                 Spacer()
@@ -177,7 +179,40 @@ struct TravelListView: View {
     }
     
     private var tempTravelView: some View {
-        EmptyView()
+        // Travel의 "Default" 라는 이름의 여행이 길이가 1이상이면 임시 기록이 존재함
+        // 뷰모델에서 Default이름 가진 여행 fetch 필요
+        ZStack {
+            if defaultTravel?.count == 0 {
+                
+                EmptyView()
+                
+            } else {
+                HStack(alignment: .center, spacing: 20) {
+                    Image("dollar-circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                        .background(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
+                            .font(.subhead2_1)
+                            .foregroundColor(Color.black)
+                        
+                        Text("최근 지출 ❌11,650원❌")
+                            .font(.caption2)
+                            .foregroundColor(Color.gray300)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 15)
+                .frame(width: 350, alignment: .leading)
+                .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+                .cornerRadius(10)
+            }
+        }
     }
 }
 
