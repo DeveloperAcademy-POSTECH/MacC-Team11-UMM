@@ -219,8 +219,8 @@ struct TravelListView: View {
         // Travel의 "Default" 라는 이름의 여행이 길이가 1이상이면 임시 기록이 존재함
         // 뷰모델에서 Default이름 가진 여행 fetch 필요
         ZStack {
-            if defaultTravel?.count != 0 {
-                
+            if defaultTravel?.count == 0 {
+
                 EmptyView()
                 
             } else {
