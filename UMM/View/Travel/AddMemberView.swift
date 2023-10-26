@@ -20,7 +20,7 @@ struct AddMemberView: View {
     @Binding var startDate: Date?
     @Binding var endDate: Date?
     @State private var participantCnt = 0
-    
+    @State private var isBackButton = false
     @State var isDisappear = false
     
     var body: some View {
@@ -40,41 +40,31 @@ struct AddMemberView: View {
             
         }
         .onAppear {
-            print("addMemberview")
+            isBackButton = false
         }
         .onDisappear {
-            if participantArr.count > 0 {
-                participantCnt -= 1
-                let updateArr = Array(participantArr.dropLast())
-                viewModel.participantArr = updateArr
-            } else {
-                viewModel.participantArr = participantArr
-            }
-            viewModel.startDate = startDate
-            viewModel.endDate = endDate
-            if let arr = viewModel.participantArr {
-                if arr.count > 0 {
-                    viewModel.travelName = arr[0] + "외 \(participantCnt)명"
+            if !isBackButton {
+                if participantArr.count > 0 {
+                    participantCnt -= 1
+                    let updateArr = Array(participantArr.dropLast())
+                    viewModel.participantArr = updateArr
                 } else {
-                    viewModel.travelName = "나의 여행"
+                    viewModel.participantArr = participantArr
                 }
+                viewModel.startDate = startDate
+                viewModel.endDate = endDate
+                if let arr = viewModel.participantArr {
+                    if arr.count > 0 {
+                        viewModel.travelName = arr[0] + "외 \(participantCnt)명"
+                    } else {
+                        viewModel.travelName = "나의 여행"
+                    }
+                }
+                viewModel.travelID = travelID
+                viewModel.addTravel()
+                viewModel.saveTravel()
+                isDisappear = true
             }
-            viewModel.travelID = travelID
-            print("addmemberview| not stop before add")
-            viewModel.addTravel()
-//            viewModel. saveTravel()
-            isDisappear = true
-            print("onDisappear")
-//            print("memeber view TravelID", travelID)
-            
-            // 저장 Test 코드
-//            var fetchedTravel: Travel?
-//            do {
-//                fetchedTravel = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).filter { $0.id == viewModel.travelID }.first
-//            } catch {
-//                print("err: \(error.localizedDescription)")
-//            }
-//            print("fetchedTravel.name: \(fetchedTravel?.id ?? UUID())")
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -260,7 +250,7 @@ struct AddMemberView: View {
             } else {
                 NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, travelID: $travelID, travelNM: travelName ?? "nil", isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
-                    
+                        isBackButton = false
                     })
                     .disabled(true)
                 }
@@ -270,6 +260,7 @@ struct AddMemberView: View {
     
     var backButton: some View {
         Button {
+            isBackButton = true
             dismiss()
         } label: {
             Image(systemName: "chevron.left")

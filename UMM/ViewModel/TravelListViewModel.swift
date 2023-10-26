@@ -68,4 +68,12 @@ class TravelListViewModel: ObservableObject {
         
         return formatter
     }()
+    
+    // 선택된 Travel의 startDate와 오늘 날짜의 차이를 구하는 함수
+    // 날짜 두개 input -> 차이값 아웃풋
+    func differenceBetweenToday(today: Date, startDate: Date) -> Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: startDate, to: today)
+        return components.day ?? 0
+    }
 }
