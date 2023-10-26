@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct TravelListView: View {
-
+    
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
     @State var nowTravel: [Travel]?
     @State private var travelCount: Int = 0
+    @State var defaultTravel: [Travel]?
     @State private var currentPage = 0
     
     var body: some View {
@@ -34,6 +35,7 @@ struct TravelListView: View {
                     viewModel.fetchTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
+                    self.defaultTravel = viewModel.findTravelNameDefault()
                     print("onAppear")
                 }
             }
@@ -66,7 +68,7 @@ struct TravelListView: View {
                 
                 Spacer()
             }
-        
+            
             HStack {
                 Text("진행 중인 여행")
                     .padding(.leading, 20)
@@ -96,6 +98,7 @@ struct TravelListView: View {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
+                                NavigationLink(destination: TravelDetailView(), label: {
                                 ZStack(alignment: .top) {
                                     Rectangle()
                                         .foregroundColor(.clear)
@@ -129,7 +132,7 @@ struct TravelListView: View {
                                     
                                     VStack(alignment: .leading) {
                                         Spacer()
-                                        
+                                      
                                         Group {
                                             Text("Day ")
                                             +
@@ -139,7 +142,7 @@ struct TravelListView: View {
                                         .foregroundStyle(Color.white)
                                         .opacity(0.75)
                                         .padding(.leading, 16)
-                                        
+                                      
                                         Text(nowTravel?[index].name ?? "제목 미정")
                                             .font(.display1)
                                             .foregroundStyle(Color.white)
@@ -174,6 +177,7 @@ struct TravelListView: View {
                                     .frame(width: 350, height: 137)
                                     
                                 }
+                            })
                             }
                         }
                         .frame(width: 350, height: 230)

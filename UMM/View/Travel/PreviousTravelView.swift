@@ -25,41 +25,42 @@ struct PreviousTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                ZStack(alignment: .top) {
-                                    Image("basicImage")
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 110, height: 80)
-                                        .cornerRadius(10)
-                                        .background(
-                                            LinearGradient(
-                                                stops: [
-                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                ],
-                                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                                endPoint: UnitPoint(x: 0.5, y: 1)
+                                NavigationLink(destination: TravelDetailView(), label: {
+                                    ZStack {
+                                        Image("basicImage")
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 110, height: 80)
+                                            .cornerRadius(10)
+                                            .background(
+                                                LinearGradient(
+                                                    stops: [
+                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                    ],
+                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                )
                                             )
-                                        )
-                                        .cornerRadius(10)
+                                            .cornerRadius(10)
                                         
-                                    VStack {
-                                        Spacer()
+                                        VStack {
+                                          Spacer()
                                         
-                                        HStack {
-                                            Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                          HStack {
+                                              Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                     
-                                            Text("~")
-                                        }
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
+                                              Text("~")
+                                          }
+                                          .font(.caption2)
+                                          .foregroundStyle(Color.white.opacity(0.75))
                                         
-                                        Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                            .font(.caption2)
-                                            .foregroundStyle(Color.white.opacity(0.75))
+                                          Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                              .font(.caption2)
+                                              .foregroundStyle(Color.white.opacity(0.75))
+                                      }  
                                     }
-                                }
-                                
+                                })
                                 Text(previousTravel?[index].name ?? "제목 미정")
                                     .font(.subhead1)
                                     .lineLimit(1)
@@ -72,52 +73,53 @@ struct PreviousTravelView: View {
                     Spacer()
                 }
             } else {
-                ZStack {
+              ZStack {
                     ScrollView(.init()) {
-                        TabView(selection: $currentPage) {
-                            ForEach(0 ..< (travelCnt+5)/6, id: \.self) { page in
-                                VStack {
-                                    LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                        ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
-                                            VStack {
-                                                ZStack {
-                                                    Image("basicImage")
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .frame(width: 110, height: 80)
-                                                        .cornerRadius(10)
-                                                        .background(
-                                                            LinearGradient(
-                                                                stops: [
-                                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                ],
-                                                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                endPoint: UnitPoint(x: 0.5, y: 1)
-                                                            )
+                TabView(selection: $currentPage) {
+                    ForEach(0 ..< (travelCnt+5)/6, id: \.self) { page in
+                        VStack {
+                            LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                                ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
+                                    VStack {
+                                        NavigationLink(destination: TravelDetailView(), label: {
+                                            ZStack {
+                                                Image("basicImage")
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 110, height: 80)
+                                                    .cornerRadius(10)
+                                                    .background(
+                                                        LinearGradient(
+                                                            stops: [
+                                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                            ],
+                                                            startPoint: UnitPoint(x: 0.5, y: 0),
+                                                            endPoint: UnitPoint(x: 0.5, y: 1)
                                                         )
-                                                        .cornerRadius(10)
-                                                    
-                                                    Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                    +
-                                                    Text("~ \n")
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                    
-                                                    +
-                                                    Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                    
-                                                }
+                                                    )
+                                                    .cornerRadius(10)
                                                 
-                                                Text(previousTravel?[index].name ?? "제목 미정")
-                                                    .font(.subhead1)
-                                                    .lineLimit(1)
+                                                Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    .font(.caption2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                +
+                                                Text("~ \n")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                
+                                                +
+                                                Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    .font(.caption2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                
                                             }
-                                        }
+                                        })
+                                        Text(previousTravel?[index].name ?? "제목 미정")
+                                            .font(.subhead1)
+                                            .lineLimit(1)
+                                    }
+                                                                                                 }                                                         
                                     }
                                     Spacer()
                                 }

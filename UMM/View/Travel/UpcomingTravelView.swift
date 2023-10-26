@@ -24,37 +24,39 @@ struct UpcomingTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                ZStack {
-                                    Image("basicImage")
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 110, height: 80)
-                                        .cornerRadius(10)
-                                        .background(
-                                            LinearGradient(
-                                                stops: [
-                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                ],
-                                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                                endPoint: UnitPoint(x: 0.5, y: 1)
+                                NavigationLink(destination: TravelDetailView(), label: {
+                                    ZStack {
+                                        Image("basicImage")
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 110, height: 80)
+                                            .cornerRadius(10)
+                                            .background(
+                                                LinearGradient(
+                                                    stops: [
+                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                    ],
+                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                )
                                             )
-                                        )
-                                        .cornerRadius(10)
-                                    
-                                    Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
-                                    +
-                                    Text("~ \n")
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
-                                    
-                                    +
-                                    Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.white.opacity(0.75))
-                                }
+                                            .cornerRadius(10)
+                                        
+                                        Text(upcomingTravel?[index].startDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                            .font(.caption2)
+                                            .foregroundStyle(Color.white.opacity(0.75))
+                                        +
+                                        Text("~ \n")
+                                            .font(.caption2)
+                                            .foregroundStyle(Color.white.opacity(0.75))
+                                        
+                                        +
+                                        Text(upcomingTravel?[index].endDate ?? Date(), formatter: UpcomingTravelViewModel.dateFormatter)
+                                            .font(.caption2)
+                                            .foregroundStyle(Color.white.opacity(0.75))
+                                    }
+                                })
                                 
                                 Text(upcomingTravel?[index].name ?? "제목 미정")
                                     .font(.subhead1)
@@ -76,6 +78,7 @@ struct UpcomingTravelView: View {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                                         ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
                                             VStack {
+                                              NavigationLink(destination: TravelDetailView(), label: {
                                                 ZStack {
                                                     Image("basicImage")
                                                         .resizable()
@@ -107,6 +110,7 @@ struct UpcomingTravelView: View {
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white.opacity(0.75))
                                                 }
+                                              })
                                                 
                                                 Text(upcomingTravel?[index].name ?? "제목 미정")
                                                     .font(.subhead1)
@@ -119,8 +123,7 @@ struct UpcomingTravelView: View {
                                 }
                             }
                         }
-                        .tabViewStyle(PageTabViewStyle())
-                        .indexViewStyle(.page(backgroundDisplayMode: .always))
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         .padding(.horizontal, 20)
                         .padding(.vertical, 32)
                     }
