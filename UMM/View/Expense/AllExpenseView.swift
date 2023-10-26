@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AllExpenseView: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
-    @State private var selectedPaymentMethod: Int64 = -2
+    @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     
@@ -36,8 +36,8 @@ struct AllExpenseView: View {
             expenseViewModel.fetchTravel()
             print("AllExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
             
-            expenseViewModel.filteredExpenses = getFilteredExpenses()
-            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
+            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
             TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
@@ -73,7 +73,7 @@ struct AllExpenseView: View {
     }
     
     private var countryPicker: some View {
-        let allExpensesInSelectedTravel = expenseViewModel.filteredExpenses
+        let allExpensesInSelectedTravel = expenseViewModel.filteredAllExpenses
         let countries = [-2] + Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
         
         return ScrollView(.horizontal, showsIndicators: false) {
@@ -82,8 +82,8 @@ struct AllExpenseView: View {
                     Button(action: {
                         DispatchQueue.main.async {
                             expenseViewModel.selectedCountry = Int64(country)
-                            expenseViewModel.filteredExpenses = getFilteredExpenses()
-                            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
+                            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
+                            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
                         }
                     }, label: {
                         Text("\(Country.titleFor(rawValue: Int(country)))")
@@ -107,18 +107,18 @@ struct AllExpenseView: View {
     
     private func getExpenseArray(for country: Int64) -> [Expense] {
         if country == expenseViewModel.selectedCountry {
-            return expenseViewModel.filteredExpenses.filter { $0.country == country }
+            return expenseViewModel.filteredAllExpenses.filter { $0.country == country }
         } else {
-            return expenseViewModel.filteredExpenses
+            return expenseViewModel.filteredAllExpenses
         }
     }
     
     private var drawExpensesByCategory: some View {
-        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
+        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedAllExpenses.keys)).sorted { $0 < $1 }
         
         // selectedCountry가 -2인 경우 전체 지출을 한 번만 그림
         if expenseViewModel.selectedCountry == -2 {
-            let expenseArray = expenseViewModel.filteredExpenses
+            let expenseArray = expenseViewModel.filteredAllExpenses
             return AnyView(drawExpenseContent(for: -2, with: expenseArray))
         } else {
             // selectedCountry가 특정 국가인 경우 해당 국가의 지출을 그림
@@ -244,13 +244,6 @@ struct AllExpenseView: View {
                 .padding(.bottom, 24)
             }
         }
-    }
-    
-    // 최종 배열
-    private func getFilteredExpenses() -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: expenseViewModel.selectedTravel?.id ?? UUID())
-        
-        return filteredByTravel
     }
 }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TravelChoiceModal: View {
+    @ObservedObject private var expenseViewModel = ExpenseViewModel()
     @ObservedObject private var redrawer = Redrawer()
     var viewModel: TravelChoiceModalUsable
     
@@ -177,7 +178,7 @@ struct TravelSquareView: View {
                     }
                 }
                 .opacity(travel.id == chosenTravel.id ? 1 : 0.6)
-                    
+                
                 Text(travel.name != "Default" ? travel.name ?? "-" : " ")
                     .lineLimit(3)
                     .foregroundStyle(.black)

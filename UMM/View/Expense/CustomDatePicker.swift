@@ -33,8 +33,8 @@ struct CustomDatePicker: View {
                     .accessibilityIdentifier(pickerId)
                     .onReceive(expenseViewModel.$selectedDate) { _ in
                         DispatchQueue.main.async {
-                            expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-                            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+                            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
+                            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
                         }
                     }
                     .opacity(0)

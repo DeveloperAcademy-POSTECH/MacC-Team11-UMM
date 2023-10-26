@@ -40,9 +40,6 @@ struct ExpenseView: View {
                 expenseViewModel.fetchTravel()
                 expenseViewModel.selectedTravel = findCurrentTravel()
                 print("ExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
-                
-                expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
             }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
@@ -77,10 +74,6 @@ struct ExpenseView: View {
     private var travelChoiceView: some View {
         Button {
             expenseViewModel.travelChoiceHalfModalIsShown = true
-            DispatchQueue.main.async {
-                expenseViewModel.fetchExpense()
-                expenseViewModel.fetchTravel()
-            }
         } label: {
             ZStack {
                 Capsule()

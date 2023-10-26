@@ -14,8 +14,10 @@ class ExpenseViewModel: ObservableObject {
 
     @Published var savedTravels: [Travel] = []
     @Published var savedExpenses: [Expense] = []
-    @Published var filteredExpenses: [Expense] = []
-    @Published var groupedExpenses: [Int64: [Expense]] = [:]
+    @Published var filteredTodayExpenses: [Expense] = []
+    @Published var filteredAllExpenses: [Expense] = []
+    @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
+    @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
     @Published var selectedTravel: Travel?
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
@@ -25,8 +27,11 @@ class ExpenseViewModel: ObservableObject {
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
             if newValue {
-                filteredExpenses = getFilteredExpenses()
-                groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
+                print("travelChoiceHalfModalIsShown: \(newValue)")
+                filteredTodayExpenses = getFilteredTodayExpenses()
+                groupedTodayExpenses = Dictionary(grouping: filteredTodayExpenses, by: { $0.country })
+                filteredAllExpenses = getFilteredAllExpenses()
+                groupedAllExpenses = Dictionary(grouping: filteredAllExpenses, by: { $0.category })
             }
         }
     }
@@ -89,6 +94,23 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
+//    func getFilteredExpenses() -> [Expense] {
+//        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel.id)
+//        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+//        return filteredByDate
+//    }
+    
+    func getFilteredTodayExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        return filteredByDate
+    }
+    
+    func getFilteredAllExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        return filteredByTravel
+    }
+    
     func filterExpensesByTravel(expenses: [Expense], selectedTravelID: UUID) -> [Expense] {
         return expenses.filter { $0.travel?.id == selectedTravelID }
     }
@@ -139,12 +161,6 @@ class ExpenseViewModel: ObservableObject {
         formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
         
         return formatter.string(from: NSNumber(value: sum)) ?? ""
-    }
-    
-    func getFilteredExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
-        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-        return filteredByDate
     }
     
     func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {

@@ -40,8 +40,8 @@ struct TodayExpenseView: View {
 //            expenseViewModel.selectedTravel = findCurrentTravel()
             print("TodayExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
             
-            expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-            expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
+            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
+            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
             TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
@@ -82,10 +82,10 @@ struct TodayExpenseView: View {
     
     // 국가별 + 결제수단별 지출액 표시
     private var drawExpensesByCountry: some View {
-        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedExpenses.keys)).sorted { $0 < $1 }
+        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
         return ForEach(countryArray, id: \.self) { country in
-            let paymentMethodArray = Array(Set((expenseViewModel.groupedExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
-            let expenseArray = expenseViewModel.groupedExpenses[country] ?? []
+            let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
+            let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
             let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             

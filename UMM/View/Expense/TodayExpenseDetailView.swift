@@ -39,8 +39,8 @@ struct TodayExpenseDetailView: View {
             expenseViewModel.selectedTravel = selectedTravel
             
             let filteredResult = getFilteredExpenses()
-            expenseViewModel.filteredExpenses = filteredResult
-            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
+            expenseViewModel.filteredTodayExpenses = filteredResult
+            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
         }
     }
     
@@ -65,11 +65,11 @@ struct TodayExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredExpenses = getFilteredExpenses()
-                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
+                        expenseViewModel.filteredTodayExpenses = getFilteredExpenses()
+                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
                         isPaymentModalPresented = false
                     }, label: {
-                        if selectedPaymentMethod == idx {
+                        if selectedPaymentMethod == Int64(idx) {
                             HStack {
                                 Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))
                                     .font(.subhead3_1)
@@ -148,7 +148,7 @@ struct TodayExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(expenseViewModel.filteredExpenses, id: \.id) { expense in
+            ForEach(expenseViewModel.filteredTodayExpenses, id: \.id) { expense in
                 HStack(alignment: .center, spacing: 0) {
                     Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
                         .font(.system(size: 36))
