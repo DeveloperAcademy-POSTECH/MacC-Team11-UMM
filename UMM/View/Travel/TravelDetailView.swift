@@ -9,58 +9,60 @@ import SwiftUI
 
 struct TravelDetailView: View {
     var body: some View {
-        ZStack {
-            Rectangle()
-              .foregroundColor(.clear)
-              .background(
-                LinearGradient(
-                  stops: [
-                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                  ],
-                  startPoint: UnitPoint(x: 0.5, y: 0),
-                  endPoint: UnitPoint(x: 0.5, y: 1)
-                )
-              )
-              .ignoresSafeArea()
-            
-            VStack(alignment: .leading) {
-                Spacer()
-                // 1. 여행중 + Day 3
-                dayCounter
+        NavigationStack {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .background(
+                        LinearGradient(
+                            stops: [
+                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                            ],
+                            startPoint: UnitPoint(x: 0.5, y: 0),
+                            endPoint: UnitPoint(x: 0.5, y: 1)
+                        )
+                    )
+                    .ignoresSafeArea()
                 
-                // 2. 여행 제목 (ex) 니코랑 여행)
-                travelTitle
-                
-                // 3. 여행 국가
-                travelCountry
-                
-                // 4. 시작일 + 종료일
-                dateBox
-                
-                // 5. 힘께하는 사람
-                participantGroup
-                Spacer()
-                
-                // 6. 버튼
-            }
-            
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                HStack {
-                    NavigationLink(destination: AddTravelView(), label: {
-                        Image(systemName: "pencil")
-                            .frame(width: 20, height: 20)
-                    })
+                VStack(alignment: .leading) {
+                    Spacer()
+                    // 1. 여행중 + Day 3
+                    dayCounter
                     
-                    NavigationLink(destination: SettingView(), label: {
-                        Image(systemName: "xmark_white")
-                            .frame(width: 20, height: 20)
-                    })
+                    // 2. 여행 제목 (ex) 니코랑 여행)
+                    travelTitle
+                    
+                    // 3. 여행 국가
+                    travelCountry
+                    
+                    // 4. 시작일 + 종료일
+                    dateBox
+                    
+                    // 5. 힘께하는 사람
+                    participantGroup
+                    Spacer()
+                    
+                    // 6. 버튼
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    HStack {
+                        NavigationLink(destination: AddTravelView(), label: {
+                            Image("pencil")
+                                .frame(width: 20, height: 20)
+                        })
+                        
+                        NavigationLink(destination: SettingView(), label: {
+                            Image("xmark_white")
+                                .frame(width: 20, height: 20)
+                        })
+                    }
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
     
     private var dayCounter: some View {
@@ -110,6 +112,8 @@ struct TravelDetailView: View {
                 .background(.white)
             
             HStack {
+                Spacer()
+                
                 VStack {
                     Text("시작일")
                         .font(.subhead1)
@@ -132,6 +136,8 @@ struct TravelDetailView: View {
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
+                
+                Spacer()
             }
             
             Rectangle()
