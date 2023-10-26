@@ -23,7 +23,7 @@ struct TravelListView: View {
                 
                 nowTravelingView
                 
-                TempTravelView()
+                tempTravelView
                 
                 Spacer(minLength: 16)
                 
@@ -99,85 +99,85 @@ struct TravelListView: View {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
                                 NavigationLink(destination: TravelDetailView(), label: {
-                                ZStack(alignment: .top) {
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: 350, height: 137 + 46)
-                                    
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: 350, height: 137)
-                                        .background(
-                                            Image("testImage")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                            
-                                        )
-                                        .cornerRadius(10)
-                                    
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: 350, height: 137)
-                                        .background(
-                                            LinearGradient(
-                                                stops: [
-                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                ],
-                                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                                endPoint: UnitPoint(x: 0.5, y: 1)
-                                            )
-                                        )
-                                        .cornerRadius(10)
-                                    
-                                    VStack(alignment: .leading) {
-                                        Spacer()
-                                      
-                                        Group {
-                                            Text("Day ")
-                                            +
-                                            Text("\(viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()))")
-                                        }
-                                        .font(.caption1)
-                                        .foregroundStyle(Color.white)
-                                        .opacity(0.75)
-                                        .padding(.leading, 16)
-                                      
-                                        Text(nowTravel?[index].name ?? "제목 미정")
-                                            .font(.display1)
-                                            .foregroundStyle(Color.white)
-                                            .padding(.leading, 16)
+                                    ZStack(alignment: .top) {
+                                        Rectangle()
+                                            .foregroundColor(.clear)
+                                            .frame(width: 350, height: 137 + 46)
                                         
-                                        HStack {
-                                            Group {
-                                                Text(nowTravel?[index].startDate ?? Date(), formatter: TravelListViewModel.dateFormatter) +
-                                                Text(" ~ ") +
-                                                Text(nowTravel?[index].endDate ?? Date(), formatter: TravelListViewModel.dateFormatter)
-                                            }
-                                            .font(.subhead2_2)
-                                            .foregroundStyle(Color.white.opacity(0.75))
-                                            .padding(.leading, 16)
-                                            
+                                        Rectangle()
+                                            .foregroundColor(.clear)
+                                            .frame(width: 350, height: 137)
+                                            .background(
+                                                Image("testImage")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                
+                                            )
+                                            .cornerRadius(10)
+                                        
+                                        Rectangle()
+                                            .foregroundColor(.clear)
+                                            .frame(width: 350, height: 137)
+                                            .background(
+                                                LinearGradient(
+                                                    stops: [
+                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                    ],
+                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                )
+                                            )
+                                            .cornerRadius(10)
+                                        
+                                        VStack(alignment: .leading) {
                                             Spacer()
                                             
-                                            HStack {
-                                                Image(systemName: "person.fill")
-                                                    .foregroundStyle(Color.white)
-                                                
-                                                Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white)
-                                                
+                                            Group {
+                                                Text("Day ")
+                                                +
+                                                Text("\(viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()))")
                                             }
-                                            .padding(.trailing, 16)
+                                            .font(.caption1)
+                                            .foregroundStyle(Color.white)
+                                            .opacity(0.75)
+                                            .padding(.leading, 16)
+                                            
+                                            Text(nowTravel?[index].name ?? "제목 미정")
+                                                .font(.display1)
+                                                .foregroundStyle(Color.white)
+                                                .padding(.leading, 16)
+                                            
+                                            HStack {
+                                                Group {
+                                                    Text(nowTravel?[index].startDate ?? Date(), formatter: TravelListViewModel.dateFormatter) +
+                                                    Text(" ~ ") +
+                                                    Text(nowTravel?[index].endDate ?? Date(), formatter: TravelListViewModel.dateFormatter)
+                                                }
+                                                .font(.subhead2_2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
+                                                .padding(.leading, 16)
+                                                
+                                                Spacer()
+                                                
+                                                HStack {
+                                                    Image(systemName: "person.fill")
+                                                        .foregroundStyle(Color.white)
+                                                    
+                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white)
+                                                    
+                                                }
+                                                .padding(.trailing, 16)
+                                            }
+                                            
                                         }
+                                        .padding(.bottom, 16)
+                                        .frame(width: 350, height: 137)
                                         
                                     }
-                                    .padding(.bottom, 16)
-                                    .frame(width: 350, height: 137)
-                                    
-                                }
-                            })
+                                })
                             }
                         }
                         .frame(width: 350, height: 230)
@@ -210,50 +210,47 @@ struct TravelListView: View {
         return CGFloat(currentPage) * screenWidth
     }
     
-//    private var tempTravelView: some View {
-//        Rectangle()
-//            .frame(width: 250, height: 68)
-//    }
+    private var tempTravelView: some View {
+        // Travel의 "Default" 라는 이름의 여행이 길이가 1이상이면 임시 기록이 존재함
+        // 뷰모델에서 Default이름 가진 여행 fetch 필요
+        ZStack {
+            if defaultTravel?.count != 0 {
+                
+                EmptyView()
+                
+            } else {
+                HStack(alignment: .center, spacing: 20) {
+                    Image("dollar-circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                        .background(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
+                            .font(.subhead2_1)
+                            .foregroundColor(Color.black)
+                        
+                        Text("최근 지출 ❌11,650원❌")
+                            .font(.caption2)
+                            .foregroundColor(Color.gray300)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 15)
+                .frame(width: 350, alignment: .leading)
+                .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+                .cornerRadius(10)
+            }
+        }
+    }
 }
 
 extension View {
     func getWidth() -> CGFloat {
         return UIScreen.main.bounds.width
-    }
-}
-
-struct TempTravelView: View {
-    @State var isTempTravelExist = true
-    
-    var body: some View {
-        if !isTempTravelExist {
-            Rectangle()
-                .frame(width: 250, height: 0)
-        } else {
-            HStack(alignment: .center, spacing: 45) {
-                Image("franceFlag")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 36, height: 36)
-                    .background(.white)
-                    .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("분류가 필요한 지출 내역 1개")
-                        .font(.subhead2_1)
-                        .foregroundColor(Color.black)
-                    
-                    Text("최근 지출 11,650원")
-                        .font(.caption2)
-                        .foregroundColor(Color.gray300)
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 15)
-            .frame(width: 350, alignment: .leading)
-            .background(Color(red: 0.96, green: 0.96, blue: 0.96))
-            .cornerRadius(10)
-        }
     }
 }
 
