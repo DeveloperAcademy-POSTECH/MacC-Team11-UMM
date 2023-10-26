@@ -136,10 +136,10 @@ struct TravelDetailView: View {
         VStack {
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 326, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
                 .background(.white)
             
-            HStack {
+            HStack(alignment: .center) {
                 VStack(alignment: .leading) {
                     Text("시작일")
                         .font(.subhead1)
@@ -172,11 +172,11 @@ struct TravelDetailView: View {
                 Spacer()
             }
             .padding(.vertical, 22)
-            .frame(width: 326)
+            .frame(width: UIScreen.main.bounds.width - 40)
             
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 326, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
                 .background(.white)
         }
         .padding(.horizontal, 20)
