@@ -37,6 +37,8 @@ struct TodayExpenseDetailView: View {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
             expenseViewModel.selectedTravel = selectedTravel
+            print("BINDING | TodayExpenseDetailView: selectedTravel: \(selectedTravel?.name)")
+            print("BINDING | TodayExpenseDetailView: expenseViewModel.selectedTravel: \(expenseViewModel.selectedTravel?.name)")
             
             let filteredResult = getFilteredExpenses()
             expenseViewModel.filteredTodayExpenses = filteredResult

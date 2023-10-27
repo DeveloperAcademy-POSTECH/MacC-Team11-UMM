@@ -69,14 +69,7 @@ struct TravelChoiceModalBinding: View {
                     TravelSquareView(travel: travel, chosenTravel: selectedTravel)
                         .onTapGesture {
                             selectedTravel = travel
-                            
-                            expenseViewModel.fetchExpense()
-                            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
-                            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
-                            
-                            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
-                            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
-                            
+                            expenseViewModel.selectedTravel = travel
                             redrawer.redraw()
                         }
                     Spacer()

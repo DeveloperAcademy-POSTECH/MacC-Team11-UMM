@@ -18,7 +18,15 @@ class ExpenseViewModel: ObservableObject {
     @Published var filteredAllExpenses: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
-    @Published var selectedTravel: Travel?
+    @Published var selectedTravel: Travel? {
+        didSet {
+            self.fetchExpense()
+            self.filteredTodayExpenses = self.getFilteredTodayExpenses()
+            self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
+            self.filteredAllExpenses = self.getFilteredAllExpenses()
+            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpenses, by: { $0.category })
+        }
+    }
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
@@ -28,10 +36,6 @@ class ExpenseViewModel: ObservableObject {
         willSet {
             if newValue {
                 print("travelChoiceHalfModalIsShown: \(newValue)")
-                filteredTodayExpenses = getFilteredTodayExpenses()
-                groupedTodayExpenses = Dictionary(grouping: filteredTodayExpenses, by: { $0.country })
-                filteredAllExpenses = getFilteredAllExpenses()
-                groupedAllExpenses = Dictionary(grouping: filteredAllExpenses, by: { $0.category })
             }
         }
     }
@@ -101,13 +105,13 @@ class ExpenseViewModel: ObservableObject {
 //    }
     
     func getFilteredTodayExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
     }
     
     func getFilteredAllExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
         return filteredByTravel
     }
     
