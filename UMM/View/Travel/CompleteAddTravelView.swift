@@ -15,20 +15,7 @@ struct CompleteAddTravelView: View {
     @Binding var travelID: UUID
     @State var travelNM: String
     @State var selectedTravel: [Travel]?
-    
-    @Binding var isDisappear: Bool 
-//    {
-//        didSet {
-//            if isDisappear {
-//                print("traveelID", travelID)
-//                viewModel.fetchTravel()
-//                self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-//                print("selectedTravel", selectedTravel!)
-//            }
-//        }
-//    }
-    
-//    let filteredTravel = CompleteAddTravelViewModel.filterTravelByID(selectedTravelID: selectedTravel?.id ?? UUID())
+    @Binding var isDisappear: Bool
     
     var body: some View {
         VStack {

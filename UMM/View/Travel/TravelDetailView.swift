@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct TravelDetailView: View {
+    
+    @State var travelName: String
+    @State var startDate: Date
+    @State var endDate: Date
+    @State var dayCnt: Int
+    @State var participantCnt: Int
+    @State var participantArr: [String]
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -25,13 +33,10 @@ struct TravelDetailView: View {
                     )
                     .ignoresSafeArea()
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 20) {
                     Spacer()
                     // 1. 여행중 + Day 3
                     dayCounter
-                    
-                    // 2. 여행 제목 (ex) 니코랑 여행)
-                    travelTitle
                     
                     // 3. 여행 국가
                     travelCountry
@@ -41,55 +46,77 @@ struct TravelDetailView: View {
                     
                     // 5. 힘께하는 사람
                     participantGroup
+                    
                     Spacer()
                     
                     // 6. 버튼
+                    HStack {
+                        MediumButtonUnactive(title: "가계부 보기", action: {
+                            // 선택값 초기화
+                            NavigationUtil.popToRootView()
+                        })
+                        
+                        MediumButtonActive(title: "지출 기록하기", action: {
+                            NavigationUtil.popToRootView()
+                        })
+                    }
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
-                        NavigationLink(destination: AddTravelView(), label: {
+                        Button {
+                            
+                        } label: {
                             Image("pencil")
                                 .frame(width: 20, height: 20)
-                        })
+                        }
                         
-                        NavigationLink(destination: SettingView(), label: {
+                        Button {
+                            NavigationUtil.popToRootView()
+                        } label: {
                             Image("xmark_white")
                                 .frame(width: 20, height: 20)
-                        })
+                        }
                     }
                 }
             }
         }
         .toolbar(.hidden, for: .tabBar)
+        .navigationBarBackButtonHidden()
     }
     
     private var dayCounter: some View {
-        HStack {
-            HStack(alignment: .center, spacing: 10) {
-                Text("여행 중")
-                    .font(
-                        Font.custom("Pretendard", size: 14)
-                            .weight(.medium)
-                    )
-                    .foregroundColor(Color.mainPink)
-            }
-            .padding(.horizontal, 11)
-            .padding(.vertical, 7)
-            .background(.white)
-            .cornerRadius(5)
-            
-            Text("❌DAY 3❌")
+        VStack(alignment: .leading) {
+            HStack {
+                HStack(alignment: .center, spacing: 10) {
+                    Text("여행 중")
+                        .font(
+                            Font.custom("Pretendard", size: 14)
+                                .weight(.medium)
+                        )
+                        .foregroundColor(Color.mainPink)
+                }
+                .padding(.horizontal, 11)
+                .padding(.vertical, 7)
+                .background(.white)
+                .cornerRadius(5)
+                
+                Group {
+                    Text("DAY ")
+                    +
+                    Text("\(dayCnt)")
+                }
                 .font(.subhead2_1)
                 .foregroundStyle(Color.white)
+            }
+            
+            Text("\(travelName)")
+                .font(.display3)
+                .foregroundStyle(Color.white)
+                
         }
-    }
-    
-    private var travelTitle: some View {
-        Text("여행 제목")
-            .font(.display3)
-            .foregroundStyle(Color.white)
+        .padding(.horizontal, 20)
     }
     
     private var travelCountry: some View {
@@ -102,83 +129,106 @@ struct TravelDetailView: View {
                 Text("❌ 여행 국가 개수대로 국기랑 국가명 쌓기 ❌")
             }
         }
+        .padding(.horizontal, 20)
     }
     
     private var dateBox: some View {
         VStack {
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 326, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
                 .background(.white)
             
-            HStack {
-                Spacer()
-                
-                VStack {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading) {
                     Text("시작일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
-                    Text("시작 date")
+                        .padding(.bottom, 8)
+                    Text(startDate, formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
+                
+                Spacer()
                 
                 Rectangle()
                 .foregroundColor(.clear)
                 .frame(width: 1, height: 49)
                 .background(.white)
                 
-                VStack {
+                Spacer()
+                
+                VStack(alignment: .leading) {
                     Text("종료일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
-                    Text("종료 date")
+                        .padding(.bottom, 8)
+                    Text(endDate, formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
                 
                 Spacer()
             }
+            .padding(.vertical, 22)
+            .frame(width: UIScreen.main.bounds.width - 40)
             
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 326, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
                 .background(.white)
         }
+        .padding(.horizontal, 20)
     }
     
     private var participantGroup: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("함께하는 사람")
                 .font(.subhead1)
+                .foregroundStyle(Color.white)
             
             HStack {
                 HStack(alignment: .center, spacing: 8) {
                     Text("me")
-                      .font(
-                        Font.custom("Pretendard", size: 16)
-                          .weight(.medium)
-                      )
-                      .foregroundColor(Color.gray200)
+                        .font(
+                            Font.custom("Pretendard", size: 16)
+                                .weight(.medium)
+                        )
+                        .foregroundColor(Color.gray200)
                     
                     Text("나")
-                      .font(
-                        Font.custom("Pretendard", size: 16)
-                          .weight(.medium)
-                      )
-                      .foregroundColor(.white)
+                        .font(
+                            Font.custom("Pretendard", size: 16)
+                                .weight(.medium)
+                        )
+                        .foregroundColor(.white)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(.white.opacity(0.25))
                 .cornerRadius(18.07692)
                 
-                Text("me 나 는 디폴트, 옆으로 참여자 추가되도록 ")
+                ForEach(0..<participantCnt, id: \.self) { index in
+                    HStack(alignment: .center, spacing: 10) {
+                        Text("\(participantArr[index])")
+                            .font(
+                                Font.custom("Pretendard", size: 16)
+                                    .weight(.medium)
+                            )
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(.white.opacity(0.25))
+                    .cornerRadius(18.07692)
+                }
             }
         }
+        .padding(.horizontal, 20)
     }
 }
 
-#Preview {
-    TravelDetailView()
-}
+// #Preview {
+//     TravelDetailView()
+// }
