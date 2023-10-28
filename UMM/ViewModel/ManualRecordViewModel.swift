@@ -19,6 +19,8 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
                 print("ManualRecordViewModel | adsf: \(String(describing: placemark.isoCountryCode))")
                 self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
                 self.parent?.locationExpression = "\(placemark.country ?? "일본") \(placemark.locality ?? "오사카")"
+            } else {
+                print("ERROR: \(String(describing: error?.localizedDescription))")
             }
         }
     }
@@ -124,7 +126,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "")"
+            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "오사카")"
 
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]

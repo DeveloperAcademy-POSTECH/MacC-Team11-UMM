@@ -32,13 +32,13 @@ struct ManualRecordView: View {
                         .padding(.horizontal, 20)
                     notInStringPropertyBlockView
                     
-                    VStack {
-                        Text("Address Information:")
-                        Text("Name: \(viewModel.placemark?.name ?? "N/A")")
-                        Text("Locality: \(viewModel.placemark?.locality ?? "N/A")")
-                        Text("Administrative Area: \(viewModel.placemark?.administrativeArea ?? "N/A")")
-                        Text("Country: \(viewModel.placemark?.country ?? "N/A")")
-                    }
+//                    VStack {
+//                        Text("Address Information:")
+//                        Text("Name: \(viewModel.placemark?.name ?? "N/A")")
+//                        Text("Locality: \(viewModel.placemark?.locality ?? "N/A")")
+//                        Text("Administrative Area: \(viewModel.placemark?.administrativeArea ?? "N/A")")
+//                        Text("Country: \(viewModel.placemark?.country ?? "N/A")")
+//                    }
                     
                     Spacer()
                         .frame(height: 25)
@@ -66,9 +66,7 @@ struct ManualRecordView: View {
             }
         }
         .onAppear {
-            print("ManualRecordView | before | viewModel.country: \(viewModel.country)")
             viewModel.getLocation()
-            print("ManualRecordView | after | viewModel.country: \(viewModel.country)")
         }
     }
     
