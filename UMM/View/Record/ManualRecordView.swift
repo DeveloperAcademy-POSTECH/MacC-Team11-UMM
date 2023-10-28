@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct ManualRecordView: View {
     @ObservedObject var viewModel: ManualRecordViewModel
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
-    
+
     var body: some View {
         ZStack {
             Color(.white)
@@ -30,6 +31,22 @@ struct ManualRecordView: View {
                         .padding(.vertical, 20)
                         .padding(.horizontal, 20)
                     notInStringPropertyBlockView
+                    
+                    Button(action: {
+                        viewModel.getLocation()
+                        print("위치 찾기 버튼")
+                    }) {
+                        Text("위치 찾기")
+                    }
+                    
+                    VStack {
+                        Text("Address Information:")
+                        Text("Name: \(viewModel.placemark?.name ?? "N/A")")
+                        Text("Locality: \(viewModel.placemark?.locality ?? "N/A")")
+                        Text("Administrative Area: \(viewModel.placemark?.administrativeArea ?? "N/A")")
+                        Text("Country: \(viewModel.placemark?.country ?? "N/A")")
+                    }
+                    
                     Spacer()
                         .frame(height: 25)
                 }
@@ -55,6 +72,15 @@ struct ManualRecordView: View {
                 viewModel.newNameString = ""
             }
         }
+        .onAppear {
+            print("before | viewModel.country: \(viewModel.country)")
+            viewModel.getLocation()
+            print("after | viewModel.country: \(viewModel.country)")
+        }
+         .onReceive(viewModel.$country) { newCountry in
+             // country 변수가 변경될 때, locationExpression 값을 업데이트합니다.
+             viewModel.locationExpression = newCountry.isoCode
+         }
     }
     
     init(prevViewModel: RecordViewModel) {
