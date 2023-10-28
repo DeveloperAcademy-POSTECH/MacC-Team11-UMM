@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AllExpenseDetailView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
-    @ObservedObject var dummyRecordViewModel = DummyRecordViewModel()
     
     var selectedTravel: Travel?
     var selectedCategory: Int64
@@ -35,15 +34,11 @@ struct AllExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            print("onAppear AllExpenseDetailView")
-            print("AllExpenseDetailView | selected Country: \(selectedCountry)")
-            print("AllExpenseDetailView | selected Travel: \(String(describing: selectedTravel?.expenseArray?.count))")
-            print("AllExpenseDetailView | type of selected Country: \(type(of: selectedCountry))")
             expenseViewModel.fetchExpense()
-            dummyRecordViewModel.fetchDummyTravel()
+            expenseViewModel.fetchTravel()
             
-            expenseViewModel.filteredExpenses = getFilteredExpenses()
-            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
+            expenseViewModel.filteredAllExpenses = getFilteredExpenses()
+            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
         }
     }
     
@@ -68,11 +63,11 @@ struct AllExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredExpenses = getFilteredExpenses()
-                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredExpenses)
+                        expenseViewModel.filteredAllExpenses = getFilteredExpenses()
+                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
                         isPaymentModalPresented = false
                     }, label: {
-                        if selectedPaymentMethod == idx {
+                        if selectedPaymentMethod == Int64(idx) {
                             HStack {
                                 Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))
                                     .font(.subhead3_1)
@@ -142,7 +137,7 @@ struct AllExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            let sortedExpenses = expenseViewModel.filteredExpenses.sorted(by: { $0.payDate ?? Date() < $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
+            let sortedExpenses = expenseViewModel.filteredAllExpenses.sorted(by: { $0.payDate ?? Date() < $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
             let groupedByDate = Dictionary(grouping: sortedExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) }) // 날짜별로 그룹화
             
             ForEach(groupedByDate.keys.sorted(), id: \.self) { date in

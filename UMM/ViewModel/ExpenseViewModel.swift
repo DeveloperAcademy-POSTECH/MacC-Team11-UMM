@@ -11,12 +11,22 @@ import SwiftUI
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
-    let dummyRecordViewModel = DummyRecordViewModel()
-    
+
+    @Published var savedTravels: [Travel] = []
     @Published var savedExpenses: [Expense] = []
-    @Published var filteredExpenses: [Expense] = []
-    @Published var groupedExpenses: [Int64: [Expense]] = [:]
-    @Published var selectedTravel: Travel?
+    @Published var filteredTodayExpenses: [Expense] = []
+    @Published var filteredAllExpenses: [Expense] = []
+    @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
+    @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
+    @Published var selectedTravel: Travel? {
+        didSet {
+            self.fetchExpense()
+            self.filteredTodayExpenses = self.getFilteredTodayExpenses()
+            self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
+            self.filteredAllExpenses = self.getFilteredAllExpenses()
+            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpenses, by: { $0.category })
+        }
+    }
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
@@ -25,11 +35,20 @@ class ExpenseViewModel: ObservableObject {
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
             if newValue {
-                filteredExpenses = getFilteredExpenses()
-                groupedExpenses = Dictionary(grouping: filteredExpenses, by: { $0.country })
+                print("travelChoiceHalfModalIsShown: \(newValue)")
             }
         }
     }
+    
+    func fetchTravel() {
+        let request = NSFetchRequest<Travel>(entityName: "Travel")
+        do {
+            savedTravels = try viewContext.fetch(request)
+        } catch let error {
+            print("Error during fetchTravel: \(error.localizedDescription)")
+        }
+    }
+    
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
@@ -68,8 +87,8 @@ class ExpenseViewModel: ObservableObject {
         tempExpense.country = Int64(Int.random(in: -1...5))
         
         // 현재 선택된 여행에 추가할 수 있도록
-        dummyRecordViewModel.fetchDummyTravel()
-        if let targetTravel = dummyRecordViewModel.savedTravels.first(where: { $0.id == travel.id}) {
+        self.fetchTravel()
+        if let targetTravel = self.savedTravels.first(where: { $0.id == travel.id}) {
             targetTravel.addToExpenseArray(tempExpense)
             targetTravel.lastUpdate = Date()
             print("targetTravel.lastUpdate: \(String(describing: targetTravel.lastUpdate))")
@@ -77,6 +96,23 @@ class ExpenseViewModel: ObservableObject {
         } else {
             print("Error while addExpense")
         }
+    }
+    
+//    func getFilteredExpenses() -> [Expense] {
+//        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel.id)
+//        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+//        return filteredByDate
+//    }
+    
+    func getFilteredTodayExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        return filteredByDate
+    }
+    
+    func getFilteredAllExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        return filteredByTravel
     }
     
     func filterExpensesByTravel(expenses: [Expense], selectedTravelID: UUID) -> [Expense] {
@@ -129,12 +165,6 @@ class ExpenseViewModel: ObservableObject {
         formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
         
         return formatter.string(from: NSNumber(value: sum)) ?? ""
-    }
-    
-    func getFilteredExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
-        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-        return filteredByDate
     }
     
     func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {

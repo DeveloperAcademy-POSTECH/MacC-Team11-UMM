@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TravelChoiceModalBinding: View {
     @ObservedObject private var redrawer = Redrawer()
+    @ObservedObject private var expenseViewModel = ExpenseViewModel()
     
     @Binding var selectedTravel: Travel?
     var travelArray: [Travel]
@@ -30,7 +31,7 @@ struct TravelChoiceModalBinding: View {
     
     init(selectedTravel: Binding<Travel?>) {
         _selectedTravel = selectedTravel
-        travelArray = []
+        travelArray = [Travel]()
         do {
             try travelArray = PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: sortRule)
         } catch {
@@ -68,6 +69,7 @@ struct TravelChoiceModalBinding: View {
                     TravelSquareView(travel: travel, chosenTravel: selectedTravel)
                         .onTapGesture {
                             selectedTravel = travel
+                            expenseViewModel.selectedTravel = travel
                             redrawer.redraw()
                         }
                     Spacer()
