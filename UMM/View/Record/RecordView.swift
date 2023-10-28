@@ -398,6 +398,7 @@ struct RecordView: View {
                             viewModel.resetInStringProperties()
                         } else {
                             viewModel.manualRecordViewIsShown = true
+                            print("넘어간다 !!!")
                         }
                     }
                 }

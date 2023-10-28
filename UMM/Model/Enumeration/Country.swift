@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Country: Int {
+enum Country: Int, CaseIterable {
     case unknown = -1
     case korea
     case japan
@@ -69,10 +69,35 @@ enum Country: Int {
         }
     }
     
+    var isoCode: String {
+        switch self {
+        case .unknown:
+            return "unknownCode"
+        case .korea:
+            return "KR"
+        case .japan:
+            return "JP"
+        case .germany:
+            return "DE"
+        case .uk:
+            return "GB"
+        case .usa:
+            return "US"
+        case .france:
+            return "FR"
+        case .taiwan:
+            return "TW"
+        case .china:
+            return "CN"
+        case .vietnam:
+            return "VN"
+        }
+    }
+    
     var flagImageString: String {
         switch self {
         case .unknown:
-            return "unknownFlag"
+            return "unknown"
         case .korea:
             return "koreaFlag"
         case .japan:
@@ -96,5 +121,14 @@ enum Country: Int {
         
     static func titleFor(rawValue: Int) -> String {
         return Country(rawValue: rawValue)?.title ?? "전체"
+    }
+    
+    static func countryFor(isoCode: String) -> Country? {
+        for country in Country.allCases {
+            if country.isoCode == isoCode {
+                return country
+            }
+        }
+        return nil
     }
 }

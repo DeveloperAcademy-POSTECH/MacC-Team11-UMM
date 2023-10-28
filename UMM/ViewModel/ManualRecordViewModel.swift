@@ -6,10 +6,50 @@
 //
 
 import Foundation
+import CoreLocation
+
+class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
+    var parent: ManualRecordViewModel?
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        parent?.location = locations.first
+        CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
+            if let placemark = placemarks?.first {
+                self.parent?.placemark = placemark
+                print("ManualRecordViewModel | adsf: \(String(describing: placemark.isoCountryCode))")
+                self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.locationExpression = "\(placemark.country ?? "일본") \(placemark.locality ?? "오사카")"
+            } else {
+                print("ERROR: \(String(describing: error?.localizedDescription))")
+            }
+        }
+    }
+}
 
 class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, CategoryChoiceModalUsable {
     
     let viewContext = PersistenceController.shared.container.viewContext
+    
+    // MARK: - 위치 정보
+    private var locationManager: CLLocationManager?
+    private var locationManagerDelegate = LocationManagerDelegate()
+    @Published var location: CLLocation?
+    @Published var placemark: CLPlacemark?
+    
+    func getLocation() {
+        print("ManualRecordViewModel | getLocation 호출됨 !!!")
+        let locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+
+        locationManager.delegate = locationManagerDelegate
+        locationManagerDelegate.parent = self
+
+        // locationManager(_:didUpdateLocations:) 메서드가 호출될 때까지 기다림.
+        while location == nil || placemark == nil {
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        }
+    }
     
     // MARK: - in-string property
     
@@ -86,8 +126,8 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = country.title // country와 연동하기 ^^^
-            
+            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "오사카")"
+
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]
             } else {
@@ -127,6 +167,9 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     @Published var newNameString: String = ""
     
     init() {
+        locationManager = CLLocationManager()
+        locationManager?.delegate = locationManagerDelegate
+        locationManagerDelegate.parent = self
     }
     
     func save() {

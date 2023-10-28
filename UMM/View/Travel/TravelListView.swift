@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct TravelListView: View {
     
@@ -28,7 +29,6 @@ struct TravelListView: View {
                 Spacer(minLength: 16)
                 
                 TravelTabView()
-                
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
