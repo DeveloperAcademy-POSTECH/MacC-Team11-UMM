@@ -32,13 +32,6 @@ struct ManualRecordView: View {
                         .padding(.horizontal, 20)
                     notInStringPropertyBlockView
                     
-                    Button(action: {
-                        viewModel.getLocation()
-                        print("위치 찾기 버튼")
-                    }) {
-                        Text("위치 찾기")
-                    }
-                    
                     VStack {
                         Text("Address Information:")
                         Text("Name: \(viewModel.placemark?.name ?? "N/A")")
@@ -73,14 +66,10 @@ struct ManualRecordView: View {
             }
         }
         .onAppear {
-            print("before | viewModel.country: \(viewModel.country)")
+            print("ManualRecordView | before | viewModel.country: \(viewModel.country)")
             viewModel.getLocation()
-            print("after | viewModel.country: \(viewModel.country)")
+            print("ManualRecordView | after | viewModel.country: \(viewModel.country)")
         }
-         .onReceive(viewModel.$country) { newCountry in
-             // country 변수가 변경될 때, locationExpression 값을 업데이트합니다.
-             viewModel.locationExpression = newCountry.isoCode
-         }
     }
     
     init(prevViewModel: RecordViewModel) {

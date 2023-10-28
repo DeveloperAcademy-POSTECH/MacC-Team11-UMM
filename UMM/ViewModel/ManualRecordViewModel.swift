@@ -16,8 +16,9 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                print("adsf: \(String(describing: placemark.isoCountryCode))")
-                self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .china
+                print("ManualRecordViewModel | adsf: \(String(describing: placemark.isoCountryCode))")
+                self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.locationExpression = "\(placemark.country ?? "일본") \(placemark.locality ?? "오사카")"
             }
         }
     }
@@ -34,7 +35,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     @Published var placemark: CLPlacemark?
     
     func getLocation() {
-        print("getLocation 호출됨 !!!")
+        print("ManualRecordViewModel | getLocation 호출됨 !!!")
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
@@ -123,8 +124,8 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = country.title // country와 연동하기 ^^^
-            
+            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "")"
+
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]
             } else {
