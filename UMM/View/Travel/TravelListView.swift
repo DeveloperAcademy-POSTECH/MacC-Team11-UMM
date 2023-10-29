@@ -17,7 +17,7 @@ struct TravelListView: View {
     @State var savedExpenses: [Expense]?
     @State private var travelCount: Int = 0
     @State private var currentPage = 0
-    @State var flagImageName: String = ""
+    @State var flagImageName: [String] = []
     
     var body: some View {
         NavigationStack {
@@ -145,9 +145,14 @@ struct TravelListView: View {
                                             HStack {
                                                 Spacer()
                                                 
-                                                Image("\(flagImageName)")
-                                                    .resizable()
-                                                    .frame(width: 24, height: 24)
+                                                //                                                Image("\(flagImageName)")
+                                                //                                                    .resizable()
+                                                //                                                    .frame(width: 24, height: 24)
+                                                ForEach(flagImageName, id: \.self) { imageName in
+                                                    Image(imageName)
+                                                        .resizable()
+                                                        .frame(width: 24, height: 24)
+                                                }
                                             }
                                             .padding(16)
                                             
@@ -200,10 +205,15 @@ struct TravelListView: View {
                                     .onAppear {
                                         // ❌ 복수개 처리 필요함 !!! ❌
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                        if let expense = savedExpenses?.first {
-                                            let countryValue = viewModel.getCountryForExpense(expense)
-                                            self.flagImageName = getFlagImage(for: countryValue)
-                                            print("flagImageName", flagImageName)
+                                        
+                                        if let savedExpenses = savedExpenses {
+                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                return viewModel.getCountryForExpense(expense)
+                                            }
+                                            let uniqueCountryValues = Array(Set(countryValues))
+                                            self.flagImageName = uniqueCountryValues.map { countryValue in
+                                                return getFlagImage(for: countryValue)
+                                            }
                                         }
                                     }
                                 })
