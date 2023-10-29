@@ -17,6 +17,7 @@ struct TravelListView: View {
     @State var savedExpenses: [Expense]?
     @State private var travelCount: Int = 0
     @State private var currentPage = 0
+    @State var flagImageName: String = ""
     
     var body: some View {
         NavigationStack {
@@ -140,6 +141,16 @@ struct TravelListView: View {
                                             .cornerRadius(10)
                                         
                                         VStack(alignment: .leading) {
+                                            
+                                            HStack {
+                                                Spacer()
+                                                
+                                                Image("\(flagImageName)")
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                            }
+                                            .padding(16)
+                                            
                                             Spacer()
                                             
                                             Group {
@@ -187,12 +198,11 @@ struct TravelListView: View {
                                         
                                     }
                                     .onAppear {
+                                        // ❌ 복수개 처리 필요함 !!! ❌
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                        print("savedExpenses", savedExpenses as Any)
                                         if let expense = savedExpenses?.first {
                                             let countryValue = viewModel.getCountryForExpense(expense)
-                                            print("countryValue :", countryValue)
-                                            let flagImageName = getFlagImage(for: countryValue)
+                                            self.flagImageName = getFlagImage(for: countryValue)
                                             print("flagImageName", flagImageName)
                                         }
                                     }

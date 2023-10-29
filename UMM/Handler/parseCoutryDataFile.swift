@@ -33,17 +33,16 @@ func createFlagImagesDictionary(from csvURL: URL) throws -> [Int64: String] {
 
 // MARK: flagImages를 유저 디폴트에 저장
 func saveFlagImagesToUserDefaults() {
-
     do {
-            let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-            let flagImages = try createFlagImagesDictionary(from: csvURL)
-            
-            let encoder = PropertyListEncoder()
-            if let data = try? encoder.encode(flagImages) {
-                UserDefaults.standard.set(data, forKey: "flagImages")
-            } else {
-                print("Error encoding flagImages data.")
-            }
+        let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
+        let flagImages = try createFlagImagesDictionary(from: csvURL)
+        
+        let encoder = PropertyListEncoder()
+        if let data = try? encoder.encode(flagImages) {
+            UserDefaults.standard.set(data, forKey: "flagImages")
+        } else {
+            print("Error encoding flagImages data.")
+        }
     } catch {
         print("Error saving flagImages to UserDefaults: \(error)")
     }
