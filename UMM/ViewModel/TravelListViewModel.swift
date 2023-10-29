@@ -50,6 +50,13 @@ class TravelListViewModel: ObservableObject {
         }
     }
     
+    func getCountryForExpense(_ expense: Expense) -> Int64 {
+        if let country = expense.country as? Int64 {
+            return country
+        }
+        return -1
+    }
+    
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
             if let startDate = travel.startDate, let endDate = travel.endDate {

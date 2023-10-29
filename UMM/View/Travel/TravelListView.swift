@@ -38,6 +38,9 @@ struct TravelListView: View {
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
+                    
+                    // 매번 호출하는게 맞는지 모르겠음ㅜㅜ
+                    saveFlagImagesToUserDefaults()
                 }
             }
             .toolbar {
@@ -185,8 +188,13 @@ struct TravelListView: View {
                                     }
                                     .onAppear {
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-//                                        print("savedExpenses", savedExpenses)
-                                        
+                                        print("savedExpenses", savedExpenses as Any)
+                                        if let expense = savedExpenses?.first {
+                                            let countryValue = viewModel.getCountryForExpense(expense)
+                                            print("countryValue :", countryValue)
+                                            let flagImageName = getFlagImage(for: countryValue)
+                                            print("flagImageName", flagImageName)
+                                        }
                                     }
                                 })
                             }

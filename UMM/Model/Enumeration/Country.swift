@@ -99,23 +99,23 @@ enum Country: Int, CaseIterable {
         case .unknown:
             return "unknown"
         case .korea:
-            return "koreaFlag"
+            return "KoreaFlag"
         case .japan:
-            return "japanFlag"
+            return "JapanFlag"
         case .germany:
-            return "germanyFlag"
+            return "GermanyFlag"
         case .uk:
-            return "ukFlag"
+            return "UKFlag"
         case .usa:
-            return "usaFlag"
+            return "USAFlag"
         case .france:
-            return "franceFlag"
+            return "FranceFlag"
         case .taiwan:
-            return "taiwanFlag"
+            return "TaiwanFlag"
         case .china:
-            return "chinaFlag"
+            return "ChinaFlag"
         case .vietnam:
-            return "vietnamFlag"
+            return "VietnamFlag"
         }
     }
         
