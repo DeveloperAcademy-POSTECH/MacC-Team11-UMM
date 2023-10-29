@@ -12,9 +12,11 @@ import SwiftUI
 class TravelListViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
-    // 현재 진행 중인 여행들을 [Travel]에 다 저장
+    
     @Published var nowTravel: [Travel] = []
     @Published var defaultTravel: [Travel] = []
+    @Published var savedExpensesByTravel: [Expense] = []
+    
     let now = Date()
     let calendar = Calendar.current
     
@@ -28,10 +30,30 @@ class TravelListViewModel: ObservableObject {
         }
     }
     
+    func fetchExpense() {
+        let request = NSFetchRequest<Expense>(entityName: "Expense")
+        do {
+        savedExpensesByTravel = try viewContext.fetch(request)
+        } catch let error {
+            print("Error while fetchExpense: \(error.localizedDescription)")
+        }
+    }
+    
+    // 현재 여행의 id와 Expense의 Travel의 id를 비교해서 저장된 지출 정보 가져오기
+    func filterExpensesByTravel(selectedTravelID: UUID) -> [Expense] {
+        return savedExpensesByTravel.filter { expense in
+            if let travelID = expense.travel?.id {
+                return travelID == selectedTravelID
+            } else {
+                return false
+            }
+        }
+    }
+    
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
             if let startDate = travel.startDate, let endDate = travel.endDate {
-                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
+//                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
                 return todayDate >= startDate && todayDate < endDate
             } else {
                 print("filterTravelByDate | travel.id: nil")

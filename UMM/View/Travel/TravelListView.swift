@@ -13,8 +13,9 @@ struct TravelListView: View {
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
     @State var nowTravel: [Travel]?
-    @State private var travelCount: Int = 0
     @State var defaultTravel: [Travel]?
+    @State var savedExpenses: [Expense]?
+    @State private var travelCount: Int = 0
     @State private var currentPage = 0
     
     var body: some View {
@@ -33,10 +34,10 @@ struct TravelListView: View {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
+                    viewModel.fetchExpense()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
-                    print("onAppear")
                 }
             }
             .toolbar {
@@ -180,6 +181,11 @@ struct TravelListView: View {
                                         }
                                         .padding(.bottom, 16)
                                         .frame(width: 350, height: 137)
+                                        
+                                    }
+                                    .onAppear {
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+//                                        print("savedExpenses", savedExpenses)
                                         
                                     }
                                 })
