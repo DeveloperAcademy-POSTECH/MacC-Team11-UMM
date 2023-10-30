@@ -63,29 +63,6 @@ enum Currency: Int {
             return "vnd"
         }
     }
-      
-    var rate: Double {
-        switch self {
-        case .unknown:
-            return 0
-        case .krw:
-            return 1
-        case .usd:
-            return 1353
-        case .jpy:
-            return 9.03
-        case .eur:
-            return 1433.37
-        case .gbp:
-            return 1645.86
-        case .twd:
-            return 41.83
-        case .cny:
-            return 184.65
-        case .vnd:
-            return 0.06
-        }
-    }
     
     var officialSymbol: String {
         switch self {
@@ -108,11 +85,6 @@ enum Currency: Int {
         case .vnd:
             return "₫"
         }
-    }
-    
-    static func getRate(of rawValue: Int) -> Double {
-        guard let currency = Currency(rawValue: rawValue) else { return 0 }
-        return currency.rate
     }
     
     static func getSymbol(of rawValue: Int) -> String {

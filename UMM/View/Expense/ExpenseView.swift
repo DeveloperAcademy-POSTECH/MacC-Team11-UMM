@@ -14,7 +14,7 @@ struct ExpenseView: View {
     
     var exchangeRateHandler: ExchangeRateHandler
     
-    init(){
+    init() {
         self.exchangeRateHandler = ExchangeRateHandler.shared
     }
     

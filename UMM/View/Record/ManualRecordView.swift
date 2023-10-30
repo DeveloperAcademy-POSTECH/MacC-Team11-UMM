@@ -13,6 +13,7 @@ struct ManualRecordView: View {
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
+    let handler = ExchangeRateHandler.shared
 
     var body: some View {
         ZStack {
@@ -136,7 +137,7 @@ struct ManualRecordView: View {
         if viewModel.payAmount == -1 || viewModel.currency == .unknown {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
+            viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
         }
     }
     

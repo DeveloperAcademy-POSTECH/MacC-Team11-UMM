@@ -20,7 +20,6 @@ class ExchangeRateHandler {
     private init() {}
     
     func fetchAndSaveExchangeRates() {
-        print("fetchAndSaveExchangeRates 실행됨 !!")
         let apiKey = "7437a58231287f04d6c73124"
         let baseCode = "KRW"
         guard let url = URL(string: "https://v6.exchangerate-api.com/v6/\(apiKey)/latest/\(baseCode)") else { return }
@@ -59,11 +58,11 @@ class ExchangeRateHandler {
         }
     }
     
-    func convertToKRW(currencyCode: String, amount: Double ) -> Double? {
+    func getExchangeRateFromKRW(currencyCode: String) -> Double? {
         guard let loadedData = loadExchangeRatesFromUserDefaults(),
               let rate = loadedData.conversion_rates[currencyCode.uppercased()] else {
             return nil
         }
-        return amount / rate
+        return 1 / rate
     }
 }

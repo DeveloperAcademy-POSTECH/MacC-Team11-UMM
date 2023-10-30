@@ -38,7 +38,9 @@ struct TravelListView: View {
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
-                    self.handler.fetchAndSaveExchangeRates()
+                    if handler.loadExchangeRatesFromUserDefaults() == nil {
+                        handler.fetchAndSaveExchangeRates()
+                    }
                     print("onAppear")
                 }
             }

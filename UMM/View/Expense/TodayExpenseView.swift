@@ -12,20 +12,19 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
-    let handler: ExchangeRateHandler
+    let handler = ExchangeRateHandler.shared
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
         self._selectedTab = selectedTab
         self.namespace = namespace
-        self.handler = ExchangeRateHandler.shared
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
             tabViewButton
-
+            
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     datePicker
@@ -73,10 +72,8 @@ struct TodayExpenseView: View {
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             let totalSum = currencies.reduce(0) { total, currency in
                 let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-//                let rate = Currency.getRate(of: Int(currency))
-                let sumWithExchangeRate = handler.convertToKRW(currencyCode: Currency.getCaseName(of: Int(currency)), amount: sum)
-                
-                return total + (sumWithExchangeRate ?? -1)
+                let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(currency)))
+                return total + sum * (rate ?? -1)
             }
             
             VStack(alignment: .leading, spacing: 0) {
@@ -105,7 +102,7 @@ struct TodayExpenseView: View {
                             sumPaymentMethod: totalSum
                         )
                     } label: {
-                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 2))원")
+                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
                             .font(.display3)
                             .foregroundStyle(.black)
                             .padding(.top, 8)

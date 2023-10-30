@@ -12,6 +12,7 @@ struct AllExpenseView: View {
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
+    let handler = ExchangeRateHandler.shared
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -125,8 +126,8 @@ struct AllExpenseView: View {
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
         let totalSum = currencies.reduce(0) { total, currency in
             let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            let rate = Currency.getRate(of: Int(currency))
-            return total + sum * rate
+            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(currency)))
+            return total + sum * (rate ?? -1)
         }
         
         // allExpenseSummary: 총합
@@ -231,32 +232,33 @@ struct AllExpenseView: View {
             }
         }
     }
-}
-
-private func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
-    let filteredExpenseArrayArray = categoryArray.map { category in
-        expenseArray.filter {
-            $0.category == category
-        }
-    }
     
-    let sumArray = filteredExpenseArrayArray.map { expenseArray in
-        expenseArray.reduce(0) {
-            $0 + ( $1.payAmount * Currency.getRate(of: Int($1.currency)) )
+    private func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
+        let filteredExpenseArrayArray = categoryArray.map { category in
+            expenseArray.filter {
+                $0.category == category
+            }
         }
+        
+        let sumArray = filteredExpenseArrayArray.map { expenseArray in
+            expenseArray.reduce(0) {
+                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int($1.currency))) ?? -1))
+            }
+        }
+        
+        let indexedSumArray: [(Int64, Double)] = [
+            (categoryArray[0], sumArray[0]),
+            (categoryArray[1], sumArray[1]),
+            (categoryArray[2], sumArray[2]),
+            (categoryArray[3], sumArray[3]),
+            (categoryArray[4], sumArray[4]),
+            (categoryArray[5], sumArray[5]),
+            (categoryArray[6], sumArray[6])
+        ].sorted {
+            $0.1 >= $1.1
+        }
+        return indexedSumArray
     }
-    let indexedSumArray: [(Int64, Double)] = [
-        (categoryArray[0], sumArray[0]),
-        (categoryArray[1], sumArray[1]),
-        (categoryArray[2], sumArray[2]),
-        (categoryArray[3], sumArray[3]),
-        (categoryArray[4], sumArray[4]),
-        (categoryArray[5], sumArray[5]),
-        (categoryArray[6], sumArray[6])
-    ].sorted {
-        $0.1 >= $1.1
-    }
-    return indexedSumArray
 }
 
 struct CurrencyForChart: Identifiable, Hashable {
