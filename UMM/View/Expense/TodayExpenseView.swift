@@ -49,21 +49,6 @@ struct TodayExpenseView: View {
         }
     }
     
-//    private var travelPicker: some View {
-//        Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
-//            ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
-//                Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
-//            }
-//        }
-//        .pickerStyle(MenuPickerStyle())
-//        .onReceive(expenseViewModel.$selectedTravel) { _ in
-//            DispatchQueue.main.async {
-//                expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-//                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-//            }
-//        }
-//    }
-    
     private var tabViewButton: some View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
