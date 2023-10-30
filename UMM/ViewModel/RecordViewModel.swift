@@ -64,8 +64,8 @@ final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
     private var audioPlayer: AVAudioPlayer?
     
     // variables to save record file
-    var path: URL = URL(string: "http://www.apple.com")!
-    var fileName: URL = URL(string: "http://www.apple.com")!
+    var soundRecordPath: URL?
+    var soundRecordFileName: URL?
     
     // variables to evaluate record button pressing time
     var startRecordTime = CFAbsoluteTimeGetCurrent()
@@ -576,8 +576,8 @@ final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
             print("Can not setup the Recording")
         }
 
-        path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        fileName = path.appendingPathComponent("CO-Voice : \(Date().toString(dateFormat: "dd-MM-YY 'at' HH:mm:ss")).m4a")
+        soundRecordPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        soundRecordFileName = soundRecordPath?.appendingPathComponent("CO-Voice : \(Date().toString(dateFormat: "dd-MM-YY 'at' HH:mm:ss")).m4a")
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -586,12 +586,14 @@ final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         
-        do {
-            audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
-            audioRecorder?.prepareToRecord()
-            audioRecorder?.record()
-        } catch {
-            print("Failed to Setup the Recording")
+        if let soundRecordFileName {
+            do {
+                audioRecorder = try AVAudioRecorder(url: soundRecordFileName, settings: settings)
+                audioRecorder?.prepareToRecord()
+                audioRecorder?.record()
+            } catch {
+                print("Failed to Setup the Recording")
+            }
         }
     }
     

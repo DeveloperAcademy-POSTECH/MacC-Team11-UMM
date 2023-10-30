@@ -58,11 +58,11 @@ struct ManualRecordView: View {
                 .presentationDetents([.height(289 - 34)])
         }
         .onTapGesture {
-            if viewModel.newNameString.count > 0 {
-                viewModel.additionalParticipantTupleArray.append((viewModel.newNameString, true))
+            if viewModel.visibleNewNameOfParticipant.count > 0 {
+                viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
             }
             DispatchQueue.main.async {
-                viewModel.newNameString = ""
+                viewModel.visibleNewNameOfParticipant = ""
             }
         }
         .onAppear {
@@ -103,9 +103,9 @@ struct ManualRecordView: View {
         
         if prevViewModel.needToFill {
             viewModel.payAmount = prevViewModel.payAmount
-            viewModel.payAmountString = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
+            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
             viewModel.info = prevViewModel.info
-            viewModel.infoString = viewModel.info == nil ? "" : viewModel.info!
+            viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = prevViewModel.infoCategory
             viewModel.paymentMethod = prevViewModel.paymentMethod
         }
@@ -137,6 +137,8 @@ struct ManualRecordView: View {
             }
         }
         viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
+        
+        viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
     private var titleBlockView: some View {
@@ -181,12 +183,12 @@ struct ManualRecordView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         ZStack {
-                            Text(viewModel.payAmountString == "" ? "  -  " : viewModel.payAmountString)
+                            Text(viewModel.visiblePayAmount == "" ? "  -  " : viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .font(.display4)
                                 .hidden()
                             
-                            TextField(" - ", text: $viewModel.payAmountString)
+                            TextField(" - ", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .foregroundStyle(.black)
                                 .font(.display4)
@@ -271,7 +273,7 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray100)
                             .layoutPriority(-1)
                         
-                        TextField("-", text: $viewModel.infoString) // TextView로 고치기
+                        TextField("-", text: $viewModel.visibleInfo)
                             .lineLimit(nil)
                             .foregroundStyle(.black)
                             .font(.body3)
@@ -527,13 +529,13 @@ struct ManualRecordView: View {
                                     .padding(.vertical, 6)
                                     .hidden()
                                 
-                                TextField("╋", text: $viewModel.newNameString) {
+                                TextField("╋", text: $viewModel.visibleNewNameOfParticipant) {
                                     print("asdfasdf")
-                                    if viewModel.newNameString.count > 0 {
-                                        viewModel.additionalParticipantTupleArray.append((viewModel.newNameString, true))
+                                    if viewModel.visibleNewNameOfParticipant.count > 0 {
+                                        viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
                                     }
                                     DispatchQueue.main.async {
-                                        viewModel.newNameString = ""
+                                        viewModel.visibleNewNameOfParticipant = ""
                                     }
                                 }
                                 .lineLimit(1)

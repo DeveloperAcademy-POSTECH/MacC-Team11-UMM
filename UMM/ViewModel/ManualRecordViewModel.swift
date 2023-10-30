@@ -52,7 +52,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     
     // MARK: - in-string property
     
-    @Published var payAmount: Double = -1 { // passive
+    var payAmount: Double = -1 { // passive
         didSet {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
@@ -61,24 +61,34 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
             }
         }
     }
-    @Published var payAmountString = "" {
+    @Published var visiblePayAmount: String = "" {
         didSet {
-            if payAmountString == "" {
+            var tempVisiblePayAmount = visiblePayAmount.filter { [.arabicNumeric, .arabicDot].contains($0.getCharacterForm()) }
+            if let dotIndex = tempVisiblePayAmount.firstIndex(of: ".") {
+                if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
+                    tempVisiblePayAmount = String(tempVisiblePayAmount[..<twoMovesIndex])
+                }
+                if visiblePayAmount != tempVisiblePayAmount {
+                    visiblePayAmount = tempVisiblePayAmount
+                }
+            }
+            
+            if visiblePayAmount == "" {
                 payAmount = -1
             } else {
-                payAmount = Double(payAmountString) ?? -1
+                payAmount = Double(visiblePayAmount) ?? -1
             }
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
 
-    @Published var info: String? // passive
-    @Published var infoString: String = "" {
+    var info: String? // passive
+    @Published var visibleInfo: String = "" {
         didSet {
-            if infoString == "" {
+            if visibleInfo == "" {
                 info = nil
             } else {
-                info = infoString
+                info = visibleInfo
             }
         }
     }
@@ -165,7 +175,9 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
         }
     }
     @Published var currencyCandidateArray: [Currency] = []
-    @Published var newNameString: String = ""
+    @Published var visibleNewNameOfParticipant: String = ""
+    
+    var soundRecordFileName: URL?
     
     init() {
         locationManager = CLLocationManager()
