@@ -1,5 +1,5 @@
 //
-//  TravelChoiceModal.swift
+//  TravelChoiceInRecordModal.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/16/23.
@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-struct TravelChoiceModal: View {
-    @ObservedObject private var expenseViewModel = ExpenseViewModel()
-    @ObservedObject private var redrawer = Redrawer()
-    var viewModel: TravelChoiceModalUsable
+struct TravelChoiceInRecordModal: View {    
+    @Binding var chosenTravel: Travel?
+    var travelArray: [Travel]
     
     var body: some View {
         ZStack {
@@ -24,6 +23,16 @@ struct TravelChoiceModal: View {
                     .frame(height: 24)
                 travelScrollView
             }
+        }
+    }
+    
+    init(chosenTravel: Binding<Travel?>) {
+        _chosenTravel = chosenTravel
+        travelArray = [Travel]()
+        do {
+            try travelArray = PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: sortRule)
+        } catch {
+            print("error fetching travelArray: \(error.localizedDescription)")
         }
     }
     
@@ -53,11 +62,10 @@ struct TravelChoiceModal: View {
             LazyHStack(alignment: .top, spacing: 0) {
                 Spacer()
                     .frame(width: 20)
-                ForEach(viewModel.travelArray.sorted(by: sortRule)) { travel in
-                    TravelSquareView(travel: travel, chosenTravel: viewModel.chosenTravel)
+                ForEach(travelArray.sorted(by: sortRule)) { travel in
+                    TravelSquareView(travel: travel, chosenTravel: chosenTravel)
                         .onTapGesture {
-                            viewModel.setChosenTravel(as: travel)
-                            redrawer.redraw()
+                            chosenTravel = travel
                         }
                     Spacer()
                         .frame(width: 10)
@@ -269,5 +277,5 @@ struct CircleLabelView: View {
 }
 
 #Preview {
-    TravelChoiceModal(viewModel: ManualRecordViewModel())
+    TravelChoiceInRecordModal(chosenTravel: .constant(Travel()))
 }
