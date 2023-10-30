@@ -28,7 +28,6 @@ struct TodayExpenseView: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     datePicker
                     drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
-                    // dummyExpenseAddButton
                 }
             }
         }
@@ -37,8 +36,6 @@ struct TodayExpenseView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            //            expenseViewModel.selectedTravel = findCurrentTravel()
-            print("TodayExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })

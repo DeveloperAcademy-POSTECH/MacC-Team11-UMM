@@ -37,9 +37,7 @@ struct TodayExpenseDetailView: View {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
             expenseViewModel.selectedTravel = selectedTravel
-            print("BINDING | TodayExpenseDetailView: selectedTravel: \(selectedTravel?.name)")
-            print("BINDING | TodayExpenseDetailView: expenseViewModel.selectedTravel: \(expenseViewModel.selectedTravel?.name)")
-            
+
             let filteredResult = getFilteredExpenses()
             expenseViewModel.filteredTodayExpenses = filteredResult
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
@@ -109,15 +107,15 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum }, to: 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * Currency.getRate(of: Int($1.currency))}, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
             // 화폐별 합계
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
-                    let currencySum = currencyAndSums[idx]
-                    Text((Currency(rawValue: Int(currencySum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
+                    let currencyAndSum = currencyAndSums[idx]
+                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -182,7 +180,7 @@ struct TodayExpenseDetailView: View {
                                 .font(.subhead2_1)
                                 .padding(.leading, 3)
                         }
-                        Text("원화로 환산된 금액")
+                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount * Currency.getRate(of: Int(expense.currency)), to: 2))원)")
                             .font(.caption2)
                             .foregroundStyle(.gray200)
                             .padding(.top, 4)
