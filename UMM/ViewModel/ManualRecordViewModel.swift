@@ -16,9 +16,8 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                print("ManualRecordViewModel | adsf: \(String(describing: placemark.isoCountryCode))")
-                self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
-                self.parent?.locationExpression = "\(placemark.country ?? "일본") \(placemark.locality ?? "오사카")"
+                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.currentLocation = "\(placemark.locality ?? "")"
             } else {
                 print("ERROR: \(String(describing: error?.localizedDescription))")
             }
@@ -126,7 +125,8 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "오사카")"
+            countryExpression = "\(country.title)"
+            locationExpression = ""
 
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]
@@ -149,7 +149,8 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
             }
         }
     }
-    @Published var locationExpression: String = "" // passive
+    @Published var countryExpression: String = "" // passive
+    @Published var locationExpression: String = ""
     var currentCountry: Country = .unknown
     var currentLocation: String = ""
     @Published var otherCountryCandidateArray: [Country] = [] // passive

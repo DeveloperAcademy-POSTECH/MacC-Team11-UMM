@@ -67,6 +67,33 @@ struct ManualRecordView: View {
         }
         .onAppear {
             viewModel.getLocation()
+            viewModel.country = viewModel.currentCountry
+            viewModel.countryExpression = viewModel.currentCountry.title
+            viewModel.locationExpression = viewModel.currentLocation
+            
+            if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
+                viewModel.otherCountryCandidateArray.append(viewModel.country)
+            }
+            
+            viewModel.currency = viewModel.currentCountry.relatedCurrencyArray.first ?? .usd
+            
+            if viewModel.currentCountry == .usa {
+                viewModel.currencyCandidateArray = [.usd, .krw]
+            } else {
+                viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
+                if !viewModel.currencyCandidateArray.contains(.usd) {
+                    viewModel.currencyCandidateArray.append(.usd)
+                }
+                if !viewModel.currencyCandidateArray.contains(.krw) {
+                    viewModel.currencyCandidateArray.append(.krw)
+                }
+            }
+            
+            if viewModel.payAmount == -1 || viewModel.currency == .unknown {
+                viewModel.payAmountInWon = -1
+            } else {
+                viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
+            }
         }
     }
     
@@ -110,34 +137,6 @@ struct ManualRecordView: View {
             }
         }
         viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
-                
-                // MARK: - 현재 위치 정보와 연동
-              
-//        viewModel.currentCountry = LocationHandler.shared.getCurrentCounty()
-//        viewModel.currentLocation = LocationHandler.shared.getCurrentLocation()
-        viewModel.currentCountry = .japan
-        viewModel.currentLocation = "일본 도쿄"
-        viewModel.country = viewModel.currentCountry
-        viewModel.locationExpression = viewModel.currentLocation
-        viewModel.currency = viewModel.currentCountry.relatedCurrencyArray.first ?? .usd
-        
-        if viewModel.currentCountry == .usa {
-            viewModel.currencyCandidateArray = [.usd, .krw]
-        } else {
-            viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
-            if !viewModel.currencyCandidateArray.contains(.usd) {
-                viewModel.currencyCandidateArray.append(.usd)
-            }
-            if !viewModel.currencyCandidateArray.contains(.krw) {
-                viewModel.currencyCandidateArray.append(.krw)
-            }
-        }
-        
-        if viewModel.payAmount == -1 || viewModel.currency == .unknown {
-            viewModel.payAmountInWon = -1
-        } else {
-            viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
-        }
     }
     
     private var titleBlockView: some View {
@@ -607,7 +606,7 @@ struct ManualRecordView: View {
                                     .strokeBorder(.gray200, lineWidth: 1.0)
                             }
                             .frame(width: 24, height: 24)
-                            Text(viewModel.locationExpression)
+                            Text(viewModel.countryExpression + " " + viewModel.locationExpression)
                         }
                     }
                     
