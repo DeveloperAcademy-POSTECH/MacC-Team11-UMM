@@ -91,4 +91,9 @@ enum Currency: Int {
         guard let currency = Currency(rawValue: rawValue) else { return 0 }
         return currency.rate
     }
+    
+    static func getSymbol(of rawValue: Int) -> String {
+        guard let currency = Currency(rawValue: rawValue) else { return "?" }
+        return currency.officialSymbol
+    }
 }

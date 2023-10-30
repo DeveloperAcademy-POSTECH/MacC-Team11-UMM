@@ -46,22 +46,6 @@ struct AllExpenseView: View {
     }
     
     // MARK: - 뷰
-//    private var travelPicker: some View {
-//        Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
-//            ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
-//                Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
-//            }
-//        }
-//        .pickerStyle(MenuPickerStyle())
-//        .onReceive(expenseViewModel.$selectedTravel) { _ in
-//            DispatchQueue.main.async {
-//                expenseViewModel.filteredExpenses = getFilteredExpenses()
-//                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.category })
-//                print("travelPicker | expenseViewModel.selectedCountry: \(expenseViewModel.selectedCountry)")
-//            }
-//        }
-//    }
-    
     private var tabViewButton: some View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
@@ -137,14 +121,16 @@ struct AllExpenseView: View {
     // 1-1. 항목별
     private func drawExpenseContent(for country: Int64, with expenses: [Expense]) -> some View {
         let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
-        let totalSum = expenses.reduce(0) { $0 + $1.payAmount } // 모든 결제 수단 합계
-        let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray,
-                                                                                   expenseArray: expenses)
+        let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenses)
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
+        let totalSum = currencies.reduce(0) { total, currency in
+            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+            let rate = Currency.getRate(of: Int(currency))
+            return total + sum * rate
+        }
         
+        // allExpenseSummary: 총합
         return VStack(alignment: .leading, spacing: 0) {
-            
-            // allExpenseSummary: 합계
             NavigationLink {
                 AllExpenseDetailView(
                     selectedTravel: expenseViewModel.selectedTravel,
@@ -172,7 +158,7 @@ struct AllExpenseView: View {
                         let currency = currencies[idx]
                         let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount } // 결제 수단 별로 합계
                         
-                        Text("\(currency): \(expenseViewModel.formatSum(from: sum, to: 2))")
+                        Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
                             .font(.caption2)
                             .foregroundStyle(.gray300)
                         if idx != currencies.count - 1 {
@@ -256,7 +242,7 @@ private func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expens
     
     let sumArray = filteredExpenseArrayArray.map { expenseArray in
         expenseArray.reduce(0) {
-            $0 + $1.payAmount
+            $0 + ( $1.payAmount * Currency.getRate(of: Int($1.currency)) )
         }
     }
     let indexedSumArray: [(Int64, Double)] = [
