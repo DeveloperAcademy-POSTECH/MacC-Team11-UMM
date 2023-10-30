@@ -21,7 +21,7 @@ struct TodayExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-
+            
             tabViewButton
             
             ScrollView {
@@ -37,7 +37,7 @@ struct TodayExpenseView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-//            expenseViewModel.selectedTravel = findCurrentTravel()
+            //            expenseViewModel.selectedTravel = findCurrentTravel()
             print("TodayExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
@@ -71,8 +71,12 @@ struct TodayExpenseView: View {
         return ForEach(countryArray, id: \.self) { country in
             let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
             let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
-            let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
+            let totalSum = currencies.reduce(0) { total, currency in
+                let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                let rate = Currency.getRate(of: Int(currency))
+                return total + sum * rate
+            }
             
             VStack(alignment: .leading, spacing: 0) {
                 // 국기 + 국가명
@@ -112,7 +116,7 @@ struct TodayExpenseView: View {
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                         let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
                         
                         NavigationLink {
                             TodayExpenseDetailView(

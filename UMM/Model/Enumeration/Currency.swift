@@ -86,4 +86,9 @@ enum Currency: Int {
             return "₫"
         }
     }
+    
+    static func getRate(of rawValue: Int) -> Double {
+        guard let currency = Currency(rawValue: rawValue) else { return 0 }
+        return currency.rate
+    }
 }
