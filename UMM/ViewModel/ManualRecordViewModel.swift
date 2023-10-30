@@ -68,9 +68,9 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
                 if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
                     tempVisiblePayAmount = String(tempVisiblePayAmount[..<twoMovesIndex])
                 }
-                if visiblePayAmount != tempVisiblePayAmount {
-                    visiblePayAmount = tempVisiblePayAmount
-                }
+            }
+            if visiblePayAmount != tempVisiblePayAmount {
+                visiblePayAmount = tempVisiblePayAmount
             }
             
             if visiblePayAmount == "" {
