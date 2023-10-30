@@ -17,6 +17,8 @@ struct TravelListView: View {
     @State var defaultTravel: [Travel]?
     @State private var currentPage = 0
     
+    let handler = ExchangeRateHandler.shared
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -36,6 +38,7 @@ struct TravelListView: View {
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
+                    self.handler.fetchAndSaveExchangeRates()
                     print("onAppear")
                 }
             }
@@ -98,12 +101,14 @@ struct TravelListView: View {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
-                                NavigationLink(destination: TravelDetailView(travelName: nowTravel?[index].name ?? "",
-                                                                             startDate: nowTravel?[index].startDate ?? Date(),
-                                                                             endDate: nowTravel?[index].endDate ?? Date(),
-                                                                             dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
-                                                                             participantCnt: nowTravel?[index].participantArray?.count ?? 0,
-                                                                             participantArr: nowTravel?[index].participantArray ?? []), label: {
+                                NavigationLink(destination: TravelDetailView(
+                                    travelName: nowTravel?[index].name ?? "",
+                                    startDate: nowTravel?[index].startDate ?? Date(),
+                                    endDate: nowTravel?[index].endDate ?? Date(),
+                                    dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
+                                    participantCnt: nowTravel?[index].participantArray?.count ?? 0,
+                                    participantArr: nowTravel?[index].participantArray ?? []
+                                ), label: {
                                     ZStack(alignment: .top) {
                                         Rectangle()
                                             .foregroundColor(.clear)
@@ -220,7 +225,7 @@ struct TravelListView: View {
         // 뷰모델에서 Default이름 가진 여행 fetch 필요
         ZStack {
             if defaultTravel?.count == 0 {
-
+                
                 EmptyView()
                 
             } else {
@@ -300,7 +305,7 @@ struct TabBarView: View {
             ForEach(Array(zip(self.tabBarOptions.indices,
                               self.tabBarOptions)),
                     id: \.0,
-            content: { index, name in
+                    content: { index, name in
                 TabBarItem(currentTab: self.$currentTab,
                            namespace: namespace.self,
                            tabBarItemName: name,
@@ -326,7 +331,7 @@ struct TabBarItem: View {
         Button {
             self.currentTab = tab
         } label: {
-       
+            
             HStack {
                 if currentTab == tab {
                     VStack {
