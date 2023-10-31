@@ -14,6 +14,7 @@ struct ManualRecordView: View {
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let handler = ExchangeRateHandler.shared
+    let fraction0NumberFormatter = NumberFormatter()
 
     var body: some View {
         ZStack {
@@ -99,6 +100,9 @@ struct ManualRecordView: View {
             } else {
                 viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
             }
+            // MARK: - NumberFormatter
+            fraction0NumberFormatter.numberStyle = .decimal
+            fraction0NumberFormatter.maximumFractionDigits = 0
         }
     }
     
@@ -230,7 +234,7 @@ struct ManualRecordView: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
-                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol) // viewModel.currency에 연동하기 ^^^
+                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol)
                                     .foregroundStyle(.gray400)
                                     .font(.display2)
                                     .padding(.vertical, 4)
@@ -245,9 +249,15 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     } else {
-                        Text("(" + String(format: "%.2f", viewModel.payAmountInWon) + "원" + ")")
-                            .foregroundStyle(.gray300)
-                            .font(.caption2)
+                        if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmountInWon)) {
+                            Text("(" + formattedString + "원" + ")")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        } else {
+                            Text("( - 원)")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        }
                     }
                 }
                 Spacer()
