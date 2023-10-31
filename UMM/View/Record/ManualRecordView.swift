@@ -573,7 +573,7 @@ struct ManualRecordView: View {
                     }
                     Spacer()
                     
-                    Image("manualRecordPencil")
+                    Image("manualRecordDownChevron")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
@@ -599,7 +599,7 @@ struct ManualRecordView: View {
                         
                         HStack(spacing: 8) {
                             ZStack {
-                                Image("manualRecordExampleJapan") // country와 연동하기
+                                Image(getFlagImage(for: Int64(viewModel.country.rawValue))) // 이뉴머레이션 못 쓰면 수정해야 함
                                     .resizable()
                                     .scaledToFit()
                                 
@@ -608,18 +608,35 @@ struct ManualRecordView: View {
                             }
                             .frame(width: 24, height: 24)
                             Text(viewModel.locationExpression)
+                                .foregroundStyle(.black)
+                                .font(.subhead2_2)
                         }
                     }
                     
                     Spacer()
                     
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("지출 위치 수정 버튼")
+                    ZStack {
+                        Picker("국가", selection: $viewModel.country) {
+                            ForEach(viewModel.otherCountryCandidateArray, id: \.self) { country in
+                                HStack {
+                                    Image(getFlagImage(for: Int64(viewModel.country.rawValue))) // 이뉴머레이션 못 쓰면 수정해야 함
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 24, height: 24)
+                                    
+                                    Text(country.title)
+                                }
+                            }
+                            
+                            Image("manualRecordDownChevron")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                                .onTapGesture {
+                                    print("지출 위치 수정 버튼")
+                                }
                         }
+                    }
                 }
                 
             }
