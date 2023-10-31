@@ -11,7 +11,7 @@ import NaturalLanguage
 import Speech
 import SwiftUI
 
-final class RecordViewModel: ObservableObject, TravelChoiceModalUsable {
+final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
