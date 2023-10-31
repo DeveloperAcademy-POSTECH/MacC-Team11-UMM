@@ -14,9 +14,9 @@ struct AllExpenseDetailView: View {
     var selectedCategory: Int64
     var selectedCountry: Int64
     @State var selectedPaymentMethod: Int64
-//    @State private var currencySums: [CurrencyAndSum] = []
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
+    let handler = ExchangeRateHandler.shared
 
     var body: some View {
         
@@ -94,7 +94,7 @@ struct AllExpenseDetailView: View {
             //  카테고리 이름
             if selectedCategory != -2 {
                 HStack(alignment: .center, spacing: 0) {
-                    Image(systemName: "wifi")
+                    Image(ExpenseInfoCategory(rawValue: Int(selectedCategory))?.modalImageString ?? "nil")
                         .font(.system(size: 24))
                     Text("\(ExpenseInfoCategory.descriptionFor(rawValue: Int(selectedCategory)))")
                         .font(.display1)
@@ -108,7 +108,7 @@ struct AllExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum }, to: 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -116,8 +116,8 @@ struct AllExpenseDetailView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 0) {
                     ForEach(currencyAndSums.indices, id: \.self) { idx in
-                        let currencySum = currencyAndSums[idx]
-                        Text("\(currencySum.currency): \(expenseViewModel.formatSum(from: currencySum.sum, to: 2))")
+                        let currencyAndSum = currencyAndSums[idx]
+                        Text("\(Currency.getSymbol(of: Int(currencyAndSum.currency)))\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                             .font(.caption2)
                             .foregroundStyle(.gray300)
                         if idx != currencyAndSums.count - 1 {
@@ -159,7 +159,8 @@ struct AllExpenseDetailView: View {
                     
                     ForEach(expensesForDate, id: \.id) { expense in
                         HStack(alignment: .center, spacing: 0) {
-                            Image(systemName: "wifi")
+                            
+                            Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
                                 .font(.system(size: 36))
                             
                             VStack(alignment: .leading, spacing: 0) {
@@ -185,15 +186,14 @@ struct AllExpenseDetailView: View {
                             
                             VStack(alignment: .trailing, spacing: 0) {
                                 HStack(alignment: .center, spacing: 0) {
-                                    Text("\(expense.currency)")
+                                    Text("\(Currency.getSymbol(of: Int(expense.currency)))")
                                         .font(.subhead2_1)
                                     
                                     Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
                                         .font(.subhead2_1)
                                         .padding(.leading, 3 )
                                 }
-                                
-                                Text("원화로 환산된 금액")
+                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -1), to: 0))원)")
                                     .font(.caption2)
                                     .foregroundStyle(.gray200)
                                     .padding(.top, 4 )

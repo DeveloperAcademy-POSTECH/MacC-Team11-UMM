@@ -13,7 +13,9 @@ struct CompleteRecordView: View {
     var body: some View {
         VStack(spacing: 60) {
             Button {
-                viewModel.startPlayingAudio(url: viewModel.fileName)
+                if let fileName = viewModel.soundRecordFileName {
+                    viewModel.startPlayingAudio(url: fileName)
+                }
             } label: {
                 Text("Play Audio")
                     .font(.title2)
@@ -21,7 +23,9 @@ struct CompleteRecordView: View {
             .buttonStyle(.bordered)
             
             Button {
-                viewModel.stopPlayingAudio(url: viewModel.fileName)
+                if let fileName = viewModel.soundRecordFileName {
+                    viewModel.stopPlayingAudio(url: fileName)
+                }
             } label: {
                 Text("Stop Audio")
                     .font(.title2)

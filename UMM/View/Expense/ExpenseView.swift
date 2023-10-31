@@ -12,6 +12,12 @@ struct ExpenseView: View {
     @Namespace var namespace
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     
+    var exchangeRateHandler: ExchangeRateHandler
+    
+    init() {
+        self.exchangeRateHandler = ExchangeRateHandler.shared
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {

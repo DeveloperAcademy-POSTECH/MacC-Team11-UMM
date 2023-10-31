@@ -40,27 +40,27 @@ enum Currency: Int {
             return "동"
         }
     }
-      
-    var rate: Double {
+    
+    var name: String {
         switch self {
         case .unknown:
-            return 0
+            return "unknown"
         case .krw:
-            return 1
-        case .usd:
-            return 1353
+            return "krw"
         case .jpy:
-            return 9.03
+            return "jpy"
         case .eur:
-            return 1433.37
+            return "eur"
         case .gbp:
-            return 1645.86
+            return "gbp"
+        case .usd:
+            return "usd"
         case .twd:
-            return 41.83
+            return "twd"
         case .cny:
-            return 184.65
+            return "cny"
         case .vnd:
-            return 0.06
+            return "vnd"
         }
     }
     
@@ -85,5 +85,15 @@ enum Currency: Int {
         case .vnd:
             return "₫"
         }
+    }
+    
+    static func getSymbol(of rawValue: Int) -> String {
+        guard let currency = Currency(rawValue: rawValue) else { return "?" }
+        return currency.officialSymbol
+    }
+    
+    static func getCurrencyCodeName(of rawValue: Int) -> String {
+        guard let currency = Currency(rawValue: rawValue) else { return "unknown" }
+        return currency.name
     }
 }

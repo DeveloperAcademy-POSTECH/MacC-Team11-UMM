@@ -13,6 +13,7 @@ struct ManualRecordView: View {
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
+    let handler = ExchangeRateHandler.shared
 
     var body: some View {
         ZStack {
@@ -50,27 +51,54 @@ struct ManualRecordView: View {
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-            TravelChoiceModal(viewModel: viewModel)
+            TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.categoryChoiceModalIsShown) {
-            CategoryChoiceModal(viewModel: viewModel)
+            CategoryChoiceModal(chosenCategory: $viewModel.category)
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.countryChoiceModalIsShown) {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
         }
-        .onTapGesture { // 키보드 내려가는 기능 정리하면서 수정하기 ^^^
-            if viewModel.newNameString.count > 0 {
-                viewModel.additionalParticipantTupleArray.append((viewModel.newNameString, true))
+        .onTapGesture {
+            if viewModel.visibleNewNameOfParticipant.count > 0 {
+                viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
             }
             DispatchQueue.main.async {
-                viewModel.newNameString = ""
+                viewModel.visibleNewNameOfParticipant = ""
             }
         }
         .onAppear {
             viewModel.getLocation()
+            viewModel.country = viewModel.currentCountry
+            viewModel.countryExpression = viewModel.currentCountry.title
+            viewModel.locationExpression = viewModel.currentLocation
+            
+            if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
+                viewModel.otherCountryCandidateArray.append(viewModel.country)
+            }
+            
+            viewModel.currency = viewModel.currentCountry.relatedCurrencyArray.first ?? .usd
+            
+            if viewModel.currentCountry == .usa {
+                viewModel.currencyCandidateArray = [.usd, .krw]
+            } else {
+                viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
+                if !viewModel.currencyCandidateArray.contains(.usd) {
+                    viewModel.currencyCandidateArray.append(.usd)
+                }
+                if !viewModel.currencyCandidateArray.contains(.krw) {
+                    viewModel.currencyCandidateArray.append(.krw)
+                }
+            }
+            
+            if viewModel.payAmount == -1 || viewModel.currency == .unknown {
+                viewModel.payAmountInWon = -1
+            } else {
+                viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
+            }
         }
     }
     
@@ -80,9 +108,9 @@ struct ManualRecordView: View {
         
         if prevViewModel.needToFill {
             viewModel.payAmount = prevViewModel.payAmount
-            viewModel.payAmountString = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
+            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
             viewModel.info = prevViewModel.info
-            viewModel.infoString = viewModel.info == nil ? "" : viewModel.info!
+            viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = prevViewModel.infoCategory
             viewModel.paymentMethod = prevViewModel.paymentMethod
         }
@@ -114,16 +142,6 @@ struct ManualRecordView: View {
             }
         }
         viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
-                
-                // MARK: - 현재 위치 정보와 연동
-              
-//        viewModel.currentCountry = LocationHandler.shared.getCurrentCounty()
-//        viewModel.currentLocation = LocationHandler.shared.getCurrentLocation()
-        viewModel.currentCountry = .japan
-        viewModel.currentLocation = "일본 도쿄"
-        viewModel.country = viewModel.currentCountry
-        viewModel.locationExpression = viewModel.currentLocation
-        viewModel.currency = viewModel.currentCountry.relatedCurrencyArray.first ?? .usd
         
         if viewModel.currentCountry == .usa {
             viewModel.currencyCandidateArray = [.usd, .krw]
@@ -140,8 +158,9 @@ struct ManualRecordView: View {
         if viewModel.payAmount == -1 || viewModel.currency == .unknown {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
+            viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
         }
+        viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
     private var titleBlockView: some View {
@@ -186,12 +205,12 @@ struct ManualRecordView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         ZStack {
-                            Text(viewModel.payAmountString == "" ? "  -  " : viewModel.payAmountString)
+                            Text(viewModel.visiblePayAmount == "" ? "  -  " : viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .font(.display4)
                                 .hidden()
                             
-                            TextField(" - ", text: $viewModel.payAmountString)
+                            TextField(" - ", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .foregroundStyle(.black)
                                 .font(.display4)
@@ -276,7 +295,7 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray100)
                             .layoutPriority(-1)
                         
-                        TextField("-", text: $viewModel.infoString) // TextView로 고치기
+                        TextField("-", text: $viewModel.visibleInfo)
                             .lineLimit(nil)
                             .foregroundStyle(.black)
                             .font(.body3)
@@ -532,13 +551,13 @@ struct ManualRecordView: View {
                                     .padding(.vertical, 6)
                                     .hidden()
                                 
-                                TextField("╋", text: $viewModel.newNameString) {
+                                TextField("╋", text: $viewModel.visibleNewNameOfParticipant) {
                                     print("asdfasdf")
-                                    if viewModel.newNameString.count > 0 {
-                                        viewModel.additionalParticipantTupleArray.append((viewModel.newNameString, true))
+                                    if viewModel.visibleNewNameOfParticipant.count > 0 {
+                                        viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
                                     }
                                     DispatchQueue.main.async {
-                                        viewModel.newNameString = ""
+                                        viewModel.visibleNewNameOfParticipant = ""
                                     }
                                 }
                                 .lineLimit(1)
@@ -611,7 +630,8 @@ struct ManualRecordView: View {
                                     .strokeBorder(.gray200, lineWidth: 1.0)
                             }
                             .frame(width: 24, height: 24)
-                            Text(viewModel.locationExpression)
+                          
+                            Text(viewModel.countryExpression + " " + viewModel.locationExpression)
                                 .foregroundStyle(.black)
                                 .font(.subhead2_2)
                         }
