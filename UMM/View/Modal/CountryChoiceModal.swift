@@ -12,10 +12,71 @@ struct CountryChoiceModal: View {
     let countryArray: [Country]
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color(.white)
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                    .frame(height: 32)
+                titleView
+                Spacer()
+                    .frame(height: 24)
+                countryArrayView
+            }
+        }
+    }
+    
+    private var titleView: some View {
+        HStack {
+            Spacer()
+                .frame(width: 20)
+            Text("지출 위치")
+                .foregroundStyle(.black)
+                .font(.display1)
+            Spacer()
+        }
+    }
+    
+    private var countryArrayView: some View {
+        HStack(spacing: 0) {
+            Spacer()
+                .frame(width: 20)
+            VStack {
+                ForEach(countryArray, id: \.self) { country in
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundStyle(.gray100)
+                            .layoutPriority(-1)
+                            .opacity(chosenCountry == country ? 1.0 : 0.0000001)
+                        
+                        HStack {
+                            Image(country.flagImageString)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
+                                .padding(.vertical, 13)
+                            
+                            Text(country.title)
+                                .foregroundStyle(.black)
+                                .font(.subhead3_2)
+                                .padding(.vertical, 16)
+                            
+                            Spacer()
+                        }
+                    }
+                    .onTapGesture {
+                        chosenCountry = country
+                    }
+                }
+            }
+            Spacer()
+                .frame(width: 20)
+        }
     }
 }
 
 #Preview {
-    CountryChoiceModal()
+    CountryChoiceModal(chosenCountry: .constant(.usa), countryArray: [.china, .usa, .japan, .france])
 }
+

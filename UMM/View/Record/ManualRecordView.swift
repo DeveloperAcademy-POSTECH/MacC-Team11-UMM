@@ -603,7 +603,7 @@ struct ManualRecordView: View {
                         
                         HStack(spacing: 8) {
                             ZStack {
-                                Image(getFlagImage(for: Int64(viewModel.country.rawValue))) // 이뉴머레이션 못 쓰면 수정해야 함
+                                Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
                                     .resizable()
                                     .scaledToFit()
                                 
