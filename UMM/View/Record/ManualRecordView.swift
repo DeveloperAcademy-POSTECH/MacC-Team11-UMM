@@ -51,11 +51,11 @@ struct ManualRecordView: View {
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-            TravelChoiceModal(viewModel: viewModel)
+            TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.categoryChoiceModalIsShown) {
-            CategoryChoiceModal(viewModel: viewModel)
+            CategoryChoiceModal(chosenCategory: $viewModel.category)
                 .presentationDetents([.height(289 - 34)])
         }
         .onTapGesture {

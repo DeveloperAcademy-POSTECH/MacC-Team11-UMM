@@ -26,7 +26,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, CategoryChoiceModalUsable {
+class ManualRecordViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let handler = ExchangeRateHandler.shared
@@ -211,14 +211,4 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
     @Published var addingParticipant = false
-    
-    // MARK: - 프로퍼티 관리
-    
-    func setChosenTravel(as travel: Travel) {
-        chosenTravel = travel
-    }
-    
-    func setCategory(as category: ExpenseInfoCategory) {
-        self.category = category
-    }
 }

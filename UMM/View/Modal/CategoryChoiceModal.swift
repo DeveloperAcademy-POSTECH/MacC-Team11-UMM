@@ -10,8 +10,7 @@ import Foundation
 import SwiftUI
 
 struct CategoryChoiceModal: View {
-    @ObservedObject private var redrawer = Redrawer()
-    var viewModel: CategoryChoiceModalUsable
+    @Binding var chosenCategory: ExpenseInfoCategory
     
     var body: some View {
         ZStack {
@@ -53,7 +52,7 @@ struct CategoryChoiceModal: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundStyle(.gray100)
-                                .opacity(viewModel.category == category ? 1.0 : 0.0000001)
+                                .opacity(chosenCategory == category ? 1.0 : 0.0000001)
                                 .layoutPriority(-1)
                             
                             VStack(spacing: 8) {
@@ -69,8 +68,7 @@ struct CategoryChoiceModal: View {
                             .frame(maxWidth: .infinity)
                         }
                         .onTapGesture {
-                            viewModel.setCategory(as: category)
-                            redrawer.redraw()
+                            chosenCategory = category
                         }
                     }
                 }
@@ -81,7 +79,7 @@ struct CategoryChoiceModal: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundStyle(.gray100)
-                                .opacity(viewModel.category == category ? 1.0 : 0.0000001)
+                                .opacity(chosenCategory == category ? 1.0 : 0.0000001)
                                 .layoutPriority(-1)
                             
                             VStack(spacing: 8) {
@@ -97,8 +95,7 @@ struct CategoryChoiceModal: View {
                             .frame(maxWidth: .infinity)
                         }
                         .onTapGesture {
-                            viewModel.setCategory(as: category)
-                            redrawer.redraw()
+                            chosenCategory = category
                         }
                     }
                     Rectangle()
@@ -114,5 +111,5 @@ struct CategoryChoiceModal: View {
     }
 }
 #Preview {
-    CategoryChoiceModal(viewModel: ManualRecordViewModel())
+    CategoryChoiceModal(chosenCategory: .constant(.tour))
 }

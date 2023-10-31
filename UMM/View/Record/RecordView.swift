@@ -64,7 +64,7 @@ struct RecordView: View {
                 viewModel.needToFill = true
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-                TravelChoiceModal(viewModel: viewModel)
+                TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                     .presentationDetents([.height(289 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
