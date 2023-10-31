@@ -16,9 +16,8 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                print("ManualRecordViewModel | adsf: \(String(describing: placemark.isoCountryCode))")
-                self.parent?.country = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
-                self.parent?.locationExpression = "\(placemark.country ?? "일본") \(placemark.locality ?? "오사카")"
+                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.currentLocation = "\(placemark.locality ?? "")"
             } else {
                 print("ERROR: \(String(describing: error?.localizedDescription))")
             }
@@ -54,7 +53,7 @@ class ManualRecordViewModel: ObservableObject {
     
     // MARK: - in-string property
     
-    @Published var payAmount: Double = -1 { // passive
+    var payAmount: Double = -1 { // passive
         didSet {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
@@ -63,24 +62,34 @@ class ManualRecordViewModel: ObservableObject {
             }
         }
     }
-    @Published var payAmountString = "" {
+    @Published var visiblePayAmount: String = "" {
         didSet {
-            if payAmountString == "" {
+            var tempVisiblePayAmount = visiblePayAmount.filter { [.arabicNumeric, .arabicDot].contains($0.getCharacterForm()) }
+            if let dotIndex = tempVisiblePayAmount.firstIndex(of: ".") {
+                if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
+                    tempVisiblePayAmount = String(tempVisiblePayAmount[..<twoMovesIndex])
+                }
+            }
+            if visiblePayAmount != tempVisiblePayAmount {
+                visiblePayAmount = tempVisiblePayAmount
+            }
+            
+            if visiblePayAmount == "" {
                 payAmount = -1
             } else {
-                payAmount = Double(payAmountString) ?? -1
+                payAmount = Double(visiblePayAmount) ?? -1
             }
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
 
-    @Published var info: String? // passive
-    @Published var infoString: String = "" {
+    var info: String? // passive
+    @Published var visibleInfo: String = "" {
         didSet {
-            if infoString == "" {
+            if visibleInfo == "" {
                 info = nil
             } else {
-                info = infoString
+                info = visibleInfo
             }
         }
     }
@@ -127,7 +136,8 @@ class ManualRecordViewModel: ObservableObject {
 
     @Published var country: Country = .japan {
         didSet {
-            locationExpression = "\(placemark?.country ?? "일본") \(placemark?.locality ?? "오사카")"
+            countryExpression = "\(country.title)"
+            locationExpression = ""
 
             if country == .usa {
                 currencyCandidateArray = [.usd, .krw]
@@ -150,7 +160,8 @@ class ManualRecordViewModel: ObservableObject {
             }
         }
     }
-    @Published var locationExpression: String = "" // passive
+    @Published var countryExpression: String = "" // passive
+    @Published var locationExpression: String = ""
     var currentCountry: Country = .unknown
     var currentLocation: String = ""
     @Published var otherCountryCandidateArray: [Country] = [] // passive
@@ -165,7 +176,9 @@ class ManualRecordViewModel: ObservableObject {
         }
     }
     @Published var currencyCandidateArray: [Currency] = []
-    @Published var newNameString: String = ""
+    @Published var visibleNewNameOfParticipant: String = ""
+    
+    var soundRecordFileName: URL?
     
     init() {
         locationManager = CLLocationManager()
