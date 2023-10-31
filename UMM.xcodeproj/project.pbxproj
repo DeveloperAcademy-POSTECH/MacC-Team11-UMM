@@ -39,6 +39,8 @@
 		57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */; };
 		57EA42202ADE38EE006CA587 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EA421F2ADE38EE006CA587 /* Country.swift */; };
 		C157600C2AEACADC0089FFE5 /* TravelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */; };
+		C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */ = {isa = PBXBuildFile; fileRef = C15760172AEE782C0089FFE5 /* CountryList.csv */; };
+		C157601A2AEEC0880089FFE5 /* parseCoutryDataFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15760192AEEC0880089FFE5 /* parseCoutryDataFile.swift */; };
 		C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550512AD54FB000A61BE5 /* TravelListView.swift */; };
 		C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550532AD54FC900A61BE5 /* AddTravelView.swift */; };
 		C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */; };
@@ -119,6 +121,8 @@
 		57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		57EA421F2ADE38EE006CA587 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelDetailViewModel.swift; sourceTree = "<group>"; };
+		C15760172AEE782C0089FFE5 /* CountryList.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CountryList.csv; sourceTree = "<group>"; };
+		C15760192AEEC0880089FFE5 /* parseCoutryDataFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = parseCoutryDataFile.swift; sourceTree = "<group>"; };
 		C17550512AD54FB000A61BE5 /* TravelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListView.swift; sourceTree = "<group>"; };
 		C17550532AD54FC900A61BE5 /* AddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelView.swift; sourceTree = "<group>"; };
 		C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelViewModel.swift; sourceTree = "<group>"; };
@@ -244,6 +248,7 @@
 		578858262ADBBED5001B82FA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C15760172AEE782C0089FFE5 /* CountryList.csv */,
 				57C41DFB2AD4F1EB00345253 /* Persistence.swift */,
 				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
 				57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */,
@@ -409,6 +414,7 @@
 				E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */,
 				E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */,
 				E23357A72AE2B42300E17CFF /* dateFormatter.swift */,
+				C15760192AEEC0880089FFE5 /* parseCoutryDataFile.swift */,
 			);
 			path = Handler;
 			sourceTree = "<group>";
@@ -479,6 +485,7 @@
 				C17966042ADD66F90036E866 /* Pretendard-SemiBold.otf in Resources */,
 				C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */,
 				C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */,
+				C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */,
 				C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */,
 				C17966012ADD66F90036E866 /* Pretendard-ExtraLight.otf in Resources */,
 				C17966072ADD66F90036E866 /* Pretendard-Regular.otf in Resources */,
@@ -532,6 +539,7 @@
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
 				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
 				C190C20C2ADCD47E0099EE3A /* ButtonTheme.swift in Sources */,
+				C157601A2AEEC0880089FFE5 /* parseCoutryDataFile.swift in Sources */,
 				C19ACF7C2AEA341400D950C9 /* TravelDetailView.swift in Sources */,
 				E2D5C0622ADD923000907501 /* TodayExpenseView.swift in Sources */,
 				C19AFAF22AE117430037A5F5 /* UpcomingTravelView.swift in Sources */,

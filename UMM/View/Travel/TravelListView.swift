@@ -13,9 +13,11 @@ struct TravelListView: View {
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
     @State var nowTravel: [Travel]?
-    @State private var travelCount: Int = 0
     @State var defaultTravel: [Travel]?
+    @State var savedExpenses: [Expense]?
+    @State private var travelCount: Int = 0
     @State private var currentPage = 0
+    @State var flagImageName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -35,9 +37,11 @@ struct TravelListView: View {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
+                    viewModel.fetchExpense()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
+                    saveFlagImagesToUserDefaults()
                     if handler.loadExchangeRatesFromUserDefaults() == nil {
                         handler.fetchAndSaveExchangeRates()
                     }
@@ -143,6 +147,21 @@ struct TravelListView: View {
                                             .cornerRadius(10)
                                         
                                         VStack(alignment: .leading) {
+                                            
+                                            HStack {
+                                                Spacer()
+                                                
+                                                //                                                Image("\(flagImageName)")
+                                                //                                                    .resizable()
+                                                //                                                    .frame(width: 24, height: 24)
+                                                ForEach(flagImageName, id: \.self) { imageName in
+                                                    Image(imageName)
+                                                        .resizable()
+                                                        .frame(width: 24, height: 24)
+                                                }
+                                            }
+                                            .padding(16)
+                                            
                                             Spacer()
                                             
                                             Group {
@@ -188,6 +207,20 @@ struct TravelListView: View {
                                         .padding(.bottom, 16)
                                         .frame(width: 350, height: 137)
                                         
+                                    }
+                                    .onAppear {
+                                        // ❌ 복수개 처리 필요함 !!! ❌
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                        
+                                        if let savedExpenses = savedExpenses {
+                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                return viewModel.getCountryForExpense(expense)
+                                            }
+                                            let uniqueCountryValues = Array(Set(countryValues))
+                                            self.flagImageName = uniqueCountryValues.map { countryValue in
+                                                return getFlagImage(for: countryValue)
+                                            }
+                                        }
                                     }
                                 })
                             }
