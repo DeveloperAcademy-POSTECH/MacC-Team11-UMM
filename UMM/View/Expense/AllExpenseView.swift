@@ -126,7 +126,7 @@ struct AllExpenseView: View {
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
         let totalSum = currencies.reduce(0) { total, currency in
             let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(currency)))
+            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
             return total + sum * (rate ?? -1)
         }
         
@@ -242,7 +242,7 @@ struct AllExpenseView: View {
         
         let sumArray = filteredExpenseArrayArray.map { expenseArray in
             expenseArray.reduce(0) {
-                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int($1.currency))) ?? -1))
+                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1))
             }
         }
         

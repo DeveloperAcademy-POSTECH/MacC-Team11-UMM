@@ -108,7 +108,7 @@ struct AllExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int($1.currency))) ?? -1)}, to: 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -193,7 +193,7 @@ struct AllExpenseDetailView: View {
                                         .font(.subhead2_1)
                                         .padding(.leading, 3 )
                                 }
-                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(expense.currency))) ?? -1), to: 0))원)")
+                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -1), to: 0))원)")
                                     .font(.caption2)
                                     .foregroundStyle(.gray200)
                                     .padding(.top, 4 )

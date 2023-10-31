@@ -42,7 +42,10 @@ struct TravelListView: View {
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
                     saveFlagImagesToUserDefaults()
-                    handler.fetchAndSaveExchangeRates()
+                    let loadedData = handler.loadExchangeRatesFromUserDefaults()
+                    if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
+                        handler.fetchAndSaveExchangeRates()
+                    }
                     print("onAppear")
                 }
             }

@@ -11,6 +11,7 @@ struct ExchangeRate: Codable {
     let base_code: String
     let conversion_rates: [String: Double]
     let time_last_update_utc: String
+    let time_last_update_unix: Int
 }
 
 class ExchangeRateHandler {
@@ -64,5 +65,15 @@ class ExchangeRateHandler {
             return nil
         }
         return 1 / rate
+    }
+    
+    func isSameDate(_ dateInt: Int?) -> Bool {
+        guard let dateInt = dateInt else { return false }
+        let date = Date(timeIntervalSince1970: TimeInterval(dateInt))
+        let calendar = Calendar.current
+        let componentsToday = calendar.dateComponents([.year, .month, .day], from: Date())
+        let componentsDate = calendar.dateComponents([.year, .month, .day], from: date)
+                
+        return componentsToday == componentsDate
     }
 }

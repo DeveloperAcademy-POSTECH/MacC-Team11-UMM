@@ -92,7 +92,7 @@ enum Currency: Int {
         return currency.officialSymbol
     }
     
-    static func getCaseName(of rawValue: Int) -> String {
+    static func getCurrencyCodeName(of rawValue: Int) -> String {
         guard let currency = Currency(rawValue: rawValue) else { return "unknown" }
         return currency.name
     }

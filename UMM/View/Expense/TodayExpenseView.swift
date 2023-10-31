@@ -72,7 +72,7 @@ struct TodayExpenseView: View {
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             let totalSum = currencies.reduce(0) { total, currency in
                 let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-                let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCaseName(of: Int(currency)))
+                let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
                 return total + sum * (rate ?? -1)
             }
             
