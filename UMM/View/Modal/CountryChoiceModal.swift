@@ -110,5 +110,5 @@ struct CountryChoiceModal: View {
 }
 
 #Preview {
-    CountryChoiceModal(chosenCountry: .constant(.usa), countryArray: [.china, .usa, .japan, .france], currentCountry: .korea)
+    CountryChoiceModal(chosenCountry: .constant(.usa), countryIsModified: .constant(true), countryArray: [.china, .usa, .japan, .france], currentCountry: .korea)
 }
