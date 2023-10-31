@@ -97,7 +97,7 @@ struct ManualRecordView: View {
             if viewModel.payAmount == -1 || viewModel.currency == .unknown {
                 viewModel.payAmountInWon = -1
             } else {
-                viewModel.payAmountInWon = viewModel.payAmount * viewModel.currency.rate // ^^^
+                viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
             }
         }
     }
