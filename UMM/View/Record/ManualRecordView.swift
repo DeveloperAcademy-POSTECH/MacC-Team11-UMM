@@ -57,7 +57,11 @@ struct ManualRecordView: View {
             CategoryChoiceModal(viewModel: viewModel)
                 .presentationDetents([.height(289 - 34)])
         }
-        .onTapGesture {
+        .sheet(isPresented: $viewModel.countryChoiceModalIsShown) {
+            CountryChoiceModal(chosenCountry: $viewModel.country, countryArray: viewModel.otherCountryCandidateArray)
+                .presentationDetents([.height(289 - 34)])
+        }
+        .onTapGesture { // 키보드 내려가는 기능 정리하면서 수정하기 ^^^
             if viewModel.newNameString.count > 0 {
                 viewModel.additionalParticipantTupleArray.append((viewModel.newNameString, true))
             }
@@ -615,30 +619,15 @@ struct ManualRecordView: View {
                     
                     Spacer()
                     
-                    ZStack {
-                        Picker("국가", selection: $viewModel.country) {
-                            ForEach(viewModel.otherCountryCandidateArray, id: \.self) { country in
-                                HStack {
-                                    Image(getFlagImage(for: Int64(viewModel.country.rawValue))) // 이뉴머레이션 못 쓰면 수정해야 함
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 24, height: 24)
-                                    
-                                    Text(country.title)
-                                }
-                            }
-                            
-                            Image("manualRecordDownChevron")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 16, height: 16)
-                                .onTapGesture {
-                                    print("지출 위치 수정 버튼")
-                                }
+                    Image("manualRecordDownChevron")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .onTapGesture {
+                            print("지출 위치 수정 버튼")
+                            viewModel.countryChoiceModalIsShown = true
                         }
-                    }
                 }
-                
             }
             Spacer()
                 .frame(width: 20)
