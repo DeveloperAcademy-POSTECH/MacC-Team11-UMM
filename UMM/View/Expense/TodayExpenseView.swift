@@ -12,6 +12,7 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
+    let handler = ExchangeRateHandler.shared
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -21,14 +22,13 @@ struct TodayExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-
+            
             tabViewButton
             
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     datePicker
                     drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
-                    // dummyExpenseAddButton
                 }
             }
         }
@@ -37,8 +37,6 @@ struct TodayExpenseView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-//            expenseViewModel.selectedTravel = findCurrentTravel()
-            print("TodayExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
@@ -48,21 +46,6 @@ struct TodayExpenseView: View {
                 .presentationDetents([.height(289 - 34)])
         }
     }
-    
-//    private var travelPicker: some View {
-//        Picker("현재 여행", selection: $expenseViewModel.selectedTravel) {
-//            ForEach(dummyRecordViewModel.savedTravels, id: \.self) { travel in
-//                Text(travel.name ?? "no name").tag(travel as Travel?) // travel의 id가 선택지로
-//            }
-//        }
-//        .pickerStyle(MenuPickerStyle())
-//        .onReceive(expenseViewModel.$selectedTravel) { _ in
-//            DispatchQueue.main.async {
-//                expenseViewModel.filteredExpenses = expenseViewModel.getFilteredExpenses()
-//                expenseViewModel.groupedExpenses = Dictionary(grouping: expenseViewModel.filteredExpenses, by: { $0.country })
-//            }
-//        }
-//    }
     
     private var tabViewButton: some View {
         HStack(spacing: 0) {
@@ -86,8 +69,12 @@ struct TodayExpenseView: View {
         return ForEach(countryArray, id: \.self) { country in
             let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
             let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
-            let totalSum = expenseArray.reduce(0) { $0 + $1.payAmount }
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
+            let totalSum = currencies.reduce(0) { total, currency in
+                let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
+                return total + sum * (rate ?? -1)
+            }
             
             VStack(alignment: .leading, spacing: 0) {
                 // 국기 + 국가명
@@ -115,7 +102,7 @@ struct TodayExpenseView: View {
                             sumPaymentMethod: totalSum
                         )
                     } label: {
-                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 2))원")
+                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
                             .font(.display3)
                             .foregroundStyle(.black)
                             .padding(.top, 8)
@@ -127,7 +114,7 @@ struct TodayExpenseView: View {
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                         let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
+                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
                         
                         NavigationLink {
                             TodayExpenseDetailView(

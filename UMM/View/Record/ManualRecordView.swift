@@ -13,6 +13,7 @@ struct ManualRecordView: View {
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
+    let handler = ExchangeRateHandler.shared
 
     var body: some View {
         ZStack {
@@ -138,6 +139,23 @@ struct ManualRecordView: View {
         }
         viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
         
+        if viewModel.currentCountry == .usa {
+            viewModel.currencyCandidateArray = [.usd, .krw]
+        } else {
+            viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
+            if !viewModel.currencyCandidateArray.contains(.usd) {
+                viewModel.currencyCandidateArray.append(.usd)
+            }
+            if !viewModel.currencyCandidateArray.contains(.krw) {
+                viewModel.currencyCandidateArray.append(.krw)
+            }
+        }
+        
+        if viewModel.payAmount == -1 || viewModel.currency == .unknown {
+            viewModel.payAmountInWon = -1
+        } else {
+            viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
+        }
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
