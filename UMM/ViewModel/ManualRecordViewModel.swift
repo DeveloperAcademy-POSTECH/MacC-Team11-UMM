@@ -211,6 +211,7 @@ class ManualRecordViewModel: ObservableObject, TravelChoiceModalUsable, Category
     @Published var categoryChoiceModalIsShown = false
     @Published var countryChoiceModalIsShown = false
     @Published var addingParticipant = false
+    @Published var countryIsModified = false
     
     // MARK: - 프로퍼티 관리
     

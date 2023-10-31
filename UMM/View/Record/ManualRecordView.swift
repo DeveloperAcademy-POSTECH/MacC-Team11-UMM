@@ -58,7 +58,7 @@ struct ManualRecordView: View {
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.countryChoiceModalIsShown) {
-            CountryChoiceModal(chosenCountry: $viewModel.country, countryArray: viewModel.otherCountryCandidateArray)
+            CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
         }
         .onTapGesture { // 키보드 내려가는 기능 정리하면서 수정하기 ^^^
@@ -628,6 +628,7 @@ struct ManualRecordView: View {
                             viewModel.countryChoiceModalIsShown = true
                         }
                 }
+                
             }
             Spacer()
                 .frame(width: 20)
