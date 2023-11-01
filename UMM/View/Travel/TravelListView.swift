@@ -41,7 +41,7 @@ struct TravelListView: View {
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
-                    saveFlagImagesToUserDefaults()
+//                    saveFlagImagesToUserDefaults()
                     let loadedData = handler.loadExchangeRatesFromUserDefaults()
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
@@ -163,9 +163,6 @@ struct TravelListView: View {
                                             HStack {
                                                 Spacer()
                                                 
-                                                //                                                Image("\(flagImageName)")
-                                                //                                                    .resizable()
-                                                //                                                    .frame(width: 24, height: 24)
                                                 ForEach(flagImageName, id: \.self) { imageName in
                                                     Image(imageName)
                                                         .resizable()
@@ -221,7 +218,6 @@ struct TravelListView: View {
                                         
                                     }
                                     .onAppear {
-                                        // ❌ 복수개 처리 필요함 !!! ❌
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                         
                                         if let savedExpenses = savedExpenses {
@@ -229,9 +225,23 @@ struct TravelListView: View {
                                                 return viewModel.getCountryForExpense(expense)
                                             }
                                             let uniqueCountryValues = Array(Set(countryValues))
-                                            self.flagImageName = uniqueCountryValues.map { countryValue in
-                                                return getFlagImage(for: countryValue)
+                                            
+                                            var flagImageNames: [String] = []
+                                            for countryValue in uniqueCountryValues {
+                                                do {
+                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
+                                                    let result = try createCountryInfoDictionary(from: csvURL)
+                                                    if let flagString = result[Int(countryValue)]?.flagString {
+                                                        flagImageNames.append(flagString)
+                                                    } else {
+                                                        flagImageNames.append("DefaultFlag")
+                                                    }
+                                                } catch {
+                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                    flagImageNames.append("DefaultFlag")
+                                                }
                                             }
+                                            self.flagImageName = flagImageNames
                                         }
                                     }
                                 })
@@ -268,8 +278,6 @@ struct TravelListView: View {
     }
     
     private var tempTravelView: some View {
-        // Travel의 "Default" 라는 이름의 여행이 길이가 1이상이면 임시 기록이 존재함
-        // 뷰모델에서 Default이름 가진 여행 fetch 필요
         ZStack {
             if defaultTravel?.count == 0 {
                 
