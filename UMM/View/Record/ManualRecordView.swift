@@ -20,10 +20,9 @@ struct ManualRecordView: View {
         ZStack {
             Color(.white)
             VStack(spacing: 0) {
-                titleBlockView
                 ScrollView {
                     Spacer()
-                        .frame(height: 45)
+                        .frame(height: 107 - 9 + 45)
                     payAmountBlockView
                     Spacer()
                         .frame(height: 64)
@@ -33,15 +32,6 @@ struct ManualRecordView: View {
                         .padding(.vertical, 20)
                         .padding(.horizontal, 20)
                     notInStringPropertyBlockView
-                    
-//                    VStack {
-//                        Text("Address Information:")
-//                        Text("Name: \(viewModel.placemark?.name ?? "N/A")")
-//                        Text("Locality: \(viewModel.placemark?.locality ?? "N/A")")
-//                        Text("Administrative Area: \(viewModel.placemark?.administrativeArea ?? "N/A")")
-//                        Text("Country: \(viewModel.placemark?.country ?? "N/A")")
-//                    }
-                    
                     Spacer()
                         .frame(height: 150)
                 }
@@ -56,7 +46,30 @@ struct ManualRecordView: View {
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
+        .toolbarBackground(.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    viewModel.autoSaveTimer?.invalidate()
+                    viewModel.secondCounter = nil
+                    viewModel.backButtonAlertIsShown = true
+                    print("back button tapped")
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .imageScale(.large)
+                        .foregroundColor(Color.black)
+                }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("기록 완료")
+                    .foregroundStyle(.black)
+                    .font(.subhead2_1)
+            }
+        }
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
             TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 .presentationDetents([.height(289 - 34)])
@@ -68,6 +81,20 @@ struct ManualRecordView: View {
         .sheet(isPresented: $viewModel.countryChoiceModalIsShown) {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
+        }
+        .alert(Text("화면 전환 안내"), isPresented: $viewModel.backButtonAlertIsShown) {
+            Button {
+                viewModel.backButtonAlertIsShown = false
+            } label: {
+                Text("아니오")
+            }
+            Button {
+                dismiss()
+                viewModel.backButtonAlertIsShown = false
+            } label: {
+                Text("예")
+            }
+        } message: {Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아가시겠습니까?")
         }
         .onAppear {
             viewModel.getLocation()
@@ -144,7 +171,7 @@ struct ManualRecordView: View {
         
         if viewModel.recordButtonIsUsed {
             viewModel.payAmount = prevViewModel.payAmount
-            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
+            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount) // 소숫점 아래 없는 visiblePayAmount에 ".0" 더해지는 문제는 여기서 해결하기 ^^^
             viewModel.info = prevViewModel.info
             viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = prevViewModel.infoCategory

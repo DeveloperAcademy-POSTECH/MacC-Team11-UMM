@@ -186,6 +186,7 @@ class ManualRecordViewModel: ObservableObject {
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
     @Published var countryChoiceModalIsShown = false
+    @Published var backButtonAlertIsShown = false
     @Published var addingParticipant = false
     @Published var countryIsModified = false
     
