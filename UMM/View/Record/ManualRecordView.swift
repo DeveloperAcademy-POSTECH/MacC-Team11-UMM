@@ -300,6 +300,10 @@ struct ManualRecordView: View {
                                     Text(currency.title + " " + currency.officialSymbol)
                                 }
                             }
+                            .onTapGesture {
+                                viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
+                            }
                             
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
