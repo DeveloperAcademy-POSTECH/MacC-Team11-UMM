@@ -19,6 +19,30 @@ func parseCSV(contentsOf url: URL) throws -> [[String]] {
     return result
 }
 
+// MARK: 인덱스(국가순서)와 CountryInfo 구조체를 딕셔너리 형태로 만들기
+func createCountryInfoDictionary(from csvURL: URL) throws -> [Int: CountryInfo] {
+    let csvData = try parseCSV(contentsOf: csvURL)
+    var countryInfoDict: [Int: CountryInfo] = [:]
+    
+    for columns in csvData where columns.count >= 6 {
+        let index = Int(columns[0]) ?? 0
+        let englishName = columns[1].trimmingCharacters(in: .whitespacesAndNewlines)
+        let koreanName = columns[2].trimmingCharacters(in: .whitespacesAndNewlines)
+        let locationName = columns[3].trimmingCharacters(in: .whitespacesAndNewlines)
+        let flagImageName = columns[4].trimmingCharacters(in: .whitespacesAndNewlines)
+        let defaultImageName = columns[5].trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let countryInfo = CountryInfo(englishNm: englishName,
+                                      koreanNm: koreanName,
+                                      locationNm: locationName,
+                                      flagString: flagImageName,
+                                      defaultImageString: defaultImageName)
+        
+        countryInfoDict[index] = countryInfo
+    }
+    return countryInfoDict
+}
+
 // MARK: 인덱스(국가순서)와 국기 이미지 String값을 딕셔너리 형태로 만들기
 func createFlagImagesDictionary(from csvURL: URL) throws -> [Int64: String] {
     let csvData = try parseCSV(contentsOf: csvURL)

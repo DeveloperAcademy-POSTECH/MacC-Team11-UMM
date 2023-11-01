@@ -41,6 +41,7 @@
 		C157600C2AEACADC0089FFE5 /* TravelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */; };
 		C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */ = {isa = PBXBuildFile; fileRef = C15760172AEE782C0089FFE5 /* CountryList.csv */; };
 		C157601A2AEEC0880089FFE5 /* parseCoutryDataFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15760192AEEC0880089FFE5 /* parseCoutryDataFile.swift */; };
+		C157601E2AF1DD830089FFE5 /* CountryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C157601D2AF1DD830089FFE5 /* CountryInfo.swift */; };
 		C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550512AD54FB000A61BE5 /* TravelListView.swift */; };
 		C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550532AD54FC900A61BE5 /* AddTravelView.swift */; };
 		C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */; };
@@ -123,6 +124,7 @@
 		C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelDetailViewModel.swift; sourceTree = "<group>"; };
 		C15760172AEE782C0089FFE5 /* CountryList.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CountryList.csv; sourceTree = "<group>"; };
 		C15760192AEEC0880089FFE5 /* parseCoutryDataFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = parseCoutryDataFile.swift; sourceTree = "<group>"; };
+		C157601D2AF1DD830089FFE5 /* CountryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInfo.swift; sourceTree = "<group>"; };
 		C17550512AD54FB000A61BE5 /* TravelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelListView.swift; sourceTree = "<group>"; };
 		C17550532AD54FC900A61BE5 /* AddTravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelView.swift; sourceTree = "<group>"; };
 		C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelViewModel.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
 				57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */,
 				57A65D062AD7D4BE00131266 /* Enumeration */,
+				C157601D2AF1DD830089FFE5 /* CountryInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -526,6 +529,7 @@
 			files = (
 				C19AFAEA2AE00A920037A5F5 /* NavigationUtils.swift in Sources */,
 				57EA42202ADE38EE006CA587 /* Country.swift in Sources */,
+				C157601E2AF1DD830089FFE5 /* CountryInfo.swift in Sources */,
 				572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */,
 				E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */,
 				57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */,
@@ -724,7 +728,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = XF4GNZL7MP;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -763,7 +767,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = XF4GNZL7MP;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
