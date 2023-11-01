@@ -614,49 +614,87 @@ struct ManualRecordView: View {
                             print("지출 일시 수정 버튼")
                         }
                 }
-                HStack(spacing: 0) {
-                    ZStack(alignment: .leading) {
-                        Spacer()
-                            .frame(width: 116, height: 1)
-                        Text("지출 위치")
-                            .foregroundStyle(.gray300)
-                            .font(.caption2)
-                    }
-                    ZStack {
-                        // 높이 설정용 히든 뷰
-                        Text("금")
-                            .lineLimit(1)
-                            .font(.subhead2_2)
-                            .padding(.vertical, 6)
-                            .hidden()
-                        
-                        HStack(spacing: 8) {
-                            ZStack {
-                                Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
-                                    .resizable()
-                                    .scaledToFit()
-                                
-                                Circle()
-                                    .strokeBorder(.gray200, lineWidth: 1.0)
-                            }
-                            .frame(width: 24, height: 24)
-                          
-                            Text(viewModel.countryExpression + " " + viewModel.locationExpression)
-                                .foregroundStyle(.black)
+                VStack(spacing: 10) {
+                    HStack(spacing: 0) {
+                        ZStack(alignment: .leading) {
+                            Spacer()
+                                .frame(width: 116, height: 1)
+                            Text("지출 위치")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        }
+                        ZStack {
+                            // 높이 설정용 히든 뷰
+                            Text("금")
+                                .lineLimit(1)
                                 .font(.subhead2_2)
+                                .padding(.vertical, 6)
+                                .hidden()
+                            
+                            HStack(spacing: 8) {
+                                ZStack {
+                                    Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    Circle()
+                                        .strokeBorder(.gray200, lineWidth: 1.0)
+                                }
+                                .frame(width: 24, height: 24)
+                                
+                                Text(viewModel.countryExpression + " " + viewModel.locationExpression)
+                                    .foregroundStyle(.black)
+                                    .font(.subhead2_2)
+                            }
                         }
+                        
+                        Spacer()
+                        
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                            .onTapGesture {
+                                print("지출 위치 수정 버튼")
+                                viewModel.countryChoiceModalIsShown = true
+                            }
                     }
                     
-                    Spacer()
-                    
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("지출 위치 수정 버튼")
-                            viewModel.countryChoiceModalIsShown = true
+                    if viewModel.countryIsModified {
+                        HStack(spacing: 0) {
+                            ZStack(alignment: .leading) {
+                                Spacer()
+                                    .frame(width: 116, height: 1)
+                                
+                                Text(" ")
+                                    .foregroundStyle(.gray300)
+                                    .font(.caption2)
+                            }
+                            ZStack(alignment: .leading) {
+                                //                        높이 설정용 히든 뷰
+                                ZStack {
+                                    Text("금")
+                                        .foregroundStyle(.black)
+                                        .font(.subhead2_1)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 6)
+                                }
+                                .hidden()
+                                
+                                RoundedRectangle(cornerRadius: 6)
+                                    .foregroundStyle(.gray100)
+                                    .layoutPriority(-1)
+                                
+                                TextField("-", text: $viewModel.locationExpression)
+                                    .lineLimit(nil)
+                                    .foregroundStyle(.black)
+                                    .font(.body3)
+                                    .tint(.mainPink)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 6)
+                            }
                         }
+                    }
                 }
                 
             }

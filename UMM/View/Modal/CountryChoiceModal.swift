@@ -99,6 +99,7 @@ struct CountryChoiceModal: View {
                         }
                         .onTapGesture {
                             chosenCountry = currentCountry
+                            countryIsModified = true
                         }
                     }
                 }
