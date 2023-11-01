@@ -171,7 +171,15 @@ struct ManualRecordView: View {
         
         if viewModel.recordButtonIsUsed {
             viewModel.payAmount = prevViewModel.payAmount
-            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount) // 소숫점 아래 없는 visiblePayAmount에 ".0" 더해지는 문제는 여기서 해결하기 ^^^
+            if viewModel.payAmount == -1 {
+                viewModel.visiblePayAmount = ""
+            } else {
+                if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
+                    viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
+                } else {
+                    viewModel.visiblePayAmount = String(viewModel.payAmount)
+                }
+            }
             viewModel.info = prevViewModel.info
             viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = prevViewModel.infoCategory
