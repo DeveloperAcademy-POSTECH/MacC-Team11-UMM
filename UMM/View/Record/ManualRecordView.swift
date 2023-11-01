@@ -46,30 +46,10 @@ struct ManualRecordView: View {
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
         .toolbarBackground(.white, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    viewModel.autoSaveTimer?.invalidate()
-                    viewModel.secondCounter = nil
-                    viewModel.backButtonAlertIsShown = true
-                    print("back button tapped")
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .imageScale(.large)
-                        .foregroundColor(Color.black)
-                }
-            }
-            
-            ToolbarItem(placement: .principal) {
-                Text("기록 완료")
-                    .foregroundStyle(.black)
-                    .font(.subhead2_1)
-            }
-        }
+        .navigationTitle("기록 완료")
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
             TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 .presentationDetents([.height(289 - 34)])
@@ -234,38 +214,17 @@ struct ManualRecordView: View {
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
-    private var titleBlockView: some View {
-        ZStack {
-            Color(.white)
-                .layoutPriority(-1)
-            HStack(spacing: 0) {
-                Spacer()
-                    .frame(width: 20)
-                ZStack {
-                    HStack(spacing: 0) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image("manualRecordTitleLeftChevron")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                        }
-                        
-                        Spacer()
-                    }
-                    
-                    Text("기록 완료")
-                        .foregroundStyle(.black)
-                        .font(.subhead2_1)
-                }
-                
-                Spacer()
-                    .frame(width: 20)
-            }
+    private var backButtonView: some View {
+        Button {
+            viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
+            viewModel.backButtonAlertIsShown = true
+            print("back button tapped")
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
-        .padding(.top, 68)
-        .padding(.bottom, 15)
     }
     
     private var payAmountBlockView: some View {
