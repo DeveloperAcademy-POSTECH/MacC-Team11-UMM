@@ -132,6 +132,7 @@ struct ManualRecordView: View {
         }
         .onDisappear {
             viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
         }
     }
     
@@ -252,6 +253,10 @@ struct ManualRecordView: View {
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
+                                .onTapGesture {
+                                    viewModel.autoSaveTimer?.invalidate()
+                                    viewModel.secondCounter = nil
+                                }
                         }
                         
                         ZStack {
@@ -295,6 +300,7 @@ struct ManualRecordView: View {
                 Button {
                     print("소리 재생 버튼")
                     viewModel.autoSaveTimer?.invalidate()
+                    viewModel.secondCounter = nil
                 } label: {
                     Circle() // replace ^^^
                         .foregroundStyle(.gray200)
@@ -344,6 +350,10 @@ struct ManualRecordView: View {
                             .tint(.mainPink)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
+                            .onTapGesture {
+                                viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
+                            }
                     }
                 }
                 
@@ -383,6 +393,7 @@ struct ManualRecordView: View {
                         .onTapGesture {
                             print("카테고리 수정 버튼")
                             viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                             viewModel.categoryChoiceModalIsShown = true
                         }
                     
@@ -427,6 +438,7 @@ struct ManualRecordView: View {
                     .onTapGesture {
                         print("현금 선택 버튼")
                         viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .cash {
                             viewModel.paymentMethod = .unknown
                         } else {
@@ -467,6 +479,7 @@ struct ManualRecordView: View {
                     .onTapGesture {
                         print("카드 선택 버튼")
                         viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .card {
                             viewModel.paymentMethod = .unknown
                         } else {
@@ -519,6 +532,7 @@ struct ManualRecordView: View {
                         .onTapGesture {
                             print("여행 선택 버튼")
                             viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                             viewModel.travelChoiceModalIsShown = true
                         }
                     
@@ -534,7 +548,7 @@ struct ManualRecordView: View {
                     ScrollView(.horizontal) {
                         HStack(spacing: 6) {
                             if viewModel.participantTupleArray.count > 0 {
-                                ParticipantArrayView(participantTupleArray: $viewModel.participantTupleArray)
+                                ParticipantArrayView(viewModel: viewModel)
                             } else {
                                 EmptyView()
                             }
@@ -572,6 +586,7 @@ struct ManualRecordView: View {
                         .onTapGesture {
                             print("지출 일시 수정 버튼")
                             viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                         }
                 }
                 VStack(spacing: 10) {
@@ -624,6 +639,7 @@ struct ManualRecordView: View {
                             .onTapGesture {
                                 print("지출 위치 수정 버튼")
                                 viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
                                 viewModel.countryChoiceModalIsShown = true
                             }
                     }
@@ -660,6 +676,10 @@ struct ManualRecordView: View {
                                     .tint(.mainPink)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
+                                    .onTapGesture {
+                                        viewModel.autoSaveTimer?.invalidate()
+                                        viewModel.secondCounter = nil
+                                    }
                             }
                         }
                     }
@@ -711,28 +731,28 @@ struct ManualRecordView: View {
 }
 
 struct ParticipantArrayView: View {
-    @Binding var participantTupleArray: [(name: String, isOn: Bool)]
+    @ObservedObject var viewModel: ManualRecordViewModel
     
     let buttonCountInARow = 3
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            ForEach(0..<((participantTupleArray.count - 1) / buttonCountInARow + 1), id: \.self) { rowNum in
-                let diff = participantTupleArray.count - 1 - rowNum * buttonCountInARow
+            ForEach(0..<((viewModel.participantTupleArray.count - 1) / buttonCountInARow + 1), id: \.self) { rowNum in
+                let diff = viewModel.participantTupleArray.count - 1 - rowNum * buttonCountInARow
                 if diff == 0 {
                     HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
                     }
                 } else if diff == 1 {
                     HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow + 1)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 1)
                     }
                 } else {
                     HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow + 1)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, index: rowNum * buttonCountInARow + 2)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 1)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 2)
                     }
                 }
             }
@@ -741,12 +761,11 @@ struct ParticipantArrayView: View {
 }
 
 struct ParticipantToggleView: View {
-    
-    @Binding var participantTupleArray: [(name: String, isOn: Bool)]
+    @ObservedObject var viewModel: ManualRecordViewModel
     let index: Int
     
     var body: some View {
-        let tuple = participantTupleArray[index]
+        let tuple = viewModel.participantTupleArray[index]
         ZStack {
             RoundedRectangle(cornerRadius: 6)
                 .foregroundStyle(tuple.isOn ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
@@ -776,7 +795,9 @@ struct ParticipantToggleView: View {
         }
         .onTapGesture {
             print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
-            participantTupleArray[index].isOn.toggle()
+            viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
+            viewModel.participantTupleArray[index].isOn.toggle()
         }
     }
 }
