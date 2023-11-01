@@ -17,22 +17,18 @@ struct RecordView: View {
     @State private var isDetectingPress_showOnButton = false {
         didSet {
             if isDetectingPress_showOnButton {
-                print("isDetectingPress_showOnButton is now true")
                 withAnimation(.linear(duration: 0.01).delay(0.01)) {
                     isDetectingPress_letButtonBigger = true
                 }
-                print("isDetectingPress_letButtonBigger is now true")
             }
         }
     }
     @State private var isDetectingPress_letButtonBigger = false {
         didSet {
             if !isDetectingPress_letButtonBigger {
-                print("isDetectingPress_letButtonBigger is now false")
                 withAnimation(.linear(duration: 0.01).delay(recordButtonAnimationLength)) {
                     isDetectingPress_showOnButton = false
                 }
-                print("isDetectingPress_showOnButton is now false")
             }
         }
     }
@@ -61,7 +57,7 @@ struct RecordView: View {
             .ignoresSafeArea()
             .onAppear {
                 viewModel.resetInStringProperties()
-                viewModel.needToFill = true
+                viewModel.recordButtonIsUsed = true
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
@@ -76,7 +72,6 @@ struct RecordView: View {
     private var travelChoiceView: some View {
         Button {
             viewModel.travelChoiceModalIsShown = true
-            print("viewModel.travelChoiceModalIsShown = true")
         } label: {
             ZStack {
                 Capsule()
@@ -326,7 +321,7 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
-            viewModel.needToFill = false
+            viewModel.recordButtonIsUsed = false
             viewModel.manualRecordViewIsShown = true
         } label: {
             ZStack {
@@ -378,11 +373,10 @@ struct RecordView: View {
             } else if oldValue && !newValue {
                 // 녹음 끝
                 viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
-                print("녹음 끝")
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
 //                viewModel.stopRecording()
-                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+//                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
                     DispatchQueue.main.async {
                         viewModel.alertView_shortIsShown = true
@@ -398,7 +392,6 @@ struct RecordView: View {
                             viewModel.resetInStringProperties()
                         } else {
                             viewModel.manualRecordViewIsShown = true
-                            print("넘어간다 !!!")
                         }
                     }
                 }
@@ -416,7 +409,6 @@ struct RecordView: View {
                 case .second(true, nil):
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
-                    print("녹음 시작")
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
 //                    Task {
 //                        await viewModel.startRecording()

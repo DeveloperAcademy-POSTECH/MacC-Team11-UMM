@@ -28,7 +28,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
 class ManualRecordViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
-    let handler = ExchangeRateHandler.shared
+    let exchangeHandler = ExchangeRateHandler.shared
     
     // MARK: - 위치 정보
     private var locationManager: CLLocationManager?
@@ -58,7 +58,7 @@ class ManualRecordViewModel: ObservableObject {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
             }
         }
     }
@@ -128,8 +128,8 @@ class ManualRecordViewModel: ObservableObject {
     }
     @Published var travelArray: [Travel] = []
     
-    @Published var participantTupleArray: [(String, Bool)] = [("나", true)] // passive
-    @Published var additionalParticipantTupleArray: [(String, Bool)] = []
+    @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
+    @Published var additionalParticipantTupleArray: [(name: String, isOn: Bool)] = []
     
     @Published var payDate: Date = Date()
     var currentDate: Date = Date()
@@ -171,7 +171,7 @@ class ManualRecordViewModel: ObservableObject {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
             }
         }
     }
@@ -179,6 +179,20 @@ class ManualRecordViewModel: ObservableObject {
     @Published var visibleNewNameOfParticipant: String = ""
     
     var soundRecordFileName: URL?
+    
+    // MARK: - view state
+    
+    @Published var recordButtonIsUsed = false
+    @Published var travelChoiceModalIsShown = false
+    @Published var categoryChoiceModalIsShown = false
+    @Published var countryChoiceModalIsShown = false
+    @Published var addingParticipant = false
+    @Published var countryIsModified = false
+    
+    // MARK: - timer
+    
+    @Published var autoSaveTimer: Timer?
+    @Published var secondCounter: Int?
     
     init() {
         locationManager = CLLocationManager()
@@ -192,7 +206,7 @@ class ManualRecordViewModel: ObservableObject {
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country.rawValue)
         expense.currency = Int64(currency.rawValue)
-        expense.exchangeRate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1 // ^^^
+        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1 // ^^^
         expense.info = info
         expense.location = locationExpression
         expense.participantArray = (participantTupleArray + additionalParticipantTupleArray).filter { $0.1 == true }.map { $0.0 }
@@ -218,12 +232,4 @@ class ManualRecordViewModel: ObservableObject {
             print("error saving expense: \(error.localizedDescription)")
         }
     }
-    
-    // MARK: - view state
-    
-    @Published var travelChoiceModalIsShown = false
-    @Published var categoryChoiceModalIsShown = false
-    @Published var countryChoiceModalIsShown = false
-    @Published var addingParticipant = false
-    @Published var countryIsModified = false
 }
