@@ -51,7 +51,7 @@ final class RecordViewModel: ObservableObject {
     
     // view state
     @Published var recordButtonIsFocused = false
-    var needToFill = true
+    var recordButtonIsUsed = true
     
     // STT
     private let audioEngine = AVAudioEngine()

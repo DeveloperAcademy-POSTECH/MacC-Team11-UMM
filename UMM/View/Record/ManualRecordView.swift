@@ -13,16 +13,16 @@ struct ManualRecordView: View {
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
-    let handler = ExchangeRateHandler.shared
+    let exchangeHandler = ExchangeRateHandler.shared
+    let fraction0NumberFormatter = NumberFormatter()
 
     var body: some View {
         ZStack {
             Color(.white)
             VStack(spacing: 0) {
-                titleBlockView
                 ScrollView {
                     Spacer()
-                        .frame(height: 45)
+                        .frame(height: 107 - 9 + 45)
                     payAmountBlockView
                     Spacer()
                         .frame(height: 64)
@@ -32,24 +32,24 @@ struct ManualRecordView: View {
                         .padding(.vertical, 20)
                         .padding(.horizontal, 20)
                     notInStringPropertyBlockView
-                    
-//                    VStack {
-//                        Text("Address Information:")
-//                        Text("Name: \(viewModel.placemark?.name ?? "N/A")")
-//                        Text("Locality: \(viewModel.placemark?.locality ?? "N/A")")
-//                        Text("Administrative Area: \(viewModel.placemark?.administrativeArea ?? "N/A")")
-//                        Text("Country: \(viewModel.placemark?.country ?? "N/A")")
-//                    }
-                    
                     Spacer()
-                        .frame(height: 25)
+                        .frame(height: 150)
                 }
+            }
+            VStack(spacing: 0) {
+                Spacer()
+                autoSaveTextView
+                Spacer()
+                    .frame(height: 16)
                 saveButtonView
             }
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
-        .navigationBarBackButtonHidden()
+        .toolbarBackground(.white, for: .navigationBar)
+        .navigationTitle("기록 완료")
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
             TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 .presentationDetents([.height(289 - 34)])
@@ -62,13 +62,19 @@ struct ManualRecordView: View {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
         }
-        .onTapGesture {
-            if viewModel.visibleNewNameOfParticipant.count > 0 {
-                viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
+        .alert(Text("화면 전환 안내"), isPresented: $viewModel.backButtonAlertIsShown) {
+            Button {
+                viewModel.backButtonAlertIsShown = false
+            } label: {
+                Text("아니오")
             }
-            DispatchQueue.main.async {
-                viewModel.visibleNewNameOfParticipant = ""
+            Button {
+                dismiss()
+                viewModel.backButtonAlertIsShown = false
+            } label: {
+                Text("예")
             }
+        } message: {Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아가시겠습니까?")
         }
         .onAppear {
             viewModel.getLocation()
@@ -97,8 +103,43 @@ struct ManualRecordView: View {
             if viewModel.payAmount == -1 || viewModel.currency == .unknown {
                 viewModel.payAmountInWon = -1
             } else {
-                viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
+                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
             }
+            
+            // MARK: - NumberFormatter
+            
+            fraction0NumberFormatter.numberStyle = .decimal
+            fraction0NumberFormatter.maximumFractionDigits = 0
+            
+            // MARK: - timer
+            
+            if viewModel.recordButtonIsUsed && (viewModel.payAmount != -1 || viewModel.info != nil) {
+                viewModel.secondCounter = 8
+                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                    if let secondCounter = viewModel.secondCounter {
+                        if secondCounter > 1 {
+                            viewModel.secondCounter! -= 1
+                        } else {
+                            if viewModel.payAmount != -1 || viewModel.info != nil {
+                                viewModel.secondCounter = nil
+                                viewModel.save()
+                                if viewModel.chosenTravel != nil {
+                                    recordViewModel.setChosenTravel(as: viewModel.chosenTravel!)
+                                }
+                                self.dismiss()
+                                timer.invalidate()
+                            } else {
+                                viewModel.secondCounter = nil
+                                timer.invalidate()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .onDisappear {
+            viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
         }
     }
     
@@ -106,9 +147,19 @@ struct ManualRecordView: View {
         viewModel = ManualRecordViewModel()
         recordViewModel = prevViewModel
         
-        if prevViewModel.needToFill {
+        viewModel.recordButtonIsUsed = prevViewModel.recordButtonIsFocused
+        
+        if viewModel.recordButtonIsUsed {
             viewModel.payAmount = prevViewModel.payAmount
-            viewModel.visiblePayAmount = viewModel.payAmount == -1 ? "" : String(viewModel.payAmount)
+            if viewModel.payAmount == -1 {
+                viewModel.visiblePayAmount = ""
+            } else {
+                if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
+                    viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
+                } else {
+                    viewModel.visiblePayAmount = String(viewModel.payAmount)
+                }
+            }
             viewModel.info = prevViewModel.info
             viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = prevViewModel.infoCategory
@@ -158,43 +209,22 @@ struct ManualRecordView: View {
         if viewModel.payAmount == -1 || viewModel.currency == .unknown {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
+            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
         }
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
-    private var titleBlockView: some View {
-        ZStack {
-            Color(.white)
-                .layoutPriority(-1)
-            HStack(spacing: 0) {
-                Spacer()
-                    .frame(width: 20)
-                ZStack {
-                    HStack(spacing: 0) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image("manualRecordTitleLeftChevron")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                        }
-                        
-                        Spacer()
-                    }
-                    
-                    Text("기록 완료")
-                        .foregroundStyle(.black)
-                        .font(.subhead2_1)
-                }
-                
-                Spacer()
-                    .frame(width: 20)
-            }
+    private var backButtonView: some View {
+        Button {
+            viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
+            viewModel.backButtonAlertIsShown = true
+            print("back button tapped")
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
-        .padding(.top, 68)
-        .padding(.bottom, 15)
     }
     
     private var payAmountBlockView: some View {
@@ -217,6 +247,10 @@ struct ManualRecordView: View {
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
+                                .onTapGesture {
+                                    viewModel.autoSaveTimer?.invalidate()
+                                    viewModel.secondCounter = nil
+                                }
                         }
                         
                         ZStack {
@@ -225,12 +259,16 @@ struct ManualRecordView: View {
                                     Text(currency.title + " " + currency.officialSymbol)
                                 }
                             }
+                            .onTapGesture {
+                                viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
+                            }
                             
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
-                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol) // viewModel.currency에 연동하기 ^^^
+                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol)
                                     .foregroundStyle(.gray400)
                                     .font(.display2)
                                     .padding(.vertical, 4)
@@ -245,14 +283,22 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     } else {
-                        Text("(" + String(format: "%.2f", viewModel.payAmountInWon) + "원" + ")")
-                            .foregroundStyle(.gray300)
-                            .font(.caption2)
+                        if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmountInWon)) {
+                            Text("(" + formattedString + "원" + ")")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        } else {
+                            Text("( - 원)")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        }
                     }
                 }
                 Spacer()
                 Button {
                     print("소리 재생 버튼")
+                    viewModel.autoSaveTimer?.invalidate()
+                    viewModel.secondCounter = nil
                 } label: {
                     Circle() // replace ^^^
                         .foregroundStyle(.gray200)
@@ -302,17 +348,11 @@ struct ManualRecordView: View {
                             .tint(.mainPink)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
+                            .onTapGesture {
+                                viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
+                            }
                     }
-                    
-//                    Spacer()
-//                    Button {
-//                        print("소비 내역 수정 버튼")
-//                    } label: {
-//                        Image("manualRecordPencil")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 16, height: 16)
-//                    }
                 }
                 
                 HStack(spacing: 0) {
@@ -350,6 +390,8 @@ struct ManualRecordView: View {
                         .frame(width: 16, height: 16)
                         .onTapGesture {
                             print("카테고리 수정 버튼")
+                            viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                             viewModel.categoryChoiceModalIsShown = true
                         }
                     
@@ -393,6 +435,8 @@ struct ManualRecordView: View {
                     }
                     .onTapGesture {
                         print("현금 선택 버튼")
+                        viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .cash {
                             viewModel.paymentMethod = .unknown
                         } else {
@@ -432,6 +476,8 @@ struct ManualRecordView: View {
                     }
                     .onTapGesture {
                         print("카드 선택 버튼")
+                        viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .card {
                             viewModel.paymentMethod = .unknown
                         } else {
@@ -483,6 +529,8 @@ struct ManualRecordView: View {
                         .frame(width: 16, height: 16)
                         .onTapGesture {
                             print("여행 선택 버튼")
+                            viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                             viewModel.travelChoiceModalIsShown = true
                         }
                     
@@ -497,78 +545,11 @@ struct ManualRecordView: View {
                     }
                     ScrollView(.horizontal) {
                         HStack(spacing: 6) {
-                            ForEach(0..<(viewModel.participantTupleArray.count + viewModel.additionalParticipantTupleArray.count), id: \.self) { index in
-                                let isBasicParticipant = index < viewModel.participantTupleArray.count
-                                let tuple: (String, Bool) = isBasicParticipant ? viewModel.participantTupleArray[index] : viewModel.additionalParticipantTupleArray[index - viewModel.participantTupleArray.count]
-                                
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .foregroundStyle(tuple.1 == true ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                                        .layoutPriority(-1)
-                                    
-                                    // 높이 설정용 히든 뷰
-                                    Text("금")
-                                        .lineLimit(1)
-                                        .font(.subhead2_2)
-                                        .padding(.vertical, 6)
-                                        .hidden()
-                                    
-                                    HStack(spacing: 4) {
-                                        if tuple.0 == "나" {
-                                            Text("me")
-                                                .lineLimit(1)
-                                                .foregroundStyle(tuple.1 ? .gray200 : .gray300)
-                                                .font(.subhead2_1)
-                                        }
-                                        Text(tuple.0)
-                                            .lineLimit(1)
-                                            .foregroundStyle(tuple.1 ? .white : .gray300)
-                                            .font(.subhead2_2)
-                                    }
-                                    .padding(.vertical, 6)
-                                    .padding(.horizontal, 12)
-                                }
-                                .onTapGesture {
-                                    print("참여 인원(\(tuple.0)) 참여 여부 설정 버튼")
-                                    if isBasicParticipant {
-                                        viewModel.participantTupleArray[index].1.toggle()
-                                    } else {
-                                        viewModel.additionalParticipantTupleArray[index - viewModel.participantTupleArray.count].1.toggle()
-                                    }
-                                }
+                            if viewModel.participantTupleArray.count > 0 {
+                                ParticipantArrayView(viewModel: viewModel)
+                            } else {
+                                EmptyView()
                             }
-                            
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 6)
-                                    .foregroundStyle(.gray100)
-                                    .layoutPriority(-1)
-                                
-                                // 높이 설정용 히든 뷰
-                                Text("금")
-                                    .lineLimit(1)
-                                    .font(.subhead2_2)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 6)
-                                    .hidden()
-                                
-                                TextField("╋", text: $viewModel.visibleNewNameOfParticipant) {
-                                    print("asdfasdf")
-                                    if viewModel.visibleNewNameOfParticipant.count > 0 {
-                                        viewModel.additionalParticipantTupleArray.append((viewModel.visibleNewNameOfParticipant, true))
-                                    }
-                                    DispatchQueue.main.async {
-                                        viewModel.visibleNewNameOfParticipant = ""
-                                    }
-                                }
-                                .lineLimit(1)
-                                .foregroundStyle(.gray300)
-                                .font(.subhead2_2)
-                                .padding(.horizontal, 8)
-                                .tint(.mainPink)
-                            }
-                            
-                            Spacer()
-                                .frame(width: 30)
                         }
                     }
                     .scrollIndicators(.never)
@@ -602,51 +583,104 @@ struct ManualRecordView: View {
                         .frame(width: 16, height: 16)
                         .onTapGesture {
                             print("지출 일시 수정 버튼")
+                            viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
                         }
                 }
-                HStack(spacing: 0) {
-                    ZStack(alignment: .leading) {
-                        Spacer()
-                            .frame(width: 116, height: 1)
-                        Text("지출 위치")
-                            .foregroundStyle(.gray300)
-                            .font(.caption2)
-                    }
-                    ZStack {
-                        // 높이 설정용 히든 뷰
-                        Text("금")
-                            .lineLimit(1)
-                            .font(.subhead2_2)
-                            .padding(.vertical, 6)
-                            .hidden()
-                        
-                        HStack(spacing: 8) {
-                            ZStack {
-                                Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
-                                    .resizable()
-                                    .scaledToFit()
-                                
-                                Circle()
-                                    .strokeBorder(.gray200, lineWidth: 1.0)
-                            }
-                            .frame(width: 24, height: 24)
-                          
-                            Text(viewModel.countryExpression + " " + viewModel.locationExpression)
-                                .foregroundStyle(.black)
+                VStack(spacing: 10) {
+                    HStack(spacing: 0) {
+                        ZStack(alignment: .leading) {
+                            Spacer()
+                                .frame(width: 116, height: 1)
+                            Text("지출 위치")
+                                .foregroundStyle(.gray300)
+                                .font(.caption2)
+                        }
+                        ZStack {
+                            // 높이 설정용 히든 뷰
+                            Text("금")
+                                .lineLimit(1)
                                 .font(.subhead2_2)
+                                .padding(.vertical, 6)
+                                .hidden()
+                            
+                            HStack(spacing: 8) {
+                                ZStack {
+                                    Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    Circle()
+                                        .strokeBorder(.gray200, lineWidth: 1.0)
+                                }
+                                .frame(width: 24, height: 24)
+                                
+                                if !viewModel.countryIsModified {
+                                    Text(viewModel.countryExpression + " " + viewModel.locationExpression)
+                                        .foregroundStyle(.black)
+                                        .font(.subhead2_2)
+                                } else {
+                                    Text(viewModel.countryExpression)
+                                        .foregroundStyle(.black)
+                                        .font(.subhead2_2)
+                                }
+                                
+                            }
                         }
+                        
+                        Spacer()
+                        
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                            .onTapGesture {
+                                print("지출 위치 수정 버튼")
+                                viewModel.autoSaveTimer?.invalidate()
+                                viewModel.secondCounter = nil
+                                viewModel.countryChoiceModalIsShown = true
+                            }
                     }
                     
-                    Spacer()
-                    
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("지출 위치 수정 버튼")
-                            viewModel.countryChoiceModalIsShown = true
+                    if viewModel.countryIsModified {
+                        HStack(spacing: 0) {
+                            ZStack(alignment: .leading) {
+                                Spacer()
+                                    .frame(width: 116, height: 1)
+                                
+                                Text(" ")
+                                    .foregroundStyle(.gray300)
+                                    .font(.caption2)
+                            }
+                            ZStack(alignment: .leading) {
+                                //                        높이 설정용 히든 뷰
+                                ZStack {
+                                    Text("금")
+                                        .foregroundStyle(.black)
+                                        .font(.subhead2_1)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 6)
+                                }
+                                .hidden()
+                                
+                                RoundedRectangle(cornerRadius: 6)
+                                    .foregroundStyle(.gray100)
+                                    .layoutPriority(-1)
+                                
+                                TextField("-", text: $viewModel.locationExpression)
+                                    .lineLimit(nil)
+                                    .foregroundStyle(.black)
+                                    .font(.body3)
+                                    .tint(.mainPink)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 6)
+                                    .onTapGesture {
+                                        viewModel.autoSaveTimer?.invalidate()
+                                        viewModel.secondCounter = nil
+                                    }
+                            }
                         }
+                    }
                 }
                 
             }
@@ -655,11 +689,113 @@ struct ManualRecordView: View {
         }
     }
     
+    private var autoSaveTextView: some View {
+        Group {
+            if let secondCounter = viewModel.secondCounter {
+                if secondCounter > 0 && secondCounter <= 3 {
+                    Text("\(secondCounter)초 후 자동 저장")
+                        .foregroundStyle(.gray300)
+                        .font(.body2)
+                } else {
+                    EmptyView()
+                }
+            } else {
+                EmptyView()
+            }
+        }
+    }
+    
     private var saveButtonView: some View {
-        LargeButtonActive(title: "저장하기") {
-            viewModel.save()
-            recordViewModel.setChosenTravel(as: viewModel.chosenTravel ?? Travel())
-            dismiss()
+        ZStack {
+            LargeButtonActive(title: "저장하기") {
+                viewModel.save()
+                var defaultTravel = Travel()
+                do {
+                    defaultTravel = try viewContext.fetch(Travel.fetchRequest()).filter { $0.name == "Default" }.first ?? Travel()
+                } catch {
+                    print("error fetching default travel: \(error.localizedDescription)")
+                }
+                recordViewModel.setChosenTravel(as: viewModel.chosenTravel ?? defaultTravel)
+                dismiss()
+            }
+            .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
+            .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)
+            
+            LargeButtonUnactive(title: "저장하기") { }
+                .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 0.0000001 : 1)
+                .allowsHitTesting(!(viewModel.payAmount != -1 || viewModel.info != nil))
+        }
+    }
+}
+
+struct ParticipantArrayView: View {
+    @ObservedObject var viewModel: ManualRecordViewModel
+    
+    let buttonCountInARow = 3
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(0..<((viewModel.participantTupleArray.count - 1) / buttonCountInARow + 1), id: \.self) { rowNum in
+                let diff = viewModel.participantTupleArray.count - 1 - rowNum * buttonCountInARow
+                if diff == 0 {
+                    HStack(spacing: 6) {
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
+                    }
+                } else if diff == 1 {
+                    HStack(spacing: 6) {
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 1)
+                    }
+                } else {
+                    HStack(spacing: 6) {
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 1)
+                        ParticipantToggleView(viewModel: viewModel, index: rowNum * buttonCountInARow + 2)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct ParticipantToggleView: View {
+    @ObservedObject var viewModel: ManualRecordViewModel
+    let index: Int
+    
+    var body: some View {
+        let tuple = viewModel.participantTupleArray[index]
+        ZStack {
+            RoundedRectangle(cornerRadius: 6)
+                .foregroundStyle(tuple.isOn ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
+                .layoutPriority(-1)
+            
+            // 높이 설정용 히든 뷰
+            Text("금")
+                .lineLimit(1)
+                .font(.subhead2_2)
+                .padding(.vertical, 6)
+                .hidden()
+            
+            HStack(spacing: 4) {
+                if tuple.name == "나" {
+                    Text("me")
+                        .lineLimit(1)
+                        .foregroundStyle(tuple.isOn ? .gray200 : .gray300)
+                        .font(.subhead2_1)
+                }
+                Text(tuple.0)
+                    .lineLimit(1)
+                    .foregroundStyle(tuple.isOn ? .white : .gray300)
+                    .font(.subhead2_2)
+            }
+            .padding(.vertical, 6)
+            .padding(.horizontal, 12)
+        }
+        .onTapGesture {
+            print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
+            viewModel.autoSaveTimer?.invalidate()
+            viewModel.secondCounter = nil
+            viewModel.participantTupleArray[index].isOn.toggle()
         }
     }
 }
