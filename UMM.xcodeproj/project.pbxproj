@@ -15,6 +15,7 @@
 		572BE1EA2AE4BB3A005933E7 /* CategoryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */; };
 		572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */; };
 		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
+		57597A8A2AF096C2000D46A9 /* CountryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */; };
 		5760066B2ADD42D3006CD8DF /* CompleteRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */; };
 		5760066D2ADD42FA006CD8DF /* ManualRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */; };
 		5760066F2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5760066E2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift */; };
@@ -96,6 +97,7 @@
 		572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChoiceModal.swift; sourceTree = "<group>"; };
 		572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordViewModel.swift; sourceTree = "<group>"; };
 		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
+		57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryChoiceModal.swift; sourceTree = "<group>"; };
 		5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteRecordView.swift; sourceTree = "<group>"; };
 		5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordView.swift; sourceTree = "<group>"; };
 		5760066E2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceInRecordModal.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				5760066E2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift */,
 				572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */,
 				57CC20192AE551BE0034BD57 /* TravelChoiceModalBinding.swift */,
+				57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */,
 			);
 			path = Modal;
 			sourceTree = "<group>";
@@ -562,6 +565,7 @@
 				5760066F2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift in Sources */,
 				57A65D0A2AD7D4EB00131266 /* Array<CharacterForm>+Extension.swift in Sources */,
 				5785070E2AE5131B001C4FA1 /* View+Extension.swift in Sources */,
+				57597A8A2AF096C2000D46A9 /* CountryChoiceModal.swift in Sources */,
 				C19AFAE72ADFF1440037A5F5 /* CompleteAddTravelViewModel.swift in Sources */,
 				C17550592AD57B6500A61BE5 /* AddTravelViewModel.swift in Sources */,
 				5760066B2ADD42D3006CD8DF /* CompleteRecordView.swift in Sources */,
