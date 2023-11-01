@@ -50,15 +50,15 @@ struct TravelListView: View {
                 }
                 
                 // 확인 코드
-//                DispatchQueue.global().async {
-//                    do {
-//                        let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-//                        let result = try createCountryInfoDictionary(from: csvURL)
-//                        print("\(result[3]?.flagString)")
-//                    } catch {
-//                        print("Error creating flag images dictionary: \(error)")
-//                    }
-//                }
+                DispatchQueue.global().async {
+                    do {
+                        let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
+                        let result = try createCountryInfoDictionary(from: csvURL)
+                        print("\(result[3]?.flagString)")
+                    } catch {
+                        print("Error creating flag images dictionary: \(error)")
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
