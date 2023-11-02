@@ -43,7 +43,7 @@ struct TodayExpenseView: View {
             print("Grouped expenses count: \(expenseViewModel.groupedTodayExpenses.count)")
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
+            TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $expenseViewModel.selectedTravel)
                 .presentationDetents([.height(289 - 34)])
         }
     }

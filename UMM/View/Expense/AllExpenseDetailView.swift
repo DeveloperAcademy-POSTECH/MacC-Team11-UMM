@@ -17,6 +17,7 @@ struct AllExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
     let handler = ExchangeRateHandler.shared
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         
@@ -36,11 +37,13 @@ struct AllExpenseDetailView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            
+            expenseViewModel.selectedTravel = selectedTravel
             expenseViewModel.filteredAllExpenses = getFilteredExpenses()
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
             
-            print("AllExpenseDetailView: \(selectedCountry)")
+            print("AllExpenseDetailView | selectedTravel: \(String(describing: selectedTravel?.name))")
+            print("AllExpenseDetailView | selectedCountry: \(selectedCountry)")
+            print("AllExpenseDetailView | expenseViewModel.selectedTravel : \(String(describing: expenseViewModel.selectedTravel?.name))")
         }
     }
     
@@ -226,6 +229,10 @@ struct AllExpenseDetailView: View {
         }
         
         return filteredExpenses
+    }
+    
+    private func dismiss() {
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

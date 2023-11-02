@@ -21,11 +21,13 @@ class ExpenseViewModel: ObservableObject {
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
     @Published var selectedTravel: Travel? {
         didSet {
+            print("Travel changed to: \(String(describing: selectedTravel?.name))")
             self.fetchExpense()
             self.filteredTodayExpenses = self.getFilteredTodayExpenses()
             self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
             self.filteredAllExpenses = self.getFilteredAllExpenses()
-            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpenses, by: { $0.category })
+            self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
+            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
         }
     }
     @Published var selectedDate = Date()
@@ -34,10 +36,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedCountry: Int64 = -2 {
         didSet {
             print("Country changed to: \(selectedCountry)")
-            filteredAllExpenses = getFilteredAllExpenses()
-            filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: selectedCountry)
-            groupedAllExpenses = Dictionary(grouping: filteredAllExpenses, by: { $0.category })
-            indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
+            self.selectCountry(country: selectedCountry)
         }
     }
     @Published var selectedCategory: Int64 = 0
@@ -119,7 +118,6 @@ class ExpenseViewModel: ObservableObject {
     func getFilteredTodayExpenses() -> [Expense] {
         let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-        print("Filtered expenses count: \(filteredByDate.count)")
         return filteredByDate
     }
     
@@ -145,7 +143,7 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func filterExpensesByCountry(expenses: [Expense], country: Int64) -> [Expense] {
-        if country == -2 {
+        if country == Int64(-2) {
             return expenses
         } else {
             return expenses.filter { $0.country == country }
@@ -253,7 +251,7 @@ class ExpenseViewModel: ObservableObject {
     
     func selectCountry(country: Int64) {
         filteredAllExpenses = getFilteredAllExpenses()
-        filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: selectedCountry)
+        filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: country)
         groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
         indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
     }

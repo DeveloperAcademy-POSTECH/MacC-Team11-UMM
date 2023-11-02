@@ -36,12 +36,14 @@ struct AllExpenseView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
+            print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
+            print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
             expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
+            TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $expenseViewModel.selectedTravel)
                 .presentationDetents([.height(289 - 34)])
         }
     }
@@ -154,23 +156,7 @@ struct AllExpenseView: View {
     }
     
     private var drawExpensesByCategory: some View {
-        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedAllExpenses.keys)).sorted { $0 < $1 }
-        
-        // selectedCountry가 -2인 경우 전체 지출을 한 번만 그림
-        if expenseViewModel.selectedCountry == -2 {
-            let expenseArray = expenseViewModel.filteredAllExpenses
-            return AnyView(drawExpenseContent(for: -2, with: expenseArray))
-        } else {
-            // selectedCountry가 특정 국가인 경우 해당 국가의 지출을 그림
-            return AnyView(ForEach(countryArray, id: \.self) { country in
-                VStack {
-                    let expenseArray = getExpenseArray(for: country)
-                    if country == expenseViewModel.selectedCountry {
-                        drawExpenseContent(for: country, with: expenseArray)
-                    }
-                }
-            })
-        }
+        drawExpenseContent(for: expenseViewModel.selectedCountry, with: getExpenseArray(for: expenseViewModel.selectedCountry))
     }
     
     // 1. 나라별
@@ -276,7 +262,7 @@ struct BarGraph: View {
                 let item = data[index]
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
-                    width: (CGFloat(item.1 / totalSum) * totalWidth),
+                    width: (item.1 != 0 ? max(totalWidth * 0.01, CGFloat(item.1 / totalSum) * totalWidth) : 0),
                     isFirstElement: index == 0,
                     isLastElement: index == validDataCount - 1
                 )

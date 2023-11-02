@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TravelChoiceModalBinding: View {
     @ObservedObject private var redrawer = Redrawer()
-    @ObservedObject private var expenseViewModel = ExpenseViewModel()
+    @ObservedObject private var expenseViewModel: ExpenseViewModel
     
     @Binding var selectedTravel: Travel?
     var travelArray: [Travel]
@@ -29,7 +29,8 @@ struct TravelChoiceModalBinding: View {
         }
     }
     
-    init(selectedTravel: Binding<Travel?>) {
+    init(expenseViewModel: ExpenseViewModel, selectedTravel: Binding<Travel?>) {
+        self.expenseViewModel = expenseViewModel
         _selectedTravel = selectedTravel
         travelArray = [Travel]()
         do {
@@ -70,6 +71,7 @@ struct TravelChoiceModalBinding: View {
                         .onTapGesture {
                             selectedTravel = travel
                             expenseViewModel.selectedTravel = travel
+                            expenseViewModel.selectedCountry = Int64(-2)
                             redrawer.redraw()
                         }
                     Spacer()
