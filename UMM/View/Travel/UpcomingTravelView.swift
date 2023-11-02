@@ -96,7 +96,7 @@ struct UpcomingTravelView: View {
                                             
                                             var flagImageNames: [String] = []
                                             for countryValue in uniqueCountryValues {
-                                                let countryInfo = CountryInfoModel()
+                                                let countryInfo = CountryInfoModel.shared
                                                 if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
                                                     flagImageNames.append(flagString)
                                                 } else {
@@ -192,7 +192,7 @@ struct UpcomingTravelView: View {
                                                             
                                                             var flagImageNames: [String] = []
                                                             for countryValue in uniqueCountryValues {
-                                                                let countryInfo = CountryInfoModel()
+                                                                let countryInfo = CountryInfoModel.shared
                                                                 if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
                                                                     flagImageNames.append(flagString)
                                                                 } else {
