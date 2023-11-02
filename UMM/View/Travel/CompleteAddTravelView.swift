@@ -10,6 +10,7 @@ import SwiftUI
 struct CompleteAddTravelView: View {
     
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var mainVM: MainViewModel
     @ObservedObject var viewModel = CompleteAddTravelViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
     @Binding var travelID: UUID
@@ -38,6 +39,8 @@ struct CompleteAddTravelView: View {
                 
                 MediumButtonActive(title: "기록하기", action: {
                     NavigationUtil.popToRootView()
+                    mainVM.navigationToRecordView()
+                    
                 })
             }
         }

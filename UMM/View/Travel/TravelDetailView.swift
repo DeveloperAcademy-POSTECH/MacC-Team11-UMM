@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TravelDetailView: View {
     
+    @EnvironmentObject var mainVM: MainViewModel
     @State var travelName: String
     @State var startDate: Date
     @State var endDate: Date
@@ -54,11 +55,12 @@ struct TravelDetailView: View {
                     HStack {
                         MediumButtonUnactive(title: "가계부 보기", action: {
                             // 선택값 초기화
-                            NavigationUtil.popToRootView()
+                            mainVM.navigationToExpenseView()
                         })
                         
                         MediumButtonActive(title: "지출 기록하기", action: {
-                            NavigationUtil.popToRootView()
+                            mainVM.navigationToRecordView()
+                            
                         })
                     }
                 }
