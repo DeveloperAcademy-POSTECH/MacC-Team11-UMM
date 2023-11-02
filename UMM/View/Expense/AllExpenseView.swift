@@ -23,9 +23,12 @@ struct AllExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             tabViewButton
+            countryPicker
+            allExpenseSummaryTotal
+            allExpenseSummaryByCurrency
+            allExpenseBarGraph
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    countryPicker
                     drawExpensesByCategory
                 }
             }
@@ -35,10 +38,7 @@ struct AllExpenseView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            print("AllExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
-            
-            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
-            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
+            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
             TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
@@ -47,6 +47,62 @@ struct AllExpenseView: View {
     }
     
     // MARK: - 뷰
+    
+      var allExpenseSummaryTotal: some View {
+          let totalSum: Double = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
+              let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
+              return total + expense.payAmount * (rate ?? -1)
+          }
+          return NavigationLink {
+              AllExpenseDetailView(
+                  selectedTravel: expenseViewModel.selectedTravel,
+                  selectedCategory: -2,
+                  selectedCountry: expenseViewModel.selectedCountry,
+                  selectedPaymentMethod: -2
+              )
+          } label: {
+              HStack(spacing: 0) {
+                  Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                      .font(.display4)
+                      .foregroundStyle(.black)
+                  Image(systemName: "chevron.right")
+                      .font(.system(size: 24))
+                      .foregroundStyle(.gray200)
+                      .padding(.leading, 16)
+              }
+              .padding(.top, 32)
+          }
+      }
+
+      var allExpenseSummaryByCurrency: some View {
+          let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
+          return ScrollView(.horizontal, showsIndicators: false) {
+              LazyHStack(spacing: 0) {
+                  ForEach(currencies.indices, id: \.self) { idx in
+                      let currency = currencies[idx]
+                      let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                      
+                      Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
+                          .font(.caption2)
+                          .foregroundStyle(.gray300)
+                      if idx != currencies.count - 1 {
+                          Circle()
+                              .frame(width: 3, height: 3)
+                              .foregroundStyle(.gray300)
+                              .padding(.horizontal, 3)
+                      }
+                  }
+              }
+              .padding(.top, 10)
+          }
+      }
+
+      var allExpenseBarGraph: some View {
+          let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
+          return BarGraph(data: indexedSumArrayInPayAmountOrder)
+              .padding(.top, 22)
+      }
+    
     private var tabViewButton: some View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
@@ -67,8 +123,7 @@ struct AllExpenseView: View {
                     Button(action: {
                         DispatchQueue.main.async {
                             expenseViewModel.selectedCountry = Int64(country)
-                            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
-                            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
+                            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
                         }
                     }, label: {
                         Text("\(Country.titleFor(rawValue: Int(country)))")
@@ -92,7 +147,7 @@ struct AllExpenseView: View {
     
     private func getExpenseArray(for country: Int64) -> [Expense] {
         if country == expenseViewModel.selectedCountry {
-            return expenseViewModel.filteredAllExpenses.filter { $0.country == country }
+            return expenseViewModel.filteredAllExpensesByCountry
         } else {
             return expenseViewModel.filteredAllExpenses
         }
@@ -121,67 +176,12 @@ struct AllExpenseView: View {
     // 1. 나라별
     // 1-1. 항목별
     private func drawExpenseContent(for country: Int64, with expenses: [Expense]) -> some View {
-        let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
-        let indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: expenses)
+        let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenses)
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
-        let totalSum = currencies.reduce(0) { total, currency in
-            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
-            return total + sum * (rate ?? -1)
-        }
         
-        // allExpenseSummary: 총합
         return VStack(alignment: .leading, spacing: 0) {
-            NavigationLink {
-                AllExpenseDetailView(
-                    selectedTravel: expenseViewModel.selectedTravel,
-                    selectedCategory: -2,
-                    selectedCountry: expenseViewModel.selectedCountry,
-                    selectedPaymentMethod: -2
-                )
-            } label: {
-                HStack(spacing: 0) {
-                    Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                        .font(.display4)
-                        .foregroundStyle(.black)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 24))
-                        .foregroundStyle(.gray200)
-                        .padding(.leading, 16)
-                }
-                .padding(.top, 32)
-            }
-            
-            // allExpenseSummary: 화폐별
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 0) {
-                    ForEach(currencies.indices, id: \.self) { idx in
-                        let currency = currencies[idx]
-                        let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount } // 결제 수단 별로 합계
-                        
-                        Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
-                            .font(.caption2)
-                            .foregroundStyle(.gray300)
-                        if idx != currencies.count - 1 {
-                            Circle()
-                                .frame(width: 3, height: 3)
-                                .foregroundStyle(.gray300)
-                                .padding(.horizontal, 3)
-                        }
-                    }
-                }
-                .padding(.top, 10)
-            }
-            
-            // allExpenseBarGraph
-            BarGraph(data: indexedSumArrayInPayAmountOrder)
-                .padding(.top, 22)
-            
-            Divider()
-                .padding(.top, 20)
-            
             VStack(alignment: .leading, spacing: 0) {
-                ForEach(0..<categoryArray.count, id: \.self) { index in
+                ForEach(0..<expenseViewModel.categoryArray.count, id: \.self) { index in
                     let categoryName = indexedSumArrayInPayAmountOrder[index].0
                     let categorySum = indexedSumArrayInPayAmountOrder[index].1
                     let totalSum = indexedSumArrayInPayAmountOrder.map { $0.1 }.reduce(0, +)
@@ -231,33 +231,6 @@ struct AllExpenseView: View {
                 .padding(.bottom, 24)
             }
         }
-    }
-    
-    private func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
-        let filteredExpenseArrayArray = categoryArray.map { category in
-            expenseArray.filter {
-                $0.category == category
-            }
-        }
-        
-        let sumArray = filteredExpenseArrayArray.map { expenseArray in
-            expenseArray.reduce(0) {
-                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1))
-            }
-        }
-        
-        let indexedSumArray: [(Int64, Double)] = [
-            (categoryArray[0], sumArray[0]),
-            (categoryArray[1], sumArray[1]),
-            (categoryArray[2], sumArray[2]),
-            (categoryArray[3], sumArray[3]),
-            (categoryArray[4], sumArray[4]),
-            (categoryArray[5], sumArray[5]),
-            (categoryArray[6], sumArray[6])
-        ].sorted {
-            $0.1 >= $1.1
-        }
-        return indexedSumArray
     }
 }
 

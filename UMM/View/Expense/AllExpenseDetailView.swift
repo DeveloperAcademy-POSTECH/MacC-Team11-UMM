@@ -39,6 +39,8 @@ struct AllExpenseDetailView: View {
             
             expenseViewModel.filteredAllExpenses = getFilteredExpenses()
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
+            
+            print("AllExpenseDetailView: \(selectedCountry)")
         }
     }
     
