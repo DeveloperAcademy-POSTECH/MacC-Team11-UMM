@@ -117,6 +117,7 @@ struct ExpenseView: View {
                 }
             }
             .padding(.top, 32)
+            .padding(.bottom, 0)
         }
 }
 

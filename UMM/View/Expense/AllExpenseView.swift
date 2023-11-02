@@ -30,7 +30,6 @@ struct AllExpenseView: View {
             ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
-            .frame(height: 280) // VStack의 요소의 상하 간격이 의도치 않게 벌어지는 문제 해결해야 함 ^^^
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
@@ -78,7 +77,7 @@ struct AllExpenseView: View {
     var allExpenseSummaryByCurrency: some View {
         let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
         return ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 0) {
+            HStack(spacing: 0) {
                 ForEach(currencies.indices, id: \.self) { idx in
                     let currency = currencies[idx]
                     let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
@@ -110,7 +109,7 @@ struct AllExpenseView: View {
         let countries = [-2] + Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
         
         return ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 4   ) {
+            HStack(spacing: 4) {
                 ForEach(countries, id: \.self) { country in
                     Button(action: {
                         DispatchQueue.main.async {
