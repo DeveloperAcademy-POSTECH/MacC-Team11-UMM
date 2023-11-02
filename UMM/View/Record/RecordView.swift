@@ -206,14 +206,14 @@ struct RecordView: View {
                     Spacer()
                         .frame(width: 12)
                     let isClean0 = viewModel.payAmount - Double(Int(viewModel.payAmount)) == 0.0
-                    let isClean2 = viewModel.payAmount * 100.0 - Double(Int(viewModel.payAmount * 100.0)) == 0.0
+                    let isClean1 = viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0)) == 0.0
                     Group {
                         if isClean0 {
                             Text(String(format: "%.0f", viewModel.payAmount))
-                        } else if isClean2 {
-                            Text(String(format: "%.2f", viewModel.payAmount))
+                        } else if isClean1 {
+                            Text(String(format: "%.1f", viewModel.payAmount))
                         } else {
-                            Text(String(format: "%.4f", viewModel.payAmount))
+                            Text(String(format: "%.2f", viewModel.payAmount))
                         }
                     }
                     .foregroundStyle(.black)
