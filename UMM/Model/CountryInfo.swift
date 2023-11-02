@@ -7,14 +7,6 @@
 
 import Foundation
 
-// class CountryInfo {
-//     let englishNm: String = ""
-//     let koreanNm: String = ""
-//     let locationNm: String = ""
-//     let flagString: String = ""
-//     let defaultImageString: String = ""
-// }
-
 struct CountryInfo {
     let englishNm: String
     let koreanNm: String
