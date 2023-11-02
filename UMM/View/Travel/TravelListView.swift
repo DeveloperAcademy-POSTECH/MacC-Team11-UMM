@@ -125,7 +125,8 @@ struct TravelListView: View {
                                     endDate: nowTravel?[index].endDate ?? Date(),
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
                                     participantCnt: nowTravel?[index].participantArray?.count ?? 0,
-                                    participantArr: nowTravel?[index].participantArray ?? []
+                                    participantArr: nowTravel?[index].participantArray ?? [],
+                                    flagImageArr: self.flagImageName
                                 ), label: {
                                     ZStack(alignment: .top) {
                                         Rectangle()

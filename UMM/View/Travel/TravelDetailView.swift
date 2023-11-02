@@ -15,6 +15,7 @@ struct TravelDetailView: View {
     @State var dayCnt: Int
     @State var participantCnt: Int
     @State var participantArr: [String]
+    @State var flagImageArr: [String] = []
     
     var body: some View {
         NavigationStack {
@@ -126,7 +127,13 @@ struct TravelDetailView: View {
                 .foregroundStyle(Color.white)
             
             HStack {
-                Text("❌ 여행 국가 개수대로 국기랑 국가명 쌓기 ❌")
+                ForEach(flagImageArr, id: \.self) { imgString in
+                    Image(imgString)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                    
+                }
+                Spacer()
             }
         }
         .padding(.horizontal, 20)
