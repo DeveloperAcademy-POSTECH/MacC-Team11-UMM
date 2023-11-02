@@ -217,9 +217,8 @@ struct TravelListView: View {
                                             
                                             var flagImageNames: [String] = []
                                             for countryValue in uniqueCountryValues {
-                                                let countryInfo = CountryInfoModel()
                                                 
-                                                if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
+                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
                                                     flagImageNames.append(flagString)
                                                 } else {
                                                     flagImageNames.append("DefaultFlag")

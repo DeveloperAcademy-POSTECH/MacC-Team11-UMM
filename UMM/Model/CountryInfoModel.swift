@@ -9,7 +9,9 @@ import Foundation
 
 class CountryInfoModel {
     
-    init() {
+    static let shared = CountryInfoModel()
+    
+    private init() {
         
     }
     
