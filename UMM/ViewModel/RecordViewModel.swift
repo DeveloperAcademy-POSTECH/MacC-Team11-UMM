@@ -17,9 +17,10 @@ final class RecordViewModel: ObservableObject {
     var infoPredictor: NLModel?
     @Published var voiceSentence = "" {
         didSet {
+            print("voiceSentence: \(voiceSentence)")
             DispatchQueue.main.async {
                 self.divideVoiceSentence()
-                self.classifyVoiceSentence()
+                self.classifyVoiceSentenceInfo()
             }
         }
     }
@@ -454,9 +455,7 @@ final class RecordViewModel: ObservableObject {
         
         var reducedC = monoC.reduce("") { $0 + $1 }
         reducedC = "0." + reducedC
-        let doubleC = Double(reducedC) ?? 0.0
-        
-        // 13. sum = Double(sumA * 10000) + Double(sumB) + doubleC
+        let doubleC = Double(Int((Double(reducedC) ?? 0.0) * 100)) / 100
         
         sum = Double(sumA * 10000) + Double(sumB) + doubleC
         
@@ -474,7 +473,7 @@ final class RecordViewModel: ObservableObject {
         }
     }
     
-    func classifyVoiceSentence() {
+    func classifyVoiceSentenceInfo() {
         if let infoPredictor, let info, let label = infoPredictor.predictedLabel(for: info) {
             infoCategory = getExpenseInfoCagetory(stringLabel: label)
         } else {
