@@ -59,7 +59,7 @@ struct TodayExpenseView: View {
     }
     
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId)
+        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: expenseViewModel.selectedTravel?.startDate ?? Date().addingTimeInterval(-7*24*60*60))
             .padding(.top, 12)
             .padding(.bottom, 12)
     }
