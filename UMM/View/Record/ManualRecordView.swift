@@ -763,39 +763,43 @@ struct ParticipantToggleView: View {
     let index: Int
     
     var body: some View {
-        let tuple = viewModel.participantTupleArray[index]
-        ZStack {
-            RoundedRectangle(cornerRadius: 6)
-                .foregroundStyle(tuple.isOn ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                .layoutPriority(-1)
-            
-            // 높이 설정용 히든 뷰
-            Text("금")
-                .lineLimit(1)
-                .font(.subhead2_2)
-                .padding(.vertical, 6)
-                .hidden()
-            
-            HStack(spacing: 4) {
-                if tuple.name == "나" {
-                    Text("me")
-                        .lineLimit(1)
-                        .foregroundStyle(tuple.isOn ? .gray200 : .gray300)
-                        .font(.subhead2_1)
-                }
-                Text(tuple.0)
+        if index < viewModel.participantTupleArray.count {
+            let tuple = viewModel.participantTupleArray[index]
+            ZStack {
+                RoundedRectangle(cornerRadius: 6)
+                    .foregroundStyle(tuple.isOn ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
+                    .layoutPriority(-1)
+                
+                // 높이 설정용 히든 뷰
+                Text("금")
                     .lineLimit(1)
-                    .foregroundStyle(tuple.isOn ? .white : .gray300)
                     .font(.subhead2_2)
+                    .padding(.vertical, 6)
+                    .hidden()
+                
+                HStack(spacing: 4) {
+                    if tuple.name == "나" {
+                        Text("me")
+                            .lineLimit(1)
+                            .foregroundStyle(tuple.isOn ? .gray200 : .gray300)
+                            .font(.subhead2_1)
+                    }
+                    Text(tuple.0)
+                        .lineLimit(1)
+                        .foregroundStyle(tuple.isOn ? .white : .gray300)
+                        .font(.subhead2_2)
+                }
+                .padding(.vertical, 6)
+                .padding(.horizontal, 12)
             }
-            .padding(.vertical, 6)
-            .padding(.horizontal, 12)
-        }
-        .onTapGesture {
-            print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
-            viewModel.autoSaveTimer?.invalidate()
-            viewModel.secondCounter = nil
-            viewModel.participantTupleArray[index].isOn.toggle()
+            .onTapGesture {
+                print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
+                viewModel.autoSaveTimer?.invalidate()
+                viewModel.secondCounter = nil
+                viewModel.participantTupleArray[index].isOn.toggle()
+            }
+        } else {
+            EmptyView()
         }
     }
 }

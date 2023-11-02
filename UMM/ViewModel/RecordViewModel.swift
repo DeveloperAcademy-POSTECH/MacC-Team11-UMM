@@ -58,11 +58,13 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
+    
+    // view state
+    
     @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
-    
-    // view state
+    @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var recordButtonIsUsed = true
     
@@ -83,6 +85,8 @@ final class RecordViewModel: ObservableObject {
     // variables to evaluate record button pressing time
     var startRecordTime = CFAbsoluteTimeGetCurrent()
     var endRecordTime = CFAbsoluteTimeGetCurrent()
+    
+    @Published var defaultTravelNameReplacer = "-"
     
     init() {
         do {

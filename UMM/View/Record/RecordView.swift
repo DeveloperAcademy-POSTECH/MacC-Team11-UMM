@@ -58,10 +58,20 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
+                viewModel.defaultTravelNameReplacer = "-"
+                if let chosenTravelName = viewModel.chosenTravel?.name {
+                    if chosenTravelName == "Default" {
+                        viewModel.addTravelRequestModalIsShown = true
+                    }
+                }
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                     .presentationDetents([.height(289 - 34)])
+            }
+            .sheet(isPresented: $viewModel.addTravelRequestModalIsShown) {
+                AddTravelRequestModal(viewModel: viewModel)
+                    .presentationDetents([.height(247 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 ManualRecordView(prevViewModel: viewModel)
@@ -83,7 +93,7 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
+                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : viewModel.defaultTravelNameReplacer)
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
