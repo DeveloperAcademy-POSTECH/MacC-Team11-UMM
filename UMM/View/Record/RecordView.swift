@@ -205,8 +205,8 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    let isClean0 = viewModel.payAmount - Double(Int(viewModel.payAmount)) == 0.0
-                    let isClean1 = viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0)) == 0.0
+                    let isClean0 = abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001
+                    let isClean1 = abs(viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0))) < 0.0000001
                     Group {
                         if isClean0 {
                             Text(String(format: "%.0f", viewModel.payAmount))
