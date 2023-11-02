@@ -96,16 +96,10 @@ struct PreviousTravelView: View {
                                             
                                             var flagImageNames: [String] = []
                                             for countryValue in uniqueCountryValues {
-                                                do {
-                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-                                                    let result = try createCountryInfoDictionary(from: csvURL)
-                                                    if let flagString = result[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                } catch {
-                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                let countryInfo = CountryInfoModel()
+                                                if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
+                                                    flagImageNames.append(flagString)
+                                                } else {
                                                     flagImageNames.append("DefaultFlag")
                                                 }
                                             }
@@ -198,16 +192,10 @@ struct PreviousTravelView: View {
                                                             
                                                             var flagImageNames: [String] = []
                                                             for countryValue in uniqueCountryValues {
-                                                                do {
-                                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-                                                                    let result = try createCountryInfoDictionary(from: csvURL)
-                                                                    if let flagString = result[Int(countryValue)]?.flagString {
-                                                                        flagImageNames.append(flagString)
-                                                                    } else {
-                                                                        flagImageNames.append("DefaultFlag")
-                                                                    }
-                                                                } catch {
-                                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                                let countryInfo = CountryInfoModel()
+                                                                if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
+                                                                    flagImageNames.append(flagString)
+                                                                } else {
                                                                     flagImageNames.append("DefaultFlag")
                                                                 }
                                                             }

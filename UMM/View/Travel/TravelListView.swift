@@ -41,24 +41,12 @@ struct TravelListView: View {
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
-//                    saveFlagImagesToUserDefaults()
                     let loadedData = handler.loadExchangeRatesFromUserDefaults()
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
                     print("onAppear")
                 }
-                
-                // 확인 코드
-//                DispatchQueue.global().async {
-//                    do {
-//                        let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-//                        let result = try createCountryInfoDictionary(from: csvURL)
-////                        print("\ㄱ(result[3]?.flagString)")
-//                    } catch {
-//                        print("Error creating flag images dictionary: \(error)")
-//                    }
-//                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -229,16 +217,11 @@ struct TravelListView: View {
                                             
                                             var flagImageNames: [String] = []
                                             for countryValue in uniqueCountryValues {
-                                                do {
-                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-                                                    let result = try createCountryInfoDictionary(from: csvURL)
-                                                    if let flagString = result[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                } catch {
-                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                let countryInfo = CountryInfoModel()
+                                                
+                                                if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
+                                                    flagImageNames.append(flagString)
+                                                } else {
                                                     flagImageNames.append("DefaultFlag")
                                                 }
                                             }
