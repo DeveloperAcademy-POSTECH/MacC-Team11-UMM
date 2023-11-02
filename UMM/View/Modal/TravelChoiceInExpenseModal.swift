@@ -1,5 +1,5 @@
 //
-//  TravelChoiceModalBinding.swift
+//  TravelChoiceInExpenseModal.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/16/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TravelChoiceModalBinding: View {
+struct TravelChoiceInExpenseModal: View {
     @ObservedObject private var redrawer = Redrawer()
     @ObservedObject private var expenseViewModel = ExpenseViewModel()
     
@@ -83,5 +83,5 @@ struct TravelChoiceModalBinding: View {
 }
 
 // #Preview {
-//     TravelChoiceModalBinding(viewModel: ManualRecordViewModel())
+//     TravelChoiceInExpenseModal(viewModel: ManualRecordViewModel())
 // }

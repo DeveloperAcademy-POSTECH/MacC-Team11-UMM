@@ -41,7 +41,7 @@ struct AllExpenseView: View {
             expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
         }
         .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
+            TravelChoiceInExpenseModal(selectedTravel: $expenseViewModel.selectedTravel)
                 .presentationDetents([.height(289 - 34)])
         }
     }
