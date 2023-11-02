@@ -20,10 +20,12 @@ struct ExpenseView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 travelChoiceView
                 
                 todayExpenseHeader
+                
+                tabViewButton
                 
                 Spacer()
                 
@@ -71,10 +73,10 @@ struct ExpenseView: View {
         HStack(spacing: 0) {
             Text("지출 관리")
                 .font(.display2)
-                .padding(.top, 12)
             Spacer()
         }
         .padding(.leading, 20)
+        .padding(.top, 10)
     }
     
     private var travelChoiceView: some View {
@@ -106,6 +108,16 @@ struct ExpenseView: View {
             .padding(.leading, 20)
         }
     }
+    
+        private var tabViewButton: some View {
+            HStack(spacing: 0) {
+                ForEach((TabbedItems.allCases), id: \.self) { item in
+                    ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+                        .padding(.top, 8)
+                }
+            }
+            .padding(.top, 32)
+        }
 }
 
 struct ExpenseTabBarItem: View {

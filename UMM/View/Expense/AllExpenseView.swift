@@ -22,16 +22,15 @@ struct AllExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            tabViewButton
             countryPicker
             allExpenseSummaryTotal
             allExpenseSummaryByCurrency
             allExpenseBarGraph
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    drawExpensesByCategory
-                }
+            Divider()
+            ScrollView(showsIndicators: false) {
+                drawExpensesByCategory
             }
+            .frame(height: 280) // VStack의 요소의 상하 간격이 의도치 않게 벌어지는 문제 해결해야 함 ^^^
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
@@ -50,69 +49,60 @@ struct AllExpenseView: View {
     
     // MARK: - 뷰
     
-      var allExpenseSummaryTotal: some View {
-          let totalSum: Double = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
-              let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
-              return total + expense.payAmount * (rate ?? -1)
-          }
-          return NavigationLink {
-              AllExpenseDetailView(
-                  selectedTravel: expenseViewModel.selectedTravel,
-                  selectedCategory: -2,
-                  selectedCountry: expenseViewModel.selectedCountry,
-                  selectedPaymentMethod: -2
-              )
-          } label: {
-              HStack(spacing: 0) {
-                  Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                      .font(.display4)
-                      .foregroundStyle(.black)
-                  Image(systemName: "chevron.right")
-                      .font(.system(size: 24))
-                      .foregroundStyle(.gray200)
-                      .padding(.leading, 16)
-              }
-              .padding(.top, 32)
-          }
-      }
-
-      var allExpenseSummaryByCurrency: some View {
-          let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
-          return ScrollView(.horizontal, showsIndicators: false) {
-              LazyHStack(spacing: 0) {
-                  ForEach(currencies.indices, id: \.self) { idx in
-                      let currency = currencies[idx]
-                      let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-                      
-                      Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
-                          .font(.caption2)
-                          .foregroundStyle(.gray300)
-                      if idx != currencies.count - 1 {
-                          Circle()
-                              .frame(width: 3, height: 3)
-                              .foregroundStyle(.gray300)
-                              .padding(.horizontal, 3)
-                      }
-                  }
-              }
-              .padding(.top, 10)
-          }
-      }
-
-      var allExpenseBarGraph: some View {
-          let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
-          return BarGraph(data: indexedSumArrayInPayAmountOrder)
-              .padding(.top, 22)
-      }
-    
-    private var tabViewButton: some View {
-        HStack(spacing: 0) {
-            ForEach((TabbedItems.allCases), id: \.self) { item in
-                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                    .padding(.top, 8)
-            }
+    var allExpenseSummaryTotal: some View {
+        let totalSum: Double = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
+            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
+            return total + expense.payAmount * (rate ?? -1)
         }
-        .padding(.top, 32)
+        return NavigationLink {
+            AllExpenseDetailView(
+                selectedTravel: expenseViewModel.selectedTravel,
+                selectedCategory: -2,
+                selectedCountry: expenseViewModel.selectedCountry,
+                selectedPaymentMethod: -2
+            )
+        } label: {
+            HStack(spacing: 0) {
+                Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                    .font(.display4)
+                    .foregroundStyle(.black)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 24))
+                    .foregroundStyle(.gray200)
+                    .padding(.leading, 16)
+            }
+            .padding(.top, 32)
+        }
+    }
+    
+    var allExpenseSummaryByCurrency: some View {
+        let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
+        return ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 0) {
+                ForEach(currencies.indices, id: \.self) { idx in
+                    let currency = currencies[idx]
+                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                    
+                    Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
+                        .font(.caption2)
+                        .foregroundStyle(.gray300)
+                    if idx != currencies.count - 1 {
+                        Circle()
+                            .frame(width: 3, height: 3)
+                            .foregroundStyle(.gray300)
+                            .padding(.horizontal, 3)
+                    }
+                }
+            }
+            .padding(.top, 10)
+        }
+    }
+    
+    var allExpenseBarGraph: some View {
+        let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
+        return BarGraph(data: indexedSumArrayInPayAmountOrder)
+            .padding(.top, 22)
+            .padding(.bottom, 20)
     }
     
     private var countryPicker: some View {
@@ -120,7 +110,7 @@ struct AllExpenseView: View {
         let countries = [-2] + Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
         
         return ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack {
+            LazyHStack(spacing: 4   ) {
                 ForEach(countries, id: \.self) { country in
                     Button(action: {
                         DispatchQueue.main.async {
@@ -133,13 +123,9 @@ struct AllExpenseView: View {
                             .font(.caption2)
                             .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
                             .padding(.vertical, 7)
-                            .background(expenseViewModel.selectedCountry == country ? Color.black: Color.white)
+                            .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
                             .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray200, lineWidth: 2)
-                            )
                     })
                 }
             }
