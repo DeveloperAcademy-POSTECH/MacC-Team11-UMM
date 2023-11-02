@@ -137,6 +137,7 @@ struct ManualRecordView: View {
                 }
             }
         }
+        .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
