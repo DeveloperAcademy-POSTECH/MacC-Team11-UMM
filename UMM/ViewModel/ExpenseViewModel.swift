@@ -107,6 +107,7 @@ class ExpenseViewModel: ObservableObject {
     func getFilteredTodayExpenses() -> [Expense] {
         let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        print("Filtered expenses count: \(filteredByDate.count)")
         return filteredByDate
     }
     
@@ -180,13 +181,30 @@ class ExpenseViewModel: ObservableObject {
 
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
-        if
-            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let window = scene.windows.first,
-            let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject,
-            let button = picker.buttonAccessibilityDescendant() as? NSObject
-        {
-            button.accessibilityActivate()
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            print("Cannot find scene")
+            return
         }
+        print("Scene found: \(scene)")
+        
+        guard let window = scene.windows.first else {
+            print("Cannot find window")
+            return
+        }
+        print("Window found: \(window)")
+        
+        guard let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject else {
+            print("Cannot find pickerId: \(pickerId)")
+            return
+        }
+        print("Picker found: \(picker)")
+        
+        guard let button = picker.buttonAccessibilityDescendant() as? NSObject else {
+            print("Cannot find button")
+            return
+        }
+        print("Button found: \(button)")
+        
+        button.accessibilityActivate()
     }
 }

@@ -37,13 +37,14 @@ struct CustomDatePicker: View {
                             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
                         }
                     }
-                    .opacity(0)
+                    .colorInvert()
+                    .colorMultiply(Color.clear)
             }
             
             Button { self.selectedDate.addTimeInterval(86400)
-                } label: {
-                    Image(systemName: "chevron.right")
-                }
+            } label: {
+                Image(systemName: "chevron.right")
+            }
         }
     }
 }
