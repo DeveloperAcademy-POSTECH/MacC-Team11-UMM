@@ -33,6 +33,10 @@ struct RecordView: View {
         }
     }
     
+    let fraction0NumberFormatter = NumberFormatter()
+    let fraction1NumberFormatter = NumberFormatter()
+    let fraction2NumberFormatter = NumberFormatter()
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -64,6 +68,15 @@ struct RecordView: View {
                         viewModel.addTravelRequestModalIsShown = true
                     }
                 }
+                
+                // MARK: - NumberFormatter
+                
+                fraction0NumberFormatter.numberStyle = .decimal
+                fraction0NumberFormatter.maximumFractionDigits = 0
+                fraction1NumberFormatter.numberStyle = .decimal
+                fraction1NumberFormatter.maximumFractionDigits = 1
+                fraction2NumberFormatter.numberStyle = .decimal
+                fraction2NumberFormatter.maximumFractionDigits = 2
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
@@ -193,6 +206,7 @@ struct RecordView: View {
                         .foregroundStyle(.gray100)
                         .layoutPriority(-1)
                     
+                    // 뷰 크기 설정하기 위한 히든 뷰
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
                         .font(.subhead2_2)
@@ -219,11 +233,23 @@ struct RecordView: View {
                     let isClean1 = abs(viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0))) < 0.0000001
                     Group {
                         if isClean0 {
-                            Text(String(format: "%.0f", viewModel.payAmount))
+                            if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
                         } else if isClean1 {
-                            Text(String(format: "%.1f", viewModel.payAmount))
+                            if let formattedString = fraction1NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
                         } else {
-                            Text(String(format: "%.2f", viewModel.payAmount))
+                            if let formattedString = fraction2NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
                         }
                     }
                     .foregroundStyle(.black)
@@ -250,6 +276,7 @@ struct RecordView: View {
                         .foregroundStyle(.gray100)
                         .layoutPriority(-1)
                     
+                    // 뷰 크기 설정하기 위한 히든 뷰
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
                         .font(.subhead2_2)
