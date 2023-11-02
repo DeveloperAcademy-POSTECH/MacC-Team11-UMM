@@ -10,16 +10,16 @@ import SwiftUI
 struct PreviousTravelView: View {
     
     @ObservedObject var viewModel = PreviousTravelViewModel()
-    @State var previousTravel: [Travel]?
-    @State var previousExpenses: [[Expense]]?
-//    @State var allTravels: [Travel] = []
+    @State var previousTravel: [Travel]? {
+        didSet {
+            travelCnt = Int(previousTravel?.count ?? 0)
+        }
+    }
     @State var savedExpenses: [Expense]? = []
     @State var uniqueCountry: [(key: Int, value: [Int64])] = []
     @State private var travelCnt: Int = 0
     @State private var currentPage = 0
-//    @State var flagImgArr: [[String]] = [[]]
-    @State var flagImageName: [String] = []
-    @State var flagImageArray: [[String]] = []
+    @State var flagImageDict: [UUID: [String]] = [:]
     
     var body: some View {
         
@@ -57,15 +57,14 @@ struct PreviousTravelView: View {
                                             .cornerRadius(10)
                                         
                                         VStack(alignment: .leading) {
-                                            
                                             HStack {
                                                 Spacer()
                                                 
-//                                                ForEach(flagImageArray[index], id: \.self) { imageName in
-//                                                    Image(imageName)
-//                                                        .resizable()
-//                                                        .frame(width: 24, height: 24)
-//                                                }
+                                                ForEach(flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                    Image(imageName)
+                                                        .resizable()
+                                                        .frame(width: 24, height: 24)
+                                                }
                                             }
                                             .padding(16)
                                             
@@ -86,55 +85,31 @@ struct PreviousTravelView: View {
                                     }
                                     .onAppear {
                                         
-                                        if let allTravels = allPreviousTravels {
-                                            var allExpenses: [[Expense]] = []
-                                            for travel in allTravels {
-                                                if let selectedTravelID = travel.id {
-                                                    let filteredExpenses = viewModel.filterExpensesByTravel(selectedTravelID: selectedTravelID)
-                                                    allExpenses.append(filteredExpenses)
-                                                }
-                                            }
-                                            self.previousExpenses = allExpenses
-                                        }
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
                                         
-                                        for index in 0..<(previousExpenses?.count ?? 0) {
-                                            if let savedExpenses = previousExpenses?[index] {
-                                                    let countryValues: [Int64] = savedExpenses.map { expense in
-                                                        return viewModel.getCountryForExpense(expense)
-                                                    }
-                                                    let uniqueCountryValues = Array(Set(countryValues))
-                                                print("index : ", index, "uniqueCountryValues: ", uniqueCountryValues)
+                                        if let savedExpenses = savedExpenses {
+                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                return viewModel.getCountryForExpense(expense)
                                             }
-                                        }
-
-                                        for index in 0..<(previousExpenses?.count ?? 0) {
-                                            if let savedExpenses = previousExpenses?[index] {
-                                                let countryValues: [Int64] = savedExpenses.map { expense in
-                                                    return viewModel.getCountryForExpense(expense)
-                                                }
-                                                let uniqueCountryValues = Array(Set(countryValues))
-                                                
-                                                var flagImageNames: [String] = []
-                                                for countryValue in uniqueCountryValues {
-                                                    do {
-                                                        let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-                                                        let result = try createCountryInfoDictionary(from: csvURL)
-                                                        if let flagString = result[Int(countryValue)]?.flagString {
-                                                            flagImageNames.append(flagString)
-                                                        } else {
-                                                            flagImageNames.append("DefaultFlag")
-                                                        }
-                                                    } catch {
-                                                        print("Error from csvURL in TravelListView: \(error)")
+                                            let uniqueCountryValues = Array(Set(countryValues))
+                                            
+                                            var flagImageNames: [String] = []
+                                            for countryValue in uniqueCountryValues {
+                                                do {
+                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
+                                                    let result = try createCountryInfoDictionary(from: csvURL)
+                                                    if let flagString = result[Int(countryValue)]?.flagString {
+                                                        flagImageNames.append(flagString)
+                                                    } else {
                                                         flagImageNames.append("DefaultFlag")
                                                     }
+                                                } catch {
+                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                    flagImageNames.append("DefaultFlag")
                                                 }
-                                                
-                                                flagImageArray.append(flagImageNames)
                                             }
+                                            self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
                                         }
-                                        print("flagImageArray", flagImageArray)
-                                        
                                     }
                                 })
                                 Text(previousTravel?[index].name ?? "제목 미정")
@@ -186,7 +161,7 @@ struct PreviousTravelView: View {
                                                             HStack {
                                                                 Spacer()
                                                                 
-                                                                ForEach(flagImageName, id: \.self) { imageName in
+                                                                ForEach(flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
                                                                     Image(imageName)
                                                                         .resizable()
                                                                         .frame(width: 24, height: 24)
@@ -210,33 +185,33 @@ struct PreviousTravelView: View {
                                                         }
                                                         
                                                     }
-//                                                    .onAppear {
-//                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
-//                                                        
-//                                                        if let savedExpenses = savedExpenses {
-//                                                            let countryValues: [Int64] = savedExpenses.map { expense in
-//                                                                return viewModel.getCountryForExpense(expense)
-//                                                            }
-//                                                            let uniqueCountryValues = Array(Set(countryValues))
-//                                                            
-//                                                            var flagImageNames: [String] = []
-//                                                            for countryValue in uniqueCountryValues {
-//                                                                do {
-//                                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
-//                                                                    let result = try createCountryInfoDictionary(from: csvURL)
-//                                                                    if let flagString = result[Int(countryValue)]?.flagString {
-//                                                                        flagImageNames.append(flagString)
-//                                                                    } else {
-//                                                                        flagImageNames.append("DefaultFlag")
-//                                                                    }
-//                                                                } catch {
-//                                                                    print("Error from csvURL in TravelListView: \(error)")
-//                                                                    flagImageNames.append("DefaultFlag")
-//                                                                }
-//                                                            }
-//                                                            self.flagImageName = flagImageNames
-//                                                        }
-//                                                    }
+                                                    .onAppear {
+                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                                        
+                                                        if let savedExpenses = savedExpenses {
+                                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                                return viewModel.getCountryForExpense(expense)
+                                                            }
+                                                            let uniqueCountryValues = Array(Set(countryValues))
+                                                            
+                                                            var flagImageNames: [String] = []
+                                                            for countryValue in uniqueCountryValues {
+                                                                do {
+                                                                    let csvURL = Bundle.main.url(forResource: "CountryList", withExtension: "csv")!
+                                                                    let result = try createCountryInfoDictionary(from: csvURL)
+                                                                    if let flagString = result[Int(countryValue)]?.flagString {
+                                                                        flagImageNames.append(flagString)
+                                                                    } else {
+                                                                        flagImageNames.append("DefaultFlag")
+                                                                    }
+                                                                } catch {
+                                                                    print("Error from csvURL in TravelListView: \(error)")
+                                                                    flagImageNames.append("DefaultFlag")
+                                                                }
+                                                            }
+                                                            self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
+                                                        }
+                                                    }
                                                 })
                                                 Text(previousTravel?[index].name ?? "제목 미정")
                                                     .font(.subhead1)
@@ -275,7 +250,6 @@ struct PreviousTravelView: View {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
-                self.travelCnt = Int(previousTravel?.count ?? 0)
                 
             }
         }
@@ -289,52 +263,14 @@ struct PreviousTravelView: View {
         let screenWidth = getWidth()
         return CGFloat(currentPage) * screenWidth
     }
-    
-    private var allPreviousTravels: [Travel]? {
-        if let previousTravel = previousTravel {
-            return previousTravel.compactMap { $0 }
-        }
-        return []
-    }
-    
-    private var allPreviousExpenses: [[Expense]]? {
-        if let previousExpense = previousExpenses {
-            return previousExpense
-        }
-     return [[]]
+}
+
+extension Array {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
 
-//struct CountryFlagImage: View {
-//    @State var previousTravelCnt: Int
-//    @State var flagImgArr: [[String]]
-//    @State var flagImgName: [String] = []
-//    @State var previousTravel: [Travel]?
-//    @ObservedObject var viewModel: PreviousTravelViewModel
-//    
-//    var body: some View {
-//        HStack {
-//            Spacer()
-//            
-//            ForEach(flagImgName, id: \.self) { imageName in
-//                Image(imageName)
-//                    .resizable()
-//                    .frame(width: 24, height: 24)
-//            }
-//        }
-//        .onAppear {
-//            DispatchQueue.main.async {
-//                viewModel.fetchTravel()
-//                viewModel.fetchExpense()
-//                self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
-//                self.previousTravelCnt = Int(previousTravel?.count ?? 0)
-//            }
-//            print(previousTravelCnt)
-//        }
-//        .padding(16)
-//    }
-//}
-
-//#Preview {
-//    PreviousTravelView()
-//}
+// #Preview {
+//     PreviousTravelView()
+// }
