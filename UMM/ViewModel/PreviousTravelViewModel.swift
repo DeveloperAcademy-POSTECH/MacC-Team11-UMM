@@ -12,6 +12,7 @@ class PreviousTravelViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     
     @Published var previousTravel: [Travel] = []
+    @Published var savedExpensesByTravel: [Expense] = []
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -23,7 +24,33 @@ class PreviousTravelViewModel: ObservableObject {
         }
     }
     
-    func filterPreviouTravel(todayDate: Date) -> [Travel] {
+    func fetchExpense() {
+        let request = NSFetchRequest<Expense>(entityName: "Expense")
+        do {
+        savedExpensesByTravel = try viewContext.fetch(request)
+        } catch let error {
+            print("Error while fetchExpense: \(error.localizedDescription)")
+        }
+    }
+    
+    func filterExpensesByTravel(selectedTravelID: UUID) -> [Expense] {
+        return savedExpensesByTravel.filter { expense in
+            if let travelID = expense.travel?.id {
+                return travelID == selectedTravelID
+            } else {
+                return false
+            }
+        }
+    }
+    
+    func getCountryForExpense(_ expense: Expense) -> Int64 {
+        if let country = expense.country as? Int64 {
+            return country
+        }
+        return -1
+    }
+    
+    func filterPreviousTravel(todayDate: Date) -> [Travel] {
         return previousTravel.filter { travel in
             if let endDate = travel.endDate {
                 print("filterPreviousTravel | travel.id \(String(describing: travel.id))")
