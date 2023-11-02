@@ -290,16 +290,22 @@ struct BarGraph: View {
         return data.map { $0.1 }.reduce(0, +)
     }
     
+    private var validDataCount: Int {
+        return data.filter { $0.1 != 0 }.count
+    }
+    
     var body: some View {
         let totalWidth = UIScreen.main.bounds.size.width - 40
+        let dataSize = data.count
         
         HStack(spacing: 0) {
-            ForEach(data, id: \.0) { categoryRawValue, value in
+            ForEach(0..<dataSize, id: \.self) { index in
+                let item = data[index]
                 BarElement(
-                    color: ExpenseInfoCategory(rawValue: Int(categoryRawValue))?.color ?? Color.gray,
-                    width: (CGFloat(value / totalSum) * totalWidth),
-                    isFirstElement: data.first?.0 == categoryRawValue,
-                    isLastElement: data.last?.0 == categoryRawValue
+                    color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
+                    width: (CGFloat(item.1 / totalSum) * totalWidth),
+                    isFirstElement: index == 0,
+                    isLastElement: index == validDataCount - 1
                 )
             }
         }
@@ -317,9 +323,25 @@ struct BarElement: View {
         Rectangle()
             .fill(color)
             .frame(width: max(0, width), height: 24)
-            .cornerRadius(isFirstElement ? 6 : 0, corners: [.topLeft, .bottomLeft])
-            .cornerRadius(isLastElement ? 6 : 0, corners: [.topRight, .bottomRight])
+            .modifier(RoundedModifier(isFirstElement: isFirstElement, isLastElement: isLastElement))
             .padding(.trailing, 2)
+    }
+}
+
+struct RoundedModifier: ViewModifier {
+    let isFirstElement: Bool
+    let isLastElement: Bool
+    
+    func body(content: Content) -> some View {
+        if isFirstElement && isLastElement {
+            return AnyView(content.cornerRadius(6))
+        } else if isFirstElement {
+            return AnyView(content.cornerRadius(6, corners: [.topLeft, .bottomLeft]))
+        } else if isLastElement {
+            return AnyView(content.cornerRadius(6, corners: [.topRight, .bottomRight]))
+        } else {
+            return AnyView(content)
+        }
     }
 }
 
@@ -335,9 +357,7 @@ struct RoundedCorner: Shape {
     var corners: UIRectCorner = .allCorners
     
     func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect,
-                                byRoundingCorners: corners,
-                                cornerRadii: CGSize(width: radius, height: radius))
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
         return Path(path.cgPath)
     }
 }
