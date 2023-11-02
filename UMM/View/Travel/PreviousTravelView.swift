@@ -37,7 +37,8 @@ struct PreviousTravelView: View {
                                                                              endDate: previousTravel?[index].endDate ?? Date(),
                                                                              dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
                                                                              participantCnt: previousTravel?[index].participantArray?.count ?? 0,
-                                                                             participantArr: previousTravel?[index].participantArray ?? []), label: {
+                                                                             participantArr: previousTravel?[index].participantArray ?? [],
+                                                                             flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? []), label: {
                                     ZStack {
                                         Image("basicImage")
                                             .resizable()
@@ -137,7 +138,8 @@ struct PreviousTravelView: View {
                                                                                              endDate: previousTravel?[index].endDate ?? Date(),
                                                                                              dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
                                                                                              participantCnt: previousTravel?[index].participantArray?.count ?? 0,
-                                                                                             participantArr: previousTravel?[index].participantArray ?? []), label: {
+                                                                                             participantArr: previousTravel?[index].participantArray ?? [],
+                                                                                             flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? []), label: {
                                                     ZStack {
                                                         Image("basicImage")
                                                             .resizable()
