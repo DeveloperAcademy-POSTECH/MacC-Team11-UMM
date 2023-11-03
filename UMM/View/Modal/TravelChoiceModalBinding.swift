@@ -74,8 +74,8 @@ struct TravelChoiceModalBinding: View {
                             expenseViewModel.selectedCountry = Int64(-2)
                             redrawer.redraw()
                             
-                            print("TravelChoiceModalBinding | selectedTravel: \(selectedTravel?.name)")
-                            print("TravelChoiceModalBinding | expenseViewModel.selectedTravel: \(expenseViewModel.selectedTravel?.name)")
+                            print("TravelChoiceModalBinding | selectedTravel: \(String(describing: selectedTravel?.name))")
+                            print("TravelChoiceModalBinding | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
                         }
                     Spacer()
                         .frame(width: 10)
