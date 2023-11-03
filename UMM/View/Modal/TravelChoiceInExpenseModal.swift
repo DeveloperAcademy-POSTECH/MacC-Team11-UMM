@@ -112,7 +112,7 @@ struct TravelChoiceInExpenseModal: View {
                     HStack(spacing: 0) {
                         TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
                             .onTapGesture {
-                                if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId == travelId {
+                                if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId != travelId {
                                     selectedTravel = travel
                                     selectedCountry = Int64(-2)
                                 }
