@@ -23,8 +23,6 @@ struct TodayExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
-            tabViewButton
-            
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     datePicker
@@ -40,25 +38,12 @@ struct TodayExpenseView: View {
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
-        }
-        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(selectedTravel: $expenseViewModel.selectedTravel)
-                .presentationDetents([.height(289 - 34)])
+            print("Grouped expenses count: \(expenseViewModel.groupedTodayExpenses.count)")
         }
     }
-    
-    private var tabViewButton: some View {
-        HStack(spacing: 0) {
-            ForEach((TabbedItems.allCases), id: \.self) { item in
-                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                    .padding(.top, 8)
-            }
-        }
-        .padding(.top, 32)
-    }
-    
+
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId)
+        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: expenseViewModel.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60))
             .padding(.top, 12)
             .padding(.bottom, 12)
     }

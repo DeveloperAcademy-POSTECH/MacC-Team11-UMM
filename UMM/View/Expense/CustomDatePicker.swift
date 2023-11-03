@@ -11,6 +11,7 @@ struct CustomDatePicker: View {
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @Binding var selectedDate: Date
     var pickerId: String
+    let startDateOfTravel: Date
     
     var body: some View {
         HStack(spacing: 0) {
@@ -28,7 +29,7 @@ struct CustomDatePicker: View {
                 .padding(.horizontal, 8)
                 
                 // 안 보이게 하고 Button으로 호출
-                DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
+                DatePicker("", selection: $expenseViewModel.selectedDate, in: startDateOfTravel...Date(), displayedComponents: [.date])
                     .labelsHidden()
                     .accessibilityIdentifier(pickerId)
                     .onReceive(expenseViewModel.$selectedDate) { _ in
@@ -37,13 +38,14 @@ struct CustomDatePicker: View {
                             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
                         }
                     }
-                    .opacity(0)
+                    .colorInvert()
+                    .colorMultiply(Color.clear)
             }
             
             Button { self.selectedDate.addTimeInterval(86400)
-                } label: {
-                    Image(systemName: "chevron.right")
-                }
+            } label: {
+                Image(systemName: "chevron.right")
+            }
         }
     }
 }

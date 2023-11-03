@@ -34,6 +34,10 @@ struct RecordView: View {
         }
     }
     
+    let fraction0NumberFormatter = NumberFormatter()
+    let fraction1NumberFormatter = NumberFormatter()
+    let fraction2NumberFormatter = NumberFormatter()
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -59,14 +63,29 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
-                DispatchQueue.main.async {
-                    print("mainVM.selectedTravel?.name", (mainVM.selectedTravel?.name ?? "이름없음") as String)
+                viewModel.defaultTravelNameReplacer = "-"
+                if let chosenTravelName = viewModel.chosenTravel?.name {
+                    if chosenTravelName == "Default" {
+                        viewModel.addTravelRequestModalIsShown = true
+                    }
                 }
+                
+                // MARK: - NumberFormatter
+                
+                fraction0NumberFormatter.numberStyle = .decimal
+                fraction0NumberFormatter.maximumFractionDigits = 0
+                fraction1NumberFormatter.numberStyle = .decimal
+                fraction1NumberFormatter.maximumFractionDigits = 1
+                fraction2NumberFormatter.numberStyle = .decimal
+                fraction2NumberFormatter.maximumFractionDigits = 2
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-//                TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
                 TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
                     .presentationDetents([.height(289 - 34)])
+            }
+            .sheet(isPresented: $viewModel.addTravelRequestModalIsShown) {
+                AddTravelRequestModal(viewModel: viewModel)
+                    .presentationDetents([.height(247 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 ManualRecordView(prevViewModel: viewModel)
@@ -88,8 +107,7 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-//                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
-                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
+                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : viewModel.defaultTravelNameReplacer)
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
@@ -189,6 +207,7 @@ struct RecordView: View {
                         .foregroundStyle(.gray100)
                         .layoutPriority(-1)
                     
+                    // 뷰 크기 설정하기 위한 히든 뷰
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
                         .font(.subhead2_2)
@@ -211,15 +230,27 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    let isClean0 = viewModel.payAmount - Double(Int(viewModel.payAmount)) == 0.0
-                    let isClean2 = viewModel.payAmount * 100.0 - Double(Int(viewModel.payAmount * 100.0)) == 0.0
+                    let isClean0 = abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001
+                    let isClean1 = abs(viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0))) < 0.0000001
                     Group {
                         if isClean0 {
-                            Text(String(format: "%.0f", viewModel.payAmount))
-                        } else if isClean2 {
-                            Text(String(format: "%.2f", viewModel.payAmount))
+                            if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
+                        } else if isClean1 {
+                            if let formattedString = fraction1NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
                         } else {
-                            Text(String(format: "%.4f", viewModel.payAmount))
+                            if let formattedString = fraction2NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
+                                Text(formattedString)
+                            } else {
+                                Text(" ")
+                            }
                         }
                     }
                     .foregroundStyle(.black)
@@ -246,6 +277,7 @@ struct RecordView: View {
                         .foregroundStyle(.gray100)
                         .layoutPriority(-1)
                     
+                    // 뷰 크기 설정하기 위한 히든 뷰
                     Text("결제 내역")
                         .foregroundStyle(.gray400)
                         .font(.subhead2_2)
