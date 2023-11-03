@@ -29,9 +29,7 @@ struct TravelChoiceInRecordModal: View {
             var travelArray: [Travel] = []
             do {
                 travelArray = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
-                print("travelArray.count: \(travelArray.count)")
             } catch {
-                print("error fetching Travel array: \(error.localizedDescription)")
             }
             
             for travel in travelArray {
@@ -64,11 +62,8 @@ struct TravelChoiceInRecordModal: View {
                     countryWeightedArray = [(Int, Int)](countryWeightedArray[0..<min(countryWeightedArray.count, 4)])
                 }
                 
-                print("travelId: \(travel.id), countryWeightedArray.count: \(countryWeightedArray.count)")
-                
                 if let travelId = travel.id {
                     flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
-                    print("travelId: \(travel.id), flagNamearray: \(flagNameArrayDict[travelId])")
                 }
             }
         }
@@ -110,7 +105,7 @@ struct TravelChoiceInRecordModal: View {
             LazyHStack(alignment: .top, spacing: 0) {
                 Spacer()
                     .frame(width: 20)
-                ForEach(travelArray.sorted(by: sortRule)) { travel in
+                ForEach(travelArray.sorted(by: sortRule), id: \.self) { travel in
                     HStack(spacing: 0) {
                         TravelBlockView(travel: travel, chosenTravel: chosenTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
                             .onTapGesture {

@@ -10,7 +10,7 @@ import SwiftUI
 struct TravelChoiceInExpenseModal: View {
     @Binding var selectedTravel: Travel?
     var travelArray: [Travel]
-    @State var flagNameArrayDict: [UUID: [String]] = [:]
+    @State private var flagNameArrayDict: [UUID: [String]] = [:]
     
     var body: some View {
         ZStack {
@@ -29,7 +29,6 @@ struct TravelChoiceInExpenseModal: View {
             var travelArray: [Travel] = []
             do {
                 travelArray = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
-                print("travelArray.count: \(travelArray.count)")
             } catch {
                 print("error fetching Travel array: \(error.localizedDescription)")
             }
@@ -63,12 +62,9 @@ struct TravelChoiceInExpenseModal: View {
                 if countryWeightedArray.count > 0 {
                     countryWeightedArray = [(Int, Int)](countryWeightedArray[0..<min(countryWeightedArray.count, 4)])
                 }
-                
-                print("travelId: \(travel.id), countryWeightedArray.count: \(countryWeightedArray.count)")
-                
+                                
                 if let travelId = travel.id {
                     flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
-                    print("travelId: \(travel.id), flagNamearray: \(flagNameArrayDict[travelId])")
                 }
             }
         }
@@ -110,7 +106,7 @@ struct TravelChoiceInExpenseModal: View {
             LazyHStack(alignment: .top, spacing: 0) {
                 Spacer()
                     .frame(width: 20)
-                ForEach(travelArray.sorted(by: sortRule)) { travel in
+                ForEach(travelArray.sorted(by: sortRule).filter { $0.name ?? "" != "Default" }, id: \.self) { travel in // 임시 기록("Default") 제외
                     HStack(spacing: 0) {
                         TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
                             .onTapGesture {
