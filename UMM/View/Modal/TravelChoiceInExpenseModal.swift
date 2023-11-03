@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TravelChoiceInExpenseModal: View {
     @Binding var selectedTravel: Travel?
-    var travelArray: [Travel]
+    private var travelArray: [Travel]
     @Binding var selectedCountry: Int64
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
     

@@ -362,6 +362,7 @@
 		C17550572AD5519800A61BE5 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */,
 				57A65D112AD7D5D500131266 /* RecordViewModel.swift */,
 				572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */,
 				C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */,
@@ -374,7 +375,6 @@
 				C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */,
 				572BE1E72AE49FB5005933E7 /* Redrawer.swift */,
 				C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */,
-				C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
