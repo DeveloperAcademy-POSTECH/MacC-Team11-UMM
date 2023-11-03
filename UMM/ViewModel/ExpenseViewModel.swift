@@ -16,6 +16,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var savedExpenses: [Expense] = []
     @Published var filteredTodayExpenses: [Expense] = []
     @Published var filteredAllExpenses: [Expense] = []
+    @Published var filteredAllExpensesByCountry: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
     @Published var selectedTravel: Travel? {
@@ -24,13 +25,20 @@ class ExpenseViewModel: ObservableObject {
             self.filteredTodayExpenses = self.getFilteredTodayExpenses()
             self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
             self.filteredAllExpenses = self.getFilteredAllExpenses()
-            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpenses, by: { $0.category })
+            self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
+            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
+            print("Travel changed to: \(String(describing: selectedTravel?.name))")
         }
     }
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
-    @Published var selectedCountry: Int64 = -2
+    @Published var selectedCountry: Int64 = -2 {
+        didSet {
+            print("Country changed to: \(selectedCountry)")
+            self.selectCountry(country: selectedCountry)
+        }
+    }
     @Published var selectedCategory: Int64 = 0
     @Published var travelChoiceHalfModalIsShown = false {
         willSet {
@@ -39,6 +47,9 @@ class ExpenseViewModel: ObservableObject {
             }
         }
     }
+    @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
+    let handler = ExchangeRateHandler.shared
+    let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -132,7 +143,11 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func filterExpensesByCountry(expenses: [Expense], country: Int64) -> [Expense] {
-        return expenses.filter { $0.country == country }
+        if country == Int64(-2) {
+            return expenses
+        } else {
+            return expenses.filter { $0.country == country }
+        }
     }
     
     func filterExpensesByDate(expenses: [Expense], selectedDate: Date) -> [Expense] {
@@ -180,13 +195,64 @@ class ExpenseViewModel: ObservableObject {
 
     // MARK: - 커스텀 Date Picker를 위한 함수
     func triggerDatePickerPopover(pickerId: String) {
-        if
-            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let window = scene.windows.first,
-            let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject,
-            let button = picker.buttonAccessibilityDescendant() as? NSObject
-        {
-            button.accessibilityActivate()
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            print("Cannot find scene")
+            return
         }
+        print("Scene found: \(scene)")
+        
+        guard let window = scene.windows.first else {
+            print("Cannot find window")
+            return
+        }
+        print("Window found: \(window)")
+        
+        guard let picker = window.accessibilityDescendant(identifiedAs: pickerId) as? NSObject else {
+            print("Cannot find pickerId: \(pickerId)")
+            return
+        }
+        print("Picker found: \(picker)")
+        
+        guard let button = picker.buttonAccessibilityDescendant() as? NSObject else {
+            print("Cannot find button")
+            return
+        }
+        print("Button found: \(button)")
+        
+        button.accessibilityActivate()
+    }
+    
+    func getPayAmountOrderedIndicesOfCategory(categoryArray: [Int64], expenseArray: [Expense]) -> [(Int64, Double)] {
+        let filteredExpenseArrayArray = categoryArray.map { category in
+            expenseArray.filter {
+                $0.category == category
+            }
+        }
+        
+        let sumArray = filteredExpenseArrayArray.map { expenseArray in
+            expenseArray.reduce(0) {
+                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1))
+            }
+        }
+        
+        let indexedSumArray: [(Int64, Double)] = [
+            (categoryArray[0], sumArray[0]),
+            (categoryArray[1], sumArray[1]),
+            (categoryArray[2], sumArray[2]),
+            (categoryArray[3], sumArray[3]),
+            (categoryArray[4], sumArray[4]),
+            (categoryArray[5], sumArray[5]),
+            (categoryArray[6], sumArray[6])
+        ].sorted {
+            $0.1 >= $1.1
+        }
+        return indexedSumArray
+    }
+    
+    func selectCountry(country: Int64) {
+        filteredAllExpenses = getFilteredAllExpenses()
+        filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: country)
+        groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
+        indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
     }
 }

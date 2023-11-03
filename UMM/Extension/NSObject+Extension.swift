@@ -31,7 +31,6 @@ extension NSObject {
     
     func accessibilityDescendant(identifiedAs id: String) -> Any? {
       return accessibilityDescendant {
-        // For reasons unknown, I cannot cast a UIView to a UIAccessibilityIdentification at runtime.
         return ($0 as? UIView)?.accessibilityIdentifier == id
         || ($0 as? UIAccessibilityIdentification)?.accessibilityIdentifier == id
       }
