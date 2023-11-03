@@ -39,18 +39,7 @@ struct AllExpenseView: View {
             print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-<<<<<<< HEAD
-            print("AllExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel))")
-            
-            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
-            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpenses, by: { $0.category })
-        }
-        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
-                .presentationDetents([.height(289 - 34)])
-=======
             expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
->>>>>>> dev
         }
     }
     
