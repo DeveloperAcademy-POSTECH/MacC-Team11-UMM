@@ -10,6 +10,7 @@ import SwiftUI
 
 class MainViewModel: ObservableObject {
     @Published var selection: Int = 0
+    @Published var selectedTravel: Travel?
     
     func navigationToRecordView() {
         self.selection = 1

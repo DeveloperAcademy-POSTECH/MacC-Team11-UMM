@@ -40,7 +40,9 @@ struct CompleteAddTravelView: View {
                 MediumButtonActive(title: "기록하기", action: {
                     NavigationUtil.popToRootView()
                     mainVM.navigationToRecordView()
-                    
+//                    DispatchQueue.main.async {
+//                        mainVM.selectedTravel = self.selectedTravel?.first
+//                    }
                 })
             }
         }
@@ -56,7 +58,9 @@ struct CompleteAddTravelView: View {
             }
         }
         .onDisappear {
+            print("CompleteAddTravelView Disappear")
             selectedTravel?.first?.name = travelNM
+            mainVM.selectedTravel = self.selectedTravel?.first
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)

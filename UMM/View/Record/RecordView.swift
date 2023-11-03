@@ -12,6 +12,7 @@ struct RecordView: View {
     let recordButtonAnimationLength = 0.25
     
     @ObservedObject var viewModel = RecordViewModel()
+    @EnvironmentObject var mainVM: MainViewModel
     
     @GestureState private var isDetectingPress = false
     @State private var isDetectingPress_showOnButton = false {
@@ -58,9 +59,13 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
+                DispatchQueue.main.async {
+                    print("mainVM.selectedTravel?.name", (mainVM.selectedTravel?.name ?? "이름없음") as String)
+                }
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-                TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
+//                TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
+                TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
                     .presentationDetents([.height(289 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
@@ -83,7 +88,8 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
+//                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
+                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
