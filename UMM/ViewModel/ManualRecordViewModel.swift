@@ -16,7 +16,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .unknown
                 self.parent?.currentLocation = "\(placemark.locality ?? "")"
             } else {
                 print("ERROR: \(String(describing: error?.localizedDescription))")
@@ -166,7 +166,7 @@ class ManualRecordViewModel: ObservableObject {
     var currentLocation: String = ""
     @Published var otherCountryCandidateArray: [Country] = [] // passive
     
-    @Published var currency: Currency = .unknown {
+    @Published var currency: Currency = .usd {
         didSet {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1

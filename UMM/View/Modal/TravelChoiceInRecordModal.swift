@@ -63,12 +63,14 @@ struct TravelChoiceInRecordModal: View {
                 Spacer()
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule)) { travel in
-                    TravelSquareView(travel: travel, chosenTravel: chosenTravel)
-                        .onTapGesture {
-                            chosenTravel = travel
-                        }
-                    Spacer()
-                        .frame(width: 10)
+                    HStack(spacing: 0) {
+                        TravelSquareView(travel: travel, chosenTravel: chosenTravel)
+                            .onTapGesture {
+                                chosenTravel = travel
+                            }
+                        Spacer()
+                            .frame(width: 10)
+                    }
                 }
                 Spacer()
                     .frame(width: 10)
@@ -83,41 +85,46 @@ struct TravelSquareView: View {
     let now = Date()
     
     var body: some View {
-        VStack(spacing: 6) { // ^^^
+        VStack(spacing: 0) { // ^^^
             if let chosenTravel {
                 Group {
                     if let name = travel.name, name == "Default" {
                         ZStack {
-                            // 뷰 크기 조정용 히든 뷰
-                            VStack(spacing: 0) {
+                            Group {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(.white)
+                                    .layoutPriority(-1)
+                                
+                                RoundedRectangle(cornerRadius: 10)
+                                    .strokeBorder(.gray300, lineWidth: 1)
+                                    .layoutPriority(-1)
+                                
+                                // 뷰 크기 조정용 히든 뷰
                                 Text("00.00.00 ~\n00.00.00")
                                     .lineSpacing(2)
                                     .font(.caption2)
-                            }
-                            .padding(.top, 41)
-                            .padding(.bottom, 8)
-                            .padding(.leading, 8)
-                            .padding(.trailing, 31)
-                            .hidden()
-                            
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(.gray300, lineWidth: 1)
-                                .layoutPriority(-1)
-                            
-                            VStack(spacing: 0) {
-                                Spacer()
-                                HStack(spacing: 0) {
+                                .padding(.top, 41) // figma: 41
+                                .padding(.bottom, 8) // figma: 8
+                                .padding(.leading, 8) // figma: 8
+                                .padding(.trailing, 41) // figma: 31
+                                .hidden()
+                                
+                                VStack(spacing: 0) {
                                     Spacer()
-                                    Text("임시 기록")
-                                        .foregroundStyle(.gray400)
-                                        .font(.subhead1)
+                                    HStack(spacing: 0) {
+                                        Spacer()
+                                        Text("임시 기록")
+                                            .foregroundStyle(.gray400)
+                                            .font(.subhead1)
+                                        Spacer()
+                                            .frame(width: 11)
+                                    }
                                     Spacer()
-                                        .frame(width: 11)
+                                        .frame(height: 10)
                                 }
-                                Spacer()
-                                    .frame(height: 10)
+                                .layoutPriority(-1)
                             }
-                            .layoutPriority(-1)
+                            .opacity(travel.id == chosenTravel.id ? 1 : 0.6)
                             
                             VStack(spacing: 0) {
                                 Spacer()
@@ -134,41 +141,50 @@ struct TravelSquareView: View {
                         }
                     } else {
                         ZStack {
-                            Image("travelChoiceExample")
-                                .resizable()
-                                .scaledToFill()
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            Group {
+                                ZStack {
+                                    Image("travelChoiceExample")
+                                        .resizable()
+                                        .scaledToFill()
+                                    LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)
+                                }
                                 .layoutPriority(-1)
-                            
-                            ZStack {
-                                // 뷰 크기 조정용 히든 뷰
-                                VStack(spacing: 0) {
+                                
+                                ZStack {
+                                    // 뷰 크기 조정용 히든 뷰
                                     Text("00.00.00 ~\n00.00.00")
+                                        .padding(.top, 41) // figma: 41
+                                        .padding(.bottom, 8) // figma: 8
+                                        .padding(.leading, 8) // figma: 8
+                                        .padding(.trailing, 41) // figma: 31
                                         .lineSpacing(2)
                                         .font(.caption2)
-                                }
-                                .hidden()
-                                
-                                if let startDate = travel.startDate {
-                                    if let endDate = travel.endDate {
-                                        Text(startDate.toString(dateFormat: "YY.MM.dd") + " " + "~" + "\n" + endDate.toString(dateFormat: "YY.MM.dd"))
-                                            .foregroundStyle(.white)
-                                            .lineSpacing(2)
-                                            .font(.caption2)
-                                            .opacity(0.75)
-                                    } else {
-                                        Text(startDate.toString(dateFormat: "YY.MM.dd") + " " + "~" + "\n" + "미정")
-                                            .foregroundStyle(.white)
-                                            .lineSpacing(2)
-                                            .font(.caption2)
-                                            .opacity(0.75)
+                                    .hidden()
+                                    
+                                    Group {
+                                        if let startDate = travel.startDate {
+                                            if let endDate = travel.endDate {
+                                                Text(startDate.toString(dateFormat: "YY.MM.dd") + " " + "~" + "\n" + endDate.toString(dateFormat: "YY.MM.dd"))
+                                                    .foregroundStyle(.white)
+                                                    .lineSpacing(2)
+                                                    .font(.caption2)
+                                                    .opacity(0.75)
+                                            } else {
+                                                Text(startDate.toString(dateFormat: "YY.MM.dd") + " " + "~" + "\n" + "미정")
+                                                    .foregroundStyle(.white)
+                                                    .lineSpacing(2)
+                                                    .font(.caption2)
+                                                    .opacity(0.75)
+                                            }
+                                        }
                                     }
+                                    .padding(.top, 41) // figma: 41
+                                    .padding(.bottom, 8) // figma: 8
+                                    .padding(.leading, 8) // figma: 8
+                                    .padding(.trailing, 41) // figma: 31
                                 }
                             }
-                            .padding(.top, 41)
-                            .padding(.bottom, 8)
-                            .padding(.leading, 8)
-                            .padding(.trailing, 31)
+                            .opacity(travel.id == chosenTravel.id ? 1 : 0.6)
                             
                             VStack(spacing: 0) {
                                 Spacer()
@@ -183,9 +199,12 @@ struct TravelSquareView: View {
                             }
                             .layoutPriority(-1)
                         }
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                 }
-                .opacity(travel.id == chosenTravel.id ? 1 : 0.6)
+                
+                Spacer()
+                    .frame(height: 6)
                 
                 Text(travel.name != "Default" ? travel.name ?? "-" : " ")
                     .lineLimit(3)
@@ -195,47 +214,31 @@ struct TravelSquareView: View {
                     .padding(.horizontal, 10)
                     .layoutPriority(-1)
                 
+                Spacer()
+                    .frame(height: 2) // 눈으로 보기에 비슷하게 적당히 수정했음
+                
                 Group {
                     if travel.name == "Default" {
                         EmptyView()
                     } else {
                         if travel.startDate ?? Date.distantPast < now && travel.endDate ?? Date.distantFuture > now {
-                            ZStack {
-                                Capsule()
-                                    .strokeBorder(.mainPink, lineWidth: 1.0)
-                                    .layoutPriority(-1)
-                                
-                                Text("여행 중")
-                                    .foregroundStyle(.mainPink)
-                                    .font(.caption1)
-                                    .padding(.vertical, 4)
-                                    .padding(.horizontal, 8)
-                            }
-                            
+                            Text("여행 중")
+                                .foregroundStyle(.mainPink)
+                                .font(.caption1)
+                                .padding(.vertical, 4)
+                                .padding(.horizontal, 8)
                         } else if travel.startDate ?? Date.distantPast > now {
-                            ZStack {
-                                Capsule()
-                                    .strokeBorder(.black, lineWidth: 1.0)
-                                    .layoutPriority(-1)
-                                
-                                Text("다가오는 여행")
-                                    .foregroundStyle(.black)
-                                    .font(.caption1)
-                                    .padding(.vertical, 4)
-                                    .padding(.horizontal, 8)
-                            }
+                            Text("다가오는 여행")
+                                .foregroundStyle(.black)
+                                .font(.caption1)
+                                .padding(.vertical, 4)
+                                .padding(.horizontal, 8)
                         } else {
-                            ZStack {
-                                Capsule()
-                                    .strokeBorder(.gray300, lineWidth: 1.0)
-                                    .layoutPriority(-1)
-                                
-                                Text("지난 여행")
-                                    .foregroundStyle(.gray300)
-                                    .font(.caption1)
-                                    .padding(.vertical, 4)
-                                    .padding(.horizontal, 8)
-                            }
+                            Text("지난 여행")
+                                .foregroundStyle(.gray300)
+                                .font(.caption1)
+                                .padding(.vertical, 4)
+                                .padding(.horizontal, 8)
                         }
                     }
                 } // 일자와 시분초의 문제 해결하기 ^^^
@@ -249,29 +252,21 @@ struct CircleLabelView: View {
     let chosenTravel: Travel
     
     var body: some View {
-        if travel.id == chosenTravel.id {
-            ZStack {
-                Circle()
-                    .fill(Color(.mainPink))
-                    .frame(width: 20, height: 20)
-                    .overlay(
-                        Circle()
-                            .strokeBorder(.white, lineWidth: 1.0)
-                    )
+        ZStack {
+            Circle()
+                .fill(travel.id == chosenTravel.id ? Color(.mainPink) : .black)
+                .frame(width: 20, height: 20)
+                .opacity(travel.id == chosenTravel.id ? 1.0 : 0.25)
+                .overlay(
+                    Circle()
+                        .strokeBorder(.white, lineWidth: 1.0)
+                )
+            if travel.id == chosenTravel.id {
                 Image("circleLabelCheck")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 12, height: 12)
             }
-        } else {
-            Circle()
-                .fill(.black)
-                .opacity(0.25)
-                .frame(width: 19, height: 19)
-                .overlay(
-                    Circle()
-                        .strokeBorder(.white, lineWidth: 1.0)
-                )
         }
     }
 }
