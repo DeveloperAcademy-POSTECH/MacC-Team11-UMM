@@ -58,6 +58,7 @@ struct TravelDetailView: View {
                     HStack {
                         MediumButtonUnactive(title: "가계부 보기", action: {
                             // 선택값 초기화
+                            NavigationUtil.popToRootView()
                             mainVM.navigationToExpenseView()
                         })
                         
