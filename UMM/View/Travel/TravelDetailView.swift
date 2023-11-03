@@ -10,6 +10,9 @@ import SwiftUI
 struct TravelDetailView: View {
     
     @EnvironmentObject var mainVM: MainViewModel
+    @ObservedObject var viewModel = TravelDetailViewModel()
+    @State var selectedTravel: [Travel]?
+    @State var travelID: UUID = UUID()
     @State var travelName: String
     @State var startDate: Date
     @State var endDate: Date
@@ -59,11 +62,24 @@ struct TravelDetailView: View {
                         })
                         
                         MediumButtonActive(title: "지출 기록하기", action: {
+                            NavigationUtil.popToRootView()
                             mainVM.navigationToRecordView()
                             
                         })
                     }
                 }
+            }
+            .onAppear {
+                viewModel.fetchTravel()
+//                travelID = mainVM.selectedTravel?.id ?? UUID()
+                self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
+                
+            }
+            .onDisappear {
+                print("TravelID : ", travelID)
+                mainVM.selectedTravel = self.selectedTravel?.first
+                travelID = mainVM.selectedTravel?.id ?? UUID()
+                
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

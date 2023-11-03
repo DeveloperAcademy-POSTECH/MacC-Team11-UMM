@@ -58,7 +58,6 @@ struct CompleteAddTravelView: View {
             }
         }
         .onDisappear {
-            print("CompleteAddTravelView Disappear")
             selectedTravel?.first?.name = travelNM
             mainVM.selectedTravel = self.selectedTravel?.first
         }
