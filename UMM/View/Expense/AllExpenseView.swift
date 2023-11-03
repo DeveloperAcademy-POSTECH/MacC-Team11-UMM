@@ -30,19 +30,16 @@ struct AllExpenseView: View {
             ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
+            .padding(.horizontal, 10)
         }
-        .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
+        .frame(maxWidth: .infinity)
         .onAppear {
             print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
             print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
             expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
-        }
-        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $expenseViewModel.selectedTravel)
-                .presentationDetents([.height(289 - 34)])
         }
     }
     

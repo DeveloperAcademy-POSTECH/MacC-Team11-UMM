@@ -40,10 +40,6 @@ struct TodayExpenseView: View {
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
             print("Grouped expenses count: \(expenseViewModel.groupedTodayExpenses.count)")
         }
-        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $expenseViewModel.selectedTravel)
-                .presentationDetents([.height(289 - 34)])
-        }
     }
 
     private var datePicker: some View {

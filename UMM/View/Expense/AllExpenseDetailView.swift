@@ -37,7 +37,6 @@ struct AllExpenseDetailView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            expenseViewModel.selectedTravel = selectedTravel
             expenseViewModel.filteredAllExpenses = getFilteredExpenses()
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
             

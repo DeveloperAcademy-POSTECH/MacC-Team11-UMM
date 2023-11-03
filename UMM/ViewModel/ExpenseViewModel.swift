@@ -21,13 +21,13 @@ class ExpenseViewModel: ObservableObject {
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
     @Published var selectedTravel: Travel? {
         didSet {
-            print("Travel changed to: \(String(describing: selectedTravel?.name))")
             self.fetchExpense()
             self.filteredTodayExpenses = self.getFilteredTodayExpenses()
             self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
             self.filteredAllExpenses = self.getFilteredAllExpenses()
             self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
             self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
+            print("Travel changed to: \(String(describing: selectedTravel?.name))")
         }
     }
     @Published var selectedDate = Date()
