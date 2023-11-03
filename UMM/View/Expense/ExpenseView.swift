@@ -11,6 +11,7 @@ struct ExpenseView: View {
     @State var selectedTab = 0
     @Namespace var namespace
     @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @EnvironmentObject var mainVM: MainViewModel
     
     var exchangeRateHandler: ExchangeRateHandler
     
@@ -50,7 +51,7 @@ struct ExpenseView: View {
                 print("ExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
             }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-                TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $expenseViewModel.selectedTravel)
+                TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $mainVM.selectedTravel)
                     .presentationDetents([.height(289 - 34)])
             }
             .toolbar {
@@ -93,7 +94,8 @@ struct ExpenseView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
+//                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
+                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")

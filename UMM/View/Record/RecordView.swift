@@ -12,6 +12,7 @@ struct RecordView: View {
     let recordButtonAnimationLength = 0.25
     
     @ObservedObject var viewModel = RecordViewModel()
+    @EnvironmentObject var mainVM: MainViewModel
     
     @GestureState private var isDetectingPress = false
     @State private var isDetectingPress_showOnButton = false {
@@ -79,7 +80,7 @@ struct RecordView: View {
                 fraction2NumberFormatter.maximumFractionDigits = 2
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-                TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
+                TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
                     .presentationDetents([.height(289 - 34)])
             }
             .sheet(isPresented: $viewModel.addTravelRequestModalIsShown) {
@@ -106,7 +107,7 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : viewModel.defaultTravelNameReplacer)
+                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : viewModel.defaultTravelNameReplacer)
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
                     Image("recordTravelChoiceDownChevron")
