@@ -32,13 +32,15 @@ struct UpcomingTravelView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
                             VStack {
-                                NavigationLink(destination: TravelDetailView(travelName: upcomingTravel?[index].name ?? "",
-                                                                             startDate: upcomingTravel?[index].startDate ?? Date(),
-                                                                             endDate: upcomingTravel?[index].endDate ?? Date(),
-                                                                             dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: upcomingTravel?[index].startDate ?? Date()),
-                                                                             participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
-                                                                             participantArr: upcomingTravel?[index].participantArray ?? [],
-                                                                             flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
+                                NavigationLink(destination: TravelDetailView(
+                                    travelID: upcomingTravel?[index].id ?? UUID(),
+                                    travelName: upcomingTravel?[index].name ?? "",
+                                    startDate: upcomingTravel?[index].startDate ?? Date(),
+                                    endDate: upcomingTravel?[index].endDate ?? Date(),
+                                    dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: upcomingTravel?[index].startDate ?? Date()),
+                                    participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
+                                    participantArr: upcomingTravel?[index].participantArray ?? [],
+                                    flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
                                     ZStack {
                                         Image("basicImage")
                                             .resizable()

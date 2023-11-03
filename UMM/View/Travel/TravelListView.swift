@@ -12,6 +12,7 @@ struct TravelListView: View {
     
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
+    
     @State var nowTravel: [Travel]?
     @State var defaultTravel: [Travel]?
     @State var savedExpenses: [Expense]?
@@ -108,6 +109,7 @@ struct TravelListView: View {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
                                 NavigationLink(destination: TravelDetailView(
+                                    travelID: nowTravel?[index].id ?? UUID(),
                                     travelName: nowTravel?[index].name ?? "",
                                     startDate: nowTravel?[index].startDate ?? Date(),
                                     endDate: nowTravel?[index].endDate ?? Date(),

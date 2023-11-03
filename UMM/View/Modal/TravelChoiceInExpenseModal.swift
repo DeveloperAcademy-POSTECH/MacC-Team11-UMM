@@ -10,6 +10,7 @@ import SwiftUI
 struct TravelChoiceInExpenseModal: View {
     @Binding var selectedTravel: Travel?
     var travelArray: [Travel]
+    @Binding var selectedCountry: Int64
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
     
     var body: some View {
@@ -70,9 +71,10 @@ struct TravelChoiceInExpenseModal: View {
         }
     }
     
-    init(selectedTravel: Binding<Travel?>) {
+    init(selectedTravel: Binding<Travel?>, selectedCountry: Binding<Int64>) {
         _selectedTravel = selectedTravel
         travelArray = [Travel]()
+        _selectedCountry = selectedCountry
         do {
             try travelArray = PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: sortRule)
         } catch {
@@ -110,7 +112,10 @@ struct TravelChoiceInExpenseModal: View {
                     HStack(spacing: 0) {
                         TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
                             .onTapGesture {
-                                selectedTravel = travel
+                                if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId == travelId {
+                                    selectedTravel = travel
+                                    selectedCountry = Int64(-2)
+                                }
                             }
                         Spacer()
                             .frame(width: 10)

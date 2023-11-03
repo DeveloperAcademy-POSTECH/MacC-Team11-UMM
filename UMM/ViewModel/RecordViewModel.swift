@@ -15,11 +15,24 @@ final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
-    @Published var voiceSentence = "" {
+    var voiceSentencePartitionArray: [String] = [] {
+        didSet {
+            print("voiceSentencePartitionArray: \(voiceSentencePartitionArray)")
+
+            if voiceSentencePartitionArray.count == 0 {
+                voiceSentence = ""
+            } else {
+                var tempVoiceSentence = voiceSentencePartitionArray.reduce("") { $0 + $1 + " " }
+                tempVoiceSentence.removeLast()
+                voiceSentence = tempVoiceSentence
+            }
+        }
+    }
+    @Published var voiceSentence = "" { // passive
         didSet {
             DispatchQueue.main.async {
                 self.divideVoiceSentence()
-                self.classifyVoiceSentence()
+                self.classifyVoiceSentenceInfo()
             }
         }
     }
@@ -45,11 +58,13 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
+    
+    // view state
+    
     @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
-    
-    // view state
+    @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var recordButtonIsUsed = true
     
@@ -71,6 +86,8 @@ final class RecordViewModel: ObservableObject {
     var startRecordTime = CFAbsoluteTimeGetCurrent()
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     
+    @Published var defaultTravelNameReplacer = "-"
+    
     init() {
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
@@ -84,6 +101,8 @@ final class RecordViewModel: ObservableObject {
         }
         chosenTravel = findCurrentTravel()
     }
+    
+    // MARK: 녹음 기능
     
     func divideVoiceSentence() {
         guard voiceSentence.count > 0 else {
@@ -454,9 +473,7 @@ final class RecordViewModel: ObservableObject {
         
         var reducedC = monoC.reduce("") { $0 + $1 }
         reducedC = "0." + reducedC
-        let doubleC = Double(reducedC) ?? 0.0
-        
-        // 13. sum = Double(sumA * 10000) + Double(sumB) + doubleC
+        let doubleC = Double(Int((Double(reducedC) ?? 0.0) * 100)) / 100
         
         sum = Double(sumA * 10000) + Double(sumB) + doubleC
         
@@ -474,7 +491,7 @@ final class RecordViewModel: ObservableObject {
         }
     }
     
-    func classifyVoiceSentence() {
+    func classifyVoiceSentenceInfo() {
         if let infoPredictor, let info, let label = infoPredictor.predictedLabel(for: info) {
             infoCategory = getExpenseInfoCagetory(stringLabel: label)
         } else {
@@ -501,13 +518,33 @@ final class RecordViewModel: ObservableObject {
         }
     }
     
-    // MARK: 녹음 기능
-    func updateTranscribedString(transcribedString: String) {
-        voiceSentence = transcribedString
+    func updateVoiceSentence(with transcribedString: String) {
+        print("sentence transcribedString (raw): \(transcribedString)")
+        guard transcribedString.count > 0 else { // 새로운 문장이 공백인 경우
+            return
+        }
+        if voiceSentencePartitionArray.count == 0 { // 파티션 어레이가 빈 경우
+            voiceSentencePartitionArray.append(transcribedString) // 추가하기
+            return
+        }
+        if voiceSentencePartitionArray.last!.getCharacterFormArray().getSplitVarietyAndNumericPrefixCount().0 == .noNumericInterpretation && transcribedString.getCharacterFormArray().getSplitVarietyAndNumericPrefixCount().0 == .allNumeric { // 기존의 마지막 문장은 숫자로 해석되지 않고 새로운 문장은 숫자로 해석되는 경우
+            voiceSentencePartitionArray.append(transcribedString) // 추가하기
+            return
+        }
+        if voiceSentencePartitionArray.last!.count >= 3 && transcribedString.count == 1 { // 기존의 마지막 문장 길이가 3 이상이고 새로운 문장의 길이가 1인 경우; 3은 임의로 정한 값
+            voiceSentencePartitionArray.append(transcribedString) // 추가하기
+            return
+        }
+        if transcribedString.count < voiceSentencePartitionArray.last!.count - 5 && transcribedString.count < 4 { // 기존의 마지막 문장보다 새로운 문장이 명백히 짧고 새로운 문장의 길이가 4 미만인 경우; 4와 5는 임의로 정한 값
+            voiceSentencePartitionArray.append(transcribedString) // 추가하기
+            return
+        }
+        voiceSentencePartitionArray[voiceSentencePartitionArray.count - 1] = transcribedString // 대체하기
+        return
     }
     
     func resetTranscribedString() {
-        voiceSentence = ""
+        voiceSentencePartitionArray = []
     }
     
     func startSTT() throws {
@@ -540,7 +577,7 @@ final class RecordViewModel: ObservableObject {
             if let result = result {
                 DispatchQueue.main.async {
                     let transcribedString = result.bestTranscription.formattedString
-                    self.updateTranscribedString(transcribedString: transcribedString)
+                    self.updateVoiceSentence(with: transcribedString)
                 }
             }
             if error != nil {
@@ -628,7 +665,7 @@ final class RecordViewModel: ObservableObject {
     // MARK: - 프로퍼티 관리
     
     func resetInStringProperties() {
-        voiceSentence = ""
+        voiceSentencePartitionArray = []
         info = nil
         infoCategory = .unknown
         payAmount = -1
