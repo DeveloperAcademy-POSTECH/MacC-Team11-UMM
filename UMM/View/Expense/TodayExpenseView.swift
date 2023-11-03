@@ -38,14 +38,6 @@ struct TodayExpenseView: View {
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
-<<<<<<< HEAD
-        }
-        .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-            TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
-                .presentationDetents([.height(289 - 34)])
-=======
-            print("Grouped expenses count: \(expenseViewModel.groupedTodayExpenses.count)")
->>>>>>> dev
         }
     }
 
