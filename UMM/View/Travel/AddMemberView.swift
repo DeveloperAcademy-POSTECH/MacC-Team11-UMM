@@ -42,6 +42,7 @@ struct AddMemberView: View {
         .onAppear {
             isBackButton = false
         }
+        .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
             if !isBackButton {
                 if participantArr.count > 0 {
