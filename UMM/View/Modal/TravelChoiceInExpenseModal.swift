@@ -66,7 +66,7 @@ struct TravelChoiceInExpenseModal: View {
                 Spacer()
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule)) { travel in
-                    TravelSquareView(travel: travel, chosenTravel: selectedTravel)
+                    TravelBlockView(travel: travel, chosenTravel: selectedTravel)
                         .onTapGesture {
                             selectedTravel = travel
                             expenseViewModel.selectedTravel = travel

@@ -64,7 +64,7 @@ struct TravelChoiceInRecordModal: View {
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule)) { travel in
                     HStack(spacing: 0) {
-                        TravelSquareView(travel: travel, chosenTravel: chosenTravel)
+                        TravelBlockView(travel: travel, chosenTravel: chosenTravel)
                             .onTapGesture {
                                 chosenTravel = travel
                             }
@@ -79,7 +79,7 @@ struct TravelChoiceInRecordModal: View {
     }
 }
 
-struct TravelSquareView: View {
+struct TravelBlockView: View {
     let travel: Travel
     let chosenTravel: Travel?
     let now = Date()
@@ -132,7 +132,7 @@ struct TravelSquareView: View {
                                 HStack(spacing: 0) {
                                     Spacer()
                                         .frame(width: 10)
-                                    CircleLabelView(travel: travel, chosenTravel: chosenTravel)
+                                    CheckStickerView(travel: travel, chosenTravel: chosenTravel)
                                     Spacer()
                                 }
                                 Spacer()
@@ -192,7 +192,7 @@ struct TravelSquareView: View {
                                 HStack(spacing: 0) {
                                     Spacer()
                                         .frame(width: 10)
-                                    CircleLabelView(travel: travel, chosenTravel: chosenTravel)
+                                    CheckStickerView(travel: travel, chosenTravel: chosenTravel)
                                     Spacer()
                                 }
                                 Spacer()
@@ -247,7 +247,7 @@ struct TravelSquareView: View {
     }
 }
 
-struct CircleLabelView: View {
+struct CheckStickerView: View {
     let travel: Travel
     let chosenTravel: Travel
     
