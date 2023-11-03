@@ -10,6 +10,7 @@ import SwiftUI
 struct TravelChoiceInRecordModal: View {    
     @Binding var chosenTravel: Travel?
     var travelArray: [Travel]
+    @State var flagNameArrayDict: [UUID: [String]] = [:]
     
     var body: some View {
         ZStack {
@@ -22,6 +23,53 @@ struct TravelChoiceInRecordModal: View {
                 Spacer()
                     .frame(height: 24)
                 travelScrollView
+            }
+        }
+        .onAppear {
+            var travelArray: [Travel] = []
+            do {
+                travelArray = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
+                print("travelArray.count: \(travelArray.count)")
+            } catch {
+                print("error fetching Travel array: \(error.localizedDescription)")
+            }
+            
+            for travel in travelArray {
+                let expenseArray = travel.expenseArray!.allObjects as? [Expense]
+                var countryArray: [Int] = []
+                var countryWeightedArray: [(Int, Int)] = [] // (국가 키, 등장 횟수)
+                if let expenseArray {
+                    for expense in expenseArray {
+                        if !countryArray.contains(Int(expense.country)) {
+                            countryArray.append(Int(expense.country))
+                            countryWeightedArray.append((Int(expense.country), 1))
+                        } else {
+                            let index = countryWeightedArray.firstIndex { $0.0 == Int(expense.country) }
+                            if let index {
+                                countryWeightedArray[index].1 += 1
+                            }
+                        }
+                    }
+                }
+                countryWeightedArray.sort { tuple0, tuple1 in
+                    if tuple0.1 > tuple1.1 { // 등장 횟수의 내림차순으로 정렬
+                        return true
+                    } else if tuple0.1 < tuple1.1 {
+                        return false
+                    } else {
+                        return tuple0.0 < tuple1.0 // 등장 횟수 같으면 키 순서로 정렬
+                    }
+                }
+                if countryWeightedArray.count > 0 {
+                    countryWeightedArray = [(Int, Int)](countryWeightedArray[0..<min(countryWeightedArray.count, 4)])
+                }
+                
+                print("travelId: \(travel.id), countryWeightedArray.count: \(countryWeightedArray.count)")
+                
+                if let travelId = travel.id {
+                    flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
+                    print("travelId: \(travel.id), flagNamearray: \(flagNameArrayDict[travelId])")
+                }
             }
         }
     }
@@ -64,7 +112,7 @@ struct TravelChoiceInRecordModal: View {
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule)) { travel in
                     HStack(spacing: 0) {
-                        TravelBlockView(travel: travel, chosenTravel: chosenTravel)
+                        TravelBlockView(travel: travel, chosenTravel: chosenTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
                             .onTapGesture {
                                 chosenTravel = travel
                             }
@@ -83,6 +131,7 @@ struct TravelBlockView: View {
     let travel: Travel
     let chosenTravel: Travel?
     let now = Date()
+    let flagNameArray: [String]
     
     var body: some View {
         VStack(spacing: 0) { // ^^^
@@ -183,8 +232,33 @@ struct TravelBlockView: View {
                                     .padding(.leading, 8) // figma: 8
                                     .padding(.trailing, 41) // figma: 31
                                 }
+                                
+                                VStack(spacing: 0) {
+                                    Spacer()
+                                        .frame(height: 8)
+                                    HStack(spacing: 0) {
+                                        Spacer()
+                                        ZStack {
+                                            ForEach((0..<flagNameArray.count).reversed(), id: \.self) { i in
+                                                Image(flagNameArray[i])
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 24, height: 24)
+                                                    .shadow(color: .gray400, radius: 4) // 임의로 넣은 값 ^^^
+                                                    .offset(x: -13 * CGFloat(flagNameArray.count - 1 - Int(i)))
+                                            }
+                                        }
+                                        Spacer()
+                                            .frame(width: 8)
+                                    }
+                                    Spacer()
+                                }
+                                .layoutPriority(-1)
                             }
-                            .opacity(travel.id == chosenTravel.id ? 1 : 0.6)
+                            
+                            Color(.white)
+                                .opacity(travel.id == chosenTravel.id ? 0.0 : 0.4)
+                                .layoutPriority(-1)
                             
                             VStack(spacing: 0) {
                                 Spacer()

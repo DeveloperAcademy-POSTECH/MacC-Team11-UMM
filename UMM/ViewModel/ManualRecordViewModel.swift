@@ -37,7 +37,6 @@ class ManualRecordViewModel: ObservableObject {
     @Published var placemark: CLPlacemark?
     
     func getLocation() {
-        print("ManualRecordViewModel | getLocation 호출됨 !!!")
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
