@@ -58,7 +58,7 @@ class ManualRecordViewModel: ObservableObject {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
             }
         }
     }
@@ -77,7 +77,7 @@ class ManualRecordViewModel: ObservableObject {
             if visiblePayAmount == "" {
                 payAmount = -1
             } else {
-                payAmount = Double(visiblePayAmount) ?? -1
+                payAmount = Double(visiblePayAmount) ?? -100
             }
         }
     }
@@ -171,7 +171,7 @@ class ManualRecordViewModel: ObservableObject {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
             }
         }
     }
@@ -207,7 +207,7 @@ class ManualRecordViewModel: ObservableObject {
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country.rawValue)
         expense.currency = Int64(currency.rawValue)
-        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1 // ^^^
+        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100 // ^^^
         expense.info = info
         expense.location = locationExpression
         expense.participantArray = (participantTupleArray + additionalParticipantTupleArray).filter { $0.1 == true }.map { $0.0 }

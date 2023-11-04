@@ -103,7 +103,7 @@ struct ManualRecordView: View {
             if viewModel.payAmount == -1 || viewModel.currency == .unknown {
                 viewModel.payAmountInWon = -1
             } else {
-                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
+                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100)
             }
             
             // MARK: - NumberFormatter
@@ -210,7 +210,7 @@ struct ManualRecordView: View {
         if viewModel.payAmount == -1 || viewModel.currency == .unknown {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
+            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100) // ^^^
         }
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }

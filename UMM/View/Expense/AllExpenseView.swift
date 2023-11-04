@@ -46,16 +46,18 @@ struct AllExpenseView: View {
     // MARK: - 뷰
     
     var allExpenseSummaryTotal: some View {
-        let totalSum: Double = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
+        let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
             let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
-            return total + expense.payAmount * (rate ?? -1)
+            let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+            return total + amount * (rate ?? -100)
         }
         return NavigationLink {
             AllExpenseDetailView(
                 selectedTravel: expenseViewModel.selectedTravel,
                 selectedCategory: -2,
                 selectedCountry: expenseViewModel.selectedCountry,
-                selectedPaymentMethod: -2
+                selectedPaymentMethod: -2,
+                sumPaymentMethod: totalSum
             )
         } label: {
             HStack(spacing: 0) {
@@ -77,8 +79,11 @@ struct AllExpenseView: View {
             HStack(spacing: 0) {
                 ForEach(currencies.indices, id: \.self) { idx in
                     let currency = currencies[idx]
-                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-                    
+                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { total, expense in
+                        let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+                        return total + amount
+                    }
+
                     Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
@@ -145,7 +150,6 @@ struct AllExpenseView: View {
     // 1-1. 항목별
     private func drawExpenseContent(for country: Int64, with expenses: [Expense]) -> some View {
         let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenses)
-        let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
         
         return VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -159,7 +163,8 @@ struct AllExpenseView: View {
                             selectedTravel: expenseViewModel.selectedTravel,
                             selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
                             selectedCountry: expenseViewModel.selectedCountry,
-                            selectedPaymentMethod: -2
+                            selectedPaymentMethod: -2,
+                            sumPaymentMethod: totalSum
                         )
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
@@ -171,7 +176,7 @@ struct AllExpenseView: View {
                                     .font(.subhead2_1)
                                     .foregroundStyle(.black)
                                 HStack(alignment: .center, spacing: 0) {
-                                    Text("\(expenseViewModel.formatSum(from: categorySum / totalSum * 100, to: 1))%")
+                                    Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum / totalSum * 100, to: 1))%")
                                         .font(.caption2)
                                         .foregroundStyle(.gray300)
                                 }
@@ -182,7 +187,7 @@ struct AllExpenseView: View {
                             Spacer()
                             
                             HStack(alignment: .center, spacing: 0) {
-                                Text("\(expenseViewModel.formatSum(from: categorySum, to: 0))원")
+                                Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum, to: 0))원")
                                     .font(.subhead3_1)
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)

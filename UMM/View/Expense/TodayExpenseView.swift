@@ -56,9 +56,9 @@ struct TodayExpenseView: View {
             let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             let totalSum = currencies.reduce(0) { total, currency in
-                let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+                let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
                 let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
-                return total + sum * (rate ?? -1)
+                return total + sum * (rate ?? -100)
             }
             
             VStack(alignment: .leading, spacing: 0) {
@@ -99,8 +99,8 @@ struct TodayExpenseView: View {
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + $1.payAmount }
-                        
+                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+
                         NavigationLink {
                             TodayExpenseDetailView(
                                 selectedTravel: expenseViewModel.selectedTravel,
@@ -121,8 +121,7 @@ struct TodayExpenseView: View {
                                     HStack(spacing: 0) {
                                         ForEach(currencies.indices, id: \.self) { index in
                                             let currency = currencies[index]
-                                            let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-                                            
+                                            let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
                                             Text((Currency(rawValue: Int(currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: sum, to: 2))")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
