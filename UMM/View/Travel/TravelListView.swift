@@ -273,25 +273,34 @@ struct TravelListView: View {
                 EmptyView()
                 
             } else {
-                HStack(alignment: .center, spacing: 20) {
-                    Image("dollar-circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                        .background(.white)
-                        .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
-                            .font(.subhead2_1)
-                            .foregroundColor(Color.black)
+                
+                NavigationLink(destination: InterimRecordView(), label: {
+                    HStack(alignment: .center, spacing: 20) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 36, height: 36)
+                                .shadow(color: Color.black.opacity(0.25), radius: 1, x: 0, y: 0)
+                                .overlay(
+                                    Image("dollar-circle")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 24, height: 24)
+                                )
+                        }
                         
-                        Text("최근 지출 ❌11,650원❌")
-                            .font(.caption2)
-                            .foregroundColor(Color.gray300)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
+                                .font(.subhead2_1)
+                                .foregroundColor(Color.black)
+                            
+                            Text("최근 지출 ❌11,650원❌")
+                                .font(.caption2)
+                                .foregroundColor(Color.gray300)
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
+                })
                 .padding(.horizontal, 16)
                 .padding(.vertical, 15)
                 .frame(width: 350, alignment: .leading)
@@ -310,7 +319,7 @@ extension View {
 
 struct TravelTabView: View {
     
-    @State var currentTab: Int = 0
+    @State private var currentTab: Int = 0
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -358,7 +367,6 @@ struct TabBarView: View {
         }
         .background(Color.clear)
         .frame(height: 30)
-//        .padding(.top, )
         .ignoresSafeArea(.all)
     }
 }
