@@ -51,7 +51,7 @@ struct ExpenseView: View {
                 print("ExpenseView | expenseViewModel.selectedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
             }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-                TravelChoiceModalBinding(expenseViewModel: expenseViewModel, selectedTravel: $mainVM.selectedTravel)
+                TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
             }
             .toolbar {

@@ -15,7 +15,7 @@ struct ManualRecordView: View {
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     let fraction0NumberFormatter = NumberFormatter()
-
+    
     var body: some View {
         ZStack {
             Color(.white)

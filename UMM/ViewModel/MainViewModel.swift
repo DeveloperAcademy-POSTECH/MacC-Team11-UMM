@@ -12,6 +12,10 @@ class MainViewModel: ObservableObject {
     @Published var selection: Int = 0
     @Published var selectedTravel: Travel?
     
+    init() {
+        selectedTravel = findCurrentTravel()
+    }
+    
     func navigationToRecordView() {
         self.selection = 1
     }
