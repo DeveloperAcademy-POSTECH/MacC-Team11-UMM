@@ -35,7 +35,7 @@
 		57B2AA422AEFD3980042E55C /* EmtpyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B2AA412AEFD3980042E55C /* EmtpyFile.swift */; };
 		57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C41DFB2AD4F1EB00345253 /* Persistence.swift */; };
 		57CC20182AE548440034BD57 /* InfoClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */; };
-		57CC201A2AE551BE0034BD57 /* TravelChoiceModalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CC20192AE551BE0034BD57 /* TravelChoiceModalBinding.swift */; };
+		57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */; };
 		57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C722ADE4CAE00EDAD11 /* Currency.swift */; };
 		57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */; };
 		57EA42202ADE38EE006CA587 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EA421F2ADE38EE006CA587 /* Country.swift */; };
@@ -72,6 +72,7 @@
 		C19AFAF82AE16C600037A5F5 /* UpcomingTravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */; };
 		C1DC9A472AF3428C00CB6298 /* CountryInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A462AF3428C00CB6298 /* CountryInfoModel.swift */; };
 		C1DC9A492AF3859B00CB6298 /* Gesture+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */; };
+		C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */; };
 		E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A32AE2724700E17CFF /* CustomDatePicker.swift */; };
 		E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A52AE273E700E17CFF /* NSObject+Extension.swift */; };
 		E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A72AE2B42300E17CFF /* dateFormatter.swift */; };
@@ -120,7 +121,7 @@
 		57B2AA412AEFD3980042E55C /* EmtpyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmtpyFile.swift; sourceTree = "<group>"; };
 		57C41DFB2AD4F1EB00345253 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = InfoClassifier.mlmodel; sourceTree = "<group>"; };
-		57CC20192AE551BE0034BD57 /* TravelChoiceModalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceModalBinding.swift; sourceTree = "<group>"; };
+		57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceInExpenseModal.swift; sourceTree = "<group>"; };
 		57CE9C722ADE4CAE00EDAD11 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		57EA421F2ADE38EE006CA587 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
@@ -158,6 +159,7 @@
 		C19AFAF72AE16C600037A5F5 /* UpcomingTravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingTravelViewModel.swift; sourceTree = "<group>"; };
 		C1DC9A462AF3428C00CB6298 /* CountryInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInfoModel.swift; sourceTree = "<group>"; };
 		C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gesture+Extension.swift"; sourceTree = "<group>"; };
+		C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		E23357A32AE2724700E17CFF /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		E23357A52AE273E700E17CFF /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
 		E23357A72AE2B42300E17CFF /* dateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dateFormatter.swift; sourceTree = "<group>"; };
@@ -237,7 +239,7 @@
 			children = (
 				5760066E2ADD4355006CD8DF /* TravelChoiceInRecordModal.swift */,
 				572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */,
-				57CC20192AE551BE0034BD57 /* TravelChoiceModalBinding.swift */,
+				57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */,
 				57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */,
 				575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */,
 			);
@@ -360,6 +362,7 @@
 		C17550572AD5519800A61BE5 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */,
 				57A65D112AD7D5D500131266 /* RecordViewModel.swift */,
 				572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */,
 				C17550582AD57B6500A61BE5 /* AddTravelViewModel.swift */,
@@ -585,7 +588,8 @@
 				57A65D0E2AD7D51600131266 /* SplitVariety.swift in Sources */,
 				C19AFAE12ADF709E0037A5F5 /* AddMemberViewModel.swift in Sources */,
 				C1DC9A472AF3428C00CB6298 /* CountryInfoModel.swift in Sources */,
-				57CC201A2AE551BE0034BD57 /* TravelChoiceModalBinding.swift in Sources */,
+				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
+				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
 				575F287F2AF38C0300F9484E /* AddTravelRequestModal.swift in Sources */,
 				57A65D102AD7D52700131266 /* String+Extension.swift in Sources */,
 				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,
@@ -593,6 +597,7 @@
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
 				C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */,
 				E2D5C0642ADD923800907501 /* TodayExpenseDetailView.swift in Sources */,
+				C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */,
 				E2D5C06A2ADD925C00907501 /* DummyRecordViewModel.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
 				C19AFAF42AE139CD0037A5F5 /* TravelListViewModel.swift in Sources */,
@@ -736,7 +741,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = 8H4K6TKQBU;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -775,7 +780,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = 8H4K6TKQBU;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;

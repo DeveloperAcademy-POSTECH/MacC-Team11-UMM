@@ -37,7 +37,6 @@ struct TodayExpenseView: View {
             
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
-            print("Grouped expenses count: \(expenseViewModel.groupedTodayExpenses.count)")
         }
     }
 

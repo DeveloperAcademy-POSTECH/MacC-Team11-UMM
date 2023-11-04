@@ -43,7 +43,7 @@ struct AddTravelRequestModal: View {
                 viewModel.addTravelRequestModalIsShown = false
             }
         }
-        .padding(.bottom, 45) // 버튼 템플릿 변화하면 변화에  맞춰서 수정하기 ^^^
+        .padding(.bottom, 45) // 버튼 템플릿 변화하면 변화에 맞춰서 수정하기 ^^^
     }
 }
 
