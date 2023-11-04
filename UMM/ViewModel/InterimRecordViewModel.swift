@@ -54,4 +54,16 @@ class InterimRecordViewModel: ObservableObject {
             }
         }
     }
+    
+    func formatAmount(amount: Double?) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 2
+        numberFormatter.numberStyle = .decimal
+        if let formattedAmount = numberFormatter.string(from: NSNumber(value: amount ?? Double(0))) {
+            return formattedAmount
+        } else {
+            return "amount"
+        }
+    }
 }
