@@ -26,12 +26,12 @@ struct TravelListView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 titleHeader
+                    .padding(.bottom, 16)
                 
                 nowTravelingView
                 
                 tempTravelView
-                
-                Spacer(minLength: 16)
+                    .offset(y: -18)
                 
                 TravelTabView()
             }
@@ -39,6 +39,7 @@ struct TravelListView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
+                    viewModel.fetchDefaultTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                     self.travelCount = Int(nowTravel?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
@@ -70,7 +71,7 @@ struct TravelListView: View {
     }
     
     private var titleHeader: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             HStack {
                 Text("여행 관리")
                     .font(.display2)
@@ -89,7 +90,7 @@ struct TravelListView: View {
     }
     
     private var nowTravelingView: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: .center) {
             if travelCount == 0 {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -103,8 +104,9 @@ struct TravelListView: View {
                         }
                     )
                     .cornerRadius(10)
+                    .padding(.bottom, 18)
             } else {
-                ZStack {
+                ZStack(alignment: .center) {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
@@ -232,9 +234,12 @@ struct TravelListView: View {
                                 })
                             }
                         }
-                        .frame(width: 350, height: 230)
+                        .frame(width: 350, height: 137 + 46)
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
+                    .frame(width: 350, height: 137 + 46)
+//                    .background(Color.red)
+                    
                     HStack(spacing: 6) {
                         ForEach(0..<travelCount, id: \.self) { index in
                             Capsule()
@@ -248,7 +253,6 @@ struct TravelListView: View {
                         self.currentPage = Int(round(offset / screenWidth))
                     }
                 }
-                .frame(height: 200)
             }
         }
     }
@@ -328,7 +332,7 @@ struct TravelTabView: View {
             
             Divider()
                 .frame(height: 1)
-                .padding(.top, 44)
+                .padding(.top, 36)
             
             TabBarView(currentTab: self.$currentTab)
         }
@@ -354,7 +358,7 @@ struct TabBarView: View {
         }
         .background(Color.clear)
         .frame(height: 30)
-        .padding(.top, 8)
+//        .padding(.top, )
         .ignoresSafeArea(.all)
     }
 }

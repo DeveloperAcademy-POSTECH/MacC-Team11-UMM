@@ -30,6 +30,16 @@ class TravelListViewModel: ObservableObject {
         }
     }
     
+    func fetchDefaultTravel() {
+        let request = NSFetchRequest<Travel>(entityName: "Travel")
+        do {
+            defaultTravel = try viewContext.fetch(request)
+            print("TravelListViewModel : fetchDefaulTravel")
+        } catch let error {
+            print("Error while fetchDefaultTravel : \(error.localizedDescription)")
+        }
+    }
+    
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {

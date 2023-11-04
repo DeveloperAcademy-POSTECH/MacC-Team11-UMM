@@ -229,7 +229,7 @@ struct PreviousTravelView: View {
                         }
                     }
                     // TempView 가 있을 땐 125 없을 땐 85
-                    .offset(y: 125)
+                    .offset(y: 135)
                 }
             }
         }
