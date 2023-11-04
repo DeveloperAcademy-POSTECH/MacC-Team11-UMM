@@ -298,7 +298,13 @@ struct TravelListView: View {
                                 .font(.subhead2_1)
                                 .foregroundColor(Color.black)
                             
-                            Text("최근 지출 ❌11,650원❌")
+                            Group {
+                                Text("최근 지출 ")
+                                +
+                                Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
+                                +
+                                Text("원") // Doris
+                            }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)
                         }
