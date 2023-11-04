@@ -291,6 +291,7 @@ struct DefaultTabBarItem: View {
 
 struct ProceedingView: View {
     
+    @State private var currentPage = 0
     @State var proceedingCnt = 0
     @State var nowTravel: [Travel]? {
         didSet {
@@ -302,33 +303,261 @@ struct ProceedingView: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                    ForEach(0..<5, id: \.self) { index in
-                        if index == 0 {
-                            Rectangle()
+            if proceedingCnt == 0 {
+                Button {
+                    
+                } label: {
+                    ZStack {
+                        Rectangle()
                             .foregroundColor(.clear)
                             .frame(width: 110, height: 80)
                             .cornerRadius(10)
                             .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
                             )
-                        } else {
-                            Button {
-                                print("\(proceedingCnt)")
-                            } label: {
-                                Text("버튼")
-                            }
+                        
+                        VStack {
+                            Image("manualRecordParticipantAdd")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                                
+                            Text("새로운 여행")
+                                .font(.subhead1)
+                                .foregroundStyle(Color.gray300)
                         }
                     }
                 }
+            } else if proceedingCnt <= 5 {
+                VStack {
+                    LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                        ForEach(0..<proceedingCnt+1, id: \.self) { index in
+                            if index == 0 {
+                                Button {
+                                    
+                                } label: {
+                                    ZStack {
+                                        Rectangle()
+                                            .foregroundColor(.clear)
+                                            .frame(width: 110, height: 80)
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                            )
+                                        
+                                        VStack {
+                                            Image("manualRecordParticipantAdd")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 16, height: 16)
+                                            
+                                            Text("새로운 여행")
+                                                .font(.subhead1)
+                                                .foregroundStyle(Color.gray300)
+                                        }
+                                    }
+                                }
+                            } else {
+                                VStack {
+                                    Button {
+                                        
+                                    } label: {
+                                        ZStack {
+                                            Image("basicImage")
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                                .background(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
+                                                )
+                                                .cornerRadius(10)
+                                            
+                                            //                                            VStack(alignment: .leading) {
+                                            //                                                HStack {
+                                            //                                                    Spacer()
+                                            //
+                                            //                                                    ForEach(flagImageDict[nowTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                            //                                                        Image(imageName)
+                                            //                                                            .resizable()
+                                            //                                                            .frame(width: 24, height: 24)
+                                            //                                                    }
+                                            //                                                }
+                                            //                                                .padding(16)
+                                            //
+                                            //                                                Spacer()
+                                            //
+                                            //                                                HStack {
+                                            //                                                    Text(nowTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                            //
+                                            //                                                    Text("~")
+                                            //                                                }
+                                            //                                                .font(.caption2)
+                                            //                                                .foregroundStyle(Color.white.opacity(0.75))
+                                            //
+                                            //                                                Text(nowTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                            //                                                    .font(.caption2)
+                                            //                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                            //                                            }
+                                        }
+                                        //                                        .onAppear {
+                                        //
+                                        //                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                        //
+                                        //                                            if let savedExpenses = savedExpenses {
+                                        //                                                let countryValues: [Int64] = savedExpenses.map { expense in
+                                        //                                                    return viewModel.getCountryForExpense(expense)
+                                        //                                                }
+                                        //                                                let uniqueCountryValues = Array(Set(countryValues))
+                                        //
+                                        //                                                var flagImageNames: [String] = []
+                                        //                                                for countryValue in uniqueCountryValues {
+                                        //
+                                        //                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                        //                                                        flagImageNames.append(flagString)
+                                        //                                                    } else {
+                                        //                                                        flagImageNames.append("DefaultFlag")
+                                        //                                                    }
+                                        //                                                }
+                                        //                                                self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
+                                        //                                            }
+                                        //                                        }
+                                    }
+//                                    Text(nowTravel?[index].name ?? "제목 미정")
+//                                        .font(.subhead1)
+//                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                    }
+//                    .padding(.horizontal, 20)
+//                    .padding(.vertical, 32)
+//                    
+//                    Spacer()
+                }
+            } else {
+                ZStack {
+                      ScrollView(.init()) {
+                          TabView(selection: $currentPage) {
+                              ForEach(0 ..< (proceedingCnt+5)/6, id: \.self) { page in
+                                  VStack {
+                                      LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                                          ForEach((page * 6) ..< min((page+1) * 6+1, proceedingCnt), id: \.self) { index in
+                                              VStack {
+                                                  Button {
+                                                      
+                                                  } label: {
+                                                      ZStack {
+                                                          Image("basicImage")
+                                                              .resizable()
+                                                              .scaledToFill()
+                                                              .frame(width: 110, height: 80)
+                                                              .cornerRadius(10)
+                                                              .background(
+                                                                  LinearGradient(
+                                                                      stops: [
+                                                                          Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                          Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                      ],
+                                                                      startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                      endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                  )
+                                                              )
+                                                              .cornerRadius(10)
+                                                          
+//                                                          VStack(alignment: .leading) {
+//                                                              
+//                                                              HStack {
+//                                                                  Spacer()
+//                                                                  
+////                                                                  ForEach(flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+////                                                                      Image(imageName)
+////                                                                          .resizable()
+////                                                                          .frame(width: 24, height: 24)
+////                                                                  }
+//                                                              }
+//                                                              .padding(16)
+//                                                              
+//                                                              Spacer()
+//                                                              
+//                                                              HStack {
+//                                                                  Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+//                                                                  
+//                                                                  Text("~")
+//                                                              }
+//                                                              .font(.caption2)
+//                                                              .foregroundStyle(Color.white.opacity(0.75))
+//                                                              
+//                                                              Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+//                                                                  .font(.caption2)
+//                                                                  .foregroundStyle(Color.white.opacity(0.75))
+//                                                          }
+                                                          
+                                                      }
+//                                                      .onAppear {
+//                                                          self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+//                                                          
+//                                                          if let savedExpenses = savedExpenses {
+//                                                              let countryValues: [Int64] = savedExpenses.map { expense in
+//                                                                  return viewModel.getCountryForExpense(expense)
+//                                                              }
+//                                                              let uniqueCountryValues = Array(Set(countryValues))
+//                                                              
+//                                                              var flagImageNames: [String] = []
+//                                                              for countryValue in uniqueCountryValues {
+//                                                                  
+//                                                                  if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+//                                                                      flagImageNames.append(flagString)
+//                                                                  } else {
+//                                                                      flagImageNames.append("DefaultFlag")
+//                                                                  }
+//                                                              }
+//                                                              self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
+//                                                          }
+//                                                      }
+                                                  }
+//                                                  Text(previousTravel?[index].name ?? "제목 미정")
+//                                                      .font(.subhead1)
+//                                                      .lineLimit(1)
+                                              }
+                                          }
+                                          
+                                      }
+                                      Spacer()
+                                  }
+                              }
+                          }
+                          .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                          .padding(.horizontal, 20)
+                          .padding(.vertical, 32)
+                      }
+                      
+                      HStack(spacing: 6) {
+                          ForEach(0..<(proceedingCnt+5)/6, id: \.self) { index in
+                              Capsule()
+                                  .fill(currentPage == index ? Color.black : Color.gray200)
+                                  .frame(width: 5, height: 5)
+                          }
+                      }
+                      .offset(y: 135)
+                  }
             }
         }
+        .padding(.horizontal, 20)
         .onAppear {
             DispatchQueue.main.async {
                 viewModel.fetchNowTravel()
                 self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                print("proceedingCnt : ", proceedingCnt )
             }
         }
     }
