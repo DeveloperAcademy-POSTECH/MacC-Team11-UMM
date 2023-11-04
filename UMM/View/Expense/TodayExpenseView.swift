@@ -31,7 +31,6 @@ struct TodayExpenseView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 20)
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()

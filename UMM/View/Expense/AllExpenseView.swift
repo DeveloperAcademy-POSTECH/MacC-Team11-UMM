@@ -30,9 +30,7 @@ struct AllExpenseView: View {
             ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
-            .padding(.horizontal, 10)
         }
-        .padding(.horizontal, 20)
         .frame(maxWidth: .infinity)
         .onAppear {
             print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
@@ -240,26 +238,37 @@ struct BarGraph: View {
         return data.filter { $0.1 != 0 }.count
     }
     
+    private var diviceWidthWithoutSpacing: Double {
+        return Double(UIScreen.main.bounds.width - 40)
+    }
+    
+    private var lessthanZeroDataCount: Double {
+        return Double(data.filter { $0.1 > 0 && $0.1 / totalSum * diviceWidthWithoutSpacing < 5 }.count)
+    }
+    
     var body: some View {
-        let totalWidth = UIScreen.main.bounds.size.width - 40
-        let dataSize = data.count
+        let totalWidthCalculated = diviceWidthWithoutSpacing - (lessthanZeroDataCount * 5)
+        let minElementWidth = 5.0
+        let totalMinWidth = minElementWidth * Double(validDataCount)
         
         HStack(spacing: 0) {
-            ForEach(0..<dataSize, id: \.self) { index in
+            ForEach(0..<validDataCount, id: \.self) { index in
                 let item = data[index]
+                let elementWidth = max((item.1 / totalSum) * (diviceWidthWithoutSpacing - totalMinWidth) + minElementWidth, minElementWidth)
+                
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
-                    width: (item.1 != 0 ? max(totalWidth * 0.01, CGFloat(item.1 / totalSum) * totalWidth) : 0),
+                    width: (item.1 != 0 ? elementWidth : 0),
                     isFirstElement: index == 0,
                     isLastElement: index == validDataCount - 1
                 )
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
 struct BarElement: View {
-    
     let color: Color
     let width: CGFloat
     let isFirstElement: Bool
@@ -270,7 +279,6 @@ struct BarElement: View {
             .fill(color)
             .frame(width: max(0, width), height: 24)
             .modifier(RoundedModifier(isFirstElement: isFirstElement, isLastElement: isLastElement))
-            .padding(.trailing, 2)
     }
 }
 
