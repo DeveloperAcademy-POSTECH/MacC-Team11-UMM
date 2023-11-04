@@ -9,6 +9,8 @@ import SwiftUI
 
 struct InterimRecordView: View {
     
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var currentPage = 0
     @State private var defaultTravel: [Travel]?
     @State private var defaultExpense: [Expense]?
@@ -18,18 +20,20 @@ struct InterimRecordView: View {
     @ObservedObject private var viewModel = InterimRecordViewModel()
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             titleHeader
             
             defaultExpenseView
             
-            DefaultTravelTabView()
+            DefaultTravelTabView(viewModel: viewModel)
             
             LargeButtonUnactive(title: "확인", action: {
                 
             })
         }
         .toolbar(.hidden, for: .tabBar)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButton)
         .onAppear {
             DispatchQueue.main.async {
                 viewModel.fetchTravel()
@@ -47,6 +51,7 @@ struct InterimRecordView: View {
             
             Spacer()
         }
+        .padding(.top, 28)
     }
     
     private var defaultExpenseView: some View {
@@ -160,28 +165,39 @@ struct InterimRecordView: View {
         let screenWidth = getWidth()
         return CGFloat(currentPage) * screenWidth
     }
+    
+    private var backButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
+        }
+    }
 }
 
 struct DefaultTravelTabView: View {
     
     @State private var currentDefaultTab: Int = 0
+    @ObservedObject var viewModel: InterimRecordViewModel
     
     var body: some View {
         ZStack(alignment: .top) {
             TabView(selection: self.$currentDefaultTab) {
-                ProceedingView()
+                ProceedingView(viewModel: viewModel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })
                     .tag(0)
                 
-                PastView()
+                PastView(viewModel: viewModel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })
                     .tag(1)
                 
-                OncomingView()
+                OncomingView(viewModel: viewModel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })
@@ -192,7 +208,7 @@ struct DefaultTravelTabView: View {
             
             Divider()
                 .frame(height: 1)
-                .padding(.top, 36)
+                .padding(.top, 55)
             
             DefaultTabBarView(currentDefaultTab: self.$currentDefaultTab)
         }
@@ -216,8 +232,11 @@ struct DefaultTabBarView: View {
                            tab: index)
             })
         }
+        .padding(.horizontal, 20)
+        .padding(.top, 30) // Doris
         .background(Color.clear)
-        .frame(height: 30)
+        .frame(height: 39)
+//        .background(Color.red)
         .ignoresSafeArea(.all)
     }
 }
@@ -245,7 +264,7 @@ struct DefaultTabBarItem: View {
                             .font(.subhead3_1)
                         
                         Color.black
-                            .frame(width: 136, height: 2)
+                            .frame(width: 116, height: 2)
                             .matchedGeometryEffect(id: "underline",
                                                    in: namespace,
                                                    properties: .frame)
@@ -260,7 +279,7 @@ struct DefaultTabBarItem: View {
                             .foregroundStyle(Color.gray300)
                             .font(.subhead3_1)
                         
-                        Color.clear.frame(width: 136, height: 2)
+                        Color.clear.frame(width: 116, height: 2)
                     }
                 }
             }
@@ -271,34 +290,82 @@ struct DefaultTabBarItem: View {
 }
 
 struct ProceedingView: View {
+    
+    @State var proceedingCnt = 0
+    @State var nowTravel: [Travel]? {
+        didSet {
+            proceedingCnt = Int(nowTravel?.count ?? 0)
+        }
+    }
+    
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
     var body: some View {
         ZStack {
-            Text("진행 중")
+            VStack {
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                    ForEach(0..<5, id: \.self) { index in
+                        if index == 0 {
+                            Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 110, height: 80)
+                            .cornerRadius(10)
+                            .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                            )
+                        } else {
+                            Button {
+                                print("\(proceedingCnt)")
+                            } label: {
+                                Text("버튼")
+                            }
+                        }
+                    }
+                }
+            }
         }
         .onAppear {
-            print("ProceedingView : OnAppear")
+            DispatchQueue.main.async {
+                viewModel.fetchNowTravel()
+                self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+            }
         }
     }
 }
 
 struct PastView: View {
+    
+    @State private var pastCnt = 0
+    @State var previousTravel: [Travel]? {
+        didSet {
+            pastCnt = Int(previousTravel?.count ?? 0)
+        }
+    }
+    
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
     var body: some View {
         ZStack {
             Text("지난")
-        }
-        .onAppear {
-            print("PastView : OnAppear")
         }
     }
 }
 
 struct OncomingView: View {
+    
+    @State private var oncomingCnt = 0
+    @State var oncomingTravel: [Travel]? {
+        didSet {
+            oncomingCnt = Int(oncomingTravel?.count ?? 0)
+        }
+    }
+    
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
     var body: some View {
         ZStack {
-            Text("다가오는")
-        }
-        .onAppear {
-            print("OncomingView : OnAppear")
+            Text("다가오는 :")
         }
     }
 }

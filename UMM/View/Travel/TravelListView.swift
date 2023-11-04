@@ -364,7 +364,7 @@ struct TabBarView: View {
     
     var tabBarOptions: [String] = ["지난 여행", "다가오는 여행"]
     var body: some View {
-        HStack {
+        HStack(spacing: 30) {
             ForEach(Array(zip(self.tabBarOptions.indices,
                               self.tabBarOptions)),
                     id: \.0,
