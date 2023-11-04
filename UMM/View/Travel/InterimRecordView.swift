@@ -9,7 +9,9 @@ import SwiftUI
 
 struct InterimRecordView: View {
     
-    @State private var currentTab: Int = 0
+    @State private var currentTab = 0
+    @State private var defaultTravelCnt = 0
+    @State private var currentPage = 0
     
     var body: some View {
         VStack {
@@ -22,6 +24,11 @@ struct InterimRecordView: View {
             LargeButtonUnactive(title: "확인", action: {
                 
             })
+        }
+        .onAppear {
+            DispatchQueue.main.async {
+                self.defaultTravelCnt = Int(4) // *** 뷰모델 생성 후 수정
+            }
         }
     }
     
@@ -36,13 +43,45 @@ struct InterimRecordView: View {
     }
     
     private var defaultExpenseView: some View {
-        ZStack {
-            Rectangle()
-              .foregroundColor(.clear)
-              .frame(width: 350, height: 157)
-              .background(Color(red: 0.96, green: 0.96, blue: 0.96))
-              .cornerRadius(10)
+        ZStack(alignment: .center) {
+            ScrollView(.init()) {
+                TabView(selection: $currentPage) {
+                    ForEach(0..<defaultTravelCnt, id: \.self) { index in
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 350, height: 157)
+                            .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+                            .cornerRadius(10)
+                    }
+                }
+                .frame(width: 350, height: 157 + 46)
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            }
+            .frame(width: 350, height: 157 + 46)
+            .foregroundStyle(Color.red)
+            
+            HStack(spacing: 6) {
+                ForEach(0..<defaultTravelCnt, id: \.self) { index in
+                    Capsule()
+                        .fill(currentPage == index ? Color.black : Color.gray200)
+                        .frame(width: 5, height: 5)
+                }
+            }
+            .offset(y: 100)
+            .onAppear {
+                let screenWidth = getWidth()
+                self.currentPage = Int(round(offset / screenWidth))
+            }
         }
+    }
+    
+    private func getWidth() -> CGFloat {
+        return UIScreen.main.bounds.width
+    }
+    
+    private var offset: CGFloat {
+        let screenWidth = getWidth()
+        return CGFloat(currentPage) * screenWidth
     }
 }
 

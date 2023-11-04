@@ -238,7 +238,7 @@ struct PreviousTravelView: View {
             let screenWidth = getWidth()
             self.currentPage = Int(round(offset / screenWidth))
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())

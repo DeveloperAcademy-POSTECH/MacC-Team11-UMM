@@ -16,7 +16,7 @@ struct TravelListView: View {
     @State var nowTravel: [Travel]?
     @State var defaultTravel: [Travel]?
     @State var savedExpenses: [Expense]?
-    @State private var travelCount: Int = 0
+    @State private var travelCount = 0
     @State private var currentPage = 0
     @State var flagImageName: [String] = []
     
@@ -36,7 +36,7 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.async {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
                     viewModel.fetchDefaultTravel()
@@ -238,7 +238,6 @@ struct TravelListView: View {
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
                     .frame(width: 350, height: 137 + 46)
-//                    .background(Color.red)
                     
                     HStack(spacing: 6) {
                         ForEach(0..<travelCount, id: \.self) { index in
