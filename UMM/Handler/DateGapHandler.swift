@@ -12,7 +12,6 @@ final class LocationManagerDelegateForDateGapHandler: NSObject, CLLocationManage
     var parent: DateGapHandler?
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("LocationManagerDelegateForDateGapHandler | locationManager() is called.")
         parent?.currentLocation = locations.first
     }
 }
@@ -20,7 +19,9 @@ final class LocationManagerDelegateForDateGapHandler: NSObject, CLLocationManage
 final class DateGapHandler {
     static let shared = DateGapHandler()
     
-    private init() {}
+    private init() {
+        getLocation()
+    }
     
     private var locationManager: CLLocationManager?
     private var locationManagerDelegate = LocationManagerDelegateForDateGapHandler()
@@ -41,7 +42,6 @@ final class DateGapHandler {
     }
     
     func convertBeforeSaving(date: Date) -> Date {
-        getLocation()
         let baseCoordinate = CLLocationCoordinate2D(latitude: 37.56, longitude: 127.00) // 서울 (latitude: 37.56, longitude: 127.00)
         // CLGeocoder를 사용하여 위치 정보를 가져온다.
         let geocoder = CLGeocoder()
@@ -74,7 +74,6 @@ final class DateGapHandler {
     }
     
     func convertBeforeShowing(date: Date) -> Date {
-        getLocation()
         let baseCoordinate = CLLocationCoordinate2D(latitude: 37.56, longitude: 127.00) // 서울 (latitude: 37.56, longitude: 127.00)
         // CLGeocoder를 사용하여 위치 정보를 가져온다.
         let geocoder = CLGeocoder()
