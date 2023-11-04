@@ -26,12 +26,6 @@ struct TravelChoiceInRecordModal: View {
             }
         }
         .onAppear {
-            var travelArray: [Travel] = []
-            do {
-                travelArray = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
-            } catch {
-            }
-            
             updateFlagNameArrayDict()
         }
     }

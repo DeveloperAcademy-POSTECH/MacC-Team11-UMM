@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Redrawer: ObservableObject {
+final class Redrawer: ObservableObject {
     @Published var dummy = true
     func redraw() {
         dummy.toggle()
