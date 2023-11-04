@@ -70,7 +70,7 @@ class TravelListViewModel: ObservableObject {
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
             if let startDate = travel.startDate, let endDate = travel.endDate {
-//                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
+                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
                 return todayDate >= startDate && todayDate < endDate
             } else {
                 print("filterTravelByDate | travel.id: nil")
@@ -95,6 +95,16 @@ class TravelListViewModel: ObservableObject {
         return defaultTravel.filter { travel in
             if let name = travel.name {
                 return name == "Default"
+            } else {
+                return false
+            }
+        }
+    }
+    
+    func filterDefaultExpense(selectedTravelName: String) -> [Expense] {
+        return savedExpensesByTravel.filter { expense in
+            if let travelNM = expense.travel?.name {
+                return travelNM == selectedTravelName
             } else {
                 return false
             }

@@ -10,8 +10,13 @@ import SwiftUI
 struct InterimRecordView: View {
     
     @State private var currentTab = 0
-    @State private var defaultTravelCnt = 0
     @State private var currentPage = 0
+    @State private var defaultTravel: [Travel]?
+    @State private var defaultExpense: [Expense]?
+    
+    @Binding var defaultTravelCnt: Int
+    
+    @ObservedObject private var viewModel = InterimRecordViewModel()
     
     var body: some View {
         VStack {
@@ -27,7 +32,10 @@ struct InterimRecordView: View {
         }
         .onAppear {
             DispatchQueue.main.async {
-                self.defaultTravelCnt = Int(4) // *** 뷰모델 생성 후 수정
+                viewModel.fetchTravel()
+                viewModel.fetchExpense()
+                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+                print("defaultExpense : ", defaultExpense?.count)
             }
         }
     }
@@ -47,11 +55,29 @@ struct InterimRecordView: View {
             ScrollView(.init()) {
                 TabView(selection: $currentPage) {
                     ForEach(0..<defaultTravelCnt, id: \.self) { index in
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 350, height: 157)
-                            .background(Color(red: 0.96, green: 0.96, blue: 0.96))
-                            .cornerRadius(10)
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 350, height: 157)
+                                .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+                                .cornerRadius(10)
+                            
+                            VStack {
+                                Text(defaultExpense?[index].info ?? "")
+                                    .font(.subhead3_2)
+                                    .foregroundStyle(Color.black)
+                                
+                                HStack {
+                                    Text("\(defaultExpense?[index].payAmount ?? Double(0))")
+                                }
+                            }
+                            
+                        }
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                
+                            }
+                        }
                     }
                 }
                 .frame(width: 350, height: 157 + 46)
@@ -226,6 +252,6 @@ struct OncomingView: View {
     }
 }
 
-#Preview {
-    InterimRecordView()
-}
+// #Preview {
+//     InterimRecordView()
+// }

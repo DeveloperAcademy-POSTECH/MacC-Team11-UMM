@@ -11,14 +11,17 @@ import CoreLocation
 struct TravelListView: View {
     
     @State var month: Date
+    
     @ObservedObject var viewModel = TravelListViewModel()
     
-    @State var nowTravel: [Travel]?
-    @State var defaultTravel: [Travel]?
-    @State var savedExpenses: [Expense]?
+    @State private var nowTravel: [Travel]?
+    @State private var defaultTravel: [Travel]?
+    @State private var savedExpenses: [Expense]?
+    @State private var defaultExpense: [Expense]?
     @State private var travelCount = 0
     @State private var currentPage = 0
-    @State var flagImageName: [String] = []
+    @State private var defaultTravelCnt = 0
+    @State private var flagImageName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -41,7 +44,9 @@ struct TravelListView: View {
                     viewModel.fetchExpense()
                     viewModel.fetchDefaultTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                    self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
                     self.travelCount = Int(nowTravel?.count ?? 0)
+                    self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
                     let loadedData = handler.loadExchangeRatesFromUserDefaults()
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
@@ -273,7 +278,7 @@ struct TravelListView: View {
                 
             } else {
                 
-                NavigationLink(destination: InterimRecordView(), label: {
+                NavigationLink(destination: InterimRecordView(defaultTravelCnt: $defaultTravelCnt), label: {
                     HStack(alignment: .center, spacing: 20) {
                         ZStack {
                             Circle()
@@ -289,7 +294,7 @@ struct TravelListView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
+                            Text("분류가 필요한 지출 내역 \(defaultTravelCnt)개")
                                 .font(.subhead2_1)
                                 .foregroundColor(Color.black)
                             

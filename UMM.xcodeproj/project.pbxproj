@@ -74,6 +74,7 @@
 		C1DC9A492AF3859B00CB6298 /* Gesture+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */; };
 		C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */; };
 		C1EAD6A22AF6717C00EB3B89 /* InterimRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */; };
+		C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */; };
 		E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A32AE2724700E17CFF /* CustomDatePicker.swift */; };
 		E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A52AE273E700E17CFF /* NSObject+Extension.swift */; };
 		E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A72AE2B42300E17CFF /* dateFormatter.swift */; };
@@ -162,6 +163,7 @@
 		C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gesture+Extension.swift"; sourceTree = "<group>"; };
 		C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimRecordView.swift; sourceTree = "<group>"; };
+		C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimRecordViewModel.swift; sourceTree = "<group>"; };
 		E23357A32AE2724700E17CFF /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		E23357A52AE273E700E17CFF /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
 		E23357A72AE2B42300E17CFF /* dateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dateFormatter.swift; sourceTree = "<group>"; };
@@ -378,6 +380,7 @@
 				572BE1E72AE49FB5005933E7 /* Redrawer.swift */,
 				C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */,
 				C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */,
+				C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -600,6 +603,7 @@
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
 				C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */,
 				E2D5C0642ADD923800907501 /* TodayExpenseDetailView.swift in Sources */,
+				C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */,
 				C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */,
 				E2D5C06A2ADD925C00907501 /* DummyRecordViewModel.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
