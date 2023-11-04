@@ -507,11 +507,11 @@ struct ProceedingView: View {
                                                               //                                                              HStack {
                                                               //                                                                  Spacer()
                                                               //
-                                                              ////                                                                  ForEach(flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
-                                                              ////                                                                      Image(imageName)
-                                                              ////                                                                          .resizable()
-                                                              ////                                                                          .frame(width: 24, height: 24)
-                                                              ////                                                                  }
+                                                              //                                                                  ForEach(flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                              //                                                                      Image(imageName)
+                                                              //                                                                          .resizable()
+                                                              //                                                                          .frame(width: 24, height: 24)
+                                                              //                                                                  }
                                                               //                                                              }
                                                               //                                                              .padding(16)
                                                               //
