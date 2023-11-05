@@ -22,8 +22,7 @@ struct ExpenseView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-                travelChoiceView
-                
+        
                 todayExpenseHeader
                 
                 tabViewButton
@@ -44,6 +43,7 @@ struct ExpenseView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
+            .padding(.horizontal, 20)
             .onAppear {
                 expenseViewModel.fetchExpense()
                 expenseViewModel.fetchTravel()
@@ -55,15 +55,14 @@ struct ExpenseView: View {
                     .presentationDetents([.height(289 - 34)])
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack {
-                        Spacer()
-                        
-                        NavigationLink(destination: SettingView(), label: {
-                            Image(systemName: "gearshape.fill")
-                                .font(.system(size: 20))
-                                .foregroundStyle(Color.gray300)
-                        })
+                ToolbarItem(placement: .navigationBarLeading) {
+                    travelChoiceView
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingView()) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(Color.gray300)
                     }
                 }
             }
@@ -76,7 +75,6 @@ struct ExpenseView: View {
                 .font(.display2)
             Spacer()
         }
-        .padding(.leading, 20)
         .padding(.top, 10)
     }
     
@@ -107,7 +105,6 @@ struct ExpenseView: View {
                 .padding(.leading, 16)
                 .padding(.trailing, 12)
             }
-            .padding(.leading, 20)
         }
     }
     
