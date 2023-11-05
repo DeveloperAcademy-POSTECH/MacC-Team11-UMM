@@ -85,6 +85,11 @@ final class RecordViewModel: ObservableObject {
     @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
+    @Published var alertView_savedIsShown = false {
+        didSet {
+            print("alertView_savedIsShown: \(alertView_savedIsShown)")
+        }
+    }
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var recordButtonIsUsed = true

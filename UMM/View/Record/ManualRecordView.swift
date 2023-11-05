@@ -11,7 +11,7 @@ import CoreLocation
 struct ManualRecordView: View {
     @ObservedObject var viewModel: ManualRecordViewModel
     @EnvironmentObject var mainVM: MainViewModel
-    var recordViewModel: RecordViewModel
+    @ObservedObject var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
@@ -63,19 +63,20 @@ struct ManualRecordView: View {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
         }
-        .alert(Text("화면 전환 안내"), isPresented: $viewModel.backButtonAlertIsShown) {
+        .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.backButtonAlertIsShown) {
             Button {
                 viewModel.backButtonAlertIsShown = false
             } label: {
-                Text("아니오")
+                Text("취소")
             }
             Button {
                 dismiss()
                 viewModel.backButtonAlertIsShown = false
             } label: {
-                Text("예")
+                Text("나가기")
             }
-        } message: {Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아가시겠습니까?")
+        } message: {
+            Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
             viewModel.getLocation()
@@ -127,6 +128,7 @@ struct ManualRecordView: View {
                                 if mainVM.chosenTravelInManualRecord != nil {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
+                                recordViewModel.alertView_savedIsShown = true
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -722,10 +724,12 @@ struct ManualRecordView: View {
                 }
                 if mainVM.chosenTravelInManualRecord != nil {
                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                    dismiss()
                 } else {
                     mainVM.selectedTravel = defaultTravel
                 }
+                recordViewModel.alertView_savedIsShown = true
+                dismiss()
+                
             }
             .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
             .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)

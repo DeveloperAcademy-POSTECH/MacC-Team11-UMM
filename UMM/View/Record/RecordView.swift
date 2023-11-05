@@ -62,6 +62,7 @@ struct RecordView: View {
                         ZStack(alignment: .bottom) {
                             alertView_empty
                             alertView_short
+                            alertView_saved
                             speakWhilePressingView
                         }
                         Spacer()
@@ -72,10 +73,11 @@ struct RecordView: View {
                             .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
                     }
                 }
-                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown)
+                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown || viewModel.alertView_savedIsShown)
                 .onTapGesture {
                     viewModel.alertView_emptyIsShown = false
                     viewModel.alertView_shortIsShown = false
+                    viewModel.alertView_savedIsShown = false
                 }
                 
                 VStack(spacing: 0) {
@@ -536,17 +538,55 @@ struct RecordView: View {
     }
     
     private var alertView_short: some View {
-        VStack(spacing: 9.34) {
-            Image("recordAlert")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 24, height: 24)
-            Text("길게 누른 채로 말해주세요")
-                .font(.subhead3_2)
-                .foregroundStyle(.gray300)
-                .multilineTextAlignment(.center)
+        ZStack {
+            RoundedRectangle(cornerRadius: 18)
+                .foregroundStyle(.white)
+                .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+                .shadow(color: Color(0xCCCCCC), radius: 5)
+                .layoutPriority(-1)
+            
+            VStack(spacing: 8) {
+                Image("recordAlert")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                Text("길게 누른 채로 말해주세요")
+                    .font(.subhead2_2)
+                    .foregroundStyle(.gray300)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 41)
+            }
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
         }
-        .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+        .padding(.horizontal, 30)
+    }
+    
+    private var alertView_saved: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18)
+                .foregroundStyle(.white)
+                .opacity(viewModel.alertView_savedIsShown ? 1 : 0.0000001)
+                .shadow(color: Color(0xCCCCCC), radius: 5)
+                .layoutPriority(-1)
+            
+            VStack(spacing: 8) {
+                Image("recordBigMainPinkCheck")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                Text("지출 기록이 저장되었습니다")
+                    .font(.subhead2_2)
+                    .foregroundStyle(.gray300)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 41)
+            }
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .opacity(viewModel.alertView_savedIsShown ? 1 : 0.0000001)
+        }
+        .padding(.horizontal, 30)
     }
     
     private var speakWhilePressingView: some View {
