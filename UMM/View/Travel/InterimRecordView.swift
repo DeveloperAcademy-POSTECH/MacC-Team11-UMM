@@ -307,25 +307,27 @@ struct ProceedingView: View {
                 Button {
                     
                 } label: {
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 110, height: 80)
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
-                            )
-                        
-                        VStack {
-                            Image("manualRecordParticipantAdd")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 16, height: 16)
+                    VStack {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 110, height: 80)
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                )
+                            
+                            VStack {
+                                Image("manualRecordParticipantAdd")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
                                 
-                            Text("새로운 여행")
-                                .font(.subhead1)
-                                .foregroundStyle(Color.gray300)
+                                Text("새로운 여행")
+                                    .font(.subhead1)
+                                    .foregroundStyle(Color.gray300)
+                            }
                         }
                     }
                 }
@@ -337,32 +339,37 @@ struct ProceedingView: View {
                                 Button {
                                     
                                 } label: {
-                                    ZStack {
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 110, height: 80)
-                                            .cornerRadius(10)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
-                                            )
-                                        
-                                        VStack {
-                                            Image("manualRecordParticipantAdd")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 16, height: 16)
+                                    VStack {
+                                        ZStack {
+                                            Rectangle()
+                                                .foregroundColor(.clear)
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                                )
                                             
-                                            Text("새로운 여행")
-                                                .font(.subhead1)
-                                                .foregroundStyle(Color.gray300)
+                                            VStack {
+                                                Image("manualRecordParticipantAdd")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 16, height: 16)
+                                                
+                                                Text("새로운 여행")
+                                                    .font(.subhead1)
+                                                    .foregroundStyle(Color.gray300)
+                                            }
                                         }
+                                        
+                                        Text("Dummy1")
+                                            .opacity(0)
                                     }
                                 }
                             } else {
                                 VStack {
                                     Button {
-                                        
+                                        print("index : ", index)
                                     } label: {
                                         ZStack {
                                             Image("basicImage")
@@ -432,9 +439,9 @@ struct ProceedingView: View {
                                         //                                            }
                                         //                                        }
                                     }
-//                                    Text(nowTravel?[index].name ?? "제목 미정")
-//                                        .font(.subhead1)
-//                                        .lineLimit(1)
+                                    Text(nowTravel?[index-1].name ?? "제목 미정")
+                                        .font(.subhead1)
+                                        .lineLimit(1)
                                 }
                             }
                         }
@@ -448,7 +455,7 @@ struct ProceedingView: View {
                 ZStack {
                       ScrollView(.init()) {
                           TabView(selection: $currentPage) {
-                              ForEach(0 ..< (proceedingCnt+5)/6, id: \.self) { page in
+                              ForEach(0 ..< (proceedingCnt+6)/6, id: \.self) { page in
                                   VStack {
                                       LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                                           ForEach((page * 6) ..< min((page+1) * 6, proceedingCnt+1), id: \.self) { index in
@@ -457,26 +464,31 @@ struct ProceedingView: View {
                                                   Button {
                                                       
                                                   } label: {
-                                                      ZStack {
-                                                          Rectangle()
-                                                              .foregroundColor(.clear)
-                                                              .frame(width: 110, height: 80)
-                                                              .cornerRadius(10)
-                                                              .overlay(
-                                                                  RoundedRectangle(cornerRadius: 10)
-                                                                      .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
-                                                              )
-                                                          
-                                                          VStack {
-                                                              Image("manualRecordParticipantAdd")
-                                                                  .resizable()
-                                                                  .scaledToFit()
-                                                                  .frame(width: 16, height: 16)
+                                                      VStack {
+                                                          ZStack {
+                                                              Rectangle()
+                                                                  .foregroundColor(.clear)
+                                                                  .frame(width: 110, height: 80)
+                                                                  .cornerRadius(10)
+                                                                  .overlay(
+                                                                    RoundedRectangle(cornerRadius: 10)
+                                                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                                                  )
                                                               
-                                                              Text("새로운 여행")
-                                                                  .font(.subhead1)
-                                                                  .foregroundStyle(Color.gray300)
+                                                              VStack {
+                                                                  Image("manualRecordParticipantAdd")
+                                                                      .resizable()
+                                                                      .scaledToFit()
+                                                                      .frame(width: 16, height: 16)
+                                                                  
+                                                                  Text("새로운 여행")
+                                                                      .font(.subhead1)
+                                                                      .foregroundStyle(Color.gray300)
+                                                              }
                                                           }
+                                                          
+                                                          Text("Dummy1")
+                                                              .opacity(0)
                                                       }
                                                   }
                                               } else {
@@ -553,9 +565,9 @@ struct ProceedingView: View {
                                                           //                                                          }
                                                           //                                                      }
                                                       }
-                                                      //                                                  Text(previousTravel?[index].name ?? "제목 미정")
-                                                      //                                                      .font(.subhead1)
-                                                      //                                                      .lineLimit(1)
+                                                                                                        Text(nowTravel?[index-1].name ?? "제목 미정")
+                                                                                                            .font(.subhead1)
+                                                                                                            .lineLimit(1)
                                                   }
                                               }
                                           }
@@ -571,7 +583,7 @@ struct ProceedingView: View {
                       }
                       
                       HStack(spacing: 6) {
-                          ForEach(0..<(proceedingCnt+5)/6, id: \.self) { index in
+                          ForEach(0..<(proceedingCnt+6)/6, id: \.self) { index in
                               Capsule()
                                   .fill(currentPage == index ? Color.black : Color.gray200)
                                   .frame(width: 5, height: 5)
