@@ -466,6 +466,9 @@ struct RecordView: View {
                         } catch {
                             print("error starting record: \(error.localizedDescription)")
                         }
+                    }
+                    
+                    DispatchQueue.main.async {
                         isDetectingPress_showOnButton = true
                         viewModel.alertView_emptyIsShown = false
                         viewModel.alertView_shortIsShown = false
@@ -476,7 +479,7 @@ struct RecordView: View {
                 }
             }
     }
-    
+
     private var alertView_empty: some View {
         ZStack {
             Color(.white)

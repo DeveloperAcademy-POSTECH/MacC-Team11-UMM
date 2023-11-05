@@ -10,6 +10,7 @@ import CoreML
 import NaturalLanguage
 import Speech
 import SwiftUI
+import Combine
 
 final class RecordViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
@@ -18,7 +19,7 @@ final class RecordViewModel: ObservableObject {
     var voiceSentencePartitionArray: [String] = [] {
         didSet {
             print("voiceSentencePartitionArray: \(voiceSentencePartitionArray)")
-
+            
             if voiceSentencePartitionArray.count == 0 {
                 voiceSentence = ""
             } else {
@@ -36,11 +37,32 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
+
     // these variables are updated by divideVoiceSentence()
-    @Published var info: String?
     @Published var infoCategory: ExpenseInfoCategory = .unknown
+    @Published var info: String? {
+        didSet {
+            if oldValue == nil && info != nil {
+                print("haptic | info: \(String(describing: info?.description))")
+                DispatchQueue.main.async {
+                    let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
+                    hapticEngine.impactOccurred()
+                }
+            }
+        }
+    }
     @Published var payAmount: Double = -1
-    @Published var paymentMethod: PaymentMethod = .unknown
+    @Published var paymentMethod: PaymentMethod = .unknown {
+        didSet {
+            if oldValue == .unknown && paymentMethod != .unknown {
+                print("haptic | paymentMethod: \(paymentMethod)")
+                DispatchQueue.main.async {
+                    let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
+                    hapticEngine.impactOccurred()
+                }
+            }
+        }
+    }
     
     // travels
     @Published var travelArray: [Travel] = []
@@ -86,6 +108,8 @@ final class RecordViewModel: ObservableObject {
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     
     @Published var defaultTravelNameReplacer = "-"
+    private var cancellables = Set<AnyCancellable>()
+    private var hapticCounter = 0
     
     init() {
         do {
@@ -98,6 +122,20 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
+
+        chosenTravel = findCurrentTravel()
+        $payAmount
+            .removeDuplicates()
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { [weak self] amount in
+                guard let self = self else { return }
+                if amount != -1 {
+                    print("haptic | payAmount: \(amount)")
+                    self.generateHapticFeedback()
+                }
+            }
+            .store(in: &cancellables)
+
     }
     
     // MARK: 녹음 기능
@@ -548,9 +586,13 @@ final class RecordViewModel: ObservableObject {
         recognitionTask?.cancel()
         recognitionTask = nil
         
+        let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
+        hapticEngine.prepare()
+        
         let audioSession = AVAudioSession.sharedInstance()
         try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
         
         let inputNode = audioEngine.inputNode
         inputNode.removeTap(onBus: 0)
@@ -592,7 +634,7 @@ final class RecordViewModel: ObservableObject {
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest = nil
         recognitionTask = nil
-
+        
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
@@ -609,7 +651,7 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("Can not setup the Recording")
         }
-
+        
         soundRecordPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         soundRecordFileName = soundRecordPath?.appendingPathComponent("CO-Voice : \(Date().toString(dateFormat: "dd-MM-YY 'at' HH:mm:ss")).m4a")
         
@@ -636,20 +678,20 @@ final class RecordViewModel: ObservableObject {
     }
     
     func startPlayingAudio(url: URL) {
-      
+        
         let playSession = AVAudioSession.sharedInstance()
-            
+        
         do {
             try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         } catch {
             print("Playing failed in Device")
         }
-            
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
-                
+            
         } catch {
             print("Playing Failed")
         }
@@ -667,5 +709,18 @@ final class RecordViewModel: ObservableObject {
         infoCategory = .unknown
         payAmount = -1
         paymentMethod = .unknown
+    }
+    
+    func setChosenTravel(as travel: Travel) {
+        chosenTravel = travel
+    }
+    
+    // MARK: - 햅틱
+    private func generateHapticFeedback() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(hapticCounter * 100)) {
+            let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
+            hapticEngine.impactOccurred()
+        }
+        hapticCounter += 1
     }
 }
