@@ -12,7 +12,8 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
-    let handler = ExchangeRateHandler.shared
+    let exchangeRateHandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -55,7 +56,7 @@ struct TodayExpenseView: View {
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             let totalSum = currencies.reduce(0) { total, currency in
                 let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
+                let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown")
                 return total + sum * (rate ?? -100)
             }
             
@@ -120,7 +121,9 @@ struct TodayExpenseView: View {
                                         ForEach(currencies.indices, id: \.self) { index in
                                             let currency = currencies[index]
                                             let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                                            Text((Currency(rawValue: Int(currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: sum, to: 2))")
+                                            let symbol = currencyInfoModel[Int(currency)]?.symbol ?? "-"
+                                            let formattedSum = expenseViewModel.formatSum(from: sum, to: 2)
+                                            Text("\(symbol) \(formattedSum)")
                                                 .font(.subhead3_1)
                                                 .foregroundStyle(.black)
                                             

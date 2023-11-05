@@ -13,7 +13,7 @@ class CurrencyInfoModel {
     private init() {
     }
     
-    lazy var CurrencyResult: [Int: CurrencyInfo] = {
+    lazy var currencyResult: [Int: CurrencyInfo] = {
             do {
                 let csvURL = Bundle.main.url(forResource: "CurrencyList", withExtension: "csv")!
                 return try createCurrencyInfoDictionary(from: csvURL)
