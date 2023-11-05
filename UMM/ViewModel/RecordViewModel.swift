@@ -43,7 +43,6 @@ final class RecordViewModel: ObservableObject {
     @Published var paymentMethod: PaymentMethod = .unknown
     
     // travels
-    @Published var chosenTravel: Travel?
     @Published var travelArray: [Travel] = []
     
     // shows other views
@@ -99,7 +98,6 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
-        chosenTravel = findCurrentTravel()
     }
     
     // MARK: 녹음 기능
@@ -519,7 +517,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     func updateVoiceSentence(with transcribedString: String) {
-        print("sentence transcribedString (raw): \(transcribedString)")
         guard transcribedString.count > 0 else { // 새로운 문장이 공백인 경우
             return
         }
@@ -670,9 +667,5 @@ final class RecordViewModel: ObservableObject {
         infoCategory = .unknown
         payAmount = -1
         paymentMethod = .unknown
-    }
-    
-    func setChosenTravel(as travel: Travel) {
-        chosenTravel = travel
     }
 }
