@@ -117,9 +117,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencyAndSum = currencyAndSums[idx]
-                    let isoCode = currencyInfoModel[Int(currencyAndSum.currency)]?.isoCodeNm
-                    let rate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: isoCode ?? "Unknown")
-                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum * (rate ?? -100), to: 2))")
+                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
