@@ -28,8 +28,10 @@ struct AllExpenseView: View {
             allExpenseSummaryByCurrency
             allExpenseBarGraph
             Divider()
+            ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
+        }
         .frame(maxWidth: .infinity)
         .onAppear {
             print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
@@ -81,7 +83,7 @@ struct AllExpenseView: View {
                         let amount = (expense.payAmount != -1) ? expense.payAmount : 0
                         return total + amount
                     }
-
+                    
                     Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
@@ -251,7 +253,7 @@ struct BarGraph: View {
             ForEach(0..<validDataCount, id: \.self) { index in
                 let item = data[index]
                 let elementWidth = (item.1 / totalSum) * max(0, (deviceWidthWithoutSpacing - totalMinWidth)) + minElementWidth
-
+                
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
                     width: (item.1 != 0 ? elementWidth : 0),

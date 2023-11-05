@@ -11,4 +11,3 @@ struct CurrencyInfo {
     let koreanNm: String
     let symbol: String
 }
-

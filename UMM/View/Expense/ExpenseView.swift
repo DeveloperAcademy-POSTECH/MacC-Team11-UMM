@@ -12,7 +12,6 @@ struct ExpenseView: View {
     @Namespace var namespace
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     @EnvironmentObject var mainVM: MainViewModel
-    
     var exchangeRateHandler: ExchangeRateHandler
     
     init() {
