@@ -37,35 +37,30 @@ final class RecordViewModel: ObservableObject {
             }
         }
     }
-    
-    private var prevInfo: String?
-    private var prevPaymentMethod: PaymentMethod = .unknown
 
     // these variables are updated by divideVoiceSentence()
     @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var info: String? {
         didSet {
-            if prevInfo == nil && info != nil {
+            if oldValue == nil && info != nil {
                 print("haptic | info: \(String(describing: info?.description))")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
                 }
             }
-            prevInfo = info
         }
     }
     @Published var payAmount: Double = -1
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
-            if prevPaymentMethod == .unknown && paymentMethod != .unknown {
+            if oldValue == .unknown && paymentMethod != .unknown {
                 print("haptic | paymentMethod: \(paymentMethod)")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
                 }
             }
-            prevPaymentMethod = paymentMethod
         }
     }
     
