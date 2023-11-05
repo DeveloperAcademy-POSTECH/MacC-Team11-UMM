@@ -12,7 +12,8 @@ struct AllExpenseView: View {
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
-    let handler = ExchangeRateHandler.shared
+    let exchangeRatehandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -27,10 +28,8 @@ struct AllExpenseView: View {
             allExpenseSummaryByCurrency
             allExpenseBarGraph
             Divider()
-            ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
-        }
         .frame(maxWidth: .infinity)
         .onAppear {
             print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
@@ -45,7 +44,8 @@ struct AllExpenseView: View {
     
     var allExpenseSummaryTotal: some View {
         let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
-            let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
+            let isoCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
+            let rate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: isoCode)
             let amount = (expense.payAmount != -1) ? expense.payAmount : 0
             return total + amount * (rate ?? -100)
         }
@@ -204,6 +204,7 @@ struct AllExpenseView: View {
         }
     }
 }
+
 
 struct CurrencyForChart: Identifiable, Hashable {
     let id = UUID()
