@@ -235,11 +235,11 @@ struct BarGraph: View {
     private var validDataCount: Int {
         return data.filter { $0.1 != 0 }.count
     }
-    private var diviceWidthWithoutSpacing: Double {
+    private var deviceWidthWithoutSpacing: Double {
         return Double(UIScreen.main.bounds.width) - 40 - Double(validDataCount - 1) * 2  // 요소 사이의 공간을 고려
     }
     private var lessthanZeroDataCount: Double {
-        return Double(data.filter { $0.1 > 0 && $0.1 / totalSum * diviceWidthWithoutSpacing < 5 }.count)
+        return Double(data.filter { $0.1 > 0 && $0.1 / totalSum * deviceWidthWithoutSpacing < 5 }.count)
     }
     
     var body: some View {
@@ -249,7 +249,7 @@ struct BarGraph: View {
         HStack(spacing: 2) {
             ForEach(0..<validDataCount, id: \.self) { index in
                 let item = data[index]
-                let elementWidth = max((item.1 / totalSum) * (diviceWidthWithoutSpacing - totalMinWidth) + minElementWidth, minElementWidth)
+                let elementWidth = (item.1 / totalSum) * max(0, (deviceWidthWithoutSpacing - totalMinWidth)) + minElementWidth
 
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
