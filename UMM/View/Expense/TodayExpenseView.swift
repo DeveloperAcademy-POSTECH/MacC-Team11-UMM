@@ -56,7 +56,10 @@ struct TodayExpenseView: View {
             let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
             let totalSum = currencies.reduce(0) { total, currency in
                 let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown")
+                let isoCodeName = currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown"
+                let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: isoCodeName)
+                print("TEV | isoCodeName: \(isoCodeName)")
+                print("TEV | rate: \(rate)")
                 return total + sum * (rate ?? -100)
             }
             
@@ -97,8 +100,17 @@ struct TodayExpenseView: View {
                 // 결제 수단: 개별: 합계
                 ForEach(paymentMethodArray, id: \.self) { paymentMethod in
                     VStack(alignment: .leading, spacing: 0) {
+
                         let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+                        let currencies = Array(Set(filteredExpenseArray.map { $0.currency })).sorted { $0 < $1 }
+                        let totalSum = currencies.reduce(0) { total, currency in
+                            let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+                            let isoCodeName = currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown"
+                            let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: isoCodeName)
+                            return total + sum * (rate ?? -100)
+                        }
+
+//                        let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
 
                         NavigationLink {
                             TodayExpenseDetailView(
@@ -106,7 +118,7 @@ struct TodayExpenseView: View {
                                 selectedDate: expenseViewModel.selectedDate,
                                 selectedCountry: country,
                                 selectedPaymentMethod: paymentMethod,
-                                sumPaymentMethod: sumPaymentMethod
+                                sumPaymentMethod: totalSum
                             )
                         } label: {
                             HStack(alignment: .center, spacing: 0) {
