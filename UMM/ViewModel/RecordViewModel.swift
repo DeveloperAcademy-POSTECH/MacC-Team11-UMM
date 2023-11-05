@@ -517,7 +517,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     func updateVoiceSentence(with transcribedString: String) {
-        print("sentence transcribedString (raw): \(transcribedString)")
         guard transcribedString.count > 0 else { // 새로운 문장이 공백인 경우
             return
         }

@@ -169,7 +169,6 @@ struct ManualRecordView: View {
         }
         
         DispatchQueue.main.async {
-            print("sync chosenTravelInManualRecord!")
             MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
         }
         
