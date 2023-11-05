@@ -408,7 +408,7 @@ struct RecordView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 84, height: 84)
-                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
+                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 8 : 0)
                 .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
                 .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
                 .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
