@@ -78,6 +78,9 @@
 		C1EAD6A82AF7D66500EB3B89 /* FullCalendarModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */; };
 		C1EAD6AA2AF7E13900EB3B89 /* FullCompleteModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */; };
 		C1EAD6AC2AF808D200EB3B89 /* FullAddMememberModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */; };
+		C1EAD6B02AF8210D00EB3B89 /* InterimProceedingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */; };
+		C1EAD6B22AF8218200EB3B89 /* InterimPastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6B12AF8218200EB3B89 /* InterimPastView.swift */; };
+		C1EAD6B42AF821BF00EB3B89 /* InterimOncomingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6B32AF821BF00EB3B89 /* InterimOncomingView.swift */; };
 		E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A32AE2724700E17CFF /* CustomDatePicker.swift */; };
 		E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A52AE273E700E17CFF /* NSObject+Extension.swift */; };
 		E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A72AE2B42300E17CFF /* dateFormatter.swift */; };
@@ -170,6 +173,9 @@
 		C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendarModal.swift; sourceTree = "<group>"; };
 		C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCompleteModal.swift; sourceTree = "<group>"; };
 		C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullAddMememberModal.swift; sourceTree = "<group>"; };
+		C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimProceedingView.swift; sourceTree = "<group>"; };
+		C1EAD6B12AF8218200EB3B89 /* InterimPastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimPastView.swift; sourceTree = "<group>"; };
+		C1EAD6B32AF821BF00EB3B89 /* InterimOncomingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimOncomingView.swift; sourceTree = "<group>"; };
 		E23357A32AE2724700E17CFF /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		E23357A52AE273E700E17CFF /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
 		E23357A72AE2B42300E17CFF /* dateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dateFormatter.swift; sourceTree = "<group>"; };
@@ -332,6 +338,9 @@
 				5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */,
 				5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */,
 				C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */,
+				C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */,
+				C1EAD6B12AF8218200EB3B89 /* InterimPastView.swift */,
+				C1EAD6B32AF821BF00EB3B89 /* InterimOncomingView.swift */,
 			);
 			path = Record;
 			sourceTree = "<group>";
@@ -552,9 +561,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C19AFAEA2AE00A920037A5F5 /* NavigationUtils.swift in Sources */,
+				C1EAD6B02AF8210D00EB3B89 /* InterimProceedingView.swift in Sources */,
 				57EA42202ADE38EE006CA587 /* Country.swift in Sources */,
 				C157601E2AF1DD830089FFE5 /* CountryInfo.swift in Sources */,
 				572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */,
+				C1EAD6B42AF821BF00EB3B89 /* InterimOncomingView.swift in Sources */,
 				C1DC9A492AF3859B00CB6298 /* Gesture+Extension.swift in Sources */,
 				E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */,
 				57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */,
@@ -613,6 +624,7 @@
 				E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */,
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
 				C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */,
+				C1EAD6B22AF8218200EB3B89 /* InterimPastView.swift in Sources */,
 				E2D5C0642ADD923800907501 /* TodayExpenseDetailView.swift in Sources */,
 				C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */,
 				C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */,
