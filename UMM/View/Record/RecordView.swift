@@ -448,7 +448,9 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-                    
+//                    Task {
+//                        await viewModel.startRecording()
+//                    }
                     DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()
