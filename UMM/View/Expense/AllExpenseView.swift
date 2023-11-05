@@ -22,13 +22,17 @@ struct AllExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            countryPicker
-            allExpenseSummaryTotal
-            allExpenseSummaryByCurrency
-            allExpenseBarGraph
-            Divider()
-            ScrollView(showsIndicators: false) {
-                drawExpensesByCategory
+            if expenseViewModel.filteredAllExpenses.count == 0 {
+                noDataView
+            } else {
+                countryPicker
+                allExpenseSummaryTotal
+                allExpenseSummaryByCurrency
+                allExpenseBarGraph
+                Divider()
+                ScrollView(showsIndicators: false) {
+                    drawExpensesByCategory
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -81,7 +85,7 @@ struct AllExpenseView: View {
                         let amount = (expense.payAmount != -1) ? expense.payAmount : 0
                         return total + amount
                     }
-
+                    
                     Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
@@ -203,6 +207,16 @@ struct AllExpenseView: View {
             }
         }
     }
+    
+    private var noDataView: some View {
+        VStack(spacing: 0) {
+            Text("아직 지출 기록이 없어요")
+                .font(.subhead3_2)
+                .foregroundStyle(.gray300)
+                .padding(.top, 130)
+            Spacer()
+        }
+    }
 }
 
 struct CurrencyForChart: Identifiable, Hashable {
@@ -250,7 +264,7 @@ struct BarGraph: View {
             ForEach(0..<validDataCount, id: \.self) { index in
                 let item = data[index]
                 let elementWidth = (item.1 / totalSum) * max(0, (deviceWidthWithoutSpacing - totalMinWidth)) + minElementWidth
-
+                
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
                     width: (item.1 != 0 ? elementWidth : 0),

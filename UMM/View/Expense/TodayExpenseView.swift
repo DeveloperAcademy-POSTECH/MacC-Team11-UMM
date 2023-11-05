@@ -22,9 +22,8 @@ struct TodayExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
             if expenseViewModel.filteredTodayExpenses.count == 0 {
-                noDataVIew
+                noDataView
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
@@ -155,7 +154,7 @@ struct TodayExpenseView: View {
         }
     } // draw
     
-    private var noDataVIew: some View {
+    private var noDataView: some View {
         VStack(spacing: 0) {
             Text("아직 지출 기록이 없어요")
                 .font(.subhead3_2)
