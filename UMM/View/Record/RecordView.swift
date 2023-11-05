@@ -449,7 +449,7 @@ struct RecordView: View {
                     state = true
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
                     
-                    DispatchQueue.global(qos: .userInitiated).async {
+                    DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()
                         } catch {
