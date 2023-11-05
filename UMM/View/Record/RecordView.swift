@@ -64,7 +64,7 @@ struct RecordView: View {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
                 viewModel.defaultTravelNameReplacer = "-"
-                if let chosenTravelName = viewModel.chosenTravel?.name {
+                if let chosenTravelName = mainVM.selectedTravel?.name {
                     if chosenTravelName == "Default" {
                         viewModel.addTravelRequestModalIsShown = true
                     }
@@ -80,15 +80,24 @@ struct RecordView: View {
                 fraction2NumberFormatter.maximumFractionDigits = 2
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-                TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
-                    .presentationDetents([.height(289 - 34)])
+                if viewModel.travelChoiceModalIsShown {
+                    TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
+                        .presentationDetents([.height(289 - 34)])
+                } else {
+                    EmptyView()
+                }
             }
             .sheet(isPresented: $viewModel.addTravelRequestModalIsShown) {
                 AddTravelRequestModal(viewModel: viewModel)
                     .presentationDetents([.height(247 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
-                ManualRecordView(prevViewModel: viewModel)
+                if viewModel.manualRecordViewIsShown {
+                    ManualRecordView(prevViewModel: viewModel)
+                        .environmentObject(mainVM)
+                } else {
+                    EmptyView()
+                }
             }
         }
     }

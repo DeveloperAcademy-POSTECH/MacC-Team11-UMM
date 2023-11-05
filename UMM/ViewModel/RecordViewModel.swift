@@ -65,7 +65,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     // travels
-    @Published var chosenTravel: Travel?
     @Published var travelArray: [Travel] = []
     
     // shows other views
@@ -123,6 +122,7 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
+
         chosenTravel = findCurrentTravel()
         $payAmount
             .removeDuplicates()
@@ -135,6 +135,7 @@ final class RecordViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+
     }
     
     // MARK: 녹음 기능
@@ -554,7 +555,6 @@ final class RecordViewModel: ObservableObject {
     }
     
     func updateVoiceSentence(with transcribedString: String) {
-        print("sentence transcribedString (raw): \(transcribedString)")
         guard transcribedString.count > 0 else { // 새로운 문장이 공백인 경우
             return
         }
