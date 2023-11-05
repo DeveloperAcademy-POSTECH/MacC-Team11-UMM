@@ -85,6 +85,7 @@ struct UpcomingTravelView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                         }
+                                        .frame(width: 110, height: 80)
                                     }
                                     .onAppear {
                                         
@@ -117,7 +118,7 @@ struct UpcomingTravelView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.vertical, 32)
+                    .padding(.vertical, 22)
                     
                     Spacer()
                 }
@@ -181,6 +182,7 @@ struct UpcomingTravelView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                         }
+                                                        .frame(width: 110, height: 80)
                                                     }
                                                     .onAppear {
                                                         
@@ -218,7 +220,7 @@ struct UpcomingTravelView: View {
                         }
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         .padding(.horizontal, 20)
-                        .padding(.vertical, 32)
+                        .padding(.vertical, 22)
                     }
                     
                     HStack(spacing: 6) {

@@ -26,7 +26,7 @@ struct LargeButtonActive: View {
         .cornerRadius(12)
         .padding(.horizontal, 16)
         .padding(.top, 4)
-        .padding(.bottom, 45)
+//        .padding(.bottom, 45)
         .background(Color.white)
     }
 }
@@ -50,7 +50,7 @@ struct LargeButtonUnactive: View {
         .cornerRadius(12)
         .padding(.horizontal, 16)
         .padding(.top, 4)
-        .padding(.bottom, 45)
+//        .padding(.bottom, 45)
         .background(Color.white)
     }
 }
