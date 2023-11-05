@@ -291,6 +291,7 @@ struct DefaultTabBarItem: View {
 
 struct ProceedingView: View {
     
+    @State private var isModalPresented = false
     @State private var currentPage = 0
     @State var proceedingCnt = 0
     @State var nowTravel: [Travel]? {
@@ -305,7 +306,12 @@ struct ProceedingView: View {
         ZStack {
             if proceedingCnt == 0 {
                 
-                makeNewTravelButton
+                NewTravelButton {
+                    isModalPresented.toggle()
+                }
+                .sheet(isPresented: $isModalPresented) {
+                    FullCalendarModal()
+                }
                 
             } else if proceedingCnt <= 5 {
                 VStack {
@@ -313,7 +319,12 @@ struct ProceedingView: View {
                         ForEach(0..<proceedingCnt+1, id: \.self) { index in
                             if index == 0 {
                                 
-                                makeNewTravelButton
+                                NewTravelButton {
+                                    isModalPresented.toggle()
+                                }
+                                .sheet(isPresented: $isModalPresented) {
+                                    FullCalendarModal()
+                                }
                                 
                             } else {
                                 VStack {
@@ -363,7 +374,12 @@ struct ProceedingView: View {
                                               
                                               if index == 0 {
 
-                                                  makeNewTravelButton
+                                                  NewTravelButton {
+                                                      isModalPresented.toggle()
+                                                  }
+                                                  .sheet(isPresented: $isModalPresented) {
+                                                      FullCalendarModal()
+                                                  }
                                                   
                                               } else {
                                                   VStack {
@@ -430,6 +446,7 @@ struct ProceedingView: View {
 
 struct PastView: View {
     
+    @State private var isModalPresented = false
     @State private var currentPage = 0
     @State private var pastCnt = 0
     @State var previousTravel: [Travel]? {
@@ -444,7 +461,12 @@ struct PastView: View {
         ZStack {
             if pastCnt == 0 {
                 
-                makeNewTravelButton
+                NewTravelButton {
+                    isModalPresented.toggle()
+                }
+                .sheet(isPresented: $isModalPresented) {
+                    FullCalendarModal()
+                }
                 
             } else if pastCnt <= 5 {
                 VStack {
@@ -452,7 +474,12 @@ struct PastView: View {
                         ForEach(0..<pastCnt+1, id: \.self) { index in
                             if index == 0 {
                                 
-                                makeNewTravelButton
+                                NewTravelButton {
+                                    isModalPresented.toggle()
+                                }
+                                .sheet(isPresented: $isModalPresented) {
+                                    FullCalendarModal()
+                                }
                                 
                             } else {
                                 VStack {
@@ -500,7 +527,12 @@ struct PastView: View {
                                             
                                             if index == 0 {
                                                 
-                                                makeNewTravelButton
+                                                NewTravelButton {
+                                                    isModalPresented.toggle()
+                                                }
+                                                .sheet(isPresented: $isModalPresented) {
+                                                    FullCalendarModal()
+                                                }
                                                 
                                             } else {
                                                 VStack {
@@ -568,6 +600,7 @@ struct PastView: View {
 
 struct OncomingView: View {
     
+    @State private var isModalPresented = false
     @State private var currentPage = 0
     @State private var oncomingCnt = 0
     @State var oncomingTravel: [Travel]? {
@@ -582,7 +615,12 @@ struct OncomingView: View {
         ZStack {
             if oncomingCnt == 0 {
                 
-                makeNewTravelButton
+                NewTravelButton {
+                    isModalPresented.toggle()
+                }
+                .sheet(isPresented: $isModalPresented) {
+                    FullCalendarModal()
+                }
                 
             } else if oncomingCnt <= 5 {
                 VStack {
@@ -590,7 +628,12 @@ struct OncomingView: View {
                         ForEach(0..<oncomingCnt+1, id: \.self) { index in
                             if index == 0 {
                                 
-                                makeNewTravelButton
+                                NewTravelButton {
+                                    isModalPresented.toggle()
+                                }
+                                .sheet(isPresented: $isModalPresented) {
+                                    FullCalendarModal()
+                                }
                                 
                             } else {
                                 VStack {
@@ -638,7 +681,12 @@ struct OncomingView: View {
                                             
                                             if index == 0 {
                                                 
-                                                makeNewTravelButton
+                                                NewTravelButton {
+                                                    isModalPresented.toggle()
+                                                }
+                                                .sheet(isPresented: $isModalPresented) {
+                                                    FullCalendarModal()
+                                                }
                                                 
                                             } else {
                                                 VStack {
@@ -703,36 +751,41 @@ struct OncomingView: View {
     }
 }
 
-private var makeNewTravelButton: some View {
-    Button {
-        print("makeNewTravelButton")
-    } label: {
-        VStack {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 110, height: 80)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
-                    )
-                
-                VStack {
-                    Image("manualRecordParticipantAdd")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
+struct NewTravelButton: View {
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: {
+            self.action()
+        })
+        {
+            VStack {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 110, height: 80)
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                        )
                     
-                    Text("새로운 여행")
-                        .font(.subhead1)
-                        .foregroundStyle(Color.gray300)
+                    VStack {
+                        Image("manualRecordParticipantAdd")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                        
+                        Text("새로운 여행")
+                            .font(.subhead1)
+                            .foregroundStyle(Color.gray300)
+                    }
                 }
+                
+                Text("새로운 여행")
+                    .font(.subhead1)
+                    .opacity(0)
             }
-            
-            Text("새로운 여행")
-                .font(.subhead1)
-                .opacity(0)
         }
     }
 }
