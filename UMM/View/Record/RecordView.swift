@@ -469,7 +469,6 @@ struct RecordView: View {
             }
     }
 
-    
     private var alertView_empty: some View {
         ZStack {
             Color(.white)
