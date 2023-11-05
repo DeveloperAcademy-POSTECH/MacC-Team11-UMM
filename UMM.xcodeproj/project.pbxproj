@@ -77,6 +77,7 @@
 		C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */; };
 		C1EAD6A82AF7D66500EB3B89 /* FullCalendarModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */; };
 		C1EAD6AA2AF7E13900EB3B89 /* FullCompleteModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */; };
+		C1EAD6AC2AF808D200EB3B89 /* FullAddMememberModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */; };
 		E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A32AE2724700E17CFF /* CustomDatePicker.swift */; };
 		E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A52AE273E700E17CFF /* NSObject+Extension.swift */; };
 		E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A72AE2B42300E17CFF /* dateFormatter.swift */; };
@@ -168,6 +169,7 @@
 		C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimRecordViewModel.swift; sourceTree = "<group>"; };
 		C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendarModal.swift; sourceTree = "<group>"; };
 		C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCompleteModal.swift; sourceTree = "<group>"; };
+		C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullAddMememberModal.swift; sourceTree = "<group>"; };
 		E23357A32AE2724700E17CFF /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		E23357A52AE273E700E17CFF /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
 		E23357A72AE2B42300E17CFF /* dateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dateFormatter.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */,
 				C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */,
 				C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */,
+				C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */,
 			);
 			path = Modal;
 			sourceTree = "<group>";
@@ -318,7 +321,6 @@
 				C19AFAEF2AE116FF0037A5F5 /* PreviousTravelView.swift */,
 				C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */,
 				C19ACF7B2AEA341400D950C9 /* TravelDetailView.swift */,
-				C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */,
 			);
 			path = Travel;
 			sourceTree = "<group>";
@@ -329,6 +331,7 @@
 				57A65D172AD7DDA700131266 /* RecordView.swift */,
 				5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */,
 				5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */,
+				C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */,
 			);
 			path = Record;
 			sourceTree = "<group>";
@@ -614,6 +617,7 @@
 				C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */,
 				C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */,
 				E2D5C06A2ADD925C00907501 /* DummyRecordViewModel.swift in Sources */,
+				C1EAD6AC2AF808D200EB3B89 /* FullAddMememberModal.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
 				C19AFAF42AE139CD0037A5F5 /* TravelListViewModel.swift in Sources */,
 				E2D5C06C2ADD926200907501 /* ExpenseViewModel.swift in Sources */,

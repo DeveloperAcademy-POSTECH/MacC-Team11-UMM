@@ -16,7 +16,7 @@ struct PreviousTravelView: View {
         }
     }
     @State var savedExpenses: [Expense]? = []
-    @State var uniqueCountry: [(key: Int, value: [Int64])] = []
+//    @State var uniqueCountry: [(key: Int, value: [Int64])] = []
     @State private var travelCnt: Int = 0
     @State private var currentPage = 0
     @State var flagImageDict: [UUID: [String]] = [:]
@@ -244,7 +244,6 @@ struct PreviousTravelView: View {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
-                
             }
         }
     }

@@ -18,6 +18,7 @@ class InterimRecordViewModel: ObservableObject {
     @Published var previousTravel: [Travel] = []
     @Published var nowTravel: [Travel] = []
     @Published var upcomingTravel: [Travel] = []
+    @Published var savedExpensesByTravel: [Expense] = []
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -73,6 +74,15 @@ class InterimRecordViewModel: ObservableObject {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
             defaultExpense = try viewContext.fetch(request)
+        } catch let error {
+            print("Error while fetchExpense: \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchSavedExpense() {
+        let request = NSFetchRequest<Expense>(entityName: "Expense")
+        do {
+        savedExpensesByTravel = try viewContext.fetch(request)
         } catch let error {
             print("Error while fetchExpense: \(error.localizedDescription)")
         }
@@ -135,5 +145,22 @@ class InterimRecordViewModel: ObservableObject {
                 return false
             }
         }
+    }
+    
+    func filterExpensesByTravel(selectedTravelID: UUID) -> [Expense] {
+        return savedExpensesByTravel.filter { expense in
+            if let travelID = expense.travel?.id {
+                return travelID == selectedTravelID
+            } else {
+                return false
+            }
+        }
+    }
+    
+    func getCountryForExpense(_ expense: Expense) -> Int64 {
+        if let country = expense.country as? Int64 {
+            return country
+        }
+        return -1
     }
 }

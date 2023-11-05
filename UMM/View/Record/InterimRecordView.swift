@@ -299,6 +299,9 @@ struct ProceedingView: View {
             proceedingCnt = Int(nowTravel?.count ?? 0)
         }
     }
+    @State var chosenTravel: Travel?
+    @State var flagImageDict: [UUID: [String]] = [:]
+    @State var savedExpenses: [Expense]? = []
     
     @ObservedObject var viewModel: InterimRecordViewModel
     
@@ -328,29 +331,107 @@ struct ProceedingView: View {
                                 
                             } else {
                                 VStack {
-                                    Button {
-                                        print("index : ", index)
-                                    } label: {
-                                        ZStack {
-                                            Image("basicImage")
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 110, height: 80)
-                                                .cornerRadius(10)
-                                                .background(
-                                                    LinearGradient(
-                                                        stops: [
-                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                        ],
-                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                    )
+                                    ZStack {
+                                        Image("basicImage")
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 110, height: 80)
+                                            .cornerRadius(10)
+                                            .background(
+                                                LinearGradient(
+                                                    stops: [
+                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                    ],
+                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                    endPoint: UnitPoint(x: 0.5, y: 1)
                                                 )
-                                                .cornerRadius(10)
-                                
+                                            )
+                                            .cornerRadius(10)
+                                        
+                                        VStack {
+                                            HStack {
+                                                Button {
+                                                    chosenTravel = nowTravel?[index-1]
+                                                } label: {
+                                                    if chosenTravel != nowTravel?[index-1] {
+                                                        Circle()
+                                                            .fill(.black)
+                                                            .opacity(0.25)
+                                                            .frame(width: 19, height: 19)
+                                                            .overlay(
+                                                                Circle()
+                                                                    .strokeBorder(.white, lineWidth: 1.0)
+                                                            )
+                                                    } else {
+                                                        ZStack {
+                                                            Circle()
+                                                                .fill(Color(.mainPink))
+                                                                .frame(width: 20, height: 20)
+                                                                .overlay(
+                                                                    Circle()
+                                                                        .strokeBorder(.white, lineWidth: 1.0)
+                                                                )
+                                                            Image("circleLabelCheck")
+                                                                .resizable()
+                                                                .scaledToFit()
+                                                                .frame(width: 12, height: 12)
+                                                        }
+                                                    }
+                                                }
+                                                // Doris : 국기 들어갈자리
+                                                
+                                                HStack {
+                                                    Spacer()
+                                                    
+                                                    ForEach(flagImageDict[nowTravel?[index-1].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                        Image(imageName)
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                    }
+                                                }
+                                            }
+                                            .padding(16)
+                                            
+                                            Spacer()
+                                            
+                                            // Doris : 날짜 표시
+                                            HStack {
+                                                Text(nowTravel?[index-1].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                
+                                                Text("~")
+                                            }
+                                            .font(.caption2)
+                                            .foregroundStyle(Color.white.opacity(0.75))
+                                            
+                                            Text(nowTravel?[index-1].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
                                         }
                                     }
+                                    .onAppear {
+                                        
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index-1].id ?? UUID())
+                                        
+                                        if let savedExpenses = savedExpenses {
+                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                return viewModel.getCountryForExpense(expense)
+                                            }
+                                            let uniqueCountryValues = Array(Set(countryValues))
+                                            
+                                            var flagImageNames: [String] = []
+                                            for countryValue in uniqueCountryValues {
+                                                
+                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                    flagImageNames.append(flagString)
+                                                } else {
+                                                    flagImageNames.append("DefaultFlag")
+                                                }
+                                            }
+                                            self.flagImageDict[nowTravel?[index-1].id ?? UUID()] = flagImageNames
+                                        }
+                                    }
+                                    
                                     Text(nowTravel?[index-1].name ?? "제목 미정")
                                         .font(.subhead1)
                                         .lineLimit(1)
@@ -373,7 +454,7 @@ struct ProceedingView: View {
                                           ForEach((page * 6) ..< min((page+1) * 6, proceedingCnt+1), id: \.self) { index in
                                               
                                               if index == 0 {
-
+                                                  
                                                   NewTravelButton {
                                                       isModalPresented.toggle()
                                                   }
@@ -384,6 +465,8 @@ struct ProceedingView: View {
                                               } else {
                                                   VStack {
                                                       Button {
+                                                          
+                                                          chosenTravel = nowTravel?[index]
                                                           
                                                       } label: {
                                                           ZStack {
@@ -405,13 +488,12 @@ struct ProceedingView: View {
                                                                   .cornerRadius(10)
                                                           }
                                                       }
-                                                                                                        Text(nowTravel?[index-1].name ?? "제목 미정")
-                                                                                                            .font(.subhead1)
-                                                                                                            .lineLimit(1)
+                                                      Text(nowTravel?[index-1].name ?? "제목 미정")
+                                                          .font(.subhead1)
+                                                          .lineLimit(1)
                                                   }
                                               }
                                           }
-                                          
                                       }
                                       Spacer()
                                   }
@@ -437,6 +519,7 @@ struct ProceedingView: View {
         .onAppear {
             DispatchQueue.main.async {
                 viewModel.fetchNowTravel()
+                viewModel.fetchSavedExpense()
                 self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
                 print("proceedingCnt : ", proceedingCnt )
             }
@@ -755,10 +838,9 @@ struct NewTravelButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: {
+        Button {
             self.action()
-        })
-        {
+        } label: {
             VStack {
                 ZStack {
                     Rectangle()
@@ -786,6 +868,38 @@ struct NewTravelButton: View {
                     .font(.subhead1)
                     .opacity(0)
             }
+        }
+    }
+}
+
+struct CheckLabelView: View {
+    let travel: Travel
+    let chosenTravel: Travel
+    
+    var body: some View {
+        if travel.id == chosenTravel.id {
+            ZStack {
+                Circle()
+                    .fill(Color(.mainPink))
+                    .frame(width: 20, height: 20)
+                    .overlay(
+                        Circle()
+                            .strokeBorder(.white, lineWidth: 1.0)
+                    )
+                Image("circleLabelCheck")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 12, height: 12)
+            }
+        } else {
+            Circle()
+                .fill(.black)
+                .opacity(0.25)
+                .frame(width: 19, height: 19)
+                .overlay(
+                    Circle()
+                        .strokeBorder(.white, lineWidth: 1.0)
+                )
         }
     }
 }

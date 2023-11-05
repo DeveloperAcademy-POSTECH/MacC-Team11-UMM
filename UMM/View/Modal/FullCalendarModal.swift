@@ -52,7 +52,11 @@ struct FullCalendarModal: View {
                     Spacer()
                     
                     if viewModel.startDate != nil {
-                        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+                        NavigationLink(destination: FullAddMememberModal(addViewModel: viewModel,
+                                                                         participantArr: [""],
+                                                                         startDate: $viewModel.startDate,
+                                                                         endDate: $viewModel.endDate))
+                        {
                             NextButtonActive(title: "다음", action: {
                                 
                             })
