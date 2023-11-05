@@ -42,7 +42,10 @@ final class RecordViewModel: ObservableObject {
     private var prevPayAmount: Double = -1
     private var prevPaymentMethod: PaymentMethod = .unknown
     
+    private var cancellables = Set<AnyCancellable>()
+
     // these variables are updated by divideVoiceSentence()
+    @Published var infoCategory: ExpenseInfoCategory = .unknown
     @Published var info: String? {
         didSet {
             if prevInfo == nil && info != nil {
@@ -55,18 +58,23 @@ final class RecordViewModel: ObservableObject {
             prevInfo = info
         }
     }
+    
     @Published var payAmount: Double = -1 {
         didSet {
-            if prevPayAmount != payAmount || payAmount != -1 {
-                print("haptic | payAmount: \(payAmount)")
-                DispatchQueue.main.async {
-                    let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
-                    hapticEngine.impactOccurred()
+            if prevPayAmount != payAmount && payAmount != -1 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if self.prevPayAmount == self.payAmount {
+                        print("haptic | payAmount: \(self.payAmount)")
+                        print("haptic | prevPayAmount: \(self.prevPayAmount)")
+                        let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
+                        hapticEngine.impactOccurred()
+                    }
                 }
             }
             prevPayAmount = payAmount
         }
     }
+    
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
             if prevPaymentMethod == .unknown && paymentMethod != .unknown {
@@ -79,7 +87,6 @@ final class RecordViewModel: ObservableObject {
             prevPaymentMethod = paymentMethod
         }
     }
-    @Published var infoCategory: ExpenseInfoCategory = .unknown
     
     // travels
     @Published var chosenTravel: Travel?
@@ -126,7 +133,6 @@ final class RecordViewModel: ObservableObject {
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     
     @Published var defaultTravelNameReplacer = "-"
-    private var cancellables = Set<AnyCancellable>()
     init() {
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
@@ -139,26 +145,7 @@ final class RecordViewModel: ObservableObject {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
         chosenTravel = findCurrentTravel()
-//        $info
-//            .sink { [weak self] info in
-//                if info != nil {
-//                    self?.generateHapticFeedback()
-//                }
-//            }.store(in: &cancellables)
-//
-//        $payAmount
-//            .sink { [weak self] payAmount in
-//                if payAmount != -1 {
-//                    self?.generateHapticFeedback()
-//                }
-//            }.store(in: &cancellables)
-//
-//        $paymentMethod
-//            .sink { [weak self] paymentMethod in
-//                if paymentMethod != .unknown {
-//                    self?.generateHapticFeedback()
-//                }
-//            }.store(in: &cancellables)
+        setupPublishers()
     }
     
     // MARK: 녹음 기능
@@ -742,9 +729,23 @@ final class RecordViewModel: ObservableObject {
     // MARK: - 햅틱
     
     private func generateHapticFeedback() {
-        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.async {
             let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
             hapticEngine.impactOccurred()
         }
+    }
+    
+    private func setupPublishers() {
+        $payAmount
+            .removeDuplicates()
+            .debounce(for: .seconds(2), scheduler: RunLoop.main)
+            .sink { [weak self] amount in
+                guard let self = self else { return }
+                if amount != -1 {
+                    print("haptic | payAmount: \(amount)")
+                    self.generateHapticFeedback()
+                }
+            }
+            .store(in: &cancellables)
     }
 }
