@@ -23,13 +23,17 @@ struct AllExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            countryPicker
-            allExpenseSummaryTotal
-            allExpenseSummaryByCurrency
-            allExpenseBarGraph
-            Divider()
-            ScrollView(showsIndicators: false) {
-                drawExpensesByCategory
+            if expenseViewModel.filteredAllExpenses.count == 0 {
+                noDataView
+            } else {
+                countryPicker
+                allExpenseSummaryTotal
+                allExpenseSummaryByCurrency
+                allExpenseBarGraph
+                Divider()
+                ScrollView(showsIndicators: false) {
+                    drawExpensesByCategory
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -205,8 +209,17 @@ struct AllExpenseView: View {
             }
         }
     }
+    
+    private var noDataView: some View {
+        VStack(spacing: 0) {
+            Text("아직 지출 기록이 없어요")
+                .font(.subhead3_2)
+                .foregroundStyle(.gray300)
+                .padding(.top, 130)
+            Spacer()
+        }
+    }
 }
-
 
 struct CurrencyForChart: Identifiable, Hashable {
     let id = UUID()
