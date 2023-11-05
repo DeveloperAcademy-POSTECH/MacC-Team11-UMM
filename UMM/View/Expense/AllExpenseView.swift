@@ -30,9 +30,7 @@ struct AllExpenseView: View {
             ScrollView(showsIndicators: false) {
                 drawExpensesByCategory
             }
-            .padding(.horizontal, 10)
         }
-        .padding(.horizontal, 20)
         .frame(maxWidth: .infinity)
         .onAppear {
             print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
@@ -46,16 +44,18 @@ struct AllExpenseView: View {
     // MARK: - 뷰
     
     var allExpenseSummaryTotal: some View {
-        let totalSum: Double = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
+        let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
             let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency)))
-            return total + expense.payAmount * (rate ?? -1)
+            let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+            return total + amount * (rate ?? -100)
         }
         return NavigationLink {
             AllExpenseDetailView(
                 selectedTravel: expenseViewModel.selectedTravel,
                 selectedCategory: -2,
                 selectedCountry: expenseViewModel.selectedCountry,
-                selectedPaymentMethod: -2
+                selectedPaymentMethod: -2,
+                sumPaymentMethod: totalSum
             )
         } label: {
             HStack(spacing: 0) {
@@ -77,8 +77,11 @@ struct AllExpenseView: View {
             HStack(spacing: 0) {
                 ForEach(currencies.indices, id: \.self) { idx in
                     let currency = currencies[idx]
-                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
-                    
+                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { total, expense in
+                        let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+                        return total + amount
+                    }
+
                     Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
@@ -145,7 +148,6 @@ struct AllExpenseView: View {
     // 1-1. 항목별
     private func drawExpenseContent(for country: Int64, with expenses: [Expense]) -> some View {
         let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenses)
-        let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
         
         return VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -159,7 +161,8 @@ struct AllExpenseView: View {
                             selectedTravel: expenseViewModel.selectedTravel,
                             selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
                             selectedCountry: expenseViewModel.selectedCountry,
-                            selectedPaymentMethod: -2
+                            selectedPaymentMethod: -2,
+                            sumPaymentMethod: totalSum
                         )
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
@@ -171,7 +174,7 @@ struct AllExpenseView: View {
                                     .font(.subhead2_1)
                                     .foregroundStyle(.black)
                                 HStack(alignment: .center, spacing: 0) {
-                                    Text("\(expenseViewModel.formatSum(from: categorySum / totalSum * 100, to: 1))%")
+                                    Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum / totalSum * 100, to: 1))%")
                                         .font(.caption2)
                                         .foregroundStyle(.gray300)
                                 }
@@ -182,7 +185,7 @@ struct AllExpenseView: View {
                             Spacer()
                             
                             HStack(alignment: .center, spacing: 0) {
-                                Text("\(expenseViewModel.formatSum(from: categorySum, to: 0))원")
+                                Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum, to: 0))원")
                                     .font(.subhead3_1)
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)
@@ -226,35 +229,41 @@ struct ExpenseForChart: Identifiable, Hashable {
 
 struct BarGraph: View {
     var data: [(Int64, Double)]
-    
     private var totalSum: Double {
         return data.map { $0.1 }.reduce(0, +)
     }
-    
     private var validDataCount: Int {
         return data.filter { $0.1 != 0 }.count
     }
+    private var deviceWidthWithoutSpacing: Double {
+        return Double(UIScreen.main.bounds.width) - 40 - Double(validDataCount - 1) * 2  // 요소 사이의 공간을 고려
+    }
+    private var lessthanZeroDataCount: Double {
+        return Double(data.filter { $0.1 > 0 && $0.1 / totalSum * deviceWidthWithoutSpacing < 5 }.count)
+    }
     
     var body: some View {
-        let totalWidth = UIScreen.main.bounds.size.width - 40
-        let dataSize = data.count
+        let minElementWidth = 5.0
+        let totalMinWidth = minElementWidth * Double(validDataCount)
         
-        HStack(spacing: 0) {
-            ForEach(0..<dataSize, id: \.self) { index in
+        HStack(spacing: 2) {
+            ForEach(0..<validDataCount, id: \.self) { index in
                 let item = data[index]
+                let elementWidth = (item.1 / totalSum) * max(0, (deviceWidthWithoutSpacing - totalMinWidth)) + minElementWidth
+
                 BarElement(
                     color: ExpenseInfoCategory(rawValue: Int(item.0))?.color ?? Color.gray,
-                    width: (item.1 != 0 ? max(totalWidth * 0.01, CGFloat(item.1 / totalSum) * totalWidth) : 0),
+                    width: (item.1 != 0 ? elementWidth : 0),
                     isFirstElement: index == 0,
                     isLastElement: index == validDataCount - 1
                 )
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
 struct BarElement: View {
-    
     let color: Color
     let width: CGFloat
     let isFirstElement: Bool
@@ -265,7 +274,6 @@ struct BarElement: View {
             .fill(color)
             .frame(width: max(0, width), height: 24)
             .modifier(RoundedModifier(isFirstElement: isFirstElement, isLastElement: isLastElement))
-            .padding(.trailing, 2)
     }
 }
 

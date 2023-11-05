@@ -17,7 +17,7 @@ struct AllExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
     let handler = ExchangeRateHandler.shared
-    @Environment(\.presentationMode) var presentationMode
+    var sumPaymentMethod: Double
 
     var body: some View {
         
@@ -112,7 +112,7 @@ struct AllExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
+            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + ($1.sum == -1 ? 0 : $1.sum) * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -193,11 +193,11 @@ struct AllExpenseDetailView: View {
                                     Text("\(Currency.getSymbol(of: Int(expense.currency)))")
                                         .font(.subhead2_1)
                                     
-                                    Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
+                                    Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
                                         .font(.subhead2_1)
                                         .padding(.leading, 3 )
                                 }
-                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -1), to: 0))원)")
+                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -100), to: 0))원)")
                                     .font(.caption2)
                                     .foregroundStyle(.gray200)
                                     .padding(.top, 4 )
@@ -228,10 +228,6 @@ struct AllExpenseDetailView: View {
         }
         
         return filteredExpenses
-    }
-    
-    private func dismiss() {
-        presentationMode.wrappedValue.dismiss()
     }
 }
 
