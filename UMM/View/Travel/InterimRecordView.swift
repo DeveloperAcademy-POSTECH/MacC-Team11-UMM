@@ -465,8 +465,6 @@ struct ProceedingView: View {
                                                                     )
                                                                   )
                                                                   .cornerRadius(10)
-                                                              
-                                                             
                                                           }
                                                       }
                                                                                                         Text(nowTravel?[index-1].name ?? "제목 미정")
@@ -622,12 +620,228 @@ struct PastView: View {
                 }
             } else {
                 ZStack {
+                    ScrollView(.init()) {
+                        TabView(selection: $currentPage) {
+                            ForEach(0 ..< (pastCnt+6)/6, id: \.self) { page in
+                                VStack {
+                                    LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                                        ForEach((page * 6) ..< min((page+1) * 6, pastCnt+1), id: \.self) { index in
+                                            
+                                            if index == 0 {
+                                                Button {
+                                                    
+                                                } label: {
+                                                    VStack {
+                                                        ZStack {
+                                                            Rectangle()
+                                                                .foregroundColor(.clear)
+                                                                .frame(width: 110, height: 80)
+                                                                .cornerRadius(10)
+                                                                .overlay(
+                                                                    RoundedRectangle(cornerRadius: 10)
+                                                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                                                )
+                                                            
+                                                            VStack {
+                                                                Image("manualRecordParticipantAdd")
+                                                                    .resizable()
+                                                                    .scaledToFit()
+                                                                    .frame(width: 16, height: 16)
+                                                                
+                                                                Text("새로운 여행")
+                                                                    .font(.subhead1)
+                                                                    .foregroundStyle(Color.gray300)
+                                                            }
+                                                        }
+                                                        
+                                                        Text("Dummy1")
+                                                            .opacity(0)
+                                                    }
+                                                }
+                                            } else {
+                                                VStack {
+                                                    Button {
+                                                        
+                                                    } label: {
+                                                        ZStack {
+                                                            Image("basicImage")
+                                                                .resizable()
+                                                                .scaledToFill()
+                                                                .frame(width: 110, height: 80)
+                                                                .cornerRadius(10)
+                                                                .background(
+                                                                    LinearGradient(
+                                                                        stops: [
+                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                        ],
+                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                    )
+                                                                )
+                                                                .cornerRadius(10)
+                                                            
+                                                        }
+                                                    }
+                                                    Text(previousTravel?[index-1].name ?? "제목 미정")
+                                                        .font(.subhead1)
+                                                        .lineLimit(1)
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 32)
+                    }
+                    
+                    HStack(spacing: 6) {
+                        ForEach(0..<(pastCnt+6)/6, id: \.self) { index in
+                            Capsule()
+                                .fill(currentPage == index ? Color.black : Color.gray200)
+                                .frame(width: 5, height: 5)
+                        }
+                    }
+                    .offset(y: 135)
+                }
+            }
+        }
+        .padding(.top, 30)
+        .onAppear {
+            DispatchQueue.main.async {
+                viewModel.fetchPreviousTravel()
+                self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
+                print("previous OnAppear : ", pastCnt)
+            }
+        }
+    }
+}
+
+struct OncomingView: View {
+    
+    @State private var currentPage = 0
+    @State private var oncomingCnt = 0
+    @State var oncomingTravel: [Travel]? {
+        didSet {
+            oncomingCnt = Int(oncomingTravel?.count ?? 0)
+        }
+    }
+    
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
+    var body: some View {
+        ZStack {
+            if oncomingCnt == 0 {
+                Button {
+                    
+                } label: {
+                    VStack {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 110, height: 80)
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                )
+                            
+                            VStack {
+                                Image("manualRecordParticipantAdd")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
+                                
+                                Text("새로운 여행")
+                                    .font(.subhead1)
+                                    .foregroundStyle(Color.gray300)
+                            }
+                        }
+                    }
+                }
+            } else if oncomingCnt <= 5 {
+                VStack {
+                    LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
+                        ForEach(0..<oncomingCnt+1, id: \.self) { index in
+                            if index == 0 {
+                                Button {
+                                    
+                                } label: {
+                                    VStack {
+                                        ZStack {
+                                            Rectangle()
+                                                .foregroundColor(.clear)
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color(red: 0.65, green: 0.65, blue: 0.65), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                                                )
+                                            
+                                            VStack {
+                                                Image("manualRecordParticipantAdd")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 16, height: 16)
+                                                
+                                                Text("새로운 여행")
+                                                    .font(.subhead1)
+                                                    .foregroundStyle(Color.gray300)
+                                            }
+                                        }
+                                        
+                                        Text("Dummy1")
+                                            .opacity(0)
+                                    }
+                                }
+                            } else {
+                                VStack {
+                                    Button {
+                                        print("index : ", index)
+                                    } label: {
+                                        ZStack {
+                                            Image("basicImage")
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                                .background(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
+                                                )
+                                                .cornerRadius(10)
+                                        }
+                                    }
+                                    Text(oncomingTravel?[index-1].name ?? "제목 미정")
+                                        .font(.subhead1)
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 32)
+                    Spacer()
+                }
+            } else {
+                ZStack {
                       ScrollView(.init()) {
                           TabView(selection: $currentPage) {
-                              ForEach(0 ..< (pastCnt+6)/6, id: \.self) { page in
+                              ForEach(0 ..< (oncomingCnt+6)/6, id: \.self) { page in
                                   VStack {
                                       LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                          ForEach((page * 6) ..< min((page+1) * 6, pastCnt+1), id: \.self) { index in
+                                          ForEach((page * 6) ..< min((page+1) * 6, oncomingCnt+1), id: \.self) { index in
                                               
                                               if index == 0 {
                                                   Button {
@@ -685,7 +899,7 @@ struct PastView: View {
                                                             
                                                           }
                                                       }
-                                                                                                        Text(previousTravel?[index-1].name ?? "제목 미정")
+                                                                                                        Text(oncomingTravel?[index-1].name ?? "제목 미정")
                                                                                                             .font(.subhead1)
                                                                                                             .lineLimit(1)
                                                   }
@@ -703,7 +917,7 @@ struct PastView: View {
                       }
                       
                       HStack(spacing: 6) {
-                          ForEach(0..<(pastCnt+6)/6, id: \.self) { index in
+                          ForEach(0..<(oncomingCnt+6)/6, id: \.self) { index in
                               Capsule()
                                   .fill(currentPage == index ? Color.black : Color.gray200)
                                   .frame(width: 5, height: 5)
@@ -716,28 +930,10 @@ struct PastView: View {
         .padding(.top, 30)
         .onAppear {
             DispatchQueue.main.async {
-                viewModel.fetchPreviousTravel()
-                self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
-                print("previous OnAppear : ", pastCnt)
+                viewModel.fetchUpcomingTravel()
+                self.oncomingTravel = viewModel.filterUpcomingTravel(todayDate: Date())
+//                print("previous OnAppear : ", oncomingCnt)
             }
-        }
-    }
-}
-
-struct OncomingView: View {
-    
-    @State private var oncomingCnt = 0
-    @State var oncomingTravel: [Travel]? {
-        didSet {
-            oncomingCnt = Int(oncomingTravel?.count ?? 0)
-        }
-    }
-    
-    @ObservedObject var viewModel: InterimRecordViewModel
-    
-    var body: some View {
-        ZStack {
-            Text("다가오는 :")
         }
     }
 }
