@@ -8,11 +8,409 @@
 import SwiftUI
 
 struct FullCalendarModal: View {
+    
+    @ObservedObject var viewModel = AddTravelViewModel(currentMonth: Date(), currentYear: Date())
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) var presentationMode
+    
+    @State private var modalDate = Date()
+    @State private var showStartModal = false
+    @State private var showEndModal = false
+    @State private var isButtonOn = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        ZStack(alignment: .topTrailing) {
+            VStack {
+                
+                Spacer()
+                
+                headerView
+                
+                Spacer()
+                
+                VStack {
+                    
+                    calendarHeader
+                    calendarGridView
+                    
+                    Spacer()
+                }
+                .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                .padding(20)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 21.49123)
+                        .inset(by: 0.51)
+                        .stroke(Color.gray200, lineWidth: 1.02)
+                        .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    if viewModel.startDate != nil {
+                        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
+                            NextButtonActive(title: "다음", action: {
+                                
+                            })
+                            .disabled(true)
+                            .ignoresSafeArea()
+                        }
+                    } else {
+                        NextButtonUnactive(title: "다음", action: {
+                            
+                        })
+                        .disabled(true)
+                        .ignoresSafeArea()
+                    }
+                }
+            }
+            
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.title)
+                    .foregroundStyle(Color.gray400)
+                    .padding(20)
+            }
+        }
+    }
+
+    private var headerView: some View {
+        
+        return VStack {
+            VStack(alignment: .leading) {
+                Spacer()
+                
+                HStack {
+                    Text("기간을 입력해주세요")
+                        .font(.custom(FontsManager.Pretendard.semiBold, size: 28))
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 10)
+                
+                HStack {
+                    Text("여행의 시작일과 종료일을 설정해주세요.")
+                        .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                        .foregroundStyle(Color.gray300)
+                    
+                    Spacer()
+                }
+                
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            
+            Spacer()
+            
+            VStack {
+                HStack {
+                    HStack {
+                        Text("시작일")
+                            .font(.subhead1)
+                        +
+                        Text("*")
+                            .font(.subhead1)
+                            .foregroundStyle(Color.mainPink)
+                    }
+                    
+                    Rectangle()
+                        .stroke(Color.white, lineWidth: 1)
+                        .frame(width: 104, height: 1)
+                        .overlay(
+                            LinearGradient(gradient: Gradient(colors: [Color.mainPink, viewModel.endDate != nil ? Color.mainPink : Color.white]),
+                                           startPoint: .leading, endPoint: .trailing)
+                        )
+                    
+                    Text("종료일")
+                        .font(.subhead1)
+                }
+                
+                HStack {
+                    Button {
+                        self.showStartModal = true
+                    } label: {
+                        ZStack {
+                    
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 132, height: 28, alignment: .leading)
+                                .cornerRadius(4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .inset(by: 0.5)
+                                        .stroke(viewModel.startDate != nil ? LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.mainOrange]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.gray200, Color.gray200]), startPoint: .topLeading, endPoint: .bottomTrailing),
+                                                lineWidth: viewModel.startDate != nil ? 2.0 : 1.0)
+                                )
+                            
+                            HStack {
+                                Text(viewModel.startDateToString(in: viewModel.startDate))
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 16))
+                                    .foregroundStyle(Color.black)
+                                    .padding(.leading, 20)
+                                    .padding(.vertical, 6)
+                                
+                                Spacer()
+                            }
+                            
+                        }
+                    }
+                    .sheet(isPresented: $showStartModal) {
+                        startDatePickerModalView
+                            .presentationDetents([.height(354), .height(354)])
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        self.showEndModal = true
+                    } label: {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: 132, height: 28, alignment: .leading)
+                                .cornerRadius(4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .inset(by: 0.5)
+                                        .stroke(viewModel.endDate != nil ? LinearGradient(gradient: Gradient(colors: [Color.mainPink, Color.mainOrange]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.gray200, Color.gray200]), startPoint: .topLeading, endPoint: .bottomTrailing),
+                                                lineWidth: viewModel.endDate != nil ? 2.0 : 1.0)
+                                )
+                            
+                            HStack {
+                                Text(viewModel.endDateToString(in: viewModel.endDate))
+                                    .font(.custom(FontsManager.Pretendard.regular, size: 16))
+                                    .foregroundStyle(viewModel.endDate == nil ? Color.gray300 : Color.black)
+                                    .padding(.leading, 20)
+                                    .padding(.vertical, 6)
+                                Spacer()
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $showEndModal) {
+                        endDatePickerModalView
+                            .presentationDetents([.height(354), .height(354)])
+                    }
+                }
+                .padding(.horizontal, 40)
+            }
+            
+            Spacer()
+        }
+    }
+
+    private var startDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showStartModal = false
+                viewModel.startDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.startDate ?? Date()
+        }
+    }
+    
+    private var endDatePickerModalView: some View {
+        VStack {
+            DatePicker("", selection: $modalDate, displayedComponents: .date)
+                .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
+           
+            LargeButtonActive(title: "확인", action: {
+                showEndModal = false
+                viewModel.endDate = modalDate
+            })
+        }
+        .onAppear {
+            modalDate = viewModel.endDate ?? Date()
+        }
+    }
+
+    private var calendarHeader: some View {
+        
+        let koreanWeekdaySymbols = ["일", "월", "화", "수", "목", "금", "토"]
+        
+        return VStack(spacing: 30) {
+            HStack {
+                Button {
+                    viewModel.changeMonth(by: -1)
+                } label: {
+                    Image("calendar_left")
+                }
+                
+                Spacer()
+                
+                Text(viewModel.year, formatter: AddTravelViewModel.dateYearFormatter)
+                    .font(.calendar1)
+                    .foregroundStyle(Color(0x333333))
+                +
+                Text(".")
+                    .font(.calendar1)
+                    .foregroundStyle(Color(0x333333))
+                +
+                Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
+                    .font(.calendar1)
+                    .foregroundStyle(Color(0x333333))
+                
+                Spacer()
+                
+                Button {
+                    viewModel.changeMonth(by: 1)
+                } label: {
+                    Image("calendar_right")
+                }
+            }
+            .padding(.horizontal, 30)
+
+            HStack {
+                ForEach(koreanWeekdaySymbols, id: \.self) { symbol in
+                    Text(symbol)
+                        .font(.caption2)
+                        .foregroundStyle(Color.gray300)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.horizontal, 18)
+        }
+        .padding(.top, 24)
+    }
+
+    private var calendarGridView: some View {
+
+        let daysInMonth: Int = viewModel.numberOfDays(in: viewModel.month)
+        let firstWeekday: Int = viewModel.firstWeekdayOfMonth(in: viewModel.month) - 1
+        let maxNumOfCalendar = viewModel.calculateGridItemCount(daysInMonth: daysInMonth, firstWeekday: firstWeekday)
+        
+        return VStack {
+            LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                ForEach(0 ..< maxNumOfCalendar, id: \.self) { index in
+                    if index < firstWeekday {
+
+                        let total = viewModel.numberOfDays(in: viewModel.prevMonth)
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
+                        let day = total - (firstWeekday - index - 1)
+                        
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray200)
+                            .disabled(true)
+                        
+                    } else if (index >= firstWeekday) && (index < daysInMonth + firstWeekday) {
+                        
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
+                        let day = index - firstWeekday + 1
+                        
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.black)
+                        
+                    } else {
+                        
+                        let maxNum = maxNumOfCalendar
+                        let tmp = maxNum - index
+                        let date = viewModel.getDate(for: index - firstWeekday + 1)
+                        let day = maxNum - (daysInMonth + firstWeekday) - tmp + 1
+                        
+                        CellView(day: day, viewModel: viewModel, date: date, textColor: Color.gray200)
+                            .disabled(true)
+                    }
+                }
+                .onChange(of: viewModel.endDate) {
+                    print("onChange")
+                }
+            }
+            .padding(.horizontal, 18)
+        }
+    }
+
+    private struct CellView: View {
+        
+        private var day: Int
+        private var date: Date?
+        private var textColor: Color
+        @ObservedObject private var viewModel: AddTravelViewModel
+        
+        init(day: Int, viewModel: AddTravelViewModel, date: Date?, textColor: Color) {
+            self.day = day
+            self.viewModel = viewModel
+            self.date = date
+            self.textColor = textColor
+        }
+        
+        var body: some View {
+            VStack {
+                Button {
+                    let result = viewModel.startDateEndDate(in: viewModel.startDate, endDate: viewModel.endDate, selectDate: date!-1)
+                    viewModel.startDate = result[0]
+                    viewModel.endDate = result[1]
+                    
+                    viewModel.selectDate = date! - 1
+                    viewModel.isSelectedStartDate = true
+                } label: {
+                    Text(String(day))
+                        .padding(9.81)
+                        .font(.calendar2)
+                        .frame(width: 45)
+//                        .background(Color.red)
+                        .foregroundStyle(textColor)
+                        .overlay {
+                            if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    ZStack {
+                                        Rectangle()
+                                            .frame(width: 80, height: 33)
+                                            .foregroundStyle(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [Color.mainPink.opacity(1), Color.mainPink.opacity(0)]),
+                                                    startPoint: .leading,
+                                                    endPoint: .trailing
+                                                )
+                                            )
+                                            .offset(x: 40)
+                                        
+                                        Circle()
+                                            .frame(width: 33, height: 33)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.white)
+                                                    .fill(Color.mainPink)
+                                            )
+                                    }
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .font(.calendar2)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    Circle()
+                                        .frame(width: 33, height: 33)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white)
+                                                .fill(Color.mainPink)
+                                        )
+                                    
+                                    Text(String(day))
+                                        .font(.calendar2)
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            }
+                        }
+                }
+            }
+        }
     }
 }
 
-#Preview {
-    FullCalendarModal()
-}
+// #Preview {
+//     FullCalendarModal()
+// }
