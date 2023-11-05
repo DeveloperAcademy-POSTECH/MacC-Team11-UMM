@@ -43,7 +43,6 @@ final class RecordViewModel: ObservableObject {
     @Published var paymentMethod: PaymentMethod = .unknown
     
     // travels
-    @Published var chosenTravel: Travel?
     @Published var travelArray: [Travel] = []
     
     // shows other views
@@ -99,7 +98,6 @@ final class RecordViewModel: ObservableObject {
         } catch {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
-        chosenTravel = findCurrentTravel()
     }
     
     // MARK: 녹음 기능
@@ -670,9 +668,5 @@ final class RecordViewModel: ObservableObject {
         infoCategory = .unknown
         payAmount = -1
         paymentMethod = .unknown
-    }
-    
-    func setChosenTravel(as travel: Travel) {
-        chosenTravel = travel
     }
 }

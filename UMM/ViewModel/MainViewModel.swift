@@ -9,10 +9,14 @@ import Foundation
 import SwiftUI
 
 class MainViewModel: ObservableObject {
+    
+    static let shared = MainViewModel()
+    
     @Published var selection: Int = 0
     @Published var selectedTravel: Travel?
+    @Published var chosenTravelInManualRecord: Travel?
     
-    init() {
+    private init() {
         selectedTravel = findCurrentTravel()
     }
     

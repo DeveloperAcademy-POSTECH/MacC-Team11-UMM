@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @StateObject private var viewModel = MainViewModel()
+    @StateObject private var viewModel = MainViewModel.shared
     
     var body: some View {
         TabView(selection: $viewModel.selection) {
