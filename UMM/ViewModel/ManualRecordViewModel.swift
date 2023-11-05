@@ -25,7 +25,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-class ManualRecordViewModel: ObservableObject {
+final class ManualRecordViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared

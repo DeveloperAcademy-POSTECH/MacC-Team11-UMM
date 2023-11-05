@@ -14,6 +14,7 @@
 		572BE1E82AE49FB5005933E7 /* Redrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E72AE49FB5005933E7 /* Redrawer.swift */; };
 		572BE1EA2AE4BB3A005933E7 /* CategoryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */; };
 		572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */; };
+		573889672AF6AFB300FAEF50 /* DateGapHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573889662AF6AFB300FAEF50 /* DateGapHandler.swift */; };
 		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
 		57597A8A2AF096C2000D46A9 /* CountryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */; };
 		575F287F2AF38C0300F9484E /* AddTravelRequestModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */; };
@@ -100,6 +101,7 @@
 		572BE1E72AE49FB5005933E7 /* Redrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Redrawer.swift; sourceTree = "<group>"; };
 		572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChoiceModal.swift; sourceTree = "<group>"; };
 		572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordViewModel.swift; sourceTree = "<group>"; };
+		573889662AF6AFB300FAEF50 /* DateGapHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateGapHandler.swift; sourceTree = "<group>"; };
 		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
 		57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryChoiceModal.swift; sourceTree = "<group>"; };
 		575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelRequestModal.swift; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 				E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */,
 				E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */,
 				E23357A72AE2B42300E17CFF /* dateFormatter.swift */,
+				573889662AF6AFB300FAEF50 /* DateGapHandler.swift */,
 			);
 			path = Handler;
 			sourceTree = "<group>";
@@ -604,6 +607,7 @@
 				E2D5C06C2ADD926200907501 /* ExpenseViewModel.swift in Sources */,
 				57A65D052AD7D4A900131266 /* Character+Extension.swift in Sources */,
 				57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */,
+				573889672AF6AFB300FAEF50 /* DateGapHandler.swift in Sources */,
 				57A65D142AD7D65600131266 /* ExpenseInfoCategory.swift in Sources */,
 				571A426A2ACE857500FA3D2B /* UMMApp.swift in Sources */,
 			);

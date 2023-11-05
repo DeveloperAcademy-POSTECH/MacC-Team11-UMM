@@ -27,13 +27,6 @@ struct TravelChoiceInExpenseModal: View {
             }
         }
         .onAppear {
-            var travelArray: [Travel] = []
-            do {
-                travelArray = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
-            } catch {
-                print("error fetching Travel array: \(error.localizedDescription)")
-            }
-            
             updateFlagNameArrayDict()
         }
     }
