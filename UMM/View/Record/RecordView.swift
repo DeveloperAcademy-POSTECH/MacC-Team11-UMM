@@ -448,15 +448,16 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-//                    Task {
-//                        await viewModel.startRecording()
-//                    }
-                    DispatchQueue.main.async {
+                    
+                    DispatchQueue.global(qos: .userInitiated).async {
                         do {
                             try viewModel.startSTT()
                         } catch {
                             print("error starting record: \(error.localizedDescription)")
                         }
+                    }
+                    
+                    DispatchQueue.main.async {
                         isDetectingPress_showOnButton = true
                         viewModel.alertView_emptyIsShown = false
                         viewModel.alertView_shortIsShown = false
@@ -467,6 +468,7 @@ struct RecordView: View {
                 }
             }
     }
+
     
     private var alertView_empty: some View {
         ZStack {
