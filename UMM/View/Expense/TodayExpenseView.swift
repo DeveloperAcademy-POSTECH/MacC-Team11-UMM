@@ -12,9 +12,10 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
+    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
-    @EnvironmentObject var mainVM: MainViewModel
+    let countryInfoModel = CountryInfoModel.shared.countryResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -72,12 +73,12 @@ struct TodayExpenseView: View {
                     HStack(spacing: 8) {
                         Spacer()
                             .frame(width: 4) // 디자이너 몰래 살짝 움직였다
-                        Image(Country(rawValue: Int(country))?.flagImageString ?? "")
+                        Image(countryInfoModel[Int(country)]?.flagString ?? "-")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 18, height: 18)
                             .shadow(color: .gray, radius: 3)
-                        Text(Country(rawValue: Int(country))?.title ?? "-")
+                        Text(countryInfoModel[Int(country)]?.koreanNm ?? "-")
                             .foregroundStyle(.black)
                             .font(.subhead3_1)
                     }

@@ -43,7 +43,7 @@ struct AllExpenseView: View {
             print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
+            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }
     
@@ -121,7 +121,7 @@ struct AllExpenseView: View {
                     Button(action: {
                         DispatchQueue.main.async {
                             expenseViewModel.selectedCountry = Int64(country)
-                            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
+                            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
                         }
                     }, label: {
                         Text("\(Country.titleFor(rawValue: Int(country)))")
