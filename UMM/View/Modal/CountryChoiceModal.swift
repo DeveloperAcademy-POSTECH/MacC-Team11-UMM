@@ -53,6 +53,7 @@ struct CountryChoiceModal: View {
                                 .foregroundStyle(.gray100)
                                 .layoutPriority(-1)
                                 .opacity(chosenCountry == country ? 1.0 : 0.0000001)
+                                .opacity((country == currentCountry && !countryIsModified) ? 0.0000001 : 1)
                             
                             HStack {
                                 Image(country.flagImageString)
@@ -80,7 +81,7 @@ struct CountryChoiceModal: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundStyle(.gray100)
                                 .layoutPriority(-1)
-                                .opacity(chosenCountry == currentCountry ? 1.0 : 0.0000001)
+                                .opacity((chosenCountry == currentCountry && countryIsModified) ? 1.0 : 0.0000001)
                             
                             HStack {
                                 Image(currentCountry.flagImageString)

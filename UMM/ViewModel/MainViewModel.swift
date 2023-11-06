@@ -9,8 +9,16 @@ import Foundation
 import SwiftUI
 
 class MainViewModel: ObservableObject {
+    
+    static let shared = MainViewModel()
+    
     @Published var selection: Int = 0
     @Published var selectedTravel: Travel?
+    @Published var chosenTravelInManualRecord: Travel?
+    
+    private init() {
+        selectedTravel = findCurrentTravel()
+    }
     
     func navigationToRecordView() {
         self.selection = 1

@@ -18,7 +18,8 @@ struct TodayExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
-    let handler = ExchangeRateHandler.shared
+    let exchangeRatehandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -108,7 +109,7 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + $1.sum * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
+            Text("\(expenseViewModel.formatSum(from: sumPaymentMethod, to: 0))원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -177,11 +178,11 @@ struct TodayExpenseDetailView: View {
                         HStack(alignment: .center, spacing: 0) {
                             Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
                                 .font(.subhead2_1)
-                            Text("\(expenseViewModel.formatSum(from: expense.payAmount, to: 2))")
+                            Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
                                 .font(.subhead2_1)
                                 .padding(.leading, 3)
                         }
-                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -1), to: 0))원)")
+                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
                             .font(.caption2)
                             .foregroundStyle(.gray200)
                             .padding(.top, 4)

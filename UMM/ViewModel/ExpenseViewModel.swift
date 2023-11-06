@@ -165,7 +165,7 @@ class ExpenseViewModel: ObservableObject {
         let currencies = Array(Set(expenses.map { $0.currency })).sorted { $0 < $1 }
 
         for currency in currencies {
-            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + $1.payAmount }
+            let sum = expenses.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
             currencyAndSums.append(CurrencyAndSum(currency: currency, sum: sum))
         }
         
@@ -174,12 +174,15 @@ class ExpenseViewModel: ObservableObject {
     
     // parameter: 변환할 Double, 표시할 소수점 아래 자리 수
     func formatSum(from sum: Double, to num: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
-        formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
-        
-        return formatter.string(from: NSNumber(value: sum)) ?? ""
+        if sum.isNaN {
+            return "-"
+        } else {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.minimumFractionDigits = 0 // 최소한 필요한 소수점 자릿수
+            formatter.maximumFractionDigits = num // 최대 허용되는 소수점 자릿수
+            return formatter.string(from: NSNumber(value: sum)) ?? ""
+        }
     }
     
     func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {
@@ -231,7 +234,7 @@ class ExpenseViewModel: ObservableObject {
         
         let sumArray = filteredExpenseArrayArray.map { expenseArray in
             expenseArray.reduce(0) {
-                $0 + ( $1.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1))
+                $0 + (($1.payAmount == -1 ? 0 : $1.payAmount) * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -100))
             }
         }
         

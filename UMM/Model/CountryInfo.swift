@@ -13,4 +13,5 @@ struct CountryInfo {
     let locationNm: String
     let flagString: String
     let defaultImageString: String
+    let relatedCurrencyArray: [String]
 }

@@ -41,19 +41,26 @@ class CountryInfoModel {
         let csvData = try parseCSV(contentsOf: csvURL)
         var countryInfoDict: [Int: CountryInfo] = [:]
         
-        for columns in csvData where columns.count >= 6 {
+        for columns in csvData where columns.count >= 7 {
             let index = Int(columns[0]) ?? 0
             let englishName = columns[1].trimmingCharacters(in: .whitespacesAndNewlines)
             let koreanName = columns[2].trimmingCharacters(in: .whitespacesAndNewlines)
             let locationName = columns[3].trimmingCharacters(in: .whitespacesAndNewlines)
             let flagImageName = columns[4].trimmingCharacters(in: .whitespacesAndNewlines)
             let defaultImageName = columns[5].trimmingCharacters(in: .whitespacesAndNewlines)
+            let relatedCurrencyString = columns[6].trimmingCharacters(in: .whitespacesAndNewlines)
+             let relatedCurrencyArray = relatedCurrencyString
+                 .trimmingCharacters(in: CharacterSet(charactersIn: "[]"))
+                 .components(separatedBy: ", ")
+                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             
             let countryInfo = CountryInfo(englishNm: englishName,
                                           koreanNm: koreanName,
                                           locationNm: locationName,
                                           flagString: flagImageName,
-                                          defaultImageString: defaultImageName)
+                                          defaultImageString: defaultImageName,
+                                          relatedCurrencyArray: relatedCurrencyArray
+            )
             
             countryInfoDict[index] = countryInfo
         }

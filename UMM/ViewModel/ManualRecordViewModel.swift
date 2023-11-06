@@ -5,7 +5,7 @@
 //  Created by Wonil Lee on 10/21/23.
 //
 
-import Foundation
+import Combine
 import CoreLocation
 
 class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
@@ -16,7 +16,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .japan
+                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .unknown
                 self.parent?.currentLocation = "\(placemark.locality ?? "")"
             } else {
                 print("ERROR: \(String(describing: error?.localizedDescription))")
@@ -25,7 +25,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-class ManualRecordViewModel: ObservableObject {
+final class ManualRecordViewModel: ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
@@ -37,7 +37,6 @@ class ManualRecordViewModel: ObservableObject {
     @Published var placemark: CLPlacemark?
     
     func getLocation() {
-        print("ManualRecordViewModel | getLocation 호출됨 !!!")
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
@@ -51,6 +50,16 @@ class ManualRecordViewModel: ObservableObject {
         }
     }
     
+    // MARK: - combine
+    
+    var travelPublisher: AnyPublisher<Travel?, Never> {
+        MainViewModel.shared.$chosenTravelInManualRecord
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
+    }
+    
+    var travelStream: AnyCancellable?
+    
     // MARK: - in-string property
     
     var payAmount: Double = -1 { // passive
@@ -58,7 +67,7 @@ class ManualRecordViewModel: ObservableObject {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
             }
         }
     }
@@ -77,7 +86,7 @@ class ManualRecordViewModel: ObservableObject {
             if visiblePayAmount == "" {
                 payAmount = -1
             } else {
-                payAmount = Double(visiblePayAmount) ?? -1
+                payAmount = Double(visiblePayAmount) ?? -100
             }
         }
     }
@@ -99,33 +108,6 @@ class ManualRecordViewModel: ObservableObject {
     
     // MARK: - not-in-string property
     
-    @Published var chosenTravel: Travel? {
-        didSet {
-            if let chosenTravel {
-                if let participantArrayInChosenTravel = chosenTravel.participantArray {
-                    participantTupleArray = [("나", true)] + participantArrayInChosenTravel.map { ($0, true) }
-                } else {
-                    participantTupleArray = [("나", true)]
-                }
-                var expenseArray: [Expense] = []
-                do {
-                    try expenseArray = viewContext.fetch(Expense.fetchRequest()).filter { expense in
-                        if let belongTravel = expense.travel {
-                            return belongTravel.id == chosenTravel.id
-                        } else {
-                            return false
-                        }
-                    }
-                } catch {
-                    print("error fetching expenses: \(error.localizedDescription)")
-                }
-                otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
-            } else {
-                participantTupleArray = [("나", true)]
-                otherCountryCandidateArray = []
-            }
-        }
-    }
     @Published var travelArray: [Travel] = []
     
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
@@ -166,12 +148,12 @@ class ManualRecordViewModel: ObservableObject {
     var currentLocation: String = ""
     @Published var otherCountryCandidateArray: [Country] = [] // passive
     
-    @Published var currency: Currency = .unknown {
+    @Published var currency: Currency = .usd {
         didSet {
             if payAmount == -1 || currency == .unknown {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1) // ^^^
+                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
             }
         }
     }
@@ -199,15 +181,42 @@ class ManualRecordViewModel: ObservableObject {
         locationManager = CLLocationManager()
         locationManager?.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self
+        
+        // MainViewModel의 chosenTravelInManualRecord가 변화할 때 자동으로 이루어질 일을 sink로 처리
+        travelStream = travelPublisher.sink { chosenTravel in
+            if let chosenTravel {
+                if let participantArrayInChosenTravel = chosenTravel.participantArray {
+                    self.participantTupleArray = [("나", true)] + participantArrayInChosenTravel.map { ($0, true) }
+                } else {
+                    self.participantTupleArray = [("나", true)]
+                }
+                var expenseArray: [Expense] = []
+                do {
+                    try expenseArray = self.viewContext.fetch(Expense.fetchRequest()).filter { expense in
+                        if let belongTravel = expense.travel {
+                            return belongTravel.id == chosenTravel.id
+                        } else {
+                            return false
+                        }
+                    }
+                } catch {
+                    print("error fetching expenses: \(error.localizedDescription)")
+                }
+                self.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
+            } else {
+                self.participantTupleArray = [("나", true)]
+                self.otherCountryCandidateArray = []
+            }
+        }
     }
-    
+        
     func save() {
         
         let expense = Expense(context: viewContext)
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country.rawValue)
         expense.currency = Int64(currency.rawValue)
-        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -1 // ^^^
+        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100 // ^^^
         expense.info = info
         expense.location = locationExpression
         expense.participantArray = (participantTupleArray + additionalParticipantTupleArray).filter { $0.1 == true }.map { $0.0 }
@@ -215,7 +224,7 @@ class ManualRecordViewModel: ObservableObject {
         expense.payDate = payDate
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         expense.voiceRecordFile = nil // ^^^
-        if let chosenTravel {
+        if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             var fetchedTravel: Travel?
             do {
                 fetchedTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in

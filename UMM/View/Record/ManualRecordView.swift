@@ -10,12 +10,13 @@ import CoreLocation
 
 struct ManualRecordView: View {
     @ObservedObject var viewModel: ManualRecordViewModel
+    @EnvironmentObject var mainVM: MainViewModel
     var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     let fraction0NumberFormatter = NumberFormatter()
-
+    
     var body: some View {
         ZStack {
             Color(.white)
@@ -51,7 +52,7 @@ struct ManualRecordView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-            TravelChoiceInRecordModal(chosenTravel: $viewModel.chosenTravel)
+            TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord)
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.categoryChoiceModalIsShown) {
@@ -103,7 +104,7 @@ struct ManualRecordView: View {
             if viewModel.payAmount == -1 || viewModel.currency == .unknown {
                 viewModel.payAmountInWon = -1
             } else {
-                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1)
+                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100)
             }
             
             // MARK: - NumberFormatter
@@ -123,8 +124,8 @@ struct ManualRecordView: View {
                             if viewModel.payAmount != -1 || viewModel.info != nil {
                                 viewModel.secondCounter = nil
                                 viewModel.save()
-                                if viewModel.chosenTravel != nil {
-                                    recordViewModel.setChosenTravel(as: viewModel.chosenTravel!)
+                                if mainVM.chosenTravelInManualRecord != nil {
+                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
                                 self.dismiss()
                                 timer.invalidate()
@@ -167,20 +168,23 @@ struct ManualRecordView: View {
             viewModel.paymentMethod = prevViewModel.paymentMethod
         }
         
-        viewModel.chosenTravel = prevViewModel.chosenTravel
+        DispatchQueue.main.async {
+            MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
+        }
+        
         do {
             viewModel.travelArray = try viewContext.fetch(Travel.fetchRequest())
         } catch {
             print("error fetching travelArray: \(error.localizedDescription)")
         }
         
-        if let participantArray = viewModel.chosenTravel?.participantArray {
+        if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
             viewModel.participantTupleArray = [("나", true)] + participantArray.map { ($0, true) }
         } else {
             viewModel.participantTupleArray = [("나", true)]
         }
         var expenseArray: [Expense] = []
-        if let chosenTravel = viewModel.chosenTravel {
+        if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             do {
                 try expenseArray = viewContext.fetch(Expense.fetchRequest()).filter { expense in
                     if let belongTravel = expense.travel {
@@ -210,7 +214,7 @@ struct ManualRecordView: View {
         if viewModel.payAmount == -1 || viewModel.currency == .unknown {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -1) // ^^^
+            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100) // ^^^
         }
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
@@ -517,7 +521,7 @@ struct ManualRecordView: View {
                         }
                         .hidden()
                         
-                        Text(viewModel.chosenTravel?.name != "Default" ? viewModel.chosenTravel?.name ?? "-" : "-")
+                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "-")
                             .lineLimit(nil)
                             .foregroundStyle(.black)
                             .font(.subhead2_1)
@@ -716,8 +720,12 @@ struct ManualRecordView: View {
                 } catch {
                     print("error fetching default travel: \(error.localizedDescription)")
                 }
-                recordViewModel.setChosenTravel(as: viewModel.chosenTravel ?? defaultTravel)
-                dismiss()
+                if mainVM.chosenTravelInManualRecord != nil {
+                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
+                    dismiss()
+                } else {
+                    mainVM.selectedTravel = defaultTravel
+                }
             }
             .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
             .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)
