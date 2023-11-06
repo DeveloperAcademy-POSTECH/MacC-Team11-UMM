@@ -5,6 +5,7 @@
 //  Created by Wonil Lee on 10/21/23.
 //
 
+import AVFoundation
 import Combine
 import CoreLocation
 
@@ -25,7 +26,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-final class ManualRecordViewModel: ObservableObject {
+final class ManualRecordViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
@@ -168,16 +169,20 @@ final class ManualRecordViewModel: ObservableObject {
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
     @Published var countryChoiceModalIsShown = false
+    @Published var dateChoiceModalIsShown = false
     @Published var backButtonAlertIsShown = false
     @Published var addingParticipant = false
     @Published var countryIsModified = false
+    @Published var playingRecordSound = false
     
     // MARK: - timer
     
     @Published var autoSaveTimer: Timer?
     @Published var secondCounter: Int?
     
-    init() {
+    override init() {
+        super.init()
+        print("ManualRecordViewModel | init")
         locationManager = CLLocationManager()
         locationManager?.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self
@@ -208,6 +213,10 @@ final class ManualRecordViewModel: ObservableObject {
                 self.otherCountryCandidateArray = []
             }
         }
+    }
+    
+    deinit {
+        stopPlayingAudio()
     }
         
     func save() {
@@ -242,4 +251,45 @@ final class ManualRecordViewModel: ObservableObject {
             print("error saving expense: \(error.localizedDescription)")
         }
     }
+    
+    // MARK: - voice
+    
+    private var audioPlayer: AVAudioPlayer?
+    
+    func startPlayingAudio(url: URL) {
+        
+        let playSession = AVAudioSession.sharedInstance()
+        
+        do {
+            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        } catch {
+            print("Playing failed in Device")
+        }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.delegate = self
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+            
+        } catch {
+            print("Playing Failed")
+        }
+    }
+    
+    func stopPlayingAudio() {
+        audioPlayer?.stop()
+    }
+}
+
+extension ManualRecordViewModel: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+            if flag {
+                // 재생이 성공적으로 끝났을 때 실행할 코드
+                playingRecordSound = false
+            } else {
+                // 재생이 실패했을 때 실행할 코드
+                print("Failed to play recorded sound.")
+            }
+        }
 }

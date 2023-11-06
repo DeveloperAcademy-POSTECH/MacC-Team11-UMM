@@ -38,6 +38,7 @@ struct InterimProceedingView: View {
                                 Button { 
                                     chosenTravel = nowTravel?[index]
                                     isSelectedTravel = true
+                                    viewModel.chosenTravel = chosenTravel
                                 } label: {
                                     ZStack {
                                         Image("basicImage")
@@ -62,6 +63,7 @@ struct InterimProceedingView: View {
                                                 Button {
                                                     chosenTravel = nowTravel?[index]
                                                     isSelectedTravel = true
+                                                    viewModel.chosenTravel = chosenTravel
                                                 } label: {
                                                     if chosenTravel != nowTravel?[index] {
                                                         Circle()
@@ -176,6 +178,7 @@ struct InterimProceedingView: View {
                                                   Button {
                                                       isSelectedTravel = true
                                                       chosenTravel = nowTravel?[index]
+                                                      viewModel.chosenTravel = chosenTravel
                                                       
                                                   } label: {
                                                       ZStack {

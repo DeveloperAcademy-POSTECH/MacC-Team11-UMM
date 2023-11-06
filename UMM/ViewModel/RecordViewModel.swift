@@ -13,13 +13,12 @@ import SwiftUI
 import Combine
 
 final class RecordViewModel: ObservableObject {
+    
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
     var voiceSentencePartitionArray: [String] = [] {
         didSet {
-            print("voiceSentencePartitionArray: \(voiceSentencePartitionArray)")
-            
             if voiceSentencePartitionArray.count == 0 {
                 voiceSentence = ""
             } else {
@@ -43,7 +42,6 @@ final class RecordViewModel: ObservableObject {
     @Published var info: String? {
         didSet {
             if oldValue == nil && info != nil {
-                print("haptic | info: \(String(describing: info?.description))")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
@@ -55,7 +53,6 @@ final class RecordViewModel: ObservableObject {
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
             if oldValue == .unknown && paymentMethod != .unknown {
-                print("haptic | paymentMethod: \(paymentMethod)")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
@@ -85,6 +82,7 @@ final class RecordViewModel: ObservableObject {
     @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
+    
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var recordButtonIsUsed = true
@@ -97,7 +95,6 @@ final class RecordViewModel: ObservableObject {
     
     // record
     private var audioRecorder: AVAudioRecorder?
-    private var audioPlayer: AVAudioPlayer?
     
     // variables to save record file
     var soundRecordPath: URL?
@@ -112,6 +109,7 @@ final class RecordViewModel: ObservableObject {
     private var hapticCounter = 0
     
     init() {
+        print("RecordViewModel | init")
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
         } catch {
@@ -129,7 +127,6 @@ final class RecordViewModel: ObservableObject {
             .sink { [weak self] amount in
                 guard let self = self else { return }
                 if amount != -1 {
-                    print("haptic | payAmount: \(amount)")
                     self.generateHapticFeedback()
                 }
             }
@@ -674,30 +671,6 @@ final class RecordViewModel: ObservableObject {
     
     func stopRecording() {
         audioRecorder?.stop()
-    }
-    
-    func startPlayingAudio(url: URL) {
-        
-        let playSession = AVAudioSession.sharedInstance()
-        
-        do {
-            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
-        } catch {
-            print("Playing failed in Device")
-        }
-        
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-            
-        } catch {
-            print("Playing Failed")
-        }
-    }
-    
-    func stopPlayingAudio(url: URL) {
-        audioPlayer?.stop()
     }
     
     // MARK: - 프로퍼티 관리
