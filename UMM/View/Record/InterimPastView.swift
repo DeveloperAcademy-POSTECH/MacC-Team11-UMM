@@ -9,7 +9,6 @@ import SwiftUI
 
 struct InterimPastView: View {
     
-    @State private var isModalPresented = false
     @State private var currentPage = 0
     @State private var pastCnt = 0
     @State var previousTravel: [Travel]? {
@@ -24,27 +23,12 @@ struct InterimPastView: View {
         ZStack {
             if pastCnt == 0 {
                 
-                NewTravelButton {
-                    isModalPresented.toggle()
-                }
-                .sheet(isPresented: $isModalPresented) {
-                    FullCalendarModal()
-                }
+                Text("지난 여행이 없습니다.") // Doris
                 
-            } else if pastCnt <= 5 {
+            } else if pastCnt <= 6 {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                        ForEach(0..<pastCnt+1, id: \.self) { index in
-                            if index == 0 {
-                                
-                                NewTravelButton {
-                                    isModalPresented.toggle()
-                                }
-                                .sheet(isPresented: $isModalPresented) {
-                                    FullCalendarModal()
-                                }
-                                
-                            } else {
+                        ForEach(0..<pastCnt, id: \.self) { index in
                                 VStack {
                                     Button {
                                         print("index : ", index)
@@ -68,11 +52,10 @@ struct InterimPastView: View {
                                                 .cornerRadius(10)
                                         }
                                     }
-                                    Text(previousTravel?[index-1].name ?? "제목 미정")
+                                    Text(previousTravel?[index].name ?? "제목 미정")
                                         .font(.subhead1)
                                         .lineLimit(1)
                                 }
-                            }
                         }
                     }
                     .padding(.horizontal, 20)
@@ -83,49 +66,37 @@ struct InterimPastView: View {
                 ZStack {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0 ..< (pastCnt+6)/6, id: \.self) { page in
+                            ForEach(0 ..< (pastCnt+5)/6, id: \.self) { page in
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                        ForEach((page * 6) ..< min((page+1) * 6, pastCnt+1), id: \.self) { index in
-                                            
-                                            if index == 0 {
-                                                
-                                                NewTravelButton {
-                                                    isModalPresented.toggle()
-                                                }
-                                                .sheet(isPresented: $isModalPresented) {
-                                                    FullCalendarModal()
-                                                }
-                                                
-                                            } else {
-                                                VStack {
-                                                    Button {
-                                                        
-                                                    } label: {
-                                                        ZStack {
-                                                            Image("basicImage")
-                                                                .resizable()
-                                                                .scaledToFill()
-                                                                .frame(width: 110, height: 80)
-                                                                .cornerRadius(10)
-                                                                .background(
-                                                                    LinearGradient(
-                                                                        stops: [
-                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                        ],
-                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                                    )
+                                        ForEach((page * 6) ..< min((page+1) * 6, pastCnt), id: \.self) { index in
+                                            VStack {
+                                                Button {
+                                                    
+                                                } label: {
+                                                    ZStack {
+                                                        Image("basicImage")
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                            .frame(width: 110, height: 80)
+                                                            .cornerRadius(10)
+                                                            .background(
+                                                                LinearGradient(
+                                                                    stops: [
+                                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                    ],
+                                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                    endPoint: UnitPoint(x: 0.5, y: 1)
                                                                 )
-                                                                .cornerRadius(10)
-                                                            
-                                                        }
+                                                            )
+                                                            .cornerRadius(10)
+                                                        
                                                     }
-                                                    Text(previousTravel?[index-1].name ?? "제목 미정")
-                                                        .font(.subhead1)
-                                                        .lineLimit(1)
                                                 }
+                                                Text(previousTravel?[index].name ?? "제목 미정")
+                                                    .font(.subhead1)
+                                                    .lineLimit(1)
                                             }
                                         }
                                         
@@ -140,7 +111,7 @@ struct InterimPastView: View {
                     }
                     
                     HStack(spacing: 6) {
-                        ForEach(0..<(pastCnt+6)/6, id: \.self) { index in
+                        ForEach(0..<(pastCnt+5)/6, id: \.self) { index in
                             Capsule()
                                 .fill(currentPage == index ? Color.black : Color.gray200)
                                 .frame(width: 5, height: 5)

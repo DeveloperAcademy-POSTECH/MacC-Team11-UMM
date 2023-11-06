@@ -9,7 +9,6 @@ import SwiftUI
 
 struct InterimProceedingView: View {
     
-    @State private var isModalPresented = false
     @State private var currentPage = 0
     @State var proceedingCnt = 0
     @State var nowTravel: [Travel]? {
@@ -27,27 +26,12 @@ struct InterimProceedingView: View {
         ZStack {
             if proceedingCnt == 0 {
                 
-                NewTravelButton {
-                    isModalPresented.toggle()
-                }
-                .sheet(isPresented: $isModalPresented) {
-                    FullCalendarModal()
-                }
+                Text("현재 진행중인 여행이 없습니다.") // Doris
                 
-            } else if proceedingCnt <= 5 {
+            } else if proceedingCnt <= 6 {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                        ForEach(0..<proceedingCnt+1, id: \.self) { index in
-                            if index == 0 {
-                                
-                                NewTravelButton {
-                                    isModalPresented.toggle()
-                                }
-                                .sheet(isPresented: $isModalPresented) {
-                                    FullCalendarModal()
-                                }
-                                
-                            } else {
+                        ForEach(0..<proceedingCnt, id: \.self) { index in
                                 VStack {
                                     ZStack {
                                         Image("basicImage")
@@ -70,9 +54,9 @@ struct InterimProceedingView: View {
                                         VStack {
                                             HStack {
                                                 Button {
-                                                    chosenTravel = nowTravel?[index-1]
+                                                    chosenTravel = nowTravel?[index]
                                                 } label: {
-                                                    if chosenTravel != nowTravel?[index-1] {
+                                                    if chosenTravel != nowTravel?[index] {
                                                         Circle()
                                                             .fill(.black)
                                                             .opacity(0.25)
@@ -102,7 +86,7 @@ struct InterimProceedingView: View {
                                                 HStack {
                                                     Spacer()
                                                     
-                                                    ForEach(flagImageDict[nowTravel?[index-1].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                    ForEach(flagImageDict[nowTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
                                                         Image(imageName)
                                                             .resizable()
                                                             .frame(width: 24, height: 24)
@@ -115,21 +99,21 @@ struct InterimProceedingView: View {
                                             
                                             // Doris : 날짜 표시
                                             HStack {
-                                                Text(nowTravel?[index-1].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                Text(nowTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                 
                                                 Text("~")
                                             }
                                             .font(.caption2)
                                             .foregroundStyle(Color.white.opacity(0.75))
                                             
-                                            Text(nowTravel?[index-1].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                            Text(nowTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                         }
                                     }
                                     .onAppear {
                                         
-                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index-1].id ?? UUID())
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                         
                                         if let savedExpenses = savedExpenses {
                                             let countryValues: [Int64] = savedExpenses.map { expense in
@@ -146,15 +130,15 @@ struct InterimProceedingView: View {
                                                     flagImageNames.append("DefaultFlag")
                                                 }
                                             }
-                                            self.flagImageDict[nowTravel?[index-1].id ?? UUID()] = flagImageNames
+                                            self.flagImageDict[nowTravel?[index].id ?? UUID()] = flagImageNames
                                         }
                                     }
                                     
-                                    Text(nowTravel?[index-1].name ?? "제목 미정")
+                                    Text(nowTravel?[index].name ?? "제목 미정")
                                         .font(.subhead1)
                                         .lineLimit(1)
                                 }
-                            }
+//                            }
                         }
                     }
                     .padding(.horizontal, 20)
@@ -166,50 +150,39 @@ struct InterimProceedingView: View {
                 ZStack {
                       ScrollView(.init()) {
                           TabView(selection: $currentPage) {
-                              ForEach(0 ..< (proceedingCnt+6)/6, id: \.self) { page in
+                              ForEach(0 ..< (proceedingCnt+5)/6, id: \.self) { page in
                                   VStack {
                                       LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                          ForEach((page * 6) ..< min((page+1) * 6, proceedingCnt+1), id: \.self) { index in
+                                          ForEach((page * 6) ..< min((page+1) * 6, proceedingCnt), id: \.self) { index in
                                               
-                                              if index == 0 {
-                                                  
-                                                  NewTravelButton {
-                                                      isModalPresented.toggle()
-                                                  }
-                                                  .sheet(isPresented: $isModalPresented) {
-                                                      FullCalendarModal()
-                                                  }
-                                                  
-                                              } else {
-                                                  VStack {
-                                                      Button {
-                                                          
-                                                          chosenTravel = nowTravel?[index]
-                                                          
-                                                      } label: {
-                                                          ZStack {
-                                                              Image("basicImage")
-                                                                  .resizable()
-                                                                  .scaledToFill()
-                                                                  .frame(width: 110, height: 80)
-                                                                  .cornerRadius(10)
-                                                                  .background(
-                                                                    LinearGradient(
-                                                                        stops: [
-                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                        ],
-                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                                    )
-                                                                  )
-                                                                  .cornerRadius(10)
-                                                          }
+                                              VStack {
+                                                  Button {
+                                                      
+                                                      chosenTravel = nowTravel?[index]
+                                                      
+                                                  } label: {
+                                                      ZStack {
+                                                          Image("basicImage")
+                                                              .resizable()
+                                                              .scaledToFill()
+                                                              .frame(width: 110, height: 80)
+                                                              .cornerRadius(10)
+                                                              .background(
+                                                                LinearGradient(
+                                                                    stops: [
+                                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                    ],
+                                                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                )
+                                                              )
+                                                              .cornerRadius(10)
                                                       }
-                                                      Text(nowTravel?[index-1].name ?? "제목 미정")
-                                                          .font(.subhead1)
-                                                          .lineLimit(1)
                                                   }
+                                                  Text(nowTravel?[index].name ?? "제목 미정")
+                                                      .font(.subhead1)
+                                                      .lineLimit(1)
                                               }
                                           }
                                       }
@@ -223,7 +196,7 @@ struct InterimProceedingView: View {
                       }
                       
                       HStack(spacing: 6) {
-                          ForEach(0..<(proceedingCnt+6)/6, id: \.self) { index in
+                          ForEach(0..<(proceedingCnt+5)/6, id: \.self) { index in
                               Capsule()
                                   .fill(currentPage == index ? Color.black : Color.gray200)
                                   .frame(width: 5, height: 5)

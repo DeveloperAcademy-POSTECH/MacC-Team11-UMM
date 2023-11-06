@@ -75,9 +75,6 @@
 		C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */; };
 		C1EAD6A22AF6717C00EB3B89 /* InterimRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */; };
 		C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */; };
-		C1EAD6A82AF7D66500EB3B89 /* FullCalendarModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */; };
-		C1EAD6AA2AF7E13900EB3B89 /* FullCompleteModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */; };
-		C1EAD6AC2AF808D200EB3B89 /* FullAddMememberModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */; };
 		C1EAD6B02AF8210D00EB3B89 /* InterimProceedingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */; };
 		C1EAD6B22AF8218200EB3B89 /* InterimPastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6B12AF8218200EB3B89 /* InterimPastView.swift */; };
 		C1EAD6B42AF821BF00EB3B89 /* InterimOncomingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EAD6B32AF821BF00EB3B89 /* InterimOncomingView.swift */; };
@@ -170,9 +167,6 @@
 		C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimRecordView.swift; sourceTree = "<group>"; };
 		C1EAD6A32AF6851E00EB3B89 /* InterimRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimRecordViewModel.swift; sourceTree = "<group>"; };
-		C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendarModal.swift; sourceTree = "<group>"; };
-		C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCompleteModal.swift; sourceTree = "<group>"; };
-		C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullAddMememberModal.swift; sourceTree = "<group>"; };
 		C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimProceedingView.swift; sourceTree = "<group>"; };
 		C1EAD6B12AF8218200EB3B89 /* InterimPastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimPastView.swift; sourceTree = "<group>"; };
 		C1EAD6B32AF821BF00EB3B89 /* InterimOncomingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimOncomingView.swift; sourceTree = "<group>"; };
@@ -258,9 +252,6 @@
 				57CC20192AE551BE0034BD57 /* TravelChoiceModalBinding.swift */,
 				57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */,
 				575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */,
-				C1EAD6A72AF7D66500EB3B89 /* FullCalendarModal.swift */,
-				C1EAD6A92AF7E13900EB3B89 /* FullCompleteModal.swift */,
-				C1EAD6AB2AF808D200EB3B89 /* FullAddMememberModal.swift */,
 			);
 			path = Modal;
 			sourceTree = "<group>";
@@ -574,8 +565,6 @@
 				E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */,
 				E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */,
 				E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */,
-				C1EAD6A82AF7D66500EB3B89 /* FullCalendarModal.swift in Sources */,
-				C1EAD6AA2AF7E13900EB3B89 /* FullCompleteModal.swift in Sources */,
 				C19AFAE32ADFB5AE0037A5F5 /* Font+Extension.swift in Sources */,
 				E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */,
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
@@ -629,7 +618,6 @@
 				C1EAD6A42AF6851E00EB3B89 /* InterimRecordViewModel.swift in Sources */,
 				C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */,
 				E2D5C06A2ADD925C00907501 /* DummyRecordViewModel.swift in Sources */,
-				C1EAD6AC2AF808D200EB3B89 /* FullAddMememberModal.swift in Sources */,
 				C17550522AD54FB000A61BE5 /* TravelListView.swift in Sources */,
 				C19AFAF42AE139CD0037A5F5 /* TravelListViewModel.swift in Sources */,
 				E2D5C06C2ADD926200907501 /* ExpenseViewModel.swift in Sources */,
