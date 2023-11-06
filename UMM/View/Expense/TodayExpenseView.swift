@@ -14,6 +14,7 @@ struct TodayExpenseView: View {
     var pickerId: String { "picker" }
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
+    @EnvironmentObject var mainVM: MainViewModel
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -45,7 +46,7 @@ struct TodayExpenseView: View {
     }
     
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: expenseViewModel.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60))
+        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60))
             .padding(.top, 12)
             .padding(.bottom, 12)
     }
@@ -84,7 +85,7 @@ struct TodayExpenseView: View {
                     // 결제 수단: 전체: 합계
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedTravel: mainVM.selectedTravel,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: -2,
@@ -112,7 +113,7 @@ struct TodayExpenseView: View {
 
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedTravel: mainVM.selectedTravel,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: paymentMethod,

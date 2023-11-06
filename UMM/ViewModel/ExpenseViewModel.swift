@@ -21,18 +21,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var filteredAllExpensesByCountry: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
-//    @Published var selectedTravel: Travel? {
-//        didSet {
-//            self.fetchExpense()
-//            self.filteredTodayExpenses = self.getFilteredTodayExpenses()
-//            self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
-//            self.filteredAllExpenses = self.getFilteredAllExpenses()
-//            self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
-//            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
-//            print("Travel changed to: \(String(describing: selectedTravel?.name))")
-//        }
-//    }
-    @Published var selectedTravel: Travel?
+//    @Published var selectedTravel: Travel? // MainViewModel로 이동
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
@@ -115,21 +104,15 @@ class ExpenseViewModel: ObservableObject {
             print("Error while addExpense")
         }
     }
-    
-//    func getFilteredExpenses() -> [Expense] {
-//        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel.id)
-//        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-//        return filteredByDate
-//    }
-    
+
     func getFilteredTodayExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
     }
     
     func getFilteredAllExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
         return filteredByTravel
     }
     

@@ -19,6 +19,7 @@ struct AllExpenseDetailView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     var sumPaymentMethod: Double
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
+    @EnvironmentObject var mainVM: MainViewModel
 
     var body: some View {
         
@@ -43,7 +44,7 @@ struct AllExpenseDetailView: View {
             
             print("AllExpenseDetailView | selectedTravel: \(String(describing: selectedTravel?.name))")
             print("AllExpenseDetailView | selectedCountry: \(selectedCountry)")
-            print("AllExpenseDetailView | expenseViewModel.selectedTravel : \(String(describing: expenseViewModel.selectedTravel?.name))")
+            print("AllExpenseDetailView | mainVM.selectedTravel : \(String(describing: mainVM.selectedTravel?.name))")
         }
     }
     
