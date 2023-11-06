@@ -52,9 +52,12 @@ struct TodayExpenseView: View {
     }
     
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60)))
-            .padding(.top, 12)
-            .padding(.bottom, 12)
+        VStack {
+            // Date()는 현지 시간을 가져온다. DatePicker에서 여행의 startDate를 보여줄 때는 저장된 데이터를 covertBeforeShowing한다. startDate가 nil이면 현지 날짜인 Date()의 하루 이전 날짜를 보여준다.
+            CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60)))
+                .padding(.top, 12)
+                .padding(.bottom, 12)
+        }
     }
     
     // 국가별 + 결제수단별 지출액 표시
