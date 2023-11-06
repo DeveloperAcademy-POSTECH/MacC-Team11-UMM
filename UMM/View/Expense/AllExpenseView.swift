@@ -14,6 +14,7 @@ struct AllExpenseView: View {
     let namespace: Namespace.ID
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
+    @EnvironmentObject var mainVM: MainViewModel
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -38,7 +39,7 @@ struct AllExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            print("AllExpenseView | selctedTravel: \(String(describing: expenseViewModel.selectedTravel?.name))")
+            print("AllExpenseView | selctedTravel: \(String(describing: mainVM.selectedTravel?.name))")
             print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
@@ -57,7 +58,7 @@ struct AllExpenseView: View {
         }
         return NavigationLink {
             AllExpenseDetailView(
-                selectedTravel: expenseViewModel.selectedTravel,
+                selectedTravel: mainVM.selectedTravel,
                 selectedCategory: -2,
                 selectedCountry: expenseViewModel.selectedCountry,
                 selectedPaymentMethod: -2,
@@ -164,7 +165,7 @@ struct AllExpenseView: View {
                     
                     NavigationLink {
                         AllExpenseDetailView(
-                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedTravel: mainVM.selectedTravel,
                             selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
                             selectedCountry: expenseViewModel.selectedCountry,
                             selectedPaymentMethod: -2,

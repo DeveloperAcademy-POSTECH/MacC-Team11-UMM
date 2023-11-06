@@ -12,7 +12,8 @@ struct TravelListView: View {
     
     @State var month: Date
     @ObservedObject var viewModel = TravelListViewModel()
-    
+    @EnvironmentObject var mainVM: MainViewModel
+
     @State var nowTravel: [Travel]?
     @State var defaultTravel: [Travel]?
     @State var savedExpenses: [Expense]?
@@ -46,6 +47,7 @@ struct TravelListView: View {
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
+                    mainVM.selectedTravel = findCurrentTravel()
                     print("onAppear")
                 }
             }
