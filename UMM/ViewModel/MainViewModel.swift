@@ -17,7 +17,7 @@ class MainViewModel: ObservableObject {
     @Published var chosenTravelInManualRecord: Travel?
     
     private init() {
-        selectedTravel = findCurrentTravel()
+//        selectedTravel = findCurrentTravel()
     }
     
     func navigationToRecordView() {

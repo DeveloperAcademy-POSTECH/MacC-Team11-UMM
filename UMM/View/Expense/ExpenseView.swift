@@ -11,12 +11,8 @@ struct ExpenseView: View {
     @State var selectedTab = 0
     @Namespace var namespace
     @ObservedObject var expenseViewModel = ExpenseViewModel()
+    let exchangeRateHandler = ExchangeRateHandler.shared
     @EnvironmentObject var mainVM: MainViewModel
-    var exchangeRateHandler: ExchangeRateHandler
-    
-    init() {
-        self.exchangeRateHandler = ExchangeRateHandler.shared
-    }
     
     var body: some View {
         NavigationStack {
@@ -91,7 +87,6 @@ struct ExpenseView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-//                    Text(expenseViewModel.selectedTravel?.name != "Default" ? expenseViewModel.selectedTravel?.name ?? "-" : "-")
                     Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
                         .font(.subhead2_2)
                         .foregroundStyle(.black)
