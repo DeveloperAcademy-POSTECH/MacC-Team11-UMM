@@ -16,6 +16,9 @@ struct InterimOncomingView: View {
             oncomingCnt = Int(oncomingTravel?.count ?? 0)
         }
     }
+    @State var chosenTravel: Travel?
+    @State var flagImageDict: [UUID: [String]] = [:]
+    @State var savedExpenses: [Expense]? = []
     
     @ObservedObject var viewModel: InterimRecordViewModel
     
@@ -31,7 +34,7 @@ struct InterimOncomingView: View {
                         ForEach(0..<oncomingCnt, id: \.self) { index in
                                 VStack {
                                     Button {
-                                        print("index : ", index)
+                                        chosenTravel = oncomingTravel?[index]
                                     } label: {
                                         ZStack {
                                             Image("basicImage")
@@ -40,16 +43,109 @@ struct InterimOncomingView: View {
                                                 .frame(width: 110, height: 80)
                                                 .cornerRadius(10)
                                                 .background(
-                                                    LinearGradient(
-                                                        stops: [
-                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                        ],
-                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                    )
+                                                  LinearGradient(
+                                                      stops: [
+                                                          Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                          Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                      ],
+                                                      startPoint: UnitPoint(x: 0.5, y: 0),
+                                                      endPoint: UnitPoint(x: 0.5, y: 1)
+                                                  )
                                                 )
                                                 .cornerRadius(10)
+                                            
+                                            VStack(alignment: .leading) {
+                                                HStack {
+                                                    Button {
+                                                        chosenTravel = oncomingTravel?[index]
+                                                    } label: {
+                                                        if chosenTravel != oncomingTravel?[index] {
+                                                            Circle()
+                                                                .fill(.black)
+                                                                .opacity(0.25)
+                                                                .frame(width: 19, height: 19)
+                                                                .overlay(
+                                                                  Circle()
+                                                                      .strokeBorder(.white, lineWidth: 1.0)
+                                                                )
+                                                        } else {
+                                                            ZStack {
+                                                                Circle()
+                                                                    .fill(Color(.mainPink))
+                                                                    .frame(width: 20, height: 20)
+                                                                    .overlay(
+                                                                      Circle()
+                                                                          .strokeBorder(.white, lineWidth: 1.0)
+                                                                    )
+                                                                Image("circleLabelCheck")
+                                                                    .resizable()
+                                                                    .scaledToFit()
+                                                                    .frame(width: 12, height: 12)
+                                                            }
+                                                        }
+                                                    }
+                                                    // Doris : 국기 들어갈자리
+                                                    
+                                                    HStack {
+                                                        Spacer()
+                                                        
+                                                        ForEach(flagImageDict[oncomingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                            Image(imageName)
+                                                                .resizable()
+                                                                .frame(width: 24, height: 24)
+                                                        }
+                                                    }
+                                                }
+                                                .padding(.horizontal, 8)
+                                                .padding(.top, 8)
+                                                
+                                                Spacer()
+                                                
+                                                // Doris : 날짜 표시
+                                                VStack(alignment: .leading, spacing: 0) {
+                                                    HStack {
+                                                        Text(oncomingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        
+                                                        Text("~")
+                                                    }
+                                                    .font(.caption2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                    
+                                                    Text(oncomingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                }
+                                                .padding(.horizontal, 8)
+                                                .padding(.bottom, 8)
+                                            }
+                                                                                            
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .frame(width: 110, height: 80)
+                                                .foregroundStyle(.gray100)
+                                                .opacity(chosenTravel == oncomingTravel?[index] ? 0.0 : 0.3)
+                                        }
+                                        .frame(width: 110, height: 80)
+                                        .onAppear {
+                                            
+                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: oncomingTravel?[index].id ?? UUID())
+                                            
+                                            if let savedExpenses = savedExpenses {
+                                                let countryValues: [Int64] = savedExpenses.map { expense in
+                                                    return viewModel.getCountryForExpense(expense)
+                                                }
+                                                let uniqueCountryValues = Array(Set(countryValues))
+                                                
+                                                var flagImageNames: [String] = []
+                                                for countryValue in uniqueCountryValues {
+                                                    
+                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                        flagImageNames.append(flagString)
+                                                    } else {
+                                                        flagImageNames.append("DefaultFlag")
+                                                    }
+                                                }
+                                                self.flagImageDict[oncomingTravel?[index].id ?? UUID()] = flagImageNames
+                                            }
                                         }
                                     }
                                     Text(oncomingTravel?[index].name ?? "제목 미정")
@@ -72,7 +168,7 @@ struct InterimOncomingView: View {
                                         ForEach((page * 6) ..< min((page+1) * 6, oncomingCnt), id: \.self) { index in
                                             VStack {
                                                 Button {
-                                                    
+                                                    chosenTravel = oncomingTravel?[index]
                                                 } label: {
                                                     ZStack {
                                                         Image("basicImage")
@@ -81,19 +177,112 @@ struct InterimOncomingView: View {
                                                             .frame(width: 110, height: 80)
                                                             .cornerRadius(10)
                                                             .background(
-                                                                LinearGradient(
-                                                                    stops: [
-                                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                    ],
-                                                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                    endPoint: UnitPoint(x: 0.5, y: 1)
-                                                                )
+                                                              LinearGradient(
+                                                                  stops: [
+                                                                      Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                      Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                  ],
+                                                                  startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                  endPoint: UnitPoint(x: 0.5, y: 1)
+                                                              )
                                                             )
                                                             .cornerRadius(10)
                                                         
+                                                        VStack(alignment: .leading) {
+                                                            HStack {
+                                                                Button {
+                                                                    chosenTravel = oncomingTravel?[index]
+                                                                } label: {
+                                                                    if chosenTravel != oncomingTravel?[index] {
+                                                                        Circle()
+                                                                            .fill(.black)
+                                                                            .opacity(0.25)
+                                                                            .frame(width: 19, height: 19)
+                                                                            .overlay(
+                                                                              Circle()
+                                                                                  .strokeBorder(.white, lineWidth: 1.0)
+                                                                            )
+                                                                    } else {
+                                                                        ZStack {
+                                                                            Circle()
+                                                                                .fill(Color(.mainPink))
+                                                                                .frame(width: 20, height: 20)
+                                                                                .overlay(
+                                                                                  Circle()
+                                                                                      .strokeBorder(.white, lineWidth: 1.0)
+                                                                                )
+                                                                            Image("circleLabelCheck")
+                                                                                .resizable()
+                                                                                .scaledToFit()
+                                                                                .frame(width: 12, height: 12)
+                                                                        }
+                                                                    }
+                                                                }
+                                                                // Doris : 국기 들어갈자리
+                                                                
+                                                                HStack {
+                                                                    Spacer()
+                                                                    
+                                                                    ForEach(flagImageDict[oncomingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                                        Image(imageName)
+                                                                            .resizable()
+                                                                            .frame(width: 24, height: 24)
+                                                                    }
+                                                                }
+                                                            }
+                                                            .padding(.horizontal, 8)
+                                                            .padding(.top, 8)
+                                                            
+                                                            Spacer()
+                                                            
+                                                            // Doris : 날짜 표시
+                                                            VStack(alignment: .leading, spacing: 0) {
+                                                                HStack {
+                                                                    Text(oncomingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                    
+                                                                    Text("~")
+                                                                }
+                                                                .font(.caption2)
+                                                                .foregroundStyle(Color.white.opacity(0.75))
+                                                                
+                                                                Text(oncomingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                    .font(.caption2)
+                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                            }
+                                                            .padding(.horizontal, 8)
+                                                            .padding(.bottom, 8)
+                                                        }
+                                                                                                        
+                                                        RoundedRectangle(cornerRadius: 10)
+                                                            .frame(width: 110, height: 80)
+                                                            .foregroundStyle(.gray100)
+                                                            .opacity(chosenTravel == oncomingTravel?[index] ? 0.0 : 0.3)
+                                                    }
+                                                    .frame(width: 110, height: 80)
+                                                    .onAppear {
+                                                        
+                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: oncomingTravel?[index].id ?? UUID())
+                                                        
+                                                        if let savedExpenses = savedExpenses {
+                                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                                return viewModel.getCountryForExpense(expense)
+                                                            }
+                                                            let uniqueCountryValues = Array(Set(countryValues))
+                                                            
+                                                            var flagImageNames: [String] = []
+                                                            for countryValue in uniqueCountryValues {
+                                                                
+                                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                                    flagImageNames.append(flagString)
+                                                                } else {
+                                                                    flagImageNames.append("DefaultFlag")
+                                                                }
+                                                            }
+                                                            self.flagImageDict[oncomingTravel?[index].id ?? UUID()] = flagImageNames
+                                                        }
                                                     }
                                                 }
+                                                
                                                 Text(oncomingTravel?[index].name ?? "제목 미정")
                                                     .font(.subhead1)
                                                     .lineLimit(1)
