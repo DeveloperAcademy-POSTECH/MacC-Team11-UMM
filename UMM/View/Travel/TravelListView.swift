@@ -276,7 +276,7 @@ struct TravelListView: View {
     
     private var tempTravelView: some View {
         ZStack {
-            if defaultTravel?.count == 0 {
+            if defaultTravelCnt == 0 {
                 
                 EmptyView()
                 
