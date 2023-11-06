@@ -12,9 +12,10 @@ struct AllExpenseView: View {
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
+    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
-    @EnvironmentObject var mainVM: MainViewModel
+    let countryInfoModel = CountryInfoModel.shared.countryResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -74,7 +75,7 @@ struct AllExpenseView: View {
                     .foregroundStyle(.gray200)
                     .padding(.leading, 16)
             }
-            .padding(.top, 32)
+            .padding(.top, 16)
         }
     }
     
@@ -124,18 +125,27 @@ struct AllExpenseView: View {
                             expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
                         }
                     }, label: {
-                        Text("\(Country.titleFor(rawValue: Int(country)))")
-                            .padding(.leading, 4)
-                            .font(.caption2)
-                            .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
-                            .padding(.vertical, 7)
-                            .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
-                            .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        HStack(spacing: 4) {
+                            Image(countryInfoModel[Int(country)]?.flagString ?? "DefaultFlag")
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .padding(.leading, 8)
+                            Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "전체")")
+                                .padding(.trailing, 8)
+                                .font(.caption2)
+                                .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
+                        }
+                        .padding(.vertical, 7)
+                        .background(expenseViewModel.selectedCountry == country ? Color.black: Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(expenseViewModel.selectedCountry == country ? Color.clear : Color.gray200, lineWidth: 1)
+                        )
                     })
                 }
             }
-            .padding(.top, 16)
+            .padding(.vertical, 16)
         }
     }
     
