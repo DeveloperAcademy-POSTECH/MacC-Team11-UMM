@@ -16,7 +16,6 @@ struct PreviousTravelView: View {
         }
     }
     @State var savedExpenses: [Expense]? = []
-//    @State var uniqueCountry: [(key: Int, value: [Int64])] = []
     @State private var travelCnt: Int = 0
     @State private var currentPage = 0
     @State var flagImageDict: [UUID: [String]] = [:]
@@ -47,7 +46,7 @@ struct PreviousTravelView: View {
                                                 .scaledToFill()
                                                 .frame(width: 110, height: 80)
                                                 .cornerRadius(10)
-                                                .background(
+                                                .overlay(
                                                     LinearGradient(
                                                         stops: [
                                                             Gradient.Stop(color: .black.opacity(0), location: 0.00),
@@ -159,7 +158,7 @@ struct PreviousTravelView: View {
                                                             .scaledToFill()
                                                             .frame(width: 110, height: 80)
                                                             .cornerRadius(10)
-                                                            .background(
+                                                            .overlay(
                                                                 LinearGradient(
                                                                     stops: [
                                                                         Gradient.Stop(color: .black.opacity(0), location: 0.00),

@@ -158,20 +158,23 @@ struct TravelListView: View {
                                             )
                                             .cornerRadius(10)
                                         
-                                        VStack(alignment: .leading, spacing: 4) {
+                                        VStack(alignment: .leading, spacing: 0) {
                                             
-                                            HStack {
+                                            HStack(spacing: 0) {
                                                 Spacer()
                                                 
-                                                ForEach(flagImageName, id: \.self) { imageName in
-                                                    Image(imageName)
-                                                        .resizable()
-                                                        .frame(width: 24, height: 24)
-                                                        .shadow(color: .gray400, radius: 4) 
+                                                ZStack {
+                                                    ForEach((0..<flagImageName.count).reversed(), id: \.self) { i in
+                                                        Image(flagImageName[i])
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .shadow(color: .gray400, radius: 4)
+                                                            .offset(x: -12 * CGFloat(flagImageName.count - 1 - Int(i)))
+                                                    }
                                                 }
                                             }
                                             .frame(height: 24)
-                                            .padding(16)
+                                            .padding(.trailing, 16)
                                             
                                             Spacer()
                                             
@@ -219,7 +222,7 @@ struct TravelListView: View {
                                             .frame(height: 16)
                                             
                                         }
-                                        .padding(.bottom, 25)
+                                        .padding(.vertical, 16)
                                         .frame(width: 350, height: 137)
                                         
                                     }                                    .onAppear {
@@ -241,7 +244,6 @@ struct TravelListView: View {
                                                     }
                                                 }
                                                 self.flagImageName = flagImageNames
-                                                print("flagImageName : ", flagImageName)
                                             }
                                         }
                                     }

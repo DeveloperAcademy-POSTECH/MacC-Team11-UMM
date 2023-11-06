@@ -47,7 +47,7 @@ struct UpcomingTravelView: View {
                                                 .scaledToFill()
                                                 .frame(width: 110, height: 80)
                                                 .cornerRadius(10)
-                                                .background(
+                                                .overlay(
                                                     LinearGradient(
                                                         stops: [
                                                             Gradient.Stop(color: .black.opacity(0), location: 0.00),
@@ -159,7 +159,7 @@ struct UpcomingTravelView: View {
                                                             .scaledToFill()
                                                             .frame(width: 110, height: 80)
                                                             .cornerRadius(10)
-                                                            .background(
+                                                            .overlay(
                                                                 LinearGradient(
                                                                     stops: [
                                                                         Gradient.Stop(color: .black.opacity(0), location: 0.00),
