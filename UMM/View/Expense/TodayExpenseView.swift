@@ -155,7 +155,7 @@ struct TodayExpenseView: View {
                             }
                             Spacer()
                             Image(systemName: "chevron.right")
-                                .font(.system(size: 24))
+                                .font(.system(size: 16))
                                 .foregroundStyle(.gray200)
                                 .padding(.trailing, 16)
                         }
