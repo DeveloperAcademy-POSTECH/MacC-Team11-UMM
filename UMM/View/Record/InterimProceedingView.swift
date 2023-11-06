@@ -47,14 +47,14 @@ struct InterimProceedingView: View {
                                             .frame(width: 110, height: 80)
                                             .cornerRadius(10)
                                             .background(
-                                                LinearGradient(
-                                                    stops: [
-                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                    ],
-                                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                                    endPoint: UnitPoint(x: 0.5, y: 1)
-                                                )
+                                              LinearGradient(
+                                                  stops: [
+                                                      Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                      Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                  ],
+                                                  startPoint: UnitPoint(x: 0.5, y: 0),
+                                                  endPoint: UnitPoint(x: 0.5, y: 1)
+                                              )
                                             )
                                             .cornerRadius(10)
                                         
@@ -62,8 +62,6 @@ struct InterimProceedingView: View {
                                             HStack {
                                                 Button {
                                                     chosenTravel = nowTravel?[index]
-                                                    isSelectedTravel = true
-                                                    viewModel.chosenTravel = chosenTravel
                                                 } label: {
                                                     if chosenTravel != nowTravel?[index] {
                                                         Circle()
@@ -71,8 +69,8 @@ struct InterimProceedingView: View {
                                                             .opacity(0.25)
                                                             .frame(width: 19, height: 19)
                                                             .overlay(
-                                                                Circle()
-                                                                    .strokeBorder(.white, lineWidth: 1.0)
+                                                              Circle()
+                                                                  .strokeBorder(.white, lineWidth: 1.0)
                                                             )
                                                     } else {
                                                         ZStack {
@@ -80,8 +78,8 @@ struct InterimProceedingView: View {
                                                                 .fill(Color(.mainPink))
                                                                 .frame(width: 20, height: 20)
                                                                 .overlay(
-                                                                    Circle()
-                                                                        .strokeBorder(.white, lineWidth: 1.0)
+                                                                  Circle()
+                                                                      .strokeBorder(.white, lineWidth: 1.0)
                                                                 )
                                                             Image("circleLabelCheck")
                                                                 .resizable()
@@ -92,13 +90,18 @@ struct InterimProceedingView: View {
                                                 }
                                                 // Doris : 국기 들어갈자리
                                                 
-                                                HStack {
+                                                HStack(spacing: 0) {
                                                     Spacer()
                                                     
-                                                    ForEach(flagImageDict[nowTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
-                                                        Image(imageName)
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
+                                                    ZStack {
+                                                        let imageNames = flagImageDict[nowTravel?[index].id ?? UUID()] ?? []
+                                                        ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                            Image(imageNames[i])
+                                                              .resizable()
+                                                              .frame(width: 24, height: 24)
+                                                              .shadow(color: .gray400, radius: 4)
+                                                              .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                            }
                                                     }
                                                 }
                                             }
@@ -124,7 +127,7 @@ struct InterimProceedingView: View {
                                             .padding(.horizontal, 8)
                                             .padding(.bottom, 8)
                                         }
-                                        
+                                                                                        
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(width: 110, height: 80)
                                             .foregroundStyle(.gray100)
@@ -231,13 +234,18 @@ struct InterimProceedingView: View {
                                                                   }
                                                                   // Doris : 국기 들어갈자리
                                                                   
-                                                                  HStack {
+                                                                  HStack(spacing: 0) {
                                                                       Spacer()
                                                                       
-                                                                      ForEach(flagImageDict[nowTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
-                                                                          Image(imageName)
-                                                                              .resizable()
-                                                                              .frame(width: 24, height: 24)
+                                                                      ZStack {
+                                                                          let imageNames = flagImageDict[nowTravel?[index].id ?? UUID()] ?? []
+                                                                          ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                                              Image(imageNames[i])
+                                                                                  .resizable()
+                                                                                  .frame(width: 24, height: 24)
+                                                                                  .shadow(color: .gray400, radius: 4)
+                                                                                  .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                                          }
                                                                       }
                                                                   }
                                                               }

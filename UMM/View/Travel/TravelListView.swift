@@ -168,8 +168,10 @@ struct TravelListView: View {
                                                     Image(imageName)
                                                         .resizable()
                                                         .frame(width: 24, height: 24)
+                                                        .shadow(color: .gray400, radius: 4) 
                                                 }
                                             }
+                                            .frame(height: 24)
                                             .padding(16)
                                             
                                             Spacer()
@@ -218,11 +220,10 @@ struct TravelListView: View {
                                             .frame(height: 16)
                                             
                                         }
-                                        .padding(.bottom, 16)
+                                        .padding(.bottom, 25)
                                         .frame(width: 350, height: 137)
                                         
-                                    }
-                                    .onAppear {
+                                    }                                    .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                             self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                             if let savedExpenses = savedExpenses {
