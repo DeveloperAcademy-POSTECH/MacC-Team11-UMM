@@ -24,6 +24,7 @@ struct CustomDatePicker: View {
                     expenseViewModel.triggerDatePickerPopover(pickerId: pickerId)
                 } label: {
                     Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
+//                    Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithHMS)")
                         .foregroundStyle(.black)
                 }
                 .padding(.horizontal, 8)

@@ -14,7 +14,7 @@ struct TodayExpenseDetailView: View {
     var selectedTravel: Travel?
     var selectedDate: Date
     var selectedCountry: Int64
-    @State var selectedPaymentMethod: Int64 = -2
+    @State var selectedPaymentMethod: Int64
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
@@ -22,6 +22,7 @@ struct TodayExpenseDetailView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    let dateGapHandler = DateGapHandler.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -40,11 +41,12 @@ struct TodayExpenseDetailView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            mainVM.selectedTravel = selectedTravel
 
             let filteredResult = getFilteredExpenses()
             expenseViewModel.filteredTodayExpenses = filteredResult
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
+            
+            print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
     }
     
@@ -140,7 +142,8 @@ struct TodayExpenseDetailView: View {
             Text("Day: \(calculatedDay)")
                 .font(.subhead1)
                 .foregroundStyle(.gray400)
-            Text("\(selectedDate, formatter: dateFormatterWithDay)")
+            // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
+            Text("\(dateGapHandler.convertBeforeShowing(date: selectedDate), formatter: dateFormatterWithDay)")
                 .font(.caption2)
                 .foregroundStyle(.gray300)
                 .padding(.leading, 10)
@@ -160,9 +163,17 @@ struct TodayExpenseDetailView: View {
                         Text("\(expense.info ?? "info: unknown")")
                             .font(.subhead2_1)
                         HStack(alignment: .center, spacing: 0) {
-                            Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
-                                .font(.caption2)
-                                .foregroundStyle(.gray300)
+                            // 소비 기록을 한 시각을 보여주는 부분
+                            // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                            if let payDate = expense.payDate {
+                                Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray300)
+                            } else {
+                                Text("-")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray300)
+                            }
                             Divider()
                                 .padding(.horizontal, 3)
                             Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
