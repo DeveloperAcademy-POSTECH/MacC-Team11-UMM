@@ -1,6 +1,6 @@
 표 1
 ,영어 국가명,한글 국가명,장소 이름명(언어 코드-국가 코드),국기 이름명,기본 이미지 이름명,주요 화폐,
--1,Unknown,알수없음,-,DefaultFlag,DefaultImage,[Unknown],
+-1,Unknown,알 수 없음,-,DefaultFlag,DefaultImage,[Unknown],
 0,Korea,대한민국,ko-KR,KoreaFlag,KoreaDefaultImage,[KRW],
 1,China,중국,zh-CN,ChinaFlag,ChinaDefaultImage,[CNY],
 2,Japan,일본,ja-JP,JapanFlag,JapanDefaultImage,[JPY],
