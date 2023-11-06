@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct CountryChoiceModal: View {
-    @Binding var chosenCountry: Country
+    @Binding var chosenCountry: Int
     @Binding var countryIsModified: Bool
-    let countryArray: [Country]
-    let currentCountry: Country
+    let countryArray: [Int]
+    let currentCountry: Int
     
     var body: some View {
         ZStack {
@@ -60,13 +60,13 @@ struct CountryChoiceModal: View {
                                 .opacity((country == currentCountry && !countryIsModified) ? 0.0000001 : 1)
                             
                             HStack {
-                                Image(country.flagImageString)
+                                Image(CountryInfoModel.shared.countryResult[Int(country)]?.flagString ?? "DefaultFlag")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 24, height: 24)
                                     .padding(.vertical, 13)
                                 
-                                Text(country.title)
+                                Text(CountryInfoModel.shared.countryResult[Int(country)]?.koreanNm ?? "알 수 없음")
                                     .foregroundStyle(.black)
                                     .font(.subhead3_2)
                                     .padding(.vertical, 16)
@@ -89,13 +89,13 @@ struct CountryChoiceModal: View {
                                 .opacity((chosenCountry == currentCountry && countryIsModified) ? 1.0 : 0.0000001)
                             
                             HStack {
-                                Image(currentCountry.flagImageString)
+                                Image(CountryInfoModel.shared.countryResult[currentCountry]?.flagString ?? "DefaultFlag")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 24, height: 24)
                                     .padding(.vertical, 13)
                                 
-                                Text(currentCountry.title)
+                                Text(CountryInfoModel.shared.countryResult[Int(currentCountry)]?.koreanNm ?? "알 수 없음")
                                     .foregroundStyle(.black)
                                     .font(.subhead3_2)
                                     .padding(.vertical, 16)
@@ -117,5 +117,5 @@ struct CountryChoiceModal: View {
 }
 
 #Preview {
-    CountryChoiceModal(chosenCountry: .constant(.usa), countryIsModified: .constant(true), countryArray: [.china, .usa, .japan, .france], currentCountry: .korea)
+    CountryChoiceModal(chosenCountry: .constant(3), countryIsModified: .constant(true), countryArray: [1, 3, 2, 5], currentCountry: 0)
 }
