@@ -12,9 +12,10 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
+    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
-    @EnvironmentObject var mainVM: MainViewModel
+    let countryInfoModel = CountryInfoModel.shared.countryResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -70,14 +71,12 @@ struct TodayExpenseView: View {
                 // 국기 + 국가명
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 8) {
-                        Spacer()
-                            .frame(width: 4) // 디자이너 몰래 살짝 움직였다
-                        Image(Country(rawValue: Int(country))?.flagImageString ?? "")
+                        Image(countryInfoModel[Int(country)]?.flagString ?? "")
                             .resizable()
-                            .scaledToFit()
                             .frame(width: 18, height: 18)
-                            .shadow(color: .gray, radius: 3)
-                        Text(Country(rawValue: Int(country))?.title ?? "-")
+                            .shadow(color: Color.gray200, radius: 2)
+                            .padding(.leading, 2)
+                        Text(countryInfoModel[Int(country)]?.koreanNm ?? "")
                             .foregroundStyle(.black)
                             .font(.subhead3_1)
                     }
@@ -92,10 +91,16 @@ struct TodayExpenseView: View {
                             sumPaymentMethod: totalSum
                         )
                     } label: {
-                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                            .font(.display3)
-                            .foregroundStyle(.black)
-                            .padding(.top, 8)
+                        HStack(spacing: 0) {
+                            Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                                .font(.display3)
+                                .foregroundStyle(.black)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.gray200)
+                                .padding(.leading, 16)
+                        }
+                        .padding(.top, 8)
                     }
                 }
                 .padding(.bottom, 16)
@@ -149,6 +154,10 @@ struct TodayExpenseView: View {
                                 .padding(.top, 12)
                             }
                             Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.gray200)
+                                .padding(.trailing, 16)
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity)

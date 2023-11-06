@@ -18,9 +18,10 @@ struct TodayExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
+    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
-    @EnvironmentObject var mainVM: MainViewModel
+    let countryInfoModel = CountryInfoModel.shared.countryResult
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -99,14 +100,13 @@ struct TodayExpenseDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             // 나라 이름
             HStack(alignment: .center, spacing: 8) {
-                Image(Country(rawValue: Int(selectedCountry))?.flagImageString ?? "")
+                Image(countryInfoModel[Int(selectedCountry)]?.flagString ?? "")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 24, height: 24)
-                    .shadow(color: .gray, radius: 3)
-                Text("\(Country.titleFor(rawValue: Int(selectedCountry)))")
+                    .shadow(color: .gray200, radius: 2)
+                Text("\(countryInfoModel[Int(selectedCountry)]?.koreanNm ?? "")")
                     .font(.display1)
-                    .padding(.leading, 8)
             }
             
             // 총 합계

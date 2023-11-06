@@ -12,9 +12,10 @@ struct AllExpenseView: View {
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
+    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
-    @EnvironmentObject var mainVM: MainViewModel
+    let countryInfoModel = CountryInfoModel.shared.countryResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -43,7 +44,7 @@ struct AllExpenseView: View {
             print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
+            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }
     
@@ -74,7 +75,7 @@ struct AllExpenseView: View {
                     .foregroundStyle(.gray200)
                     .padding(.leading, 16)
             }
-            .padding(.top, 32)
+            .padding(.top, 16)
         }
     }
     
@@ -113,29 +114,51 @@ struct AllExpenseView: View {
     
     private var countryPicker: some View {
         let allExpensesInSelectedTravel = expenseViewModel.filteredAllExpenses
-        let countries = [-2] + Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
+        let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
         
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 4) {
+                
+                Button(action: {
+                    DispatchQueue.main.async {
+                        expenseViewModel.selectedCountry = Int64(-2)
+                        expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
+                    }
+                }, label: {
+                    Text("전체")
+                        .padding(.vertical, 7)
+                        .frame(width: 61)
+                        .font(.caption2)
+                        .foregroundColor(expenseViewModel.selectedCountry == -2 ? Color.white: Color.gray300)
+                        .background(expenseViewModel.selectedCountry == -2 ? Color.black: Color.gray100)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                })
+                
                 ForEach(countries, id: \.self) { country in
                     Button(action: {
                         DispatchQueue.main.async {
                             expenseViewModel.selectedCountry = Int64(country)
-                            expenseViewModel.selectCountry(country: expenseViewModel.selectedCountry)
+                            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
                         }
                     }, label: {
-                        Text("\(Country.titleFor(rawValue: Int(country)))")
-                            .padding(.leading, 4)
-                            .font(.caption2)
-                            .frame(width: 61) // 폰트 개수가 다르고, 크기는 고정되어 있어서 상수 값을 주었습니다.
-                            .padding(.vertical, 7)
-                            .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
-                            .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        HStack(spacing: 4) {
+                            Image(countryInfoModel[Int(country)]?.flagString ?? "")
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .shadow(color: .gray200, radius: 2)
+                                .padding(.leading, 8)
+                            Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
+                                .padding(.trailing, 8)
+                                .font(.caption2)
+                                .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
+                        }
+                        .padding(.vertical, 7)
+                        .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     })
                 }
             }
-            .padding(.top, 16)
+            .padding(.vertical, 16)
         }
     }
     
