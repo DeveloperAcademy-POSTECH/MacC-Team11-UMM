@@ -15,6 +15,9 @@ struct InterimRecordView: View {
     @State private var defaultTravel: [Travel]?
     @State private var defaultExpense: [Expense]?
     
+    // 몇번째 지출인지
+    @State var selectedTravelIndex = 0
+    
     @State var isSelectedTravel = false
     @Binding var defaultTravelCnt: Int
     
@@ -64,7 +67,7 @@ struct InterimRecordView: View {
     
     private var defaultExpenseView: some View {
         ZStack(alignment: .center) {
-            ScrollView(.init()) {
+//            ScrollView(.init()) {
                 TabView(selection: $currentPage) {
                     ForEach(0..<defaultTravelCnt, id: \.self) { index in
                         ZStack {
@@ -137,18 +140,22 @@ struct InterimRecordView: View {
                                 }
                             }
                         }
-                        .onAppear {
-                            DispatchQueue.main.async {
-                                
-                            }
-                        }
+//                        .onAppear {
+//                            DispatchQueue.main.async {
+//                                print("index", selectedTravelIndex)
+//                            }
+//                        }
                     }
+                    .onChange(of: currentPage) { newValue in
+                        selectedTravelIndex = newValue
+                        print("index", selectedTravelIndex)
+                    }
+
                 }
                 .frame(width: 350, height: 157 + 46)
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            }
+//            }
             .frame(width: 350, height: 157 + 46)
-            .foregroundStyle(Color.red)
             
             HStack(spacing: 6) {
                 ForEach(0..<defaultTravelCnt, id: \.self) { index in
