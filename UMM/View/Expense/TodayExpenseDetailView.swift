@@ -22,6 +22,7 @@ struct TodayExpenseDetailView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    let dateGapHandler = DateGapHandler.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -140,7 +141,8 @@ struct TodayExpenseDetailView: View {
             Text("Day: \(calculatedDay)")
                 .font(.subhead1)
                 .foregroundStyle(.gray400)
-            Text("\(selectedDate, formatter: dateFormatterWithDay)")
+            // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
+            Text("\(dateGapHandler.convertBeforeShowing(date: selectedDate), formatter: dateFormatterWithDay)")
                 .font(.caption2)
                 .foregroundStyle(.gray300)
                 .padding(.leading, 10)
@@ -160,7 +162,8 @@ struct TodayExpenseDetailView: View {
                         Text("\(expense.info ?? "info: unknown")")
                             .font(.subhead2_1)
                         HStack(alignment: .center, spacing: 0) {
-                            Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
+                            // 소비 시각을 보여주는 부분. 현지 시각으로 변환해서 보여준다. 그러나 expense.payDate가 nil인 경우 Date()를 convertBeforeShowing하면 안 된다.
+                            Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: expense.payDate ?? Date())))")
                                 .font(.caption2)
                                 .foregroundStyle(.gray300)
                             Divider()

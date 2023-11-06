@@ -53,8 +53,13 @@ struct TodayExpenseView: View {
     
     private var datePicker: some View {
         VStack {
-            // Date()는 현지 시간을 가져온다. DatePicker에서 여행의 startDate를 보여줄 때는 저장된 데이터를 covertBeforeShowing한다. startDate가 nil이면 현지 날짜인 Date()의 하루 이전 날짜를 보여준다.
-            CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60)))
+            // DatePicker에서 여행의 startDate를 보여줄 때는 저장된 데이터를 covertBeforeShowing한다.
+            // selectedTravel이 nil이면 현지 시간인 Date()를 변환해서 보여주면 안 된다. 따라서 Date()를 한국 시간으로 변환한 뒤에, 다시 현지 시간으로 변환되게 해야 한다.
+            CustomDatePicker(
+                expenseViewModel: expenseViewModel, 
+                selectedDate: $expenseViewModel.selectedDate,
+                pickerId: pickerId,
+                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
                 .padding(.top, 12)
                 .padding(.bottom, 12)
         }
