@@ -12,30 +12,31 @@ class TempSave {
     static let shared = TempSave()
     let viewContext = PersistenceController.shared.container.viewContext
     var travelArray: [Travel] = [Travel]()
+    static let nowDate = Date()
     
     // dummyTravelData를 위한 프로퍼티
     let dummyTravelName = ["DummyTravel0", "DummyTravel1", "DummyTravel2", "DummyTravel3"]
     let dummyTravelStartDate = [
-        Calendar.current.date(byAdding: .day, value: -4, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +3, to: Date())!
+        DateGapHandler.shared.getLocal000(of: Calendar.current.date(byAdding: .day, value: -4, to: nowDate)!),
+        DateGapHandler.shared.getLocal000(of: Calendar.current.date(byAdding: .day, value: -2, to: nowDate)!),
+        DateGapHandler.shared.getLocal000(of: Calendar.current.date(byAdding: .day, value: -2, to: nowDate)!),
+        DateGapHandler.shared.getLocal000(of: Calendar.current.date(byAdding: .day, value: +3, to: nowDate)!)
     ]
     let dummyTravelEndDate = [
-        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +2, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +3, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: +10, to: Date())!
+        DateGapHandler.shared.getLocal235959(of: Calendar.current.date(byAdding: .day, value: -2, to: nowDate)!),
+        DateGapHandler.shared.getLocal235959(of: Calendar.current.date(byAdding: .day, value: +2, to: nowDate)!),
+        DateGapHandler.shared.getLocal235959(of: Calendar.current.date(byAdding: .day, value: +3, to: nowDate)!),
+        DateGapHandler.shared.getLocal235959(of: Calendar.current.date(byAdding: .day, value: +10, to: nowDate)!)
     ]
     let dummyTravelLastUpdate = [
-        Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
-        Calendar.current.date(byAdding: .day, value: -4, to: Date())!
+        Calendar.current.date(byAdding: .day, value: -1, to: nowDate)!,
+        Calendar.current.date(byAdding: .day, value: -2, to: nowDate)!,
+        Calendar.current.date(byAdding: .day, value: -3, to: nowDate)!,
+        Calendar.current.date(byAdding: .day, value: -4, to: nowDate)!
     ]
     // dummyExpenseData를 위한 프로퍼티
     let dummyExpenseName = ["DummyExpense0", "DummyExpense1", "DummyExpense2", "DummyExpense3"]
-    let dummyExpensePayDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+    let dummyExpensePayDate = Calendar.current.date(byAdding: .day, value: -1, to: nowDate)!
     let dummyExpenseCurrency = Int.random(in: 1...5)
     let dummyExpenseExchangeRate = Double(Int.random(in: 1...5))
     let dummyExpenseInfo = ["DummyExpenseInfo0", "DummyExpenseInfo1", "DummyExpenseInfo2", "DummyExpenseInfo3"]
@@ -104,9 +105,9 @@ class TempSave {
         let tempTravel = Travel(context: viewContext)
         tempTravel.id = UUID()
         tempTravel.name = "Default"
-        tempTravel.startDate = Date()
-        tempTravel.endDate = Date()
-        tempTravel.lastUpdate = Date()
+        tempTravel.startDate = TempSave.nowDate
+        tempTravel.endDate = TempSave.nowDate
+        tempTravel.lastUpdate = TempSave.nowDate
     }
     
     // dummy Travel을 추가하는 함수
