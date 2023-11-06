@@ -96,8 +96,8 @@ struct RecordView: View {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
                 viewModel.defaultTravelNameReplacer = "-"
-                if let chosenTravelName = mainVM.selectedTravel?.name {
-                    if chosenTravelName == "Default" {
+                if let foundTravelName = findCurrentTravel()?.name {
+                    if foundTravelName == "Default" {
                         viewModel.addTravelRequestModalIsShown = true
                     }
                 }
