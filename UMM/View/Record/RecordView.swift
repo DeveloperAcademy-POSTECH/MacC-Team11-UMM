@@ -9,6 +9,10 @@ import SwiftUI
 
 struct RecordView: View {
     
+    init() {
+        print("RecordView | init")
+    }
+    
     let recordButtonAnimationLength = 0.25
     
     @ObservedObject var viewModel = RecordViewModel()
@@ -60,10 +64,10 @@ struct RecordView: View {
                     VStack(spacing: 0) {
                         Spacer()
                         ZStack(alignment: .bottom) {
+                            speakWhilePressingView
                             alertView_empty
                             alertView_short
                             alertView_saved
-                            speakWhilePressingView
                         }
                         Spacer()
                             .frame(height: 16)
@@ -73,11 +77,11 @@ struct RecordView: View {
                             .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
                     }
                 }
-                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown || viewModel.alertView_savedIsShown)
+                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown || mainVM.alertView_savedIsShown)
                 .onTapGesture {
                     viewModel.alertView_emptyIsShown = false
                     viewModel.alertView_shortIsShown = false
-                    viewModel.alertView_savedIsShown = false
+                    mainVM.alertView_savedIsShown = false
                 }
                 
                 VStack(spacing: 0) {
@@ -567,7 +571,7 @@ struct RecordView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 18)
                 .foregroundStyle(.white)
-                .opacity(viewModel.alertView_savedIsShown ? 1 : 0.0000001)
+                .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
                 .shadow(color: Color(0xCCCCCC), radius: 5)
                 .layoutPriority(-1)
             
@@ -584,7 +588,7 @@ struct RecordView: View {
             }
             .padding(.top, 12)
             .padding(.bottom, 16)
-            .opacity(viewModel.alertView_savedIsShown ? 1 : 0.0000001)
+            .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
         }
         .padding(.horizontal, 30)
     }
@@ -594,7 +598,7 @@ struct RecordView: View {
             .font(.subhead3_2)
             .foregroundStyle(.gray300)
             .multilineTextAlignment(.center)
-            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown && !mainVM.alertView_savedIsShown ? 1 : 0.0000001)
             .allowsHitTesting(false)
     }
 }

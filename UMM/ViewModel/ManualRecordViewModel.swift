@@ -178,6 +178,7 @@ final class ManualRecordViewModel: ObservableObject {
     @Published var secondCounter: Int?
     
     init() {
+        print("ManualRecordViewModel | init")
         locationManager = CLLocationManager()
         locationManager?.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self

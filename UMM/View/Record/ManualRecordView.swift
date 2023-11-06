@@ -11,7 +11,6 @@ import CoreLocation
 struct ManualRecordView: View {
     @ObservedObject var viewModel: ManualRecordViewModel
     @EnvironmentObject var mainVM: MainViewModel
-    @ObservedObject var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
@@ -128,7 +127,7 @@ struct ManualRecordView: View {
                                 if mainVM.chosenTravelInManualRecord != nil {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
-                                recordViewModel.alertView_savedIsShown = true
+                                mainVM.alertView_savedIsShown = true
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -148,8 +147,8 @@ struct ManualRecordView: View {
     }
     
     init(prevViewModel: RecordViewModel) {
+        print("ManualRecordView | init")
         viewModel = ManualRecordViewModel()
-        recordViewModel = prevViewModel
         
         viewModel.recordButtonIsUsed = prevViewModel.recordButtonIsFocused
         
@@ -727,7 +726,7 @@ struct ManualRecordView: View {
                 } else {
                     mainVM.selectedTravel = defaultTravel
                 }
-                recordViewModel.alertView_savedIsShown = true
+                mainVM.alertView_savedIsShown = true
                 dismiss()
                 
             }

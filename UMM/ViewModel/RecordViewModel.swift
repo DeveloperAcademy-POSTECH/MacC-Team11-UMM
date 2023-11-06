@@ -13,6 +13,7 @@ import SwiftUI
 import Combine
 
 final class RecordViewModel: ObservableObject {
+    
     let viewContext = PersistenceController.shared.container.viewContext
     var mlModel: MLModel?
     var infoPredictor: NLModel?
@@ -85,11 +86,7 @@ final class RecordViewModel: ObservableObject {
     @Published var manualRecordViewIsShown = false
     @Published var alertView_emptyIsShown = false
     @Published var alertView_shortIsShown = false
-    @Published var alertView_savedIsShown = false {
-        didSet {
-            print("alertView_savedIsShown: \(alertView_savedIsShown)")
-        }
-    }
+    
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var recordButtonIsUsed = true
@@ -117,6 +114,7 @@ final class RecordViewModel: ObservableObject {
     private var hapticCounter = 0
     
     init() {
+        print("RecordViewModel | init")
         do {
             mlModel = try InfoClassifier(configuration: MLModelConfiguration()).model
         } catch {
