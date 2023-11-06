@@ -73,12 +73,12 @@ struct TodayExpenseView: View {
                     HStack(spacing: 8) {
                         Spacer()
                             .frame(width: 4) // 디자이너 몰래 살짝 움직였다
-                        Image(countryInfoModel[Int(country)]?.flagString ?? "-")
+                        Image(countryInfoModel[Int(country)]?.flagString ?? "")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 18, height: 18)
                             .shadow(color: .gray, radius: 3)
-                        Text(countryInfoModel[Int(country)]?.koreanNm ?? "-")
+                        Text(countryInfoModel[Int(country)]?.koreanNm ?? "")
                             .foregroundStyle(.black)
                             .font(.subhead3_1)
                     }
