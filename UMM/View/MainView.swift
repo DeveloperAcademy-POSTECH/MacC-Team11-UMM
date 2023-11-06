@@ -43,8 +43,7 @@ struct MainView: View {
                 }
                 .tag(1)
             
-//            ExpenseView()
-            TestRecordView()
+            ExpenseView()
                 .tabItem {
                     VStack {
                         if viewModel.selection == 2 {
