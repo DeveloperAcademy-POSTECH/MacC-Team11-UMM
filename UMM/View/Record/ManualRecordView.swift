@@ -11,7 +11,6 @@ import CoreLocation
 struct ManualRecordView: View {
     @ObservedObject var viewModel: ManualRecordViewModel
     @EnvironmentObject var mainVM: MainViewModel
-    var recordViewModel: RecordViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
@@ -23,20 +22,22 @@ struct ManualRecordView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     Spacer()
-                        .frame(height: 107 - 9 + 45)
+//                        .frame(height: 107 - 9 + 45)
+                        .frame(height: 50)
                     payAmountBlockView
                     Spacer()
                         .frame(height: 64)
-                    inStringPropertyBlockView
+                    inSentencePropertyBlockView
                     Divider()
                         .foregroundStyle(.gray200)
                         .padding(.vertical, 20)
                         .padding(.horizontal, 20)
-                    notInStringPropertyBlockView
+                    notInSentencePropertyBlockView
                     Spacer()
                         .frame(height: 150)
                 }
             }
+            
             VStack(spacing: 0) {
                 Spacer()
                 autoSaveTextView
@@ -44,8 +45,8 @@ struct ManualRecordView: View {
                     .frame(height: 16)
                 saveButtonView
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
         .navigationTitle("기록 완료")
@@ -63,19 +64,24 @@ struct ManualRecordView: View {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
                 .presentationDetents([.height(289 - 34)])
         }
-        .alert(Text("화면 전환 안내"), isPresented: $viewModel.backButtonAlertIsShown) {
+        .sheet(isPresented: $viewModel.dateChoiceModalIsShown) {
+            DateChoiceModal(date: $viewModel.payDate, startDate: mainVM.chosenTravelInManualRecord?.startDate ?? Date.distantPast, endDate: mainVM.chosenTravelInManualRecord?.endDate ?? Date.distantFuture)
+                .presentationDetents([.height(289 - 34)])
+        }
+        .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.backButtonAlertIsShown) {
             Button {
                 viewModel.backButtonAlertIsShown = false
             } label: {
-                Text("아니오")
+                Text("취소")
             }
             Button {
                 dismiss()
                 viewModel.backButtonAlertIsShown = false
             } label: {
-                Text("예")
+                Text("나가기")
             }
-        } message: {Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아가시겠습니까?")
+        } message: {
+            Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
             viewModel.getLocation()
@@ -127,6 +133,7 @@ struct ManualRecordView: View {
                                 if mainVM.chosenTravelInManualRecord != nil {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
+                                mainVM.alertView_savedIsShown = true
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -146,8 +153,8 @@ struct ManualRecordView: View {
     }
     
     init(prevViewModel: RecordViewModel) {
+        print("ManualRecordView | init")
         viewModel = ManualRecordViewModel()
-        recordViewModel = prevViewModel
         
         viewModel.recordButtonIsUsed = prevViewModel.recordButtonIsFocused
         
@@ -300,24 +307,96 @@ struct ManualRecordView: View {
                     }
                 }
                 Spacer()
-                Button {
+                
+                Group {
+                    if viewModel.soundRecordFileName == nil {
+                        ZStack {
+                            Circle()
+                                .foregroundStyle(.white)
+                                .frame(width: 54, height: 54)
+                                .shadow(color: .gray200, radius: 3)
+                            
+                            Circle()
+                                .strokeBorder(.gray200, lineWidth: 1)
+                            
+                            HStack(spacing: 3) {
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 9)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 14)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 19)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 14)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 9)
+                            }
+                        }
+                    } else {
+                        if viewModel.playingRecordSound {
+                            PlayngRecordSoundView()
+                        } else {
+                            ZStack {
+                                Circle()
+                                    .foregroundStyle(.white)
+                                    .frame(width: 54, height: 54)
+                                    .shadow(color: .gray200, radius: 3)
+                                
+                                Circle()
+                                    .strokeBorder(.gray300, lineWidth: 1)
+                                
+                                HStack(spacing: 3) {
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 9)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 14)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 19)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 14)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 9)
+                                }
+                            }
+                        }
+                    }
+                }
+                .foregroundStyle(.gray200)
+                .frame(width: 54, height: 54)
+                .onTapGesture {
                     print("소리 재생 버튼")
                     viewModel.autoSaveTimer?.invalidate()
                     viewModel.secondCounter = nil
-                } label: {
-                    Circle() // replace ^^^
-                        .foregroundStyle(.gray200)
-                        .frame(width: 54, height: 54)
+                    
+                    if viewModel.soundRecordFileName != nil {
+                        if !viewModel.playingRecordSound {
+                            if let soundRecordFileName = viewModel.soundRecordFileName {
+                                viewModel.startPlayingAudio(url: soundRecordFileName)
+                                viewModel.playingRecordSound = true
+                            }
+                        } else {
+                            viewModel.stopPlayingAudio()
+                            viewModel.playingRecordSound = false
+                        }
+                    }
                 }
-                .hidden() // 코어 데이터 저장 기능 구현한 후에 화면에 표시하기 ^^^
-                
             }
             Spacer()
                 .frame(width: 20)
         }
     }
     
-    private var inStringPropertyBlockView: some View {
+    private var inSentencePropertyBlockView: some View {
         HStack {
             Spacer()
                 .frame(width: 20)
@@ -498,7 +577,7 @@ struct ManualRecordView: View {
         }
     }
     
-    private var notInStringPropertyBlockView: some View {
+    private var notInSentencePropertyBlockView: some View {
         HStack {
             Spacer()
                 .frame(width: 20)
@@ -590,6 +669,7 @@ struct ManualRecordView: View {
                             print("지출 일시 수정 버튼")
                             viewModel.autoSaveTimer?.invalidate()
                             viewModel.secondCounter = nil
+                            viewModel.dateChoiceModalIsShown = true
                         }
                 }
                 VStack(spacing: 10) {
@@ -722,10 +802,12 @@ struct ManualRecordView: View {
                 }
                 if mainVM.chosenTravelInManualRecord != nil {
                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                    dismiss()
                 } else {
                     mainVM.selectedTravel = defaultTravel
                 }
+                mainVM.alertView_savedIsShown = true
+                dismiss()
+                
             }
             .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
             .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)
@@ -809,6 +891,58 @@ struct ParticipantToggleView: View {
             }
         } else {
             EmptyView()
+        }
+    }
+}
+
+struct PlayngRecordSoundView: View {
+    
+    @State var timer: Timer?
+    @State var level = 0
+    @State var flicker = true
+    
+    let stepLength = 0.5
+    
+    func levelUp() {
+        level = (level + 1) % 3
+    }
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .foregroundStyle(.white)
+                .frame(width: 54, height: 54)
+                .onAppear {
+                    timer = Timer.scheduledTimer(withTimeInterval: stepLength, repeats: true) { _ in
+                        levelUp()
+                    }
+                }
+                .onDisappear {
+                    timer?.invalidate()
+                }
+                .shadow(color: .mainPink, radius: 3)
+            
+            Circle()
+                .strokeBorder(.mainPink, lineWidth: 1)
+            
+            HStack(spacing: 3) {
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 2 ? 10 : 7)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 1 ? 15 : 12)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 0 ? 20 : 17)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 1 ? 15 : 12)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 2 ? 10 : 7)
+            }
+            .animation(.bouncy(duration: stepLength * 1.25), value: level)
         }
     }
 }

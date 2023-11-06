@@ -35,6 +35,7 @@
 		57A65D182AD7DDA700131266 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D172AD7DDA700131266 /* RecordView.swift */; };
 		57B2AA422AEFD3980042E55C /* EmtpyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B2AA412AEFD3980042E55C /* EmtpyFile.swift */; };
 		57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C41DFB2AD4F1EB00345253 /* Persistence.swift */; };
+		57C8342F2AF8B2540097AE99 /* DateChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C8342E2AF8B2540097AE99 /* DateChoiceModal.swift */; };
 		57CC20182AE548440034BD57 /* InfoClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */; };
 		57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */; };
 		57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C722ADE4CAE00EDAD11 /* Currency.swift */; };
@@ -130,6 +131,7 @@
 		57A65D172AD7DDA700131266 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		57B2AA412AEFD3980042E55C /* EmtpyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmtpyFile.swift; sourceTree = "<group>"; };
 		57C41DFB2AD4F1EB00345253 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		57C8342E2AF8B2540097AE99 /* DateChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChoiceModal.swift; sourceTree = "<group>"; };
 		57CC20172AE548440034BD57 /* InfoClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = InfoClassifier.mlmodel; sourceTree = "<group>"; };
 		57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelChoiceInExpenseModal.swift; sourceTree = "<group>"; };
 		57CE9C722ADE4CAE00EDAD11 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				57CC20192AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift */,
 				57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */,
 				575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */,
+				57C8342E2AF8B2540097AE99 /* DateChoiceModal.swift */,
 			);
 			path = Modal;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 				C1DC9A472AF3428C00CB6298 /* CountryInfoModel.swift in Sources */,
 				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
 				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
+				57C8342F2AF8B2540097AE99 /* DateChoiceModal.swift in Sources */,
 				575F287F2AF38C0300F9484E /* AddTravelRequestModal.swift in Sources */,
 				57A65D102AD7D52700131266 /* String+Extension.swift in Sources */,
 				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,

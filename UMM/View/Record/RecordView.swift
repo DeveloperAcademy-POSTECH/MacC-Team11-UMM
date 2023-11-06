@@ -9,6 +9,10 @@ import SwiftUI
 
 struct RecordView: View {
     
+    init() {
+        print("RecordView | init")
+    }
+    
     let recordButtonAnimationLength = 0.25
     
     @ObservedObject var viewModel = RecordViewModel()
@@ -48,15 +52,43 @@ struct RecordView: View {
                     rawSentenceView
                     livePropertyView
                     Spacer()
+                        .frame(height: 40) // figma: 64
+                    manualRecordButtonView
+                    Spacer()
                 }
                 
-                manualRecordButtonView
+                ZStack {
+                    Color(.white)
+                        .opacity(0.0000001)
+                    
+                    VStack(spacing: 0) {
+                        Spacer()
+                        ZStack(alignment: .bottom) {
+                            speakWhilePressingView
+                            alertView_empty
+                            alertView_short
+                            alertView_saved
+                        }
+                        Spacer()
+                            .frame(height: 16)
+                        recordButtonView
+                            .hidden()
+                        Spacer()
+                            .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                    }
+                }
+                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown || mainVM.alertView_savedIsShown)
+                .onTapGesture {
+                    viewModel.alertView_emptyIsShown = false
+                    viewModel.alertView_shortIsShown = false
+                    mainVM.alertView_savedIsShown = false
+                }
                 
-                Group {
-                    alertView_empty
-                    alertView_short
-                    speakWhilePressingView
+                VStack(spacing: 0) {
+                    Spacer()
                     recordButtonView
+                    Spacer()
+                        .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
                 }
             }
             .ignoresSafeArea()
@@ -64,8 +96,8 @@ struct RecordView: View {
                 viewModel.resetInStringProperties()
                 viewModel.recordButtonIsUsed = true
                 viewModel.defaultTravelNameReplacer = "-"
-                if let chosenTravelName = mainVM.selectedTravel?.name {
-                    if chosenTravelName == "Default" {
+                if let foundTravelName = findCurrentTravel()?.name {
+                    if foundTravelName == "Default" {
                         viewModel.addTravelRequestModalIsShown = true
                     }
                 }
@@ -141,10 +173,16 @@ struct RecordView: View {
                 .hidden()
             
             if !isDetectingPress {
-                Text("지출을 기록해주세요")
-                    .foregroundStyle(.gray300)
-                    .font(.display3)
-                    .padding(.horizontal, 48)
+                VStack {
+                    Text("지출 내역을 말해주세요")
+                        .foregroundStyle(.gray300)
+                        .font(.display3)
+                    Text("(ex. 빵집, 520엔, 현금으로)")
+                        .foregroundStyle(.gray300)
+                        .font(.display1)
+                }
+                .padding(.horizontal, 48)
+
             } else {
                 ZStack {
                     ThreeDotsView()
@@ -371,30 +409,20 @@ struct RecordView: View {
             viewModel.recordButtonIsUsed = false
             viewModel.manualRecordViewIsShown = true
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 11)
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                RoundedRectangle(cornerRadius: 11)
-                    .strokeBorder(.gray200, lineWidth: 1)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 8) {
-                    Image("manualRecordBlackPencil")
+                HStack(spacing: 4) {
+                    Image("recordGrayPencil")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
                     Text("직접 기록")
-                        .foregroundStyle(.gray400)
+                        .foregroundStyle(.gray300)
                         .font(.caption2)
+                        .underline()
                 }
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
-            }
         }
         .opacity(isDetectingPress ? 0.000001 : 1)
-        .offset(y: 124.5)
         .disabled(isDetectingPress)
     }
     
@@ -408,7 +436,7 @@ struct RecordView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 84, height: 84)
-                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 20 : 0)
+                .shadow(color: Color(0xfa395c, alpha: 0.7), radius: isDetectingPress_letButtonBigger ? 8 : 0)
                 .scaleEffect(isDetectingPress_letButtonBigger ? 1 : (28.0 / 84.0))
                 .animation(.easeInOut(duration: recordButtonAnimationLength), value: isDetectingPress_letButtonBigger)
                 .opacity(isDetectingPress_showOnButton ? 1 : 0.0000001)
@@ -422,8 +450,8 @@ struct RecordView: View {
                 viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
-//                viewModel.stopRecording()
-//                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                viewModel.stopRecording()
+                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
                     DispatchQueue.main.async {
                         viewModel.alertView_shortIsShown = true
@@ -442,10 +470,8 @@ struct RecordView: View {
                         }
                     }
                 }
-                    
             }
         }
-        .offset(y: 274)
     }
     
     private var continuousPress: some Gesture {
@@ -457,9 +483,9 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-//                    Task {
-//                        await viewModel.startRecording()
-//                    }
+                    Task {
+                        await viewModel.startRecording()
+                    }
                     DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()
@@ -482,64 +508,80 @@ struct RecordView: View {
 
     private var alertView_empty: some View {
         ZStack {
-            Color(.white)
-                .opacity(0.0000001)
-            ZStack {
-                RoundedRectangle(cornerRadius: 18)
-                    .foregroundStyle(.white)
-                    .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
-                    .shadow(color: Color(0xCCCCCC), radius: 5)
-                    .layoutPriority(-1)
-                
-                VStack(spacing: 8) {
-                    Image("recordAlert")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                    Text("소비내역이나 금액 중 한 가지는\n반드시 기록해야 저장할 수 있어요")
-                        .font(.subhead2_2)
-                        .foregroundStyle(.gray300)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 41)
-                }
-                .padding(.top, 12)
-                .padding(.bottom, 16)
+            RoundedRectangle(cornerRadius: 18)
+                .foregroundStyle(.white)
                 .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
+                .shadow(color: Color(0xCCCCCC), radius: 5)
+                .layoutPriority(-1)
+            
+            VStack(spacing: 8) {
+                Image("recordAlert")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                Text("소비내역이나 금액 중 한 가지는\n반드시 기록해야 저장할 수 있어요")
+                    .font(.subhead2_2)
+                    .foregroundStyle(.gray300)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 41)
             }
-            .padding(.horizontal, 30)
-            .offset(y: 167)
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .opacity(viewModel.alertView_emptyIsShown ? 1 : 0.0000001)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .allowsHitTesting(viewModel.alertView_emptyIsShown)
-        .onTapGesture {
-            viewModel.alertView_emptyIsShown = false
-        }
+        .padding(.horizontal, 30)
     }
     
     private var alertView_short: some View {
         ZStack {
-            Color(.white)
-                .opacity(0.0000001)
-            ZStack {
-                VStack(spacing: 9.34) {
-                    Image("recordAlert")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                    Text("길게 누른 채로 말해주세요")
-                        .font(.subhead3_2)
-                        .foregroundStyle(.gray300)
-                        .multilineTextAlignment(.center)
-                }
+            RoundedRectangle(cornerRadius: 18)
+                .foregroundStyle(.white)
                 .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
+                .shadow(color: Color(0xCCCCCC), radius: 5)
+                .layoutPriority(-1)
+            
+            VStack(spacing: 8) {
+                Image("recordAlert")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                Text("길게 누른 채로 말해주세요")
+                    .font(.subhead2_2)
+                    .foregroundStyle(.gray300)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 41)
             }
-            .offset(y: 191.5)
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .opacity(viewModel.alertView_shortIsShown ? 1 : 0.0000001)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .allowsHitTesting(viewModel.alertView_shortIsShown)
-        .onTapGesture {
-            viewModel.alertView_shortIsShown = false
+        .padding(.horizontal, 30)
+    }
+    
+    private var alertView_saved: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18)
+                .foregroundStyle(.white)
+                .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
+                .shadow(color: Color(0xCCCCCC), radius: 5)
+                .layoutPriority(-1)
+            
+            VStack(spacing: 8) {
+                Image("recordBigMainPinkCheck")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                Text("지출 기록이 저장되었습니다")
+                    .font(.subhead2_2)
+                    .foregroundStyle(.gray300)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 41)
+            }
+            .padding(.top, 12)
+            .padding(.bottom, 16)
+            .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
         }
+        .padding(.horizontal, 30)
     }
     
     private var speakWhilePressingView: some View {
@@ -547,9 +589,7 @@ struct RecordView: View {
             .font(.subhead3_2)
             .foregroundStyle(.gray300)
             .multilineTextAlignment(.center)
-            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown ? 1 : 0.0000001)
-            .offset(y: 205.5)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown && !mainVM.alertView_savedIsShown ? 1 : 0.0000001)
             .allowsHitTesting(false)
     }
 }
