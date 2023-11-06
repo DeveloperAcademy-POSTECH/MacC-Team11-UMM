@@ -142,13 +142,12 @@ struct InterimRecordView: View {
                         }
 //                        .onAppear {
 //                            DispatchQueue.main.async {
-//                                print("index", selectedTravelIndex)
 //                            }
 //                        }
                     }
                     .onChange(of: currentPage) { newValue in
                         selectedTravelIndex = newValue
-                        print("index", selectedTravelIndex)
+                        print("chose Expense : ", defaultExpense?[selectedTravelIndex].info ?? nil)
                     }
 
                 }
