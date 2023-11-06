@@ -15,6 +15,7 @@ struct InterimRecordView: View {
     @State private var defaultTravel: [Travel]?
     @State private var defaultExpense: [Expense]?
     
+    @State var isSelectedTravel = false
     @Binding var defaultTravelCnt: Int
     
     @ObservedObject private var viewModel = InterimRecordViewModel()
@@ -25,11 +26,18 @@ struct InterimRecordView: View {
             
             defaultExpenseView
             
-            DefaultTravelTabView(viewModel: viewModel)
+            DefaultTravelTabView(viewModel: viewModel, isSelectedTravel: $isSelectedTravel)
             
-            LargeButtonUnactive(title: "확인", action: {
-                
-            })
+            if !isSelectedTravel {
+                LargeButtonUnactive(title: "확인", action: {
+                    
+                })
+            } else {
+                LargeButtonActive(title: "확인", action: {
+                    
+                })
+            }
+            
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden(true)
@@ -179,25 +187,27 @@ struct InterimRecordView: View {
 
 struct DefaultTravelTabView: View {
     
-    @State private var currentDefaultTab: Int = 0
     @ObservedObject var viewModel: InterimRecordViewModel
+    
+    @State private var currentDefaultTab: Int = 0
+    @Binding var isSelectedTravel: Bool
     
     var body: some View {
         ZStack(alignment: .top) {
             TabView(selection: self.$currentDefaultTab) {
-                InterimProceedingView(viewModel: viewModel)
+                InterimProceedingView(viewModel: viewModel, isSelectedTravel: $isSelectedTravel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })
                     .tag(0)
                 
-                InterimPastView(viewModel: viewModel)
+                InterimPastView(viewModel: viewModel, isSelectedTravel: $isSelectedTravel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })
                     .tag(1)
                 
-                InterimOncomingView(viewModel: viewModel)
+                InterimOncomingView(viewModel: viewModel, isSelectedTravel: $isSelectedTravel)
                     .gesture(DragGesture().onChanged { _ in
                         // PreviousTravelView에서 DragGesture가 시작될 때의 동작
                     })

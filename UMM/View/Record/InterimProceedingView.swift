@@ -9,6 +9,8 @@ import SwiftUI
 
 struct InterimProceedingView: View {
     
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
     @State private var currentPage = 0
     @State var proceedingCnt = 0
     @State var nowTravel: [Travel]? {
@@ -20,7 +22,7 @@ struct InterimProceedingView: View {
     @State var flagImageDict: [UUID: [String]] = [:]
     @State var savedExpenses: [Expense]? = []
     
-    @ObservedObject var viewModel: InterimRecordViewModel
+    @Binding var isSelectedTravel: Bool
     
     var body: some View {
         ZStack {
@@ -55,6 +57,7 @@ struct InterimProceedingView: View {
                                         HStack {
                                             Button {
                                                 chosenTravel = nowTravel?[index]
+                                                isSelectedTravel = true
                                             } label: {
                                                 if chosenTravel != nowTravel?[index] {
                                                     Circle()
@@ -167,7 +170,7 @@ struct InterimProceedingView: View {
                                               
                                               VStack {
                                                   Button {
-                                                      
+                                                      isSelectedTravel = true
                                                       chosenTravel = nowTravel?[index]
                                                       
                                                   } label: {

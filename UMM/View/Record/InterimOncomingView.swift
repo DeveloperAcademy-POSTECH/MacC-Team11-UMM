@@ -22,6 +22,8 @@ struct InterimOncomingView: View {
     
     @ObservedObject var viewModel: InterimRecordViewModel
     
+    @Binding var isSelectedTravel: Bool
+    
     var body: some View {
         ZStack {
             if oncomingCnt == 0 {
@@ -35,6 +37,7 @@ struct InterimOncomingView: View {
                                 VStack {
                                     Button {
                                         chosenTravel = oncomingTravel?[index]
+                                        isSelectedTravel = true
                                     } label: {
                                         ZStack {
                                             Image("basicImage")
@@ -169,6 +172,7 @@ struct InterimOncomingView: View {
                                             VStack {
                                                 Button {
                                                     chosenTravel = oncomingTravel?[index]
+                                                    isSelectedTravel = true
                                                 } label: {
                                                     ZStack {
                                                         Image("basicImage")

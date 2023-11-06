@@ -9,6 +9,8 @@ import SwiftUI
 
 struct InterimPastView: View {
     
+    @ObservedObject var viewModel: InterimRecordViewModel
+    
     @State private var currentPage = 0
     @State private var pastCnt = 0
     @State var previousTravel: [Travel]? {
@@ -20,8 +22,8 @@ struct InterimPastView: View {
     @State var flagImageDict: [UUID: [String]] = [:]
     @State var savedExpenses: [Expense]? = []
     
-    @ObservedObject var viewModel: InterimRecordViewModel
-    
+    @Binding var isSelectedTravel: Bool
+
     var body: some View {
         ZStack {
             if pastCnt == 0 {
@@ -35,6 +37,7 @@ struct InterimPastView: View {
                                 VStack {
                                     Button {
                                         chosenTravel = previousTravel?[index]
+                                        isSelectedTravel = true
                                     } label: {
                                         ZStack {
                                             Image("basicImage")
@@ -169,6 +172,7 @@ struct InterimPastView: View {
                                             VStack {
                                                 Button {
                                                     chosenTravel = previousTravel?[index]
+                                                    isSelectedTravel = true
                                                 } label: {
                                                     ZStack {
                                                         Image("basicImage")
