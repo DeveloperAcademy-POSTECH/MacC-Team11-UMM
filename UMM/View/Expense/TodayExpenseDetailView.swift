@@ -104,7 +104,7 @@ struct TodayExpenseDetailView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 24, height: 24)
-                    .shadow(color: .gray, radius: 3)
+                    .shadow(color: .gray200, radius: 2)
                 Text("\(countryInfoModel[Int(selectedCountry)]?.koreanNm ?? "")")
                     .font(.display1)
                     .padding(.leading, 8)
