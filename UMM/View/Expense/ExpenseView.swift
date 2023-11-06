@@ -42,8 +42,6 @@ struct ExpenseView: View {
             .onAppear {
                 expenseViewModel.fetchExpense()
                 expenseViewModel.fetchTravel()
-                mainVM.selectedTravel = findCurrentTravel()
-                print("ExpenseView | mainVM.selectedTravel: \(String(describing: mainVM.selectedTravel?.name))")
             }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)

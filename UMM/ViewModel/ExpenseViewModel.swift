@@ -251,6 +251,7 @@ class ExpenseViewModel: ObservableObject {
     
     func setupSelectedTravel() {
         MainViewModel.shared.$selectedTravel
+            .removeDuplicates()
             .sink { [weak self] travel in
                 guard let self = self else { return }
                 self.fetchExpense()
@@ -259,7 +260,7 @@ class ExpenseViewModel: ObservableObject {
                 self.filteredAllExpenses = self.getFilteredAllExpenses()
                 self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
                 self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
-                print("Travel changed to: \(String(describing: travel?.name))")
+                print("ExpenseViewModel | setupSelectedTravel | changed to: \(String(describing: travel?.name))")
             }
             .store(in: &travelStream)
     }
