@@ -450,8 +450,8 @@ struct RecordView: View {
                 viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
                 isDetectingPress_letButtonBigger = false
                 viewModel.stopSTT()
-//                viewModel.stopRecording()
-//                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                viewModel.stopRecording()
+                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
                 if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
                     DispatchQueue.main.async {
                         viewModel.alertView_shortIsShown = true
@@ -483,9 +483,9 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-//                    Task {
-//                        await viewModel.startRecording()
-//                    }
+                    Task {
+                        await viewModel.startRecording()
+                    }
                     DispatchQueue.main.async {
                         do {
                             try viewModel.startSTT()

@@ -19,8 +19,6 @@ final class RecordViewModel: ObservableObject {
     var infoPredictor: NLModel?
     var voiceSentencePartitionArray: [String] = [] {
         didSet {
-            print("voiceSentencePartitionArray: \(voiceSentencePartitionArray)")
-            
             if voiceSentencePartitionArray.count == 0 {
                 voiceSentence = ""
             } else {
@@ -99,7 +97,6 @@ final class RecordViewModel: ObservableObject {
     
     // record
     private var audioRecorder: AVAudioRecorder?
-    private var audioPlayer: AVAudioPlayer?
     
     // variables to save record file
     var soundRecordPath: URL?
@@ -677,30 +674,6 @@ final class RecordViewModel: ObservableObject {
     
     func stopRecording() {
         audioRecorder?.stop()
-    }
-    
-    func startPlayingAudio(url: URL) {
-        
-        let playSession = AVAudioSession.sharedInstance()
-        
-        do {
-            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
-        } catch {
-            print("Playing failed in Device")
-        }
-        
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-            
-        } catch {
-            print("Playing Failed")
-        }
-    }
-    
-    func stopPlayingAudio(url: URL) {
-        audioPlayer?.stop()
     }
     
     // MARK: - 프로퍼티 관리

@@ -22,7 +22,8 @@ struct ManualRecordView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     Spacer()
-                        .frame(height: 107 - 9 + 45)
+//                        .frame(height: 107 - 9 + 45)
+                        .frame(height: 50)
                     payAmountBlockView
                     Spacer()
                         .frame(height: 64)
@@ -36,6 +37,7 @@ struct ManualRecordView: View {
                         .frame(height: 150)
                 }
             }
+            
             VStack(spacing: 0) {
                 Spacer()
                 autoSaveTextView
@@ -43,8 +45,8 @@ struct ManualRecordView: View {
                     .frame(height: 16)
                 saveButtonView
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
         .navigationTitle("기록 완료")
@@ -301,17 +303,89 @@ struct ManualRecordView: View {
                     }
                 }
                 Spacer()
-                Button {
+                
+                Group {
+                    if viewModel.soundRecordFileName == nil {
+                        ZStack {
+                            Circle()
+                                .foregroundStyle(.white)
+                                .frame(width: 54, height: 54)
+                                .shadow(color: .gray200, radius: 3)
+                            
+                            Circle()
+                                .strokeBorder(.gray200, lineWidth: 1)
+                            
+                            HStack(spacing: 3) {
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 9)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 14)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 19)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 14)
+                                Capsule()
+                                    .foregroundStyle(.gray200)
+                                    .frame(width: 1.5, height: 9)
+                            }
+                        }
+                    } else {
+                        if viewModel.playingRecordSound {
+                            PlayngRecordSoundView()
+                        } else {
+                            ZStack {
+                                Circle()
+                                    .foregroundStyle(.white)
+                                    .frame(width: 54, height: 54)
+                                    .shadow(color: .gray200, radius: 3)
+                                
+                                Circle()
+                                    .strokeBorder(.gray300, lineWidth: 1)
+                                
+                                HStack(spacing: 3) {
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 9)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 14)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 19)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 14)
+                                    Capsule()
+                                        .foregroundStyle(.black)
+                                        .frame(width: 1.5, height: 9)
+                                }
+                            }
+                        }
+                    }
+                }
+                .foregroundStyle(.gray200)
+                .frame(width: 54, height: 54)
+                .onTapGesture {
                     print("소리 재생 버튼")
                     viewModel.autoSaveTimer?.invalidate()
                     viewModel.secondCounter = nil
-                } label: {
-                    Circle() // replace ^^^
-                        .foregroundStyle(.gray200)
-                        .frame(width: 54, height: 54)
+                    
+                    if viewModel.soundRecordFileName != nil {
+                        if !viewModel.playingRecordSound {
+                            if let soundRecordFileName = viewModel.soundRecordFileName {
+                                viewModel.startPlayingAudio(url: soundRecordFileName)
+                                viewModel.playingRecordSound = true
+                            }
+                        } else {
+                            viewModel.stopPlayingAudio()
+                            viewModel.playingRecordSound = false
+                        }
+                    }
                 }
-                .hidden() // 코어 데이터 저장 기능 구현한 후에 화면에 표시하기 ^^^
-                
             }
             Spacer()
                 .frame(width: 20)
@@ -812,6 +886,58 @@ struct ParticipantToggleView: View {
             }
         } else {
             EmptyView()
+        }
+    }
+}
+
+struct PlayngRecordSoundView: View {
+    
+    @State var timer: Timer?
+    @State var level = 0
+    @State var flicker = true
+    
+    let stepLength = 0.5
+    
+    func levelUp() {
+        level = (level + 1) % 3
+    }
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .foregroundStyle(.white)
+                .frame(width: 54, height: 54)
+                .onAppear {
+                    timer = Timer.scheduledTimer(withTimeInterval: stepLength, repeats: true) { _ in
+                        levelUp()
+                    }
+                }
+                .onDisappear {
+                    timer?.invalidate()
+                }
+                .shadow(color: .mainPink, radius: 3)
+            
+            Circle()
+                .strokeBorder(.mainPink, lineWidth: 1)
+            
+            HStack(spacing: 3) {
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 2 ? 19 : 9)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 1 ? 19 : 9)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 0 ? 19 : 9)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 1 ? 19 : 9)
+                Capsule()
+                    .foregroundStyle(.mainPink)
+                    .frame(width: 1.5, height: level == 2 ? 19 : 9)
+            }
+            .animation(.bouncy(duration: stepLength * 1.25), value: level)
         }
     }
 }

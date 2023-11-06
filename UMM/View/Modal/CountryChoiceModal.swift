@@ -16,28 +16,30 @@ struct CountryChoiceModal: View {
     var body: some View {
         ZStack {
             Color(.white)
-                .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                Spacer()
-                    .frame(height: 32)
                 titleView
-                Spacer()
-                    .frame(height: 24)
                 countryArrayView
                 Spacer()
             }
         }
+        .ignoresSafeArea()
     }
     
     private var titleView: some View {
-        HStack {
+        VStack(spacing: 0) {
             Spacer()
-                .frame(width: 20)
-            Text("지출 위치")
-                .foregroundStyle(.black)
-                .font(.display1)
+                .frame(height: 32)
+            HStack {
+                Spacer()
+                    .frame(width: 20)
+                Text("지출 위치")
+                    .foregroundStyle(.black)
+                    .font(.display1)
+                Spacer()
+            }
             Spacer()
+                .frame(height: 12)
         }
     }
     
@@ -47,6 +49,8 @@ struct CountryChoiceModal: View {
                 .frame(width: 20)
             ScrollView {
                 VStack {
+                    Spacer()
+                        .frame(height: 12)
                     ForEach(countryArray, id: \.self) { country in
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
@@ -69,6 +73,7 @@ struct CountryChoiceModal: View {
                                 
                                 Spacer()
                             }
+                            .padding(.horizontal, 13)
                         }
                         .onTapGesture {
                             chosenCountry = country
