@@ -11,15 +11,20 @@ import CoreLocation
 struct TravelListView: View {
     
     @State var month: Date
+    
     @ObservedObject var viewModel = TravelListViewModel()
-    @EnvironmentObject var mainVM: MainViewModel
+    
+    @State private var nowTravel: [Travel]?
+    @State private var defaultTravel: [Travel]?
+    @State private var savedExpenses: [Expense]?
+    @State private var defaultExpense: [Expense]?
+    @State private var travelCount = 0
 
-    @State var nowTravel: [Travel]?
-    @State var defaultTravel: [Travel]?
-    @State var savedExpenses: [Expense]?
-    @State private var travelCount: Int = 0
+    @EnvironmentObject var mainVM: MainViewModel
+  
     @State private var currentPage = 0
-    @State var flagImageName: [String] = []
+    @State private var defaultTravelCnt = 0
+    @State private var flagImageName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -27,21 +32,24 @@ struct TravelListView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 titleHeader
+                    .padding(.bottom, 16)
                 
                 nowTravelingView
                 
                 tempTravelView
-                
-                Spacer(minLength: 16)
+                    .offset(y: -18)
                 
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.async {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
+                    viewModel.fetchDefaultTravel()
                     self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                    self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
                     self.travelCount = Int(nowTravel?.count ?? 0)
+                    self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
                     self.defaultTravel = viewModel.findTravelNameDefault()
                     let loadedData = handler.loadExchangeRatesFromUserDefaults()
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
@@ -72,7 +80,7 @@ struct TravelListView: View {
     }
     
     private var titleHeader: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             HStack {
                 Text("여행 관리")
                     .font(.display2)
@@ -91,7 +99,7 @@ struct TravelListView: View {
     }
     
     private var nowTravelingView: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: .center) {
             if travelCount == 0 {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -105,8 +113,9 @@ struct TravelListView: View {
                         }
                     )
                     .cornerRadius(10)
+                    .padding(.bottom, 18)
             } else {
-                ZStack {
+                ZStack(alignment: .center) {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
                             ForEach(0..<travelCount, id: \.self) { index in
@@ -234,9 +243,11 @@ struct TravelListView: View {
                                 })
                             }
                         }
-                        .frame(width: 350, height: 230)
+                        .frame(width: 350, height: 137 + 46)
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
+                    .frame(width: 350, height: 137 + 46)
+                    
                     HStack(spacing: 6) {
                         ForEach(0..<travelCount, id: \.self) { index in
                             Capsule()
@@ -250,7 +261,6 @@ struct TravelListView: View {
                         self.currentPage = Int(round(offset / screenWidth))
                     }
                 }
-                .frame(height: 200)
             }
         }
     }
@@ -271,25 +281,40 @@ struct TravelListView: View {
                 EmptyView()
                 
             } else {
-                HStack(alignment: .center, spacing: 20) {
-                    Image("dollar-circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                        .background(.white)
-                        .shadow(color: .black.opacity(0.25), radius: 1, x: 0, y: 0)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("분류가 필요한 지출 내역 \(viewModel.defaultTravel.count)개")
-                            .font(.subhead2_1)
-                            .foregroundColor(Color.black)
+                
+                NavigationLink(destination: InterimRecordView(defaultTravelCnt: $defaultTravelCnt), label: {
+                    HStack(alignment: .center, spacing: 20) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 36, height: 36)
+                                .shadow(color: Color.black.opacity(0.25), radius: 1, x: 0, y: 0)
+                                .overlay(
+                                    Image("dollar-circle")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 24, height: 24)
+                                )
+                        }
                         
-                        Text("최근 지출 ❌11,650원❌")
-                            .font(.caption2)
-                            .foregroundColor(Color.gray300)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("분류가 필요한 지출 내역 \(defaultTravelCnt)개")
+                                .font(.subhead2_1)
+                                .foregroundColor(Color.black)
+                            
+                            Group {
+                                Text("최근 지출 ")
+                                +
+                                Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
+                                +
+                                Text("원") // Doris
+                            }
+                                .font(.caption2)
+                                .foregroundColor(Color.gray300)
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
+                })
                 .padding(.horizontal, 16)
                 .padding(.vertical, 15)
                 .frame(width: 350, alignment: .leading)
@@ -308,7 +333,7 @@ extension View {
 
 struct TravelTabView: View {
     
-    @State var currentTab: Int = 0
+    @State private var currentTab: Int = 0
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -330,7 +355,7 @@ struct TravelTabView: View {
             
             Divider()
                 .frame(height: 1)
-                .padding(.top, 44)
+                .padding(.top, 36)
             
             TabBarView(currentTab: self.$currentTab)
         }
@@ -343,7 +368,7 @@ struct TabBarView: View {
     
     var tabBarOptions: [String] = ["지난 여행", "다가오는 여행"]
     var body: some View {
-        HStack {
+        HStack(spacing: 30) {
             ForEach(Array(zip(self.tabBarOptions.indices,
                               self.tabBarOptions)),
                     id: \.0,
@@ -356,7 +381,6 @@ struct TabBarView: View {
         }
         .background(Color.clear)
         .frame(height: 30)
-        .padding(.top, 8)
         .ignoresSafeArea(.all)
     }
 }

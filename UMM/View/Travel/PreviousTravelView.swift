@@ -16,7 +16,7 @@ struct PreviousTravelView: View {
         }
     }
     @State var savedExpenses: [Expense]? = []
-    @State var uniqueCountry: [(key: Int, value: [Int64])] = []
+//    @State var uniqueCountry: [(key: Int, value: [Int64])] = []
     @State private var travelCnt: Int = 0
     @State private var currentPage = 0
     @State var flagImageDict: [UUID: [String]] = [:]
@@ -85,6 +85,7 @@ struct PreviousTravelView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                         }
+                                        .frame(width: 110, height: 80)
                                     }
                                     .onAppear {
                                         
@@ -115,11 +116,12 @@ struct PreviousTravelView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 32)
-                    
+                
                     Spacer()
                 }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 20)
+                
             } else {
               ZStack {
                     ScrollView(.init()) {
@@ -181,7 +183,7 @@ struct PreviousTravelView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                         }
-                                                        
+                                                        .frame(width: 110, height: 80)
                                                     }
                                                     .onAppear {
                                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
@@ -216,9 +218,9 @@ struct PreviousTravelView: View {
                                 }
                             }
                         }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         .padding(.horizontal, 20)
-                        .padding(.vertical, 32)
+                        .padding(.vertical, 22)
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
                     
                     HStack(spacing: 6) {
@@ -238,11 +240,10 @@ struct PreviousTravelView: View {
             let screenWidth = getWidth()
             self.currentPage = Int(round(offset / screenWidth))
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.previousTravel = viewModel.filterPreviousTravel(todayDate: Date())
-                
             }
         }
     }

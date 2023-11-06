@@ -30,6 +30,16 @@ class TravelListViewModel: ObservableObject {
         }
     }
     
+    func fetchDefaultTravel() {
+        let request = NSFetchRequest<Travel>(entityName: "Travel")
+        do {
+            defaultTravel = try viewContext.fetch(request)
+            print("TravelListViewModel : fetchDefaulTravel")
+        } catch let error {
+            print("Error while fetchDefaultTravel : \(error.localizedDescription)")
+        }
+    }
+    
     func fetchExpense() {
         let request = NSFetchRequest<Expense>(entityName: "Expense")
         do {
@@ -60,7 +70,7 @@ class TravelListViewModel: ObservableObject {
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
             if let startDate = travel.startDate, let endDate = travel.endDate {
-//                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
+                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
                 return todayDate >= startDate && todayDate < endDate
             } else {
                 print("filterTravelByDate | travel.id: nil")
@@ -90,6 +100,16 @@ class TravelListViewModel: ObservableObject {
             }
         }
     }
+    
+    func filterDefaultExpense(selectedTravelName: String) -> [Expense] {
+        return savedExpensesByTravel.filter { expense in
+            if let travelNM = expense.travel?.name {
+                return travelNM == selectedTravelName
+            } else {
+                return false
+            }
+        }
+    }
 
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -104,5 +124,17 @@ class TravelListViewModel: ObservableObject {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: startDate, to: today)
         return components.day ?? 0
+    }
+    
+    func formatAmount(amount: Double?) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 2
+        numberFormatter.numberStyle = .decimal
+        if let formattedAmount = numberFormatter.string(from: NSNumber(value: amount ?? Double(0))) {
+            return formattedAmount
+        } else {
+            return "amount"
+        }
     }
 }

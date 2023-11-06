@@ -47,7 +47,7 @@ struct CompleteAddTravelView: View {
             }
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
                 if let firstParticipant = selectedTravel?.first?.participantArray?.first {
