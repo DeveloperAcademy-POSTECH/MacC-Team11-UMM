@@ -40,7 +40,8 @@ struct PreviousTravelView: View {
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
                                     participantCnt: previousTravel?[index].participantArray?.count ?? 0,
                                     participantArr: previousTravel?[index].participantArray ?? [],
-                                    flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? []), label: {
+                                    flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [],
+                                    defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
                                         ZStack {
                                             if let imageString = {
                                                 return defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
@@ -164,7 +165,7 @@ struct PreviousTravelView: View {
                                                                                              dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
                                                                                              participantCnt: previousTravel?[index].participantArray?.count ?? 0,
                                                                                              participantArr: previousTravel?[index].participantArray ?? [],
-                                                                                             flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? []), label: {
+                                                                                             flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [],  defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
                                                     ZStack {
                                                         
                                                         if let imageString = {

@@ -41,7 +41,8 @@ struct UpcomingTravelView: View {
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: upcomingTravel?[index].startDate ?? Date()),
                                     participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
                                     participantArr: upcomingTravel?[index].participantArray ?? [],
-                                    flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
+                                    flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? [],
+                                    defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
                                         ZStack {
                                             if let imageString = {
                                                 return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
@@ -166,7 +167,8 @@ struct UpcomingTravelView: View {
                                                                                              dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: upcomingTravel?[index].startDate ?? Date()),
                                                                                              participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
                                                                                              participantArr: upcomingTravel?[index].participantArray ?? [],
-                                                                                             flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
+                                                                                             flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? [],
+                                                                                             defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
                                                     ZStack {
                                                         if let imageString = {
                                                             return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
