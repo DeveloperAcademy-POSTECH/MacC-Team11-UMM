@@ -20,6 +20,10 @@ class InterimRecordViewModel: ObservableObject {
     @Published var upcomingTravel: [Travel] = []
     @Published var savedExpensesByTravel: [Expense] = []
     
+    // 확인시 저장될 것들
+    @Published var chosenTravel: Travel?
+    @Published var chosenExpense: Expense?
+    
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
         do {
@@ -162,5 +166,30 @@ class InterimRecordViewModel: ObservableObject {
             return country
         }
         return -1
+    }
+    
+//    func save() {
+//        let expense = Expense(context: viewContext)
+//        if let chosenTravel = chosenTravel {
+//            var fetchedTravel: Travel?
+//            do {
+//                fetchedTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in
+//                    return travel.id == chosenTravel.id
+//                }.first
+//            } catch {
+//                print("error save : \(error.localizedDescription)")
+//            }
+//            fetchedTravel?.lastUpdate = Date()
+//            fetchedTravel?.addToExpenseArray(expense)
+//        }
+//        do {
+//            try viewContext.save()
+//        } catch {
+//            print("error save : \(error.localizedDescription)")
+//        }
+//    }
+    func update() {
+        
+        let fetchRequest: NSFetchRequest<Expense> = Expense.fetchRequest()
     }
 }
