@@ -20,6 +20,7 @@ struct TodayExpenseDetailView: View {
     @State private var isPaymentModalPresented = false
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
+    @EnvironmentObject var mainVM: MainViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -38,7 +39,7 @@ struct TodayExpenseDetailView: View {
         .onAppear {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
-            expenseViewModel.selectedTravel = selectedTravel
+            mainVM.selectedTravel = selectedTravel
 
             let filteredResult = getFilteredExpenses()
             expenseViewModel.filteredTodayExpenses = filteredResult

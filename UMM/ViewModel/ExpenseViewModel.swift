@@ -8,9 +8,12 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
+    private let exchangeRateHandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
 
     @Published var savedTravels: [Travel] = []
     @Published var savedExpenses: [Expense] = []
@@ -19,17 +22,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var filteredAllExpensesByCountry: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
-    @Published var selectedTravel: Travel? {
-        didSet {
-            self.fetchExpense()
-            self.filteredTodayExpenses = self.getFilteredTodayExpenses()
-            self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
-            self.filteredAllExpenses = self.getFilteredAllExpenses()
-            self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
-            self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
-            print("Travel changed to: \(String(describing: selectedTravel?.name))")
-        }
-    }
+//    @Published var selectedTravel: Travel? // MainViewModel로 이동
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
@@ -48,8 +41,12 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
-    let handler = ExchangeRateHandler.shared
     let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
+    private var travelStream: Set<AnyCancellable> = []
+    
+    init() {
+        setupSelectedTravel()
+    }
     
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
@@ -108,21 +105,15 @@ class ExpenseViewModel: ObservableObject {
             print("Error while addExpense")
         }
     }
-    
-//    func getFilteredExpenses() -> [Expense] {
-//        let filteredByTravel = filterExpensesByTravel(expenses: savedExpenses, selectedTravelID: self.selectedTravel.id)
-//        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-//        return filteredByDate
-//    }
-    
+
     func getFilteredTodayExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
     }
     
     func getFilteredAllExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: self.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
         return filteredByTravel
     }
     
@@ -233,9 +224,13 @@ class ExpenseViewModel: ObservableObject {
         }
         
         let sumArray = filteredExpenseArrayArray.map { expenseArray in
-            expenseArray.reduce(0) {
-                $0 + (($1.payAmount == -1 ? 0 : $1.payAmount) * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -100))
+            let sum = expenseArray.reduce(0) { (result, expense) in
+                let payAmount = expense.payAmount == -1 ? 0 : expense.payAmount
+                let currencyCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-"
+                let exchangeRate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: currencyCode)
+                return result + (payAmount * (exchangeRate ?? -100))
             }
+            return sum
         }
         
         let indexedSumArray: [(Int64, Double)] = [
@@ -257,5 +252,21 @@ class ExpenseViewModel: ObservableObject {
         filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: country)
         groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
         indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
+    }
+    
+    func setupSelectedTravel() {
+        MainViewModel.shared.$selectedTravel
+            .removeDuplicates()
+            .sink { [weak self] travel in
+                guard let self = self else { return }
+                self.fetchExpense()
+                self.filteredTodayExpenses = self.getFilteredTodayExpenses()
+                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
+                self.filteredAllExpenses = self.getFilteredAllExpenses()
+                self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
+                self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
+                print("ExpenseViewModel | setupSelectedTravel | changed to: \(String(describing: travel?.name))")
+            }
+            .store(in: &travelStream)
     }
 }

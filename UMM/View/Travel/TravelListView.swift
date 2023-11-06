@@ -19,6 +19,9 @@ struct TravelListView: View {
     @State private var savedExpenses: [Expense]?
     @State private var defaultExpense: [Expense]?
     @State private var travelCount = 0
+
+    @EnvironmentObject var mainVM: MainViewModel
+  
     @State private var currentPage = 0
     @State private var defaultTravelCnt = 0
     @State private var flagImageName: [String] = []
@@ -52,6 +55,7 @@ struct TravelListView: View {
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
+                    mainVM.selectedTravel = findCurrentTravel()
                     print("onAppear")
                 }
             }

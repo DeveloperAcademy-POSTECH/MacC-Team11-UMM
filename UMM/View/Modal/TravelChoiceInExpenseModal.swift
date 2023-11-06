@@ -12,6 +12,7 @@ struct TravelChoiceInExpenseModal: View {
     private var travelArray: [Travel]
     @Binding var selectedCountry: Int64
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
+    @EnvironmentObject var mainVM: MainViewModel
     
     var body: some View {
         ZStack {
@@ -74,6 +75,7 @@ struct TravelChoiceInExpenseModal: View {
                             .onTapGesture {
                                 if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId != travelId {
                                     selectedTravel = travel
+                                    mainVM.selectedTravel = selectedTravel
                                     selectedCountry = Int64(-2)
                                 }
                             }
