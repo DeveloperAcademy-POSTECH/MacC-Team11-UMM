@@ -251,7 +251,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         expense.location = locationExpression
         expense.participantArray = participantTupleArray.filter { $0.1 == true }.map { $0.0 }
         expense.payAmount = payAmount
-        expense.payDate = payDate
+        expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         expense.voiceRecordFile = nil // ^^^
         if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
