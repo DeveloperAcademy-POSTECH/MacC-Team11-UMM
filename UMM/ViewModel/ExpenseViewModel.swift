@@ -12,7 +12,8 @@ import Combine
 
 class ExpenseViewModel: ObservableObject {
     let viewContext = PersistenceController.shared.container.viewContext
-    private let exchangeRatehandler = ExchangeRateHandler.shared
+    private let exchangeRateHandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
 
     @Published var savedTravels: [Travel] = []
     @Published var savedExpenses: [Expense] = []
@@ -223,9 +224,13 @@ class ExpenseViewModel: ObservableObject {
         }
         
         let sumArray = filteredExpenseArrayArray.map { expenseArray in
-            expenseArray.reduce(0) {
-                $0 + (($1.payAmount == -1 ? 0 : $1.payAmount) * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -100))
+            let sum = expenseArray.reduce(0) { (result, expense) in
+                let payAmount = expense.payAmount == -1 ? 0 : expense.payAmount
+                let currencyCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-"
+                let exchangeRate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: currencyCode)
+                return result + (payAmount * (exchangeRate ?? -100))
             }
+            return sum
         }
         
         let indexedSumArray: [(Int64, Double)] = [
