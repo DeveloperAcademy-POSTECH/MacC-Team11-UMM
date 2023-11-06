@@ -20,6 +20,7 @@ struct InterimProceedingView: View {
     }
     @State var chosenTravel: Travel?
     @State var flagImageDict: [UUID: [String]] = [:]
+    @State var defaultImg: [UUID: [String]] = [:]
     @State var savedExpenses: [Expense]? = []
     
     @Binding var isSelectedTravel: Bool
@@ -41,22 +42,26 @@ struct InterimProceedingView: View {
                                     viewModel.chosenTravel = chosenTravel
                                 } label: {
                                     ZStack {
-                                        Image("basicImage")
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 110, height: 80)
-                                            .cornerRadius(10)
-                                            .background(
-                                              LinearGradient(
-                                                  stops: [
-                                                      Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                      Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                  ],
-                                                  startPoint: UnitPoint(x: 0.5, y: 0),
-                                                  endPoint: UnitPoint(x: 0.5, y: 1)
-                                              )
-                                            )
-                                            .cornerRadius(10)
+                                        if let imageString = {
+                                            return defaultImg[nowTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                        }() {
+                                            Image(imageString)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 110, height: 80)
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
+                                                )
+                                                .cornerRadius(10)
+                                        }
                                         
                                         VStack(alignment: .leading) {
                                             HStack {
@@ -145,6 +150,8 @@ struct InterimProceedingView: View {
                                             let uniqueCountryValues = Array(Set(countryValues))
                                             
                                             var flagImageNames: [String] = []
+                                            var countryDefaultImg: [String] = []
+                                            
                                             for countryValue in uniqueCountryValues {
                                                 
                                                 if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
@@ -152,8 +159,15 @@ struct InterimProceedingView: View {
                                                 } else {
                                                     flagImageNames.append("DefaultFlag")
                                                 }
+                                                
+                                                if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                    countryDefaultImg.append(imgString)
+                                                } else {
+                                                    countryDefaultImg.append("DefaultImage")
+                                                }
                                             }
                                             self.flagImageDict[nowTravel?[index].id ?? UUID()] = flagImageNames
+                                            self.defaultImg[nowTravel?[index].id ?? UUID()] = countryDefaultImg
                                         }
                                     }
                                 }
@@ -185,22 +199,26 @@ struct InterimProceedingView: View {
                                                       
                                                   } label: {
                                                       ZStack {
-                                                          Image("basicImage")
-                                                              .resizable()
-                                                              .scaledToFill()
-                                                              .frame(width: 110, height: 80)
-                                                              .cornerRadius(10)
-                                                              .background(
-                                                                LinearGradient(
-                                                                    stops: [
-                                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                    ],
-                                                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                    endPoint: UnitPoint(x: 0.5, y: 1)
-                                                                )
-                                                              )
-                                                              .cornerRadius(10)
+                                                          if let imageString = {
+                                                              return defaultImg[nowTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                                          }() {
+                                                              Image(imageString)
+                                                                  .resizable()
+                                                                  .scaledToFill()
+                                                                  .frame(width: 110, height: 80)
+                                                                  .cornerRadius(10)
+                                                                  .overlay(
+                                                                      LinearGradient(
+                                                                          stops: [
+                                                                              Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                              Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                          ],
+                                                                          startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                          endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                      )
+                                                                  )
+                                                                  .cornerRadius(10)
+                                                          }
                                                           
                                                           VStack(alignment: .leading) {
                                                               HStack {

@@ -20,6 +20,7 @@ struct UpcomingTravelView: View {
     @State private var travelCnt: Int = 0
     @State private var currentPage = 0
     @State var flagImageDict: [UUID: [String]] = [:]
+    @State var defaultImg: [UUID: [String]] = [:]
     
     var body: some View {
         
@@ -42,22 +43,26 @@ struct UpcomingTravelView: View {
                                     participantArr: upcomingTravel?[index].participantArray ?? [],
                                     flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
                                         ZStack {
-                                            Image("basicImage")
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 110, height: 80)
-                                                .cornerRadius(10)
-                                                .overlay(
-                                                    LinearGradient(
-                                                        stops: [
-                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                        ],
-                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                            if let imageString = {
+                                                return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                            }() {
+                                                Image(imageString)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 110, height: 80)
+                                                    .cornerRadius(10)
+                                                    .overlay(
+                                                        LinearGradient(
+                                                            stops: [
+                                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                            ],
+                                                            startPoint: UnitPoint(x: 0.5, y: 0),
+                                                            endPoint: UnitPoint(x: 0.5, y: 1)
+                                                        )
                                                     )
-                                                )
-                                                .cornerRadius(10)
+                                                    .cornerRadius(10)
+                                            }
                                             
                                             VStack {
                                                 
@@ -113,6 +118,8 @@ struct UpcomingTravelView: View {
                                                 let uniqueCountryValues = Array(Set(countryValues))
                                                 
                                                 var flagImageNames: [String] = []
+                                                var countryDefaultImg: [String] = []
+                                                
                                                 for countryValue in uniqueCountryValues {
                                                     let countryInfo = CountryInfoModel.shared
                                                     if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
@@ -120,8 +127,15 @@ struct UpcomingTravelView: View {
                                                     } else {
                                                         flagImageNames.append("DefaultFlag")
                                                     }
+                                                    if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                        countryDefaultImg.append(imgString)
+                                                    } else {
+                                                        countryDefaultImg.append("DefaultImage")
+                                                    }
                                                 }
+                                                
                                                 self.flagImageDict[upcomingTravel?[index].id ?? UUID()] = flagImageNames
+                                                self.defaultImg[upcomingTravel?[index].id ?? UUID()] = countryDefaultImg
                                             }
                                         }
                                     })
@@ -154,22 +168,26 @@ struct UpcomingTravelView: View {
                                                                                              participantArr: upcomingTravel?[index].participantArray ?? [],
                                                                                              flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
                                                     ZStack {
-                                                        Image("basicImage")
-                                                            .resizable()
-                                                            .scaledToFill()
-                                                            .frame(width: 110, height: 80)
-                                                            .cornerRadius(10)
-                                                            .overlay(
-                                                                LinearGradient(
-                                                                    stops: [
-                                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                    ],
-                                                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                                        if let imageString = {
+                                                            return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                                        }() {
+                                                            Image(imageString)
+                                                                .resizable()
+                                                                .scaledToFill()
+                                                                .frame(width: 110, height: 80)
+                                                                .cornerRadius(10)
+                                                                .overlay(
+                                                                    LinearGradient(
+                                                                        stops: [
+                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                        ],
+                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                    )
                                                                 )
-                                                            )
-                                                            .cornerRadius(10)
+                                                                .cornerRadius(10)
+                                                        }
                                                         
                                                         VStack {
                                                             
@@ -225,6 +243,8 @@ struct UpcomingTravelView: View {
                                                             let uniqueCountryValues = Array(Set(countryValues))
                                                             
                                                             var flagImageNames: [String] = []
+                                                            var countryDefaultImg: [String] = []
+                                                            
                                                             for countryValue in uniqueCountryValues {
                                                                 let countryInfo = CountryInfoModel.shared
                                                                 if let flagString = countryInfo.countryResult[Int(countryValue)]?.flagString {
@@ -232,8 +252,15 @@ struct UpcomingTravelView: View {
                                                                 } else {
                                                                     flagImageNames.append("DefaultFlag")
                                                                 }
+                                                                if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                                    countryDefaultImg.append(imgString)
+                                                                } else {
+                                                                    countryDefaultImg.append("DefaultImage")
+                                                                }
                                                             }
+                                                            
                                                             self.flagImageDict[upcomingTravel?[index].id ?? UUID()] = flagImageNames
+                                                            self.defaultImg[upcomingTravel?[index].id ?? UUID()] = countryDefaultImg
                                                         }
                                                     }
                                                 })

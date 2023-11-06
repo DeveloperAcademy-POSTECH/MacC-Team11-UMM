@@ -25,6 +25,7 @@ struct TravelListView: View {
     @State private var currentPage = 0
     @State private var defaultTravelCnt = 0
     @State private var flagImageName: [String] = []
+    @State private var defaultImageName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -132,16 +133,26 @@ struct TravelListView: View {
                                             .foregroundColor(.clear)
                                             .frame(width: 350, height: 137 + 46)
                                         
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 350, height: 137)
-                                            .background(
-                                                Image("testImage")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                
-                                            )
-                                            .cornerRadius(10)
+                                        if let imageString = {
+                                            return String(defaultImageName.first ?? "DefaultImage")
+                                        }() {
+                                            Image(imageString)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 350, height: 137)
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
+                                                )
+                                                .cornerRadius(10)
+                                        }
                                         
                                         Rectangle()
                                             .foregroundColor(.clear)
@@ -225,7 +236,9 @@ struct TravelListView: View {
                                         .padding(.vertical, 16)
                                         .frame(width: 350, height: 137)
                                         
-                                    }                                    .onAppear {
+                                    }
+                                    .onAppear {
+                                        print("indexxxxx", index)
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                             self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                             if let savedExpenses = savedExpenses {
@@ -235,6 +248,7 @@ struct TravelListView: View {
                                                 let uniqueCountryValues = Array(Set(countryValues))
                                                 
                                                 var flagImageNames: [String] = []
+                                                var defaultImage: [String] = []
                                                 for countryValue in uniqueCountryValues {
                                                     
                                                     if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
@@ -242,8 +256,17 @@ struct TravelListView: View {
                                                     } else {
                                                         flagImageNames.append("DefaultFlag")
                                                     }
+                                                    
+                                                    if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                        defaultImage.append(defaultString)
+                                                    } else {
+                                                        defaultImage.append("DefaultImage")
+                                                    }
                                                 }
+                                                
                                                 self.flagImageName = flagImageNames
+                                                self.defaultImageName = defaultImage
+                                                print("defaultImageName :", defaultImageName)
                                             }
                                         }
                                     }
