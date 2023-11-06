@@ -48,9 +48,10 @@ struct AddMemberView: View {
                 if participantArr.count > 0 {
                     participantCnt -= 1
                     let updateArr = Array(participantArr.dropLast())
-                    viewModel.participantArr = updateArr
+                    viewModel.participantArr = ["me"] + updateArr
                 } else {
-                    viewModel.participantArr = participantArr
+                    
+                    viewModel.participantArr = ["me"] + participantArr
                 }
                 viewModel.startDate = startDate
                 viewModel.endDate = endDate
@@ -66,6 +67,8 @@ struct AddMemberView: View {
                 viewModel.saveTravel()
                 isDisappear = true
             }
+            
+            print("ddddd : ", viewModel.participantArr)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)

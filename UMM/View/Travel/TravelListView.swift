@@ -56,7 +56,6 @@ struct TravelListView: View {
                         handler.fetchAndSaveExchangeRates()
                     }
                     mainVM.selectedTravel = findCurrentTravel()
-                    print("onAppear")
                 }
             }
             .toolbar {
@@ -160,7 +159,7 @@ struct TravelListView: View {
                                             )
                                             .cornerRadius(10)
                                         
-                                        VStack(alignment: .leading) {
+                                        VStack(alignment: .leading, spacing: 4) {
                                             
                                             HStack {
                                                 Spacer()
@@ -204,15 +203,19 @@ struct TravelListView: View {
                                                 
                                                 HStack {
                                                     Image(systemName: "person.fill")
+                                                        .frame(width: 12, height: 12)
                                                         .foregroundStyle(Color.white)
                                                     
                                                     Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
+                                                        .lineLimit(1)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white)
                                                     
                                                 }
+                                                .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
                                                 .padding(.trailing, 16)
                                             }
+                                            .frame(height: 16)
                                             
                                         }
                                         .padding(.bottom, 16)
@@ -220,24 +223,26 @@ struct TravelListView: View {
                                         
                                     }
                                     .onAppear {
-                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                        
-                                        if let savedExpenses = savedExpenses {
-                                            let countryValues: [Int64] = savedExpenses.map { expense in
-                                                return viewModel.getCountryForExpense(expense)
-                                            }
-                                            let uniqueCountryValues = Array(Set(countryValues))
-                                            
-                                            var flagImageNames: [String] = []
-                                            for countryValue in uniqueCountryValues {
-                                                
-                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                    flagImageNames.append(flagString)
-                                                } else {
-                                                    flagImageNames.append("DefaultFlag")
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                            if let savedExpenses = savedExpenses {
+                                                let countryValues: [Int64] = savedExpenses.map { expense in
+                                                    return viewModel.getCountryForExpense(expense)
                                                 }
+                                                let uniqueCountryValues = Array(Set(countryValues))
+                                                
+                                                var flagImageNames: [String] = []
+                                                for countryValue in uniqueCountryValues {
+                                                    
+                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                        flagImageNames.append(flagString)
+                                                    } else {
+                                                        flagImageNames.append("DefaultFlag")
+                                                    }
+                                                }
+                                                self.flagImageName = flagImageNames
+                                                print("flagImageName : ", flagImageName)
                                             }
-                                            self.flagImageName = flagImageNames
                                         }
                                     }
                                 })
