@@ -55,7 +55,6 @@ struct TravelListView: View {
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
-                    mainVM.selectedTravel = findCurrentTravel()
                 }
             }
             .toolbar {
