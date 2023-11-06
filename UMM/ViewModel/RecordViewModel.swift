@@ -42,7 +42,6 @@ final class RecordViewModel: ObservableObject {
     @Published var info: String? {
         didSet {
             if oldValue == nil && info != nil {
-                print("haptic | info: \(String(describing: info?.description))")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
@@ -54,7 +53,6 @@ final class RecordViewModel: ObservableObject {
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
             if oldValue == .unknown && paymentMethod != .unknown {
-                print("haptic | paymentMethod: \(paymentMethod)")
                 DispatchQueue.main.async {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
@@ -129,7 +127,6 @@ final class RecordViewModel: ObservableObject {
             .sink { [weak self] amount in
                 guard let self = self else { return }
                 if amount != -1 {
-                    print("haptic | payAmount: \(amount)")
                     self.generateHapticFeedback()
                 }
             }
