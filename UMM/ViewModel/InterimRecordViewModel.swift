@@ -168,28 +168,26 @@ class InterimRecordViewModel: ObservableObject {
         return -1
     }
     
-//    func save() {
-//        let expense = Expense(context: viewContext)
-//        if let chosenTravel = chosenTravel {
-//            var fetchedTravel: Travel?
-//            do {
-//                fetchedTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in
-//                    return travel.id == chosenTravel.id
-//                }.first
-//            } catch {
-//                print("error save : \(error.localizedDescription)")
-//            }
-//            fetchedTravel?.lastUpdate = Date()
-//            fetchedTravel?.addToExpenseArray(expense)
-//        }
-//        do {
-//            try viewContext.save()
-//        } catch {
-//            print("error save : \(error.localizedDescription)")
-//        }
-//    }
     func update() {
         
-        let fetchRequest: NSFetchRequest<Expense> = Expense.fetchRequest()
+        if chosenExpense == nil, let firstExpense = defaultExpense.first {
+            chosenExpense = firstExpense
+        }
+        
+        if let chosenExpenseID = chosenExpense?.travel?.id,
+            let chosenTravelID = chosenTravel?.id {
+            if chosenExpenseID != chosenTravelID {
+                chosenExpense?.travel? = chosenTravel!
+            }
+        }
+        
+        if let context = chosenExpense?.managedObjectContext {
+            do {
+                try context.save()
+                print("Data saved successfully.")
+            } catch {
+                print("Error saving data: \(error)")
+            }
+        }
     }
 }

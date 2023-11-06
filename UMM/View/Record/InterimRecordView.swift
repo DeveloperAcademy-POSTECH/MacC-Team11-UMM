@@ -39,6 +39,7 @@ struct InterimRecordView: View {
                 
             } else {
                 LargeButtonActive(title: "확인", action: {
+                    viewModel.chosenExpense = defaultExpense?[selectedTravelIndex]
                     NavigationUtil.popToRootView()
                 })
             }
@@ -57,7 +58,8 @@ struct InterimRecordView: View {
             // ViewModel의 Save함수가 실행됨
             DispatchQueue.main.async {
                 viewModel.update()
-                print("cccccc : 1", viewModel.chosenTravel?.id)
+//                print("xxxxxx : chose Expense", defaultExpense?[selectedTravelIndex])
+//                print("xxxxxx", viewModel.chosenExpense?.travel?.name)
             }
         }
     }
@@ -148,11 +150,8 @@ struct InterimRecordView: View {
                         }
                     }
                 }
-                .onChange(of: currentPage) { newPage, _ in
-                    selectedTravelIndex = newPage
-                    print("chose Expense : 1 : ", defaultExpense?[selectedTravelIndex] ?? nil)
-                    viewModel.chosenExpense = defaultExpense?[selectedTravelIndex]
-                    print("chose Expense : 2 : ", viewModel.chosenExpense)
+                .onChange(of: currentPage) { _, newValue in
+                    selectedTravelIndex = newValue
                 }
             }
             .frame(width: 350, height: 157 + 46)
