@@ -91,10 +91,16 @@ struct TodayExpenseView: View {
                             sumPaymentMethod: totalSum
                         )
                     } label: {
-                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                            .font(.display3)
-                            .foregroundStyle(.black)
-                            .padding(.top, 8)
+                        HStack(spacing: 0) {
+                            Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                                .font(.display3)
+                                .foregroundStyle(.black)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.gray200)
+                                .padding(.leading, 16)
+                        }
+                        .padding(.top, 8)
                     }
                 }
                 .padding(.bottom, 16)
@@ -148,6 +154,10 @@ struct TodayExpenseView: View {
                                 .padding(.top, 12)
                             }
                             Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.gray200)
+                                .padding(.trailing, 16)
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity)

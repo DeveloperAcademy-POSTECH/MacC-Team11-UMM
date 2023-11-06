@@ -107,7 +107,6 @@ struct TodayExpenseDetailView: View {
                     .shadow(color: .gray200, radius: 2)
                 Text("\(countryInfoModel[Int(selectedCountry)]?.koreanNm ?? "")")
                     .font(.display1)
-                    .padding(.leading, 8)
             }
             
             // 총 합계
