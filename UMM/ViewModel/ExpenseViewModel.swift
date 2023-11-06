@@ -234,7 +234,6 @@ class ExpenseViewModel: ObservableObject {
                 self.filteredAllExpenses = self.getFilteredAllExpenses()
                 self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
                 self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
-                print("ExpenseViewModel | setupSelectedTravel | changed to: \(String(describing: travel?.name))")
             }
             .store(in: &travelStream)
     }
