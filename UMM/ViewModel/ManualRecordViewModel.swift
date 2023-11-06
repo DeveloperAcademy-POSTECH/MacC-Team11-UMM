@@ -114,7 +114,13 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
     @Published var additionalParticipantTupleArray: [(name: String, isOn: Bool)] = []
     
-    @Published var payDate: Date = Date()
+    @Published var payDate: Date = Date() {
+        didSet {
+            print("payDate: \(payDate)")
+            print("start: \(MainViewModel.shared.chosenTravelInManualRecord?.startDate)")
+            print("end: \(MainViewModel.shared.chosenTravelInManualRecord?.endDate)")
+        }
+    }
     var currentDate: Date = Date()
 
     @Published var country: Country = .japan {
@@ -169,6 +175,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
     @Published var countryChoiceModalIsShown = false
+    @Published var dateChoiceModalIsShown = false
     @Published var backButtonAlertIsShown = false
     @Published var addingParticipant = false
     @Published var countryIsModified = false

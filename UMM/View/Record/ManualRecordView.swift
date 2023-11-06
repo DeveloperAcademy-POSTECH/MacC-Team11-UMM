@@ -27,12 +27,12 @@ struct ManualRecordView: View {
                     payAmountBlockView
                     Spacer()
                         .frame(height: 64)
-                    inStringPropertyBlockView
+                    inSentencePropertyBlockView
                     Divider()
                         .foregroundStyle(.gray200)
                         .padding(.vertical, 20)
                         .padding(.horizontal, 20)
-                    notInStringPropertyBlockView
+                    notInSentencePropertyBlockView
                     Spacer()
                         .frame(height: 150)
                 }
@@ -62,6 +62,10 @@ struct ManualRecordView: View {
         }
         .sheet(isPresented: $viewModel.countryChoiceModalIsShown) {
             CountryChoiceModal(chosenCountry: $viewModel.country, countryIsModified: $viewModel.countryIsModified, countryArray: viewModel.otherCountryCandidateArray, currentCountry: viewModel.currentCountry)
+                .presentationDetents([.height(289 - 34)])
+        }
+        .sheet(isPresented: $viewModel.dateChoiceModalIsShown) {
+            DateChoiceModal(date: $viewModel.payDate, startDate: mainVM.chosenTravelInManualRecord?.startDate ?? Date.distantPast, endDate: mainVM.chosenTravelInManualRecord?.endDate ?? Date.distantFuture)
                 .presentationDetents([.height(289 - 34)])
         }
         .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.backButtonAlertIsShown) {
@@ -392,7 +396,7 @@ struct ManualRecordView: View {
         }
     }
     
-    private var inStringPropertyBlockView: some View {
+    private var inSentencePropertyBlockView: some View {
         HStack {
             Spacer()
                 .frame(width: 20)
@@ -573,7 +577,7 @@ struct ManualRecordView: View {
         }
     }
     
-    private var notInStringPropertyBlockView: some View {
+    private var notInSentencePropertyBlockView: some View {
         HStack {
             Spacer()
                 .frame(width: 20)
@@ -665,6 +669,7 @@ struct ManualRecordView: View {
                             print("지출 일시 수정 버튼")
                             viewModel.autoSaveTimer?.invalidate()
                             viewModel.secondCounter = nil
+                            viewModel.dateChoiceModalIsShown = true
                         }
                 }
                 VStack(spacing: 10) {
