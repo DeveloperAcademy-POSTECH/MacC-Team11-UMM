@@ -16,6 +16,7 @@ struct TodayExpenseView: View {
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    let dateGapHandler = DateGapHandler.shared
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -26,6 +27,10 @@ struct TodayExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if expenseViewModel.filteredTodayExpenses.count == 0 {
+                HStack {
+                    datePicker
+                    Spacer()
+                }
                 noDataView
             } else {
                 ScrollView {
@@ -47,7 +52,7 @@ struct TodayExpenseView: View {
     }
     
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60))
+        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60)))
             .padding(.top, 12)
             .padding(.bottom, 12)
     }
@@ -173,11 +178,15 @@ struct TodayExpenseView: View {
     } // draw
 
     private var noDataView: some View {
-        VStack(spacing: 0) {
-            Text("아직 지출 기록이 없어요")
-                .font(.subhead3_2)
-                .foregroundStyle(.gray300)
-                .padding(.top, 130)
+        HStack {
+            Spacer()
+            VStack(spacing: 0) {
+                Text("아직 지출 기록이 없어요")
+                    .font(.subhead3_2)
+                    .foregroundStyle(.gray300)
+                    .padding(.top, 130)
+                Spacer()
+            }
             Spacer()
         }
     }
