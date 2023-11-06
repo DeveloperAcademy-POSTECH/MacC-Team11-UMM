@@ -35,12 +35,14 @@ struct InterimRecordView: View {
                 LargeButtonUnactive(title: "확인", action: {
                     
                 })
+                .disabled(true)
+                
             } else {
                 LargeButtonActive(title: "확인", action: {
-                    
+                    viewModel.chosenExpense = defaultExpense?[selectedTravelIndex]
+                    NavigationUtil.popToRootView()
                 })
             }
-            
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden(true)
@@ -50,6 +52,14 @@ struct InterimRecordView: View {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+            }
+        }
+        .onDisappear {
+            // ViewModel의 Save함수가 실행됨
+            DispatchQueue.main.async {
+                viewModel.update()
+//                print("xxxxxx : chose Expense", defaultExpense?[selectedTravelIndex])
+//                print("xxxxxx", viewModel.chosenExpense?.travel?.name)
             }
         }
     }
@@ -67,93 +77,85 @@ struct InterimRecordView: View {
     
     private var defaultExpenseView: some View {
         ZStack(alignment: .center) {
-//            ScrollView(.init()) {
-                TabView(selection: $currentPage) {
-                    ForEach(0..<defaultTravelCnt, id: \.self) { index in
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(.clear)
-                                .frame(width: 350, height: 157)
-                                .background(Color(red: 0.96, green: 0.96, blue: 0.96))
-                                .cornerRadius(10)
+            TabView(selection: $currentPage) {
+                ForEach(0..<defaultTravelCnt, id: \.self) { index in
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 350, height: 157)
+                            .background(Color(red: 0.96, green: 0.96, blue: 0.96))
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text(defaultExpense?[index].info ?? "")
+                                .font(.subhead3_2)
+                                .foregroundStyle(Color.black)
                             
-                            VStack {
-                                Text(defaultExpense?[index].info ?? "")
-                                    .font(.subhead3_2)
-                                    .foregroundStyle(Color.black)
-                                
-                                HStack {
-                                    Group {
-                                        Text("\(viewModel.formatAmount(amount: defaultExpense?[index].payAmount))")
-                                        +
-                                        Text(" 원") // Doris
-                                    }
-                                    .font(.display2)
-                                    .foregroundStyle(Color.black)
-                                    
-                                    HStack(alignment: .center, spacing: 12) {
-                                        Text("\(PaymentMethod.titleFor(rawValue: Int(defaultExpense?[index].paymentMethod ?? -1)))")
-                                            .font(.custom(FontsManager.Pretendard.regular, size: 16))
-                                            .foregroundStyle(Color.black)
-                                    }
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 4)
-                                    .frame(height: 24, alignment: .center)
-                                    .background(Color(0xE0E0E0))
-                                    
-                                    .cornerRadius(15)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .stroke(Color(0xBFBFBF), lineWidth: 1)
-                                        
-                                    )
-                                }
-                                
+                            HStack {
                                 Group {
-                                    Text(dateFormatterWithDay.string(from: defaultExpense?[index].payDate ?? Date()))
+                                    Text("\(viewModel.formatAmount(amount: defaultExpense?[index].payAmount))")
                                     +
-                                    Text(" ")
-                                    +
-                                    Text(dateFormatterWithHourMiniute(date: defaultExpense?[index].payDate ?? Date()))
+                                    Text(" 원") // Doris
                                 }
-                                .font(.caption2)
-                                .foregroundStyle(Color.gray400)
+                                .font(.display2)
+                                .foregroundStyle(Color.black)
                                 
-                                HStack {
-                                    if let flagString = CountryInfoModel.shared.countryResult[Int((defaultExpense?[index].country) ?? -1 )]?.flagString {
-                                        Image(flagString)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 17, height: 17)
-                                            .shadow(color: .black.opacity(0.25), radius: 0.94444, x: 0, y: 0)
-                                    } else {
-                                        Image("DefaultFlag")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 17, height: 17)
-                                            .shadow(color: .black.opacity(0.25), radius: 0.94444, x: 0, y: 0)
-                                    }
-                                    
-                                    Text(CountryInfoModel.shared.countryResult[Int((defaultExpense?[index].country) ?? -1 )]?.koreanNm ?? "Unknown")
-                                        .font(.custom(FontsManager.Pretendard.medium, size: 14))
-                                        .foregroundStyle(Color.gray400)
+                                HStack(alignment: .center, spacing: 12) {
+                                    Text("\(PaymentMethod.titleFor(rawValue: Int(defaultExpense?[index].paymentMethod ?? -1)))")
+                                        .font(.custom(FontsManager.Pretendard.regular, size: 16))
+                                        .foregroundStyle(Color.black)
                                 }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .frame(height: 24, alignment: .center)
+                                .background(Color(0xE0E0E0))
+                                
+                                .cornerRadius(15)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .stroke(Color(0xBFBFBF), lineWidth: 1)
+                                    
+                                )
+                            }
+                            
+                            Group {
+                                Text(dateFormatterWithDay.string(from: defaultExpense?[index].payDate ?? Date()))
+                                +
+                                Text(" ")
+                                +
+                                Text(dateFormatterWithHourMiniute(date: defaultExpense?[index].payDate ?? Date()))
+                            }
+                            .font(.caption2)
+                            .foregroundStyle(Color.gray400)
+                            
+                            HStack {
+                                if let flagString = CountryInfoModel.shared.countryResult[Int((defaultExpense?[index].country) ?? -1 )]?.flagString {
+                                    Image(flagString)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 17, height: 17)
+                                        .shadow(color: .black.opacity(0.25), radius: 0.94444, x: 0, y: 0)
+                                } else {
+                                    Image("DefaultFlag")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 17, height: 17)
+                                        .shadow(color: .black.opacity(0.25), radius: 0.94444, x: 0, y: 0)
+                                }
+                                
+                                Text(CountryInfoModel.shared.countryResult[Int((defaultExpense?[index].country) ?? -1 )]?.koreanNm ?? "Unknown")
+                                    .font(.custom(FontsManager.Pretendard.medium, size: 14))
+                                    .foregroundStyle(Color.gray400)
                             }
                         }
-//                        .onAppear {
-//                            DispatchQueue.main.async {
-//                            }
-//                        }
                     }
-                    .onChange(of: currentPage) { newValue in
-                        selectedTravelIndex = newValue
-                        print("chose Expense : ", defaultExpense?[selectedTravelIndex].info ?? nil)
-                    }
-
                 }
-                .frame(width: 350, height: 157 + 46)
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-//            }
+                .onChange(of: currentPage) { _, newValue in
+                    selectedTravelIndex = newValue
+                }
+            }
+            .frame(width: 350, height: 157 + 46)
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .frame(width: 350, height: 157 + 46)
             
             HStack(spacing: 6) {

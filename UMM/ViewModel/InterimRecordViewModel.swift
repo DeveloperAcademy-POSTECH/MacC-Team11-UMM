@@ -20,6 +20,10 @@ class InterimRecordViewModel: ObservableObject {
     @Published var upcomingTravel: [Travel] = []
     @Published var savedExpensesByTravel: [Expense] = []
     
+    // 확인시 저장될 것들
+    @Published var chosenTravel: Travel?
+    @Published var chosenExpense: Expense?
+    
     func fetchTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
         do {
@@ -162,5 +166,28 @@ class InterimRecordViewModel: ObservableObject {
             return country
         }
         return -1
+    }
+    
+    func update() {
+        
+        if chosenExpense == nil, let firstExpense = defaultExpense.first {
+            chosenExpense = firstExpense
+        }
+        
+        if let chosenExpenseID = chosenExpense?.travel?.id,
+            let chosenTravelID = chosenTravel?.id {
+            if chosenExpenseID != chosenTravelID {
+                chosenExpense?.travel? = chosenTravel!
+            }
+        }
+        
+        if let context = chosenExpense?.managedObjectContext {
+            do {
+                try context.save()
+                print("Data saved successfully.")
+            } catch {
+                print("Error saving data: \(error)")
+            }
+        }
     }
 }

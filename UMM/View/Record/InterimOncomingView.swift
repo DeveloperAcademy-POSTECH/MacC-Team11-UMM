@@ -10,10 +10,10 @@ import SwiftUI
 struct InterimOncomingView: View {
     
     @State private var currentPage = 0
-    @State private var oncomingCnt = 0
-    @State var oncomingTravel: [Travel]? {
+    @State private var onComingCnt = 0
+    @State var onComingTravel: [Travel]? {
         didSet {
-            oncomingCnt = Int(oncomingTravel?.count ?? 0)
+            onComingCnt = Int(onComingTravel?.count ?? 0)
         }
     }
     @State var chosenTravel: Travel?
@@ -26,17 +26,17 @@ struct InterimOncomingView: View {
     
     var body: some View {
         ZStack {
-            if oncomingCnt == 0 {
+            if onComingCnt == 0 {
                 
                 Text("다가오는 여행이 없습니다.") // Doris
                 
-            } else if oncomingCnt <= 6 {
+            } else if onComingCnt <= 6 {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                        ForEach(0..<oncomingCnt, id: \.self) { index in
+                        ForEach(0..<onComingCnt, id: \.self) { index in
                                 VStack {
                                     Button {
-                                        chosenTravel = oncomingTravel?[index]
+                                        chosenTravel = onComingTravel?[index]
                                         isSelectedTravel = true
                                     } label: {
                                         ZStack {
@@ -60,9 +60,9 @@ struct InterimOncomingView: View {
                                             VStack(alignment: .leading) {
                                                 HStack {
                                                     Button {
-                                                        chosenTravel = oncomingTravel?[index]
+                                                        chosenTravel = onComingTravel?[index]
                                                     } label: {
-                                                        if chosenTravel != oncomingTravel?[index] {
+                                                        if chosenTravel != onComingTravel?[index] {
                                                             Circle()
                                                                 .fill(.black)
                                                                 .opacity(0.25)
@@ -92,7 +92,7 @@ struct InterimOncomingView: View {
                                                     HStack {
                                                         Spacer()
                                                         
-                                                        ForEach(flagImageDict[oncomingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                        ForEach(flagImageDict[onComingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
                                                             Image(imageName)
                                                                 .resizable()
                                                                 .frame(width: 24, height: 24)
@@ -107,14 +107,14 @@ struct InterimOncomingView: View {
                                                 // Doris : 날짜 표시
                                                 VStack(alignment: .leading, spacing: 0) {
                                                     HStack {
-                                                        Text(oncomingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                         
                                                         Text("~")
                                                     }
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                     
-                                                    Text(oncomingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white.opacity(0.75))
                                                 }
@@ -125,12 +125,12 @@ struct InterimOncomingView: View {
                                             RoundedRectangle(cornerRadius: 10)
                                                 .frame(width: 110, height: 80)
                                                 .foregroundStyle(.gray100)
-                                                .opacity(chosenTravel == oncomingTravel?[index] ? 0.0 : 0.3)
+                                                .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
                                         }
                                         .frame(width: 110, height: 80)
                                         .onAppear {
                                             
-                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: oncomingTravel?[index].id ?? UUID())
+                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: onComingTravel?[index].id ?? UUID())
                                             
                                             if let savedExpenses = savedExpenses {
                                                 let countryValues: [Int64] = savedExpenses.map { expense in
@@ -147,11 +147,11 @@ struct InterimOncomingView: View {
                                                         flagImageNames.append("DefaultFlag")
                                                     }
                                                 }
-                                                self.flagImageDict[oncomingTravel?[index].id ?? UUID()] = flagImageNames
+                                                self.flagImageDict[onComingTravel?[index].id ?? UUID()] = flagImageNames
                                             }
                                         }
                                     }
-                                    Text(oncomingTravel?[index].name ?? "제목 미정")
+                                    Text(onComingTravel?[index].name ?? "제목 미정")
                                         .font(.subhead1)
                                         .lineLimit(1)
                                 }
@@ -165,13 +165,13 @@ struct InterimOncomingView: View {
                 ZStack {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0 ..< (oncomingCnt+5)/6, id: \.self) { page in
+                            ForEach(0 ..< (onComingCnt+5)/6, id: \.self) { page in
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                        ForEach((page * 6) ..< min((page+1) * 6, oncomingCnt), id: \.self) { index in
+                                        ForEach((page * 6) ..< min((page+1) * 6, onComingCnt), id: \.self) { index in
                                             VStack {
                                                 Button {
-                                                    chosenTravel = oncomingTravel?[index]
+                                                    chosenTravel = onComingTravel?[index]
                                                     isSelectedTravel = true
                                                 } label: {
                                                     ZStack {
@@ -195,9 +195,9 @@ struct InterimOncomingView: View {
                                                         VStack(alignment: .leading) {
                                                             HStack {
                                                                 Button {
-                                                                    chosenTravel = oncomingTravel?[index]
+                                                                    chosenTravel = onComingTravel?[index]
                                                                 } label: {
-                                                                    if chosenTravel != oncomingTravel?[index] {
+                                                                    if chosenTravel != onComingTravel?[index] {
                                                                         Circle()
                                                                             .fill(.black)
                                                                             .opacity(0.25)
@@ -227,7 +227,7 @@ struct InterimOncomingView: View {
                                                                 HStack {
                                                                     Spacer()
                                                                     
-                                                                    ForEach(flagImageDict[oncomingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
+                                                                    ForEach(flagImageDict[onComingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
                                                                         Image(imageName)
                                                                             .resizable()
                                                                             .frame(width: 24, height: 24)
@@ -242,14 +242,14 @@ struct InterimOncomingView: View {
                                                             // Doris : 날짜 표시
                                                             VStack(alignment: .leading, spacing: 0) {
                                                                 HStack {
-                                                                    Text(oncomingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                    Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     
                                                                     Text("~")
                                                                 }
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(oncomingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     .font(.caption2)
                                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                             }
@@ -260,12 +260,12 @@ struct InterimOncomingView: View {
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
-                                                            .opacity(chosenTravel == oncomingTravel?[index] ? 0.0 : 0.3)
+                                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
                                                     }
                                                     .frame(width: 110, height: 80)
                                                     .onAppear {
                                                         
-                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: oncomingTravel?[index].id ?? UUID())
+                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: onComingTravel?[index].id ?? UUID())
                                                         
                                                         if let savedExpenses = savedExpenses {
                                                             let countryValues: [Int64] = savedExpenses.map { expense in
@@ -282,12 +282,12 @@ struct InterimOncomingView: View {
                                                                     flagImageNames.append("DefaultFlag")
                                                                 }
                                                             }
-                                                            self.flagImageDict[oncomingTravel?[index].id ?? UUID()] = flagImageNames
+                                                            self.flagImageDict[onComingTravel?[index].id ?? UUID()] = flagImageNames
                                                         }
                                                     }
                                                 }
                                                 
-                                                Text(oncomingTravel?[index].name ?? "제목 미정")
+                                                Text(onComingTravel?[index].name ?? "제목 미정")
                                                     .font(.subhead1)
                                                     .lineLimit(1)
                                             }
@@ -304,7 +304,7 @@ struct InterimOncomingView: View {
                     }
                     
                     HStack(spacing: 6) {
-                        ForEach(0..<(oncomingCnt+5)/6, id: \.self) { index in
+                        ForEach(0..<(onComingCnt+5)/6, id: \.self) { index in
                             Capsule()
                                 .fill(currentPage == index ? Color.black : Color.gray200)
                                 .frame(width: 5, height: 5)
@@ -318,7 +318,7 @@ struct InterimOncomingView: View {
         .onAppear {
             DispatchQueue.main.async {
                 viewModel.fetchUpcomingTravel()
-                self.oncomingTravel = viewModel.filterUpcomingTravel(todayDate: Date())
+                self.onComingTravel = viewModel.filterUpcomingTravel(todayDate: Date())
             }
         }
     }
