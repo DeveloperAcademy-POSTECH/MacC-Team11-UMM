@@ -77,6 +77,9 @@
 		E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A32AE2724700E17CFF /* CustomDatePicker.swift */; };
 		E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A52AE273E700E17CFF /* NSObject+Extension.swift */; };
 		E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23357A72AE2B42300E17CFF /* dateFormatter.swift */; };
+		E237338C2AF7E95B008C2613 /* CurrencyList.csv in Resources */ = {isa = PBXBuildFile; fileRef = E237338B2AF7E95B008C2613 /* CurrencyList.csv */; };
+		E237338E2AF7EB8B008C2613 /* CurrencyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237338D2AF7EB8B008C2613 /* CurrencyInfo.swift */; };
+		E23733902AF7EC1E008C2613 /* CurrencyInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237338F2AF7EC1E008C2613 /* CurrencyInfoModel.swift */; };
 		E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */; };
 		E2D4247E2AEF580E00A9ADC9 /* ExchangeRateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */; };
 		E2D5C05C2ADD921400907501 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C05B2ADD921400907501 /* MainView.swift */; };
@@ -165,6 +168,9 @@
 		E23357A32AE2724700E17CFF /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		E23357A52AE273E700E17CFF /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
 		E23357A72AE2B42300E17CFF /* dateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dateFormatter.swift; sourceTree = "<group>"; };
+		E237338B2AF7E95B008C2613 /* CurrencyList.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = CurrencyList.csv; sourceTree = "<group>"; };
+		E237338D2AF7EB8B008C2613 /* CurrencyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyInfo.swift; sourceTree = "<group>"; };
+		E237338F2AF7EC1E008C2613 /* CurrencyInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyInfoModel.swift; sourceTree = "<group>"; };
 		E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBarGraph.swift; sourceTree = "<group>"; };
 		E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateHandler.swift; sourceTree = "<group>"; };
 		E2D5C05B2ADD921400907501 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -259,6 +265,7 @@
 		578858262ADBBED5001B82FA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E237338B2AF7E95B008C2613 /* CurrencyList.csv */,
 				C15760172AEE782C0089FFE5 /* CountryList.csv */,
 				57C41DFB2AD4F1EB00345253 /* Persistence.swift */,
 				5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */,
@@ -266,6 +273,8 @@
 				57A65D062AD7D4BE00131266 /* Enumeration */,
 				C157601D2AF1DD830089FFE5 /* CountryInfo.swift */,
 				C1DC9A462AF3428C00CB6298 /* CountryInfoModel.swift */,
+				E237338D2AF7EB8B008C2613 /* CurrencyInfo.swift */,
+				E237338F2AF7EC1E008C2613 /* CurrencyInfoModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -499,6 +508,7 @@
 				571A42712ACE857600FA3D2B /* Preview Assets.xcassets in Resources */,
 				C17966042ADD66F90036E866 /* Pretendard-SemiBold.otf in Resources */,
 				C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */,
+				E237338C2AF7E95B008C2613 /* CurrencyList.csv in Resources */,
 				C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */,
 				C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */,
 				C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */,
@@ -551,6 +561,7 @@
 				E23357A42AE2724800E17CFF /* CustomDatePicker.swift in Sources */,
 				E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */,
 				E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */,
+				E237338E2AF7EB8B008C2613 /* CurrencyInfo.swift in Sources */,
 				C19AFAE32ADFB5AE0037A5F5 /* Font+Extension.swift in Sources */,
 				E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */,
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
@@ -590,6 +601,7 @@
 				C19AFAF62AE163990037A5F5 /* PreviousTravelViewModel.swift in Sources */,
 				57A65D0E2AD7D51600131266 /* SplitVariety.swift in Sources */,
 				C19AFAE12ADF709E0037A5F5 /* AddMemberViewModel.swift in Sources */,
+				E23733902AF7EC1E008C2613 /* CurrencyInfoModel.swift in Sources */,
 				C1DC9A472AF3428C00CB6298 /* CountryInfoModel.swift in Sources */,
 				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
 				57CC201A2AE551BE0034BD57 /* TravelChoiceInExpenseModal.swift in Sources */,
@@ -745,7 +757,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -784,7 +796,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;

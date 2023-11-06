@@ -18,7 +18,8 @@ struct TodayExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
-    let handler = ExchangeRateHandler.shared
+    let exchangeRatehandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -116,7 +117,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencyAndSum = currencyAndSums[idx]
-                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: sumPaymentMethod, to: 2))")
+                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -181,7 +182,7 @@ struct TodayExpenseDetailView: View {
                                 .font(.subhead2_1)
                                 .padding(.leading, 3)
                         }
-                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -100) : Double.nan, to: 0))원)")
+                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
                             .font(.caption2)
                             .foregroundStyle(.gray200)
                             .padding(.top, 4)

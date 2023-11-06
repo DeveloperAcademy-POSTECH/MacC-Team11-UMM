@@ -16,8 +16,9 @@ struct AllExpenseDetailView: View {
     @State var selectedPaymentMethod: Int64
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
-    let handler = ExchangeRateHandler.shared
+    let exchangeRatehandler = ExchangeRateHandler.shared
     var sumPaymentMethod: Double
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
 
     var body: some View {
         
@@ -112,7 +113,13 @@ struct AllExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: currencyAndSums.reduce(0) { $0 + ($1.sum == -1 ? 0 : $1.sum) * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int($1.currency))) ?? -1)}, to: 0))원")
+            let totalSum = currencyAndSums.reduce(0) {
+                let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int($1.currency)]?.isoCodeNm ?? "Unknown")
+                let sum = $1.sum == -1 ? 0 : $1.sum
+                return $0 + sum * (exchangeRate ?? -100)
+            }
+            let formattedSum = expenseViewModel.formatSum(from: totalSum, to: 0)
+            Text("\(formattedSum)원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -197,7 +204,11 @@ struct AllExpenseDetailView: View {
                                         .font(.subhead2_1)
                                         .padding(.leading, 3 )
                                 }
-                                Text("(\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount * (handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(expense.currency))) ?? -100), to: 0))원)")
+                                let currencyCodeName = Currency.getCurrencyCodeName(of: Int(expense.currency))
+                                let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
+                                let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
+                                let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
+                                Text("(\(formattedPayAmount)원)")
                                     .font(.caption2)
                                     .foregroundStyle(.gray200)
                                     .padding(.top, 4 )

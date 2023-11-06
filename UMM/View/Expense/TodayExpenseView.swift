@@ -12,7 +12,8 @@ struct TodayExpenseView: View {
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
-    let handler = ExchangeRateHandler.shared
+    let exchangeRateHandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -50,110 +51,117 @@ struct TodayExpenseView: View {
     }
     
     // 국가별 + 결제수단별 지출액 표시
-    private var drawExpensesByCountry: some View {
+    var drawExpensesByCountry: some View {
         let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
-        
+
         return ForEach(countryArray, id: \.self) { country in
-                let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
-                let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
-                let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
-                let totalSum = currencies.reduce(0) { total, currency in
-                    let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                    let rate = handler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency)))
-                    return total + sum * (rate ?? -100)
-                }
+            let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
+            let expenseArray = expenseViewModel.groupedTodayExpenses[country] ?? []
+            let currencies = Array(Set(expenseArray.map { $0.currency })).sorted { $0 < $1 }
+            let totalSum = currencies.reduce(0) { total, currency in
+                let sum = expenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+                let isoCodeName = currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown"
+                let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: isoCodeName)
+                return total + sum * (rate ?? -100)
+            }
+
+            VStack(alignment: .leading, spacing: 0) {
+                // 국기 + 국가명
                 VStack(alignment: .leading, spacing: 0) {
-                    // 국기 + 국가명
-                    VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 8) {
-                            Spacer()
-                                .frame(width: 4) // 디자이너 몰래 살짝 움직였다
-                            Image(Country(rawValue: Int(country))?.flagImageString ?? "")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 18, height: 18)
-                                .shadow(color: .gray, radius: 3)
-                            Text(Country(rawValue: Int(country))?.title ?? "-")
-                                .foregroundStyle(.black)
-                                .font(.subhead3_1)
-                        }
-                        
-                        // 결제 수단: 전체: 합계
-                        NavigationLink {
-                            TodayExpenseDetailView(
-                                selectedTravel: expenseViewModel.selectedTravel,
-                                selectedDate: expenseViewModel.selectedDate,
-                                selectedCountry: country,
-                                selectedPaymentMethod: -2,
-                                sumPaymentMethod: totalSum
-                            )
-                        } label: {
-                            Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                                .font(.display3)
-                                .foregroundStyle(.black)
-                                .padding(.top, 8)
-                        }
+                    HStack(spacing: 8) {
+                        Spacer()
+                            .frame(width: 4) // 디자이너 몰래 살짝 움직였다
+                        Image(Country(rawValue: Int(country))?.flagImageString ?? "")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                            .shadow(color: .gray, radius: 3)
+                        Text(Country(rawValue: Int(country))?.title ?? "-")
+                            .foregroundStyle(.black)
+                            .font(.subhead3_1)
                     }
-                    .padding(.bottom, 16)
-                    
-                    // 결제 수단: 개별: 합계
-                    ForEach(paymentMethodArray, id: \.self) { paymentMethod in
-                        VStack(alignment: .leading, spacing: 0) {
-                            let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
-                            let sumPaymentMethod = filteredExpenseArray.reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                            
-                            NavigationLink {
-                                TodayExpenseDetailView(
-                                    selectedTravel: expenseViewModel.selectedTravel,
-                                    selectedDate: expenseViewModel.selectedDate,
-                                    selectedCountry: country,
-                                    selectedPaymentMethod: paymentMethod,
-                                    sumPaymentMethod: sumPaymentMethod
-                                )
-                            } label: {
-                                HStack(alignment: .center, spacing: 0) {
-                                    VStack(alignment: .leading, spacing: 0) {
-                                        HStack(spacing: 0) {
-                                            Text(PaymentMethod(rawValue: Int(paymentMethod))?.title ?? "-")
-                                                .font(.subhead2_1)
-                                                .foregroundStyle(.gray300)
-                                        }
-                                        // 결제 수단: 개별, 화폐: 개별: 합계
-                                        HStack(spacing: 0) {
-                                            ForEach(currencies.indices, id: \.self) { index in
-                                                let currency = currencies[index]
-                                                let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
-                                                Text((Currency(rawValue: Int(currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: sum, to: 2))")
-                                                    .font(.subhead3_1)
-                                                    .foregroundStyle(.black)
-                                                
-                                                if index != currencies.count - 1 {
-                                                    Divider()
-                                                        .font(.subhead2_1)
-                                                        .foregroundStyle(.gray200)
-                                                        .padding(.horizontal, 5)
-                                                }
-                                            }
-                                        }
-                                        .padding(.top, 12)
-                                    }
-                                    Spacer()
-                                    
-                                }
-                                .padding(16)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.gray100)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .padding(.bottom, 10)
-                            }
-                        }
+
+                    // 결제 수단: 전체: 합계
+                    NavigationLink {
+                        TodayExpenseDetailView(
+                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedDate: expenseViewModel.selectedDate,
+                            selectedCountry: country,
+                            selectedPaymentMethod: -2,
+                            sumPaymentMethod: totalSum
+                        )
+                    } label: {
+                        Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                            .font(.display3)
+                            .foregroundStyle(.black)
+                            .padding(.top, 8)
                     }
                 }
-                .padding(.top, 20)
-                .padding(.bottom, 10)
-        }
+                .padding(.bottom, 16)
+
+                // 결제 수단: 개별: 합계
+                ForEach(paymentMethodArray, id: \.self) { paymentMethod in
+                    let filteredExpenseArray = expenseArray.filter { $0.paymentMethod == paymentMethod }
+                    let currencies = Array(Set(filteredExpenseArray.map { $0.currency })).sorted { $0 < $1 }
+                    let totalSum = currencies.reduce(0) { total, currency in
+                        let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+                        let isoCodeName = currencyInfoModel[Int(currency)]?.isoCodeNm ?? "Unknown"
+                        let rate = exchangeRateHandler.getExchangeRateFromKRW(currencyCode: isoCodeName)
+                        return total + sum * (rate ?? -100)
+                    }
+
+                    NavigationLink {
+                        TodayExpenseDetailView(
+                            selectedTravel: expenseViewModel.selectedTravel,
+                            selectedDate: expenseViewModel.selectedDate,
+                            selectedCountry: country,
+                            selectedPaymentMethod: paymentMethod,
+                            sumPaymentMethod: totalSum
+                        )
+                    } label: {
+                        HStack(alignment: .center, spacing: 0) {
+                            VStack(alignment: .leading, spacing: 0) {
+                                HStack(spacing: 0) {
+                                    Text(PaymentMethod(rawValue: Int(paymentMethod))?.title ?? "-")
+                                        .font(.subhead2_1)
+                                        .foregroundStyle(.gray300)
+                                }
+                                // 결제 수단: 개별, 화폐: 개별: 합계
+                                HStack(spacing: 0) {
+                                    ForEach(currencies.indices, id: \.self) { index in
+                                        let currency = currencies[index]
+                                        let sum = filteredExpenseArray.filter({ $0.currency == currency }).reduce(0) { $0 + ($1.payAmount == -1 ? 0 : $1.payAmount) }
+                                        let symbol = currencyInfoModel[Int(currency)]?.symbol ?? "-"
+                                        let formattedSum = expenseViewModel.formatSum(from: sum, to: 2)
+                                        Text("\(symbol) \(formattedSum)")
+                                            .font(.subhead3_1)
+                                            .foregroundStyle(.black)
+
+                                        if index != currencies.count - 1 {
+                                            Divider()
+                                                .font(.subhead2_1)
+                                                .foregroundStyle(.gray200)
+                                                .padding(.horizontal, 5)
+                                        }
+                                    }
+                                }
+                                .padding(.top, 12)
+                            }
+                            Spacer()
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray100)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.bottom, 10)
+                    }
+                }
+            }
+            .padding(.top, 20)
+            .padding(.bottom, 10)
+    }
     } // draw
-    
+
     private var noDataView: some View {
         VStack(spacing: 0) {
             Text("아직 지출 기록이 없어요")

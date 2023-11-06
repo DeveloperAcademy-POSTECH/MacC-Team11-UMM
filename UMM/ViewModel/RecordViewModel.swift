@@ -123,7 +123,6 @@ final class RecordViewModel: ObservableObject {
             print("error creating infoPredictor: \(error.localizedDescription)")
         }
 
-        chosenTravel = findCurrentTravel()
         $payAmount
             .removeDuplicates()
             .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
@@ -709,10 +708,6 @@ final class RecordViewModel: ObservableObject {
         infoCategory = .unknown
         payAmount = -1
         paymentMethod = .unknown
-    }
-    
-    func setChosenTravel(as travel: Travel) {
-        chosenTravel = travel
     }
     
     // MARK: - 햅틱
