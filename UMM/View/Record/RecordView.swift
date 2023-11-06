@@ -409,27 +409,18 @@ struct RecordView: View {
             viewModel.recordButtonIsUsed = false
             viewModel.manualRecordViewIsShown = true
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 11)
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                RoundedRectangle(cornerRadius: 11)
-                    .strokeBorder(.gray200, lineWidth: 1)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 8) {
-                    Image("manualRecordBlackPencil")
+                HStack(spacing: 4) {
+                    Image("recordGrayPencil")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
                     Text("직접 기록")
-                        .foregroundStyle(.gray400)
+                        .foregroundStyle(.gray300)
                         .font(.caption2)
+                        .underline()
                 }
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
-            }
         }
         .opacity(isDetectingPress ? 0.000001 : 1)
         .disabled(isDetectingPress)
