@@ -232,7 +232,11 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         expense.payAmount = payAmount
         expense.payDate = payDate
         expense.paymentMethod = Int64(paymentMethod.rawValue)
-        expense.voiceRecordFile = nil // ^^^
+        
+        if let soundRecordFileName, let soundData = try? Data(contentsOf: soundRecordFileName) {
+            expense.voiceRecordFile = soundData
+        }
+        
         if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             var fetchedTravel: Travel?
             do {
