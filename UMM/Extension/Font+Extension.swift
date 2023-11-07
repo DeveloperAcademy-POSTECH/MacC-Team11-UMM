@@ -27,6 +27,7 @@ extension Font {
     
     static let caption1 = Font.custom(FontsManager.Pretendard.medium, size: 12)
     static let caption2 = Font.custom(FontsManager.Pretendard.medium, size: 14)
+    static let caption3 = Font.custom(FontsManager.Pretendard.regular, size: 16)
     
     static let calendar1 = Font.custom(FontsManager.Pretendard.medium, size: 20)
     static let calendar2 = Font.custom(FontsManager.Pretendard.regular, size: 20)

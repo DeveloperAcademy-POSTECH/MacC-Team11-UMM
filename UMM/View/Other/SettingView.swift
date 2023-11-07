@@ -68,18 +68,8 @@ struct SettingView: View {
     
     private var essentialSetting: some View {
         Section {
-            NavigationLink(destination: Text("약관 및 정책")) {
-                HStack(spacing: 0) {
-                    Text("약관 및 정책")
-                        .font(.subhead2_2)
-                }
-            }
-            NavigationLink(destination: Text("개인정보취급방침")) {
-                HStack(spacing: 0) {
-                    Text("개인정보취급방침")
-                        .font(.subhead2_2)
-                }
-            }
+            listButton(title: "약관 및 정책", target: "")
+            listButton(title: "개인정보취급방침", target: "")
         } header: {
             Text("필수 설정")
                 .font(.caption2)
@@ -97,7 +87,7 @@ struct SettingView: View {
         Section {
             HStack(spacing: 0) {
                 Text("모든 데이터 삭제하기")
-                    .font(.subhead2_2)
+                    .font(.caption3)
                     .foregroundStyle(.red)
             }
         }
@@ -117,7 +107,7 @@ struct SettingView: View {
         }, label: {
             HStack(spacing: 0) {
                 Text("\(title)")
-                    .font(.subhead2_2)
+                    .font(.caption3)
                     .foregroundStyle(.black)
                 Spacer()
                 chevronRight
@@ -134,7 +124,7 @@ struct SettingView: View {
         }, label: {
             HStack(spacing: 0) {
                 Text("\(title)")
-                    .font(.subhead2_2)
+                    .font(.caption3)
                     .foregroundStyle(.black)
                 Spacer()
                 if isLatestVersion {
