@@ -16,10 +16,11 @@ struct AllExpenseDetailView: View {
     @State var selectedPaymentMethod: Int64
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
-    let exchangeRatehandler = ExchangeRateHandler.shared
     var sumPaymentMethod: Double
-    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     @EnvironmentObject var mainVM: MainViewModel
+    let exchangeRatehandler = ExchangeRateHandler.shared
+    let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
+    let dateGapHandler = DateGapHandler.shared
 
     var body: some View {
         
@@ -161,7 +162,8 @@ struct AllExpenseDetailView: View {
                         Text("Day: \(calculatedDay)")
                             .font(.subhead1)
                             .foregroundStyle(.gray400)
-                        Text("\(date, formatter: dateFormatterWithDay)")
+                        // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
+                        Text("\(dateGapHandler.convertBeforeShowing(date: date), formatter: dateFormatterWithDay)")
                             .font(.caption2)
                             .foregroundStyle(.gray300)
                             .padding(.leading, 10)
@@ -180,9 +182,17 @@ struct AllExpenseDetailView: View {
                                     .font(.subhead2_1)
                                 
                                 HStack(alignment: .center, spacing: 0) {
-                                    Text("\(dateFormatterWithHourMiniute(date: expense.payDate ?? Date()))")
-                                        .font(.caption2)
-                                        .foregroundStyle(.gray300)
+                                    // 소비 기록을 한 시각을 보여주는 부분
+                                    // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                    if let payDate = expense.payDate {
+                                        Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray300)
+                                    } else {
+                                        Text("-")
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray300)
+                                    }
                                     Divider()
                                         .padding(.horizontal, 3 )
                                     

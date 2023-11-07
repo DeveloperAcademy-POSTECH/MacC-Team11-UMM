@@ -10,7 +10,6 @@ import Foundation
 let dateFormatterWithDay: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yy.MM.dd (E)"
-    formatter.locale = Locale(identifier: "ko_KR")
     return formatter
 }()
 
@@ -20,3 +19,9 @@ func dateFormatterWithHourMiniute(date: Date) -> String {
     let timeString = formatter.string(from: date)
     return timeString
 }
+
+let dateFormatterWithHMS: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    return formatter
+}()

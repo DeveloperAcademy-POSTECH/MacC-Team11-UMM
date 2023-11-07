@@ -18,6 +18,8 @@ struct InterimOncomingView: View {
     }
     @State var chosenTravel: Travel?
     @State var flagImageDict: [UUID: [String]] = [:]
+    @State var defaultImg: [UUID: [String]] = [:]
+    
     @State var savedExpenses: [Expense]? = []
     
     @ObservedObject var viewModel: InterimRecordViewModel
@@ -34,127 +36,146 @@ struct InterimOncomingView: View {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0..<onComingCnt, id: \.self) { index in
-                                VStack {
-                                    Button {
-                                        chosenTravel = onComingTravel?[index]
-                                        isSelectedTravel = true
-                                    } label: {
-                                        ZStack {
-                                            Image("basicImage")
+                            VStack {
+                                Button {
+                                    chosenTravel = onComingTravel?[index]
+                                    isSelectedTravel = true
+                                    viewModel.chosenTravel = chosenTravel
+                                } label: {
+                                    ZStack {
+                                        if let imageString = {
+                                            return defaultImg[onComingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                        }() {
+                                            Image(imageString)
                                                 .resizable()
                                                 .scaledToFill()
                                                 .frame(width: 110, height: 80)
                                                 .cornerRadius(10)
-                                                .background(
-                                                  LinearGradient(
-                                                      stops: [
-                                                          Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                          Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                      ],
-                                                      startPoint: UnitPoint(x: 0.5, y: 0),
-                                                      endPoint: UnitPoint(x: 0.5, y: 1)
-                                                  )
+                                                .overlay(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
                                                 )
                                                 .cornerRadius(10)
-                                            
-                                            VStack(alignment: .leading) {
-                                                HStack {
-                                                    Button {
-                                                        chosenTravel = onComingTravel?[index]
-                                                    } label: {
-                                                        if chosenTravel != onComingTravel?[index] {
-                                                            Circle()
-                                                                .fill(.black)
-                                                                .opacity(0.25)
-                                                                .frame(width: 19, height: 19)
-                                                                .overlay(
-                                                                  Circle()
-                                                                      .strokeBorder(.white, lineWidth: 1.0)
-                                                                )
-                                                        } else {
-                                                            ZStack {
+                                        }
+                                        
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Button {
+                                                    chosenTravel = onComingTravel?[index]
+                                                } label: {
+                                                    if chosenTravel != onComingTravel?[index] {
+                                                        Circle()
+                                                            .fill(.black)
+                                                            .opacity(0.25)
+                                                            .frame(width: 19, height: 19)
+                                                            .overlay(
                                                                 Circle()
-                                                                    .fill(Color(.mainPink))
-                                                                    .frame(width: 20, height: 20)
-                                                                    .overlay(
-                                                                      Circle()
-                                                                          .strokeBorder(.white, lineWidth: 1.0)
-                                                                    )
-                                                                Image("circleLabelCheck")
-                                                                    .resizable()
-                                                                    .scaledToFit()
-                                                                    .frame(width: 12, height: 12)
-                                                            }
+                                                                    .strokeBorder(.white, lineWidth: 1.0)
+                                                            )
+                                                    } else {
+                                                        ZStack {
+                                                            Circle()
+                                                                .fill(Color(.mainPink))
+                                                                .frame(width: 20, height: 20)
+                                                                .overlay(
+                                                                    Circle()
+                                                                        .strokeBorder(.white, lineWidth: 1.0)
+                                                                )
+                                                            Image("circleLabelCheck")
+                                                                .resizable()
+                                                                .scaledToFit()
+                                                                .frame(width: 12, height: 12)
                                                         }
                                                     }
-                                                    // Doris : 국기 들어갈자리
+                                                }
+                                                // Doris : 국기 들어갈자리
+                                                
+                                                HStack(spacing: 0) {
+                                                    Spacer()
                                                     
-                                                    HStack {
-                                                        Spacer()
-                                                        
-                                                        ForEach(flagImageDict[onComingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
-                                                            Image(imageName)
+                                                    ZStack {
+                                                        let imageNames = flagImageDict[onComingTravel?[index].id ?? UUID()] ?? []
+                                                        ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                            Image(imageNames[i])
                                                                 .resizable()
                                                                 .frame(width: 24, height: 24)
+                                                                .shadow(color: .gray400, radius: 4)
+                                                                .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
                                                         }
                                                     }
                                                 }
-                                                .padding(.horizontal, 8)
-                                                .padding(.top, 8)
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.top, 8)
+                                            
+                                            Spacer()
+                                            
+                                            // Doris : 날짜 표시
+                                            VStack(alignment: .leading, spacing: 0) {
+                                                HStack {
+                                                    Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    
+                                                    Text("~")
+                                                }
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Spacer()
-                                                
-                                                // Doris : 날짜 표시
-                                                VStack(alignment: .leading, spacing: 0) {
-                                                    HStack {
-                                                        Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        
-                                                        Text("~")
-                                                    }
+                                                Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
-                                                    
-                                                    Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                }
-                                                .padding(.horizontal, 8)
-                                                .padding(.bottom, 8)
                                             }
-                                                                                            
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .frame(width: 110, height: 80)
-                                                .foregroundStyle(.gray100)
-                                                .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                            .padding(.horizontal, 8)
+                                            .padding(.bottom, 8)
                                         }
-                                        .frame(width: 110, height: 80)
-                                        .onAppear {
-                                            
-                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: onComingTravel?[index].id ?? UUID())
-                                            
-                                            if let savedExpenses = savedExpenses {
-                                                let countryValues: [Int64] = savedExpenses.map { expense in
-                                                    return viewModel.getCountryForExpense(expense)
-                                                }
-                                                let uniqueCountryValues = Array(Set(countryValues))
-                                                
-                                                var flagImageNames: [String] = []
-                                                for countryValue in uniqueCountryValues {
-                                                    
-                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                }
-                                                self.flagImageDict[onComingTravel?[index].id ?? UUID()] = flagImageNames
+                                        
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(width: 110, height: 80)
+                                            .foregroundStyle(.gray100)
+                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                    }
+                                    .frame(width: 110, height: 80)
+                                    .onAppear {
+                                        
+                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: onComingTravel?[index].id ?? UUID())
+                                        
+                                        if let savedExpenses = savedExpenses {
+                                            let countryValues: [Int64] = savedExpenses.map { expense in
+                                                return viewModel.getCountryForExpense(expense)
                                             }
+                                            let uniqueCountryValues = Array(Set(countryValues))
+                                            
+                                            var flagImageNames: [String] = []
+                                            var countryDefaultImg: [String] = []
+                                            
+                                            for countryValue in uniqueCountryValues {
+                                                
+                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                    flagImageNames.append(flagString)
+                                                } else {
+                                                    flagImageNames.append("DefaultFlag")
+                                                }
+                                                
+                                                if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                    countryDefaultImg.append(imgString)
+                                                } else {
+                                                    countryDefaultImg.append("DefaultImage")
+                                                }
+                                            }
+                                            self.flagImageDict[onComingTravel?[index].id ?? UUID()] = flagImageNames
+                                            self.defaultImg[onComingTravel?[index].id ?? UUID()] = countryDefaultImg
                                         }
                                     }
-                                    Text(onComingTravel?[index].name ?? "제목 미정")
-                                        .font(.subhead1)
-                                        .lineLimit(1)
                                 }
+                                Text(onComingTravel?[index].name ?? "제목 미정")
+                                    .font(.subhead1)
+                                    .lineLimit(1)
+                            }
                         }
                     }
                     .padding(.horizontal, 20)
@@ -173,24 +194,29 @@ struct InterimOncomingView: View {
                                                 Button {
                                                     chosenTravel = onComingTravel?[index]
                                                     isSelectedTravel = true
+                                                    viewModel.chosenTravel = chosenTravel
                                                 } label: {
                                                     ZStack {
-                                                        Image("basicImage")
-                                                            .resizable()
-                                                            .scaledToFill()
-                                                            .frame(width: 110, height: 80)
-                                                            .cornerRadius(10)
-                                                            .background(
-                                                              LinearGradient(
-                                                                  stops: [
-                                                                      Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                      Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                  ],
-                                                                  startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                  endPoint: UnitPoint(x: 0.5, y: 1)
-                                                              )
-                                                            )
-                                                            .cornerRadius(10)
+                                                        if let imageString = {
+                                                            return defaultImg[onComingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                                        }() {
+                                                            Image(imageString)
+                                                                .resizable()
+                                                                .scaledToFill()
+                                                                .frame(width: 110, height: 80)
+                                                                .cornerRadius(10)
+                                                                .overlay(
+                                                                    LinearGradient(
+                                                                        stops: [
+                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                        ],
+                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                    )
+                                                                )
+                                                                .cornerRadius(10)
+                                                        }
                                                         
                                                         VStack(alignment: .leading) {
                                                             HStack {
@@ -203,8 +229,8 @@ struct InterimOncomingView: View {
                                                                             .opacity(0.25)
                                                                             .frame(width: 19, height: 19)
                                                                             .overlay(
-                                                                              Circle()
-                                                                                  .strokeBorder(.white, lineWidth: 1.0)
+                                                                                Circle()
+                                                                                    .strokeBorder(.white, lineWidth: 1.0)
                                                                             )
                                                                     } else {
                                                                         ZStack {
@@ -212,8 +238,8 @@ struct InterimOncomingView: View {
                                                                                 .fill(Color(.mainPink))
                                                                                 .frame(width: 20, height: 20)
                                                                                 .overlay(
-                                                                                  Circle()
-                                                                                      .strokeBorder(.white, lineWidth: 1.0)
+                                                                                    Circle()
+                                                                                        .strokeBorder(.white, lineWidth: 1.0)
                                                                                 )
                                                                             Image("circleLabelCheck")
                                                                                 .resizable()
@@ -224,13 +250,18 @@ struct InterimOncomingView: View {
                                                                 }
                                                                 // Doris : 국기 들어갈자리
                                                                 
-                                                                HStack {
+                                                                HStack(spacing: 0) {
                                                                     Spacer()
                                                                     
-                                                                    ForEach(flagImageDict[onComingTravel?[index].id ?? UUID()] ?? [], id: \.self) { imageName in
-                                                                        Image(imageName)
-                                                                            .resizable()
-                                                                            .frame(width: 24, height: 24)
+                                                                    ZStack {
+                                                                        let imageNames = flagImageDict[onComingTravel?[index].id ?? UUID()] ?? []
+                                                                        ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                                            Image(imageNames[i])
+                                                                                .resizable()
+                                                                                .frame(width: 24, height: 24)
+                                                                                .shadow(color: .gray400, radius: 4)
+                                                                                .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -256,7 +287,7 @@ struct InterimOncomingView: View {
                                                             .padding(.horizontal, 8)
                                                             .padding(.bottom, 8)
                                                         }
-                                                                                                        
+                                                        
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
@@ -274,6 +305,8 @@ struct InterimOncomingView: View {
                                                             let uniqueCountryValues = Array(Set(countryValues))
                                                             
                                                             var flagImageNames: [String] = []
+                                                            var countryDefaultImg: [String] = []
+                                                            
                                                             for countryValue in uniqueCountryValues {
                                                                 
                                                                 if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
@@ -281,8 +314,15 @@ struct InterimOncomingView: View {
                                                                 } else {
                                                                     flagImageNames.append("DefaultFlag")
                                                                 }
+                                                                
+                                                                if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                                    countryDefaultImg.append(imgString)
+                                                                } else {
+                                                                    countryDefaultImg.append("DefaultImage")
+                                                                }
                                                             }
                                                             self.flagImageDict[onComingTravel?[index].id ?? UUID()] = flagImageNames
+                                                            self.defaultImg[onComingTravel?[index].id ?? UUID()] = countryDefaultImg
                                                         }
                                                     }
                                                 }
@@ -318,6 +358,7 @@ struct InterimOncomingView: View {
         .onAppear {
             DispatchQueue.main.async {
                 viewModel.fetchUpcomingTravel()
+                viewModel.fetchSavedExpense()
                 self.onComingTravel = viewModel.filterUpcomingTravel(todayDate: Date())
             }
         }

@@ -498,6 +498,7 @@ struct RecordView: View {
                         isDetectingPress_showOnButton = true
                         viewModel.alertView_emptyIsShown = false
                         viewModel.alertView_shortIsShown = false
+//                        mainVM.alertView_savedIsShown = false // 이걸 추가하면 STT가 안 됨
                         viewModel.recordButtonIsFocused = true
                     }
                 default:

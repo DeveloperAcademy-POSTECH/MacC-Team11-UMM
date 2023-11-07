@@ -60,6 +60,7 @@ struct MainView: View {
         
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
+            viewModel.selectedTravel = findCurrentTravel()
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)

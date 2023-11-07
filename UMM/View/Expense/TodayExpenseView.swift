@@ -16,6 +16,7 @@ struct TodayExpenseView: View {
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    let dateGapHandler = DateGapHandler.shared
     
     init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
         self.expenseViewModel = expenseViewModel
@@ -26,6 +27,10 @@ struct TodayExpenseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if expenseViewModel.filteredTodayExpenses.count == 0 {
+                HStack {
+                    datePicker
+                    Spacer()
+                }
                 noDataView
             } else {
                 ScrollView {
@@ -47,9 +52,17 @@ struct TodayExpenseView: View {
     }
     
     private var datePicker: some View {
-        CustomDatePicker(expenseViewModel: expenseViewModel, selectedDate: $expenseViewModel.selectedDate, pickerId: pickerId, startDateOfTravel: mainVM.selectedTravel?.startDate ?? Date().addingTimeInterval(-24*60*60))
-            .padding(.top, 12)
-            .padding(.bottom, 12)
+        VStack {
+            // DatePicker에서 여행의 startDate를 보여줄 때는 저장된 데이터를 covertBeforeShowing한다.
+            // selectedTravel이 nil이면 현지 시간인 Date()를 변환해서 보여주면 안 된다. 따라서 Date()를 한국 시간으로 변환한 뒤에, 다시 현지 시간으로 변환되게 해야 한다.
+            CustomDatePicker(
+                expenseViewModel: expenseViewModel, 
+                selectedDate: $expenseViewModel.selectedDate,
+                pickerId: pickerId,
+                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
+                .padding(.top, 12)
+                .padding(.bottom, 12)
+        }
     }
     
     // 국가별 + 결제수단별 지출액 표시
@@ -173,11 +186,15 @@ struct TodayExpenseView: View {
     } // draw
 
     private var noDataView: some View {
-        VStack(spacing: 0) {
-            Text("아직 지출 기록이 없어요")
-                .font(.subhead3_2)
-                .foregroundStyle(.gray300)
-                .padding(.top, 130)
+        HStack {
+            Spacer()
+            VStack(spacing: 0) {
+                Text("아직 지출 기록이 없어요")
+                    .font(.subhead3_2)
+                    .foregroundStyle(.gray300)
+                    .padding(.top, 130)
+                Spacer()
+            }
             Spacer()
         }
     }

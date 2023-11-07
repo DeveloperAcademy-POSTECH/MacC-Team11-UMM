@@ -80,11 +80,12 @@ class TravelListViewModel: ObservableObject {
     }
     
     func arrayToString(partArray: [String]) -> String {
+        
         var res = ""
         for index in 0..<partArray.count {
             res += partArray[index]
             if index < partArray.count - 1 {
-                res += ","
+                res += ", "
             }
         }
         return res

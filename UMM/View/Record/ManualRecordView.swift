@@ -44,6 +44,8 @@ struct ManualRecordView: View {
                 Spacer()
                     .frame(height: 16)
                 saveButtonView
+                Spacer()
+                    .frame(height: 45)
             }
             .ignoresSafeArea()
         }
@@ -86,31 +88,54 @@ struct ManualRecordView: View {
         .onAppear {
             viewModel.getLocation()
             viewModel.country = viewModel.currentCountry
-            viewModel.countryExpression = viewModel.currentCountry.title
+            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
             viewModel.locationExpression = viewModel.currentLocation
             
             if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
                 viewModel.otherCountryCandidateArray.append(viewModel.country)
             }
             
-            viewModel.currency = viewModel.currentCountry.relatedCurrencyArray.first ?? .usd
+            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
             
-            if viewModel.currentCountry == .usa {
-                viewModel.currencyCandidateArray = [.usd, .krw]
-            } else {
-                viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
-                if !viewModel.currencyCandidateArray.contains(.usd) {
-                    viewModel.currencyCandidateArray.append(.usd)
-                }
-                if !viewModel.currencyCandidateArray.contains(.krw) {
-                    viewModel.currencyCandidateArray.append(.krw)
+            viewModel.currency =  4 // 미국 달러
+            
+            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+                if tuple.value.isoCodeNm == stringCurrency {
+                    viewModel.currency = tuple.key
+                    break
                 }
             }
             
-            if viewModel.payAmount == -1 || viewModel.currency == .unknown {
+            if viewModel.currentCountry == 3 { // 미국
+                viewModel.currencyCandidateArray = [4, 0]
+            } else {
+                let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
+                viewModel.currencyCandidateArray = []
+                for stringCurrency in stringCurrencyArray {
+                    for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+                        if tuple.value.isoCodeNm == stringCurrency {
+                            viewModel.currencyCandidateArray.append(tuple.key)
+                            break
+                        }
+                    }
+                }
+                
+                if !viewModel.currencyCandidateArray.contains(4) { // 미국 달러
+                    viewModel.currencyCandidateArray.append(4) // 미국 달러
+                }
+                if !viewModel.currencyCandidateArray.contains(0) { // 한국 원
+                    viewModel.currencyCandidateArray.append(0) // 한국 원
+                }
+            }
+            
+            if viewModel.payAmount == -1 || viewModel.currency == -1 {
                 viewModel.payAmountInWon = -1
             } else {
-                viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100)
+                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
+                    viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
+                } else {
+                    viewModel.payAmountInWon = -1
+                }
             }
             
             // MARK: - NumberFormatter
@@ -134,6 +159,7 @@ struct ManualRecordView: View {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
                                 mainVM.alertView_savedIsShown = true
+                                viewModel.deleteUselessAudioFiles()
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -204,24 +230,38 @@ struct ManualRecordView: View {
                 print("error fetching expenses: \(error.localizedDescription)")
             }
         }
-        viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
+        viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
         
-        if viewModel.currentCountry == .usa {
-            viewModel.currencyCandidateArray = [.usd, .krw]
+        if viewModel.currentCountry == 3 {
+            viewModel.currencyCandidateArray = [4, 0]
         } else {
-            viewModel.currencyCandidateArray = viewModel.currentCountry.relatedCurrencyArray
-            if !viewModel.currencyCandidateArray.contains(.usd) {
-                viewModel.currencyCandidateArray.append(.usd)
+            let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
+            viewModel.currencyCandidateArray = []
+            for stringCurrency in stringCurrencyArray {
+                for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+                    if tuple.value.isoCodeNm == stringCurrency {
+                        viewModel.currencyCandidateArray.append(tuple.key)
+                        break
+                    }
+                }
             }
-            if !viewModel.currencyCandidateArray.contains(.krw) {
-                viewModel.currencyCandidateArray.append(.krw)
+            
+            if !viewModel.currencyCandidateArray.contains(4) {
+                viewModel.currencyCandidateArray.append(4)
+            }
+            if !viewModel.currencyCandidateArray.contains(0) {
+                viewModel.currencyCandidateArray.append(0)
             }
         }
         
-        if viewModel.payAmount == -1 || viewModel.currency == .unknown {
+        if viewModel.payAmount == -1 || viewModel.currency == -1 {
             viewModel.payAmountInWon = -1
         } else {
-            viewModel.payAmountInWon = viewModel.payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(viewModel.currency.rawValue))) ?? -100) // ^^^
+            if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
+                viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
+            } else {
+                viewModel.payAmountInWon = -1
+            }
         }
         viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
@@ -268,7 +308,7 @@ struct ManualRecordView: View {
                         ZStack {
                             Picker("화폐", selection: $viewModel.currency) {
                                 ForEach(viewModel.currencyCandidateArray, id: \.self) { currency in
-                                    Text(currency.title + " " + currency.officialSymbol)
+                                    Text((CurrencyInfoModel.shared.currencyResult[currency]?.koreanNm ?? "알 수 없음") + " " + (CurrencyInfoModel.shared.currencyResult[currency]?.symbol ?? "-"))
                                 }
                             }
                             .onTapGesture {
@@ -280,7 +320,7 @@ struct ManualRecordView: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
-                                Text(viewModel.currency.title + " " + viewModel.currency.officialSymbol)
+                                Text((CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.koreanNm ?? "알 수 없음") + " " + (CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.symbol ?? "-"))
                                     .foregroundStyle(.gray400)
                                     .font(.display2)
                                     .padding(.vertical, 4)
@@ -691,7 +731,7 @@ struct ManualRecordView: View {
                             
                             HStack(spacing: 8) {
                                 ZStack {
-                                    Image(viewModel.country.flagImageString) // 이뉴머레이션 못 쓰면 수정해야 함
+                                    Image(CountryInfoModel.shared.countryResult[viewModel.country]?.flagString ?? "DefaultFlag")
                                         .resizable()
                                         .scaledToFit()
                                     
@@ -806,6 +846,7 @@ struct ManualRecordView: View {
                     mainVM.selectedTravel = defaultTravel
                 }
                 mainVM.alertView_savedIsShown = true
+                viewModel.deleteUselessAudioFiles()
                 dismiss()
                 
             }
