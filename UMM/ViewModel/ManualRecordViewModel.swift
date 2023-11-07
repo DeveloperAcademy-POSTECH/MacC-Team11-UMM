@@ -17,7 +17,16 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
             if let placemark = placemarks?.first {
                 self.parent?.placemark = placemark
-                self.parent?.currentCountry = Country.countryFor(isoCode: placemark.isoCountryCode ?? "") ?? .unknown
+                let code = placemark.isoCountryCode ?? ""
+                let countryKey = CountryInfoModel.shared.countryResult.filter { tuple in
+                    let pairCode = tuple.value.locationNm.components(separatedBy: "-")
+                    if pairCode.count == 2 {
+                        return pairCode[1] == code
+                    } else {
+                        return false
+                    }
+                }.first?.key ?? -1
+                self.parent?.currentCountry = countryKey
                 self.parent?.currentLocation = "\(placemark.locality ?? "")"
             } else {
                 print("ERROR: \(String(describing: error?.localizedDescription))")
@@ -65,10 +74,14 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     var payAmount: Double = -1 { // passive
         didSet {
-            if payAmount == -1 || currency == .unknown {
+            if payAmount == -1 || currency == -1 {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
+                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[currency]?.isoCodeNm ?? "") {
+                    payAmountInWon = payAmount * exchangeRate
+                } else {
+                    payAmountInWon = -1
+                }
             }
         }
     }
@@ -112,53 +125,61 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var travelArray: [Travel] = []
     
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
-    @Published var additionalParticipantTupleArray: [(name: String, isOn: Bool)] = []
     
     @Published var payDate: Date = Date()
     var currentDate: Date = Date()
 
-    @Published var country: Country = .japan {
+    @Published var country: Int = -1 {
         didSet {
-            countryExpression = "\(country.title)"
+            countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
             locationExpression = ""
 
-            if country == .usa {
-                currencyCandidateArray = [.usd, .krw]
+            if country == 3 { // 미국
+                currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
             } else {
-                currencyCandidateArray = country.relatedCurrencyArray
-                if !currencyCandidateArray.contains(.usd) {
-                    currencyCandidateArray.append(.usd)
+                let stringCurrencyArray = CountryInfoModel.shared.countryResult[country]?.relatedCurrencyArray ?? []
+                currencyCandidateArray = []
+                for t in CurrencyInfoModel.shared.currencyResult where stringCurrencyArray.contains(t.value.isoCodeNm) {
+                    currencyCandidateArray.append(t.key)
                 }
-                if !currencyCandidateArray.contains(.krw) {
-                    currencyCandidateArray.append(.krw)
+                
+                if !currencyCandidateArray.contains(4) { // 미국 달러
+                    currencyCandidateArray.append(4)
+                }
+                if !currencyCandidateArray.contains(0) { // 한국 원
+                    currencyCandidateArray.append(0)
                 }
             }
             
-            if currency == .usd && country != .usa {
+            if currency == 4 && country != 3 { // 미국 달러, !미국
                 return
-            } else if currency == .krw && country != .korea {
+            } else if currency == 0 && country != 0 { // 한국 원, !한국
                 return
             } else {
-                currency = currencyCandidateArray.first ?? .usd
+                currency = currencyCandidateArray.first ?? 4
             }
         }
     }
     @Published var countryExpression: String = "" // passive
     @Published var locationExpression: String = ""
-    var currentCountry: Country = .unknown
+    var currentCountry: Int = -1
     var currentLocation: String = ""
-    @Published var otherCountryCandidateArray: [Country] = [] // passive
+    @Published var otherCountryCandidateArray: [Int] = [] // passive
     
-    @Published var currency: Currency = .usd {
+    @Published var currency: Int = 3 {
         didSet {
-            if payAmount == -1 || currency == .unknown {
+            if payAmount == -1 || currency == -1 {
                 payAmountInWon = -1
             } else {
-                payAmountInWon = payAmount * (exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100) // ^^^
+                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[currency]?.isoCodeNm ?? "") {
+                    payAmountInWon = payAmount * exchangeRate
+                } else {
+                    payAmountInWon = -1
+                }
             }
         }
     }
-    @Published var currencyCandidateArray: [Currency] = []
+    @Published var currencyCandidateArray: [Int] = []
     @Published var visibleNewNameOfParticipant: String = ""
     
     var soundRecordFileName: URL?
@@ -207,7 +228,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                 } catch {
                     print("error fetching expenses: \(error.localizedDescription)")
                 }
-                self.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted().compactMap { Country(rawValue: $0) }
+                self.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
             } else {
                 self.participantTupleArray = [("나", true)]
                 self.otherCountryCandidateArray = []
@@ -223,14 +244,14 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         
         let expense = Expense(context: viewContext)
         expense.category = Int64(category.rawValue)
-        expense.country = Int64(country.rawValue)
-        expense.currency = Int64(currency.rawValue)
-        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency.rawValue))) ?? -100 // ^^^
+        expense.country = Int64(country)
+        expense.currency = Int64(currency)
+        expense.exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: Currency.getCurrencyCodeName(of: Int(currency))) ?? -1
         expense.info = info
         expense.location = locationExpression
-        expense.participantArray = (participantTupleArray + additionalParticipantTupleArray).filter { $0.1 == true }.map { $0.0 }
+        expense.participantArray = participantTupleArray.filter { $0.1 == true }.map { $0.0 }
         expense.payAmount = payAmount
-        expense.payDate = payDate
+        expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         
         if let soundRecordFileName, let soundData = try? Data(contentsOf: soundRecordFileName) {

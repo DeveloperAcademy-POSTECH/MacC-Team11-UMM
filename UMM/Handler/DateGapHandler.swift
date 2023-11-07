@@ -76,4 +76,42 @@ final class DateGapHandler {
         // base가 3시일 때 current가 5시이면 timeDifference는 7200. 저장된 date가 base 기준 1시라고 하자. 이것은 current 기준 3시. 보여주기 전에 date에서 7200초를 빼면 current 기준 1시인 date가 된다.
         return date.addingTimeInterval(-timeDifferenceInterval)
     }
-} 
+    
+    func getLocal000(of date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = 0
+        newComponents.minute = 0
+        newComponents.second = 0
+        
+        if let newDate = calendar.date(from: newComponents) {
+            return newDate
+        } else {
+            return date
+        }
+    }
+    
+    func getLocal235959(of date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = 23
+        newComponents.minute = 59
+        newComponents.second = 59
+        
+        if let newDate = calendar.date(from: newComponents) {
+            return newDate
+        } else {
+            return date
+        }
+    }
+}

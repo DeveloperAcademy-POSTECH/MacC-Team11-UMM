@@ -18,9 +18,7 @@ class MainViewModel: ObservableObject {
     
     @Published var alertView_savedIsShown: Bool = false
     
-    private init() {
-//        selectedTravel = findCurrentTravel()
-    }
+    private init() {}
     
     func navigationToRecordView() {
         self.selection = 1

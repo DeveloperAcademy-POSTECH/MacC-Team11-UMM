@@ -25,6 +25,7 @@ struct TravelListView: View {
     @State private var currentPage = 0
     @State private var defaultTravelCnt = 0
     @State private var flagImageName: [String] = []
+    @State private var defaultImageName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -55,8 +56,6 @@ struct TravelListView: View {
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
-                    mainVM.selectedTravel = findCurrentTravel()
-                    print("onAppear")
                 }
             }
             .toolbar {
@@ -127,23 +126,34 @@ struct TravelListView: View {
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
                                     participantCnt: nowTravel?[index].participantArray?.count ?? 0,
                                     participantArr: nowTravel?[index].participantArray ?? [],
-                                    flagImageArr: self.flagImageName
+                                    flagImageArr: self.flagImageName,
+                                    defaultImageString: String(defaultImageName.first ?? "DefaultImage")
                                 ), label: {
                                     ZStack(alignment: .top) {
                                         Rectangle()
                                             .foregroundColor(.clear)
                                             .frame(width: 350, height: 137 + 46)
                                         
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 350, height: 137)
-                                            .background(
-                                                Image("testImage")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                
-                                            )
-                                            .cornerRadius(10)
+                                        if let imageString = {
+                                            return String(defaultImageName.first ?? "DefaultImage")
+                                        }() {
+                                            Image(imageString)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 350, height: 137)
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    LinearGradient(
+                                                        stops: [
+                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                        ],
+                                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                                        endPoint: UnitPoint(x: 0.5, y: 1)
+                                                    )
+                                                )
+                                                .cornerRadius(10)
+                                        }
                                         
                                         Rectangle()
                                             .foregroundColor(.clear)
@@ -160,18 +170,23 @@ struct TravelListView: View {
                                             )
                                             .cornerRadius(10)
                                         
-                                        VStack(alignment: .leading) {
+                                        VStack(alignment: .leading, spacing: 0) {
                                             
-                                            HStack {
+                                            HStack(spacing: 0) {
                                                 Spacer()
                                                 
-                                                ForEach(flagImageName, id: \.self) { imageName in
-                                                    Image(imageName)
-                                                        .resizable()
-                                                        .frame(width: 24, height: 24)
+                                                ZStack {
+                                                    ForEach((0..<flagImageName.count).reversed(), id: \.self) { i in
+                                                        Image(flagImageName[i])
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .shadow(color: .gray400, radius: 4)
+                                                            .offset(x: -12 * CGFloat(flagImageName.count - 1 - Int(i)))
+                                                    }
                                                 }
                                             }
-                                            .padding(16)
+                                            .frame(height: 24)
+                                            .padding(.trailing, 16)
                                             
                                             Spacer()
                                             
@@ -204,40 +219,56 @@ struct TravelListView: View {
                                                 
                                                 HStack {
                                                     Image(systemName: "person.fill")
+                                                        .frame(width: 12, height: 12)
                                                         .foregroundStyle(Color.white)
                                                     
                                                     Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
+                                                        .lineLimit(1)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white)
                                                     
                                                 }
+                                                .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
                                                 .padding(.trailing, 16)
                                             }
+                                            .frame(height: 16)
                                             
                                         }
-                                        .padding(.bottom, 16)
+                                        .padding(.vertical, 16)
                                         .frame(width: 350, height: 137)
                                         
                                     }
                                     .onAppear {
-                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                        
-                                        if let savedExpenses = savedExpenses {
-                                            let countryValues: [Int64] = savedExpenses.map { expense in
-                                                return viewModel.getCountryForExpense(expense)
-                                            }
-                                            let uniqueCountryValues = Array(Set(countryValues))
-                                            
-                                            var flagImageNames: [String] = []
-                                            for countryValue in uniqueCountryValues {
-                                                
-                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                    flagImageNames.append(flagString)
-                                                } else {
-                                                    flagImageNames.append("DefaultFlag")
+                                        print("indexxxxx", index)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                            if let savedExpenses = savedExpenses {
+                                                let countryValues: [Int64] = savedExpenses.map { expense in
+                                                    return viewModel.getCountryForExpense(expense)
                                                 }
+                                                let uniqueCountryValues = Array(Set(countryValues))
+                                                
+                                                var flagImageNames: [String] = []
+                                                var defaultImage: [String] = []
+                                                for countryValue in uniqueCountryValues {
+                                                    
+                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                        flagImageNames.append(flagString)
+                                                    } else {
+                                                        flagImageNames.append("DefaultFlag")
+                                                    }
+                                                    
+                                                    if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                        defaultImage.append(defaultString)
+                                                    } else {
+                                                        defaultImage.append("DefaultImage")
+                                                    }
+                                                }
+                                                
+                                                self.flagImageName = flagImageNames
+                                                self.defaultImageName = defaultImage
+                                                print("defaultImageName :", defaultImageName)
                                             }
-                                            self.flagImageName = flagImageNames
                                         }
                                     }
                                 })
