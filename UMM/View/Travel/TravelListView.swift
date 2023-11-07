@@ -349,7 +349,9 @@ struct TravelListView: View {
                                 +
                                 Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
                                 +
-                                Text("원") // Doris
+                                Text(" ")
+                                +
+                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.first?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
                             }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)
