@@ -9,12 +9,19 @@ import SwiftUI
 import CoreLocation
 
 struct ManualRecordView: View {
-    @ObservedObject var viewModel: ManualRecordViewModel
+    @ObservedObject var viewModel = ManualRecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     let fraction0NumberFormatter = NumberFormatter()
+    
+    let given_recordButtonIsFocused: Bool
+    let given_payAmount: Double
+    let given_info: String?
+    let given_infoCategory: ExpenseInfoCategory
+    let given_paymentMethod: PaymentMethod
+    let given_soundRecordFileName: URL?
     
     var body: some View {
         ZStack {
@@ -86,6 +93,90 @@ struct ManualRecordView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
+            viewModel.recordButtonIsUsed = given_recordButtonIsFocused
+
+            if viewModel.recordButtonIsUsed {
+                viewModel.payAmount = given_payAmount
+                if viewModel.payAmount == -1 {
+                    viewModel.visiblePayAmount = ""
+                } else {
+                    if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
+                        viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
+                    } else {
+                        viewModel.visiblePayAmount = String(viewModel.payAmount)
+                    }
+                }
+                viewModel.info = given_info
+                viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
+                viewModel.category = given_infoCategory
+                viewModel.paymentMethod = given_paymentMethod
+            }
+
+            DispatchQueue.main.async {
+                MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
+            }
+
+            do {
+                viewModel.travelArray = try viewContext.fetch(Travel.fetchRequest())
+            } catch {
+                print("error fetching travelArray: \(error.localizedDescription)")
+            }
+
+            if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
+                viewModel.participantTupleArray = [("나", true)] + participantArray.map { ($0, true) }
+            } else {
+                viewModel.participantTupleArray = [("나", true)]
+            }
+            var expenseArray: [Expense] = []
+            if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
+                do {
+                    try expenseArray = viewContext.fetch(Expense.fetchRequest()).filter { expense in
+                        if let belongTravel = expense.travel {
+                            return belongTravel.id == chosenTravel.id
+                        } else {
+                            return false
+                        }
+                    }
+                } catch {
+                    print("error fetching expenses: \(error.localizedDescription)")
+                }
+            }
+            viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
+
+            if viewModel.currentCountry == 3 {
+                viewModel.currencyCandidateArray = [4, 0]
+            } else {
+                let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
+                viewModel.currencyCandidateArray = []
+                for stringCurrency in stringCurrencyArray {
+                    for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+                        if tuple.value.isoCodeNm == stringCurrency {
+                            viewModel.currencyCandidateArray.append(tuple.key)
+                            break
+                        }
+                    }
+                }
+                
+                if !viewModel.currencyCandidateArray.contains(4) {
+                    viewModel.currencyCandidateArray.append(4)
+                }
+                if !viewModel.currencyCandidateArray.contains(0) {
+                    viewModel.currencyCandidateArray.append(0)
+                }
+            }
+
+            if viewModel.payAmount == -1 || viewModel.currency == -1 {
+                viewModel.payAmountInWon = -1
+            } else {
+                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
+                    viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
+                } else {
+                    viewModel.payAmountInWon = -1
+                }
+            }
+            viewModel.soundRecordFileName = given_soundRecordFileName
+
+            
             viewModel.getLocation()
             viewModel.country = viewModel.currentCountry
             viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
@@ -176,94 +267,6 @@ struct ManualRecordView: View {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
         }
-    }
-    
-    init(prevViewModel: RecordViewModel) {
-        print("ManualRecordView | init")
-        viewModel = ManualRecordViewModel()
-        
-        viewModel.recordButtonIsUsed = prevViewModel.recordButtonIsFocused
-        
-        if viewModel.recordButtonIsUsed {
-            viewModel.payAmount = prevViewModel.payAmount
-            if viewModel.payAmount == -1 {
-                viewModel.visiblePayAmount = ""
-            } else {
-                if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
-                    viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
-                } else {
-                    viewModel.visiblePayAmount = String(viewModel.payAmount)
-                }
-            }
-            viewModel.info = prevViewModel.info
-            viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
-            viewModel.category = prevViewModel.infoCategory
-            viewModel.paymentMethod = prevViewModel.paymentMethod
-        }
-        
-        DispatchQueue.main.async {
-            MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
-        }
-        
-        do {
-            viewModel.travelArray = try viewContext.fetch(Travel.fetchRequest())
-        } catch {
-            print("error fetching travelArray: \(error.localizedDescription)")
-        }
-        
-        if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
-            viewModel.participantTupleArray = [("나", true)] + participantArray.map { ($0, true) }
-        } else {
-            viewModel.participantTupleArray = [("나", true)]
-        }
-        var expenseArray: [Expense] = []
-        if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
-            do {
-                try expenseArray = viewContext.fetch(Expense.fetchRequest()).filter { expense in
-                    if let belongTravel = expense.travel {
-                        return belongTravel.id == chosenTravel.id
-                    } else {
-                        return false
-                    }
-                }
-            } catch {
-                print("error fetching expenses: \(error.localizedDescription)")
-            }
-        }
-        viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
-        
-        if viewModel.currentCountry == 3 {
-            viewModel.currencyCandidateArray = [4, 0]
-        } else {
-            let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
-            viewModel.currencyCandidateArray = []
-            for stringCurrency in stringCurrencyArray {
-                for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                    if tuple.value.isoCodeNm == stringCurrency {
-                        viewModel.currencyCandidateArray.append(tuple.key)
-                        break
-                    }
-                }
-            }
-            
-            if !viewModel.currencyCandidateArray.contains(4) {
-                viewModel.currencyCandidateArray.append(4)
-            }
-            if !viewModel.currencyCandidateArray.contains(0) {
-                viewModel.currencyCandidateArray.append(0)
-            }
-        }
-        
-        if viewModel.payAmount == -1 || viewModel.currency == -1 {
-            viewModel.payAmountInWon = -1
-        } else {
-            if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
-                viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
-            } else {
-                viewModel.payAmountInWon = -1
-            }
-        }
-        viewModel.soundRecordFileName = prevViewModel.soundRecordFileName
     }
     
     private var backButtonView: some View {
@@ -988,6 +991,6 @@ struct PlayngRecordSoundView: View {
     }
 }
 
-#Preview {
-    ManualRecordView(prevViewModel: RecordViewModel())
-}
+//#Preview {
+//    ManualRecordView()
+//}

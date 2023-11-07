@@ -125,7 +125,14 @@ struct RecordView: View {
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 if viewModel.manualRecordViewIsShown {
-                    ManualRecordView(prevViewModel: viewModel)
+                    ManualRecordView(
+                        given_recordButtonIsFocused: viewModel.recordButtonIsUsed,
+                        given_payAmount: viewModel.payAmount,
+                        given_info: viewModel.info,
+                        given_infoCategory: viewModel.infoCategory,
+                        given_paymentMethod: viewModel.paymentMethod,
+                        given_soundRecordFileName: viewModel.soundRecordFileName
+                    )
                         .environmentObject(mainVM)
                 } else {
                     EmptyView()
