@@ -334,8 +334,36 @@ struct AddTravelView: View {
             self.textColor = textColor
         }
         
+        // 시작일과 종료일 사이
+        private func isSelected(date: Date) -> Bool {
+            if date > viewModel.startDate ?? Date() && viewModel.endDate != nil && viewModel.endDate! > date {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        // 시작일과 종료일이 같을 경우
+        private func isSameDate(date: Date) -> Bool {
+            if let startDate = viewModel.startDate, let endDate = viewModel.endDate,
+                viewModel.startDateToString(in: self.date! - 1) == viewModel.startDateToString(in: startDate) &&
+                viewModel.startDateToString(in: self.date! - 1) == viewModel.startDateToString(in: endDate) {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        // 시작일과 종료일
+        private func makeSquare(date: Date) -> Bool {
+            if let startDate = viewModel.startDate, let endDate = viewModel.endDate {
+                return date == startDate || date == endDate
+            }
+            return false
+        }
+        
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 Button {
                     let result = viewModel.startDateEndDate(in: viewModel.startDate, endDate: viewModel.endDate, selectDate: date!-1)
                     viewModel.startDate = result[0]
@@ -347,11 +375,30 @@ struct AddTravelView: View {
                     Text(String(day))
                         .padding(9.81)
                         .font(.calendar2)
-                        .frame(width: 45)
-//                        .background(Color.red)
+                        .frame(width: 50) // 45
                         .foregroundStyle(textColor)
                         .overlay {
-                            if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
+                            if isSameDate(date: self.date!) {
+                                ZStack {
+                                    Circle()
+                                        .frame(width: 38, height: 38)
+                                        .foregroundStyle(Color.mainPink)
+                                    
+                                    Circle()
+                                        .frame(width: 35, height: 35)
+                                        .foregroundStyle(Color.white)
+                                    
+                                    Circle()
+                                        .frame(width: 33, height: 33)
+                                        .foregroundStyle(Color.mainPink)
+                                    
+                                    Text(String(day))
+                                        .font(.calendar2)
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            } else if makeSquare(date: self.date!) {
                                 ZStack {
                                     ZStack {
                                         Rectangle()
@@ -364,6 +411,25 @@ struct AddTravelView: View {
                                                 )
                                             )
                                             .offset(x: 40)
+                                        
+                                        Circle()
+                                            .frame(width: 33, height: 33)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.white)
+                                                    .fill(Color.mainPink)
+                                            )
+                                    }
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .font(.calendar2)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
+                                }
+                            } else if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    ZStack {
                                         
                                         Circle()
                                             .frame(width: 33, height: 33)
@@ -395,6 +461,21 @@ struct AddTravelView: View {
                                         .padding(9.81)
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
+                                }
+                            } else if isSelected(date: self.date!) {
+                                ZStack {
+                                    
+                                    Text(String(day))
+                                        .padding(9.81)
+                                        .font(.calendar2)
+                                        .foregroundStyle(Color.black)
+                                        .frame(width: 47) // 45
+                                        .background(
+                                            Rectangle()
+                                                .foregroundStyle(Color(0xFBEFFB))
+                                                .frame(width: 50, height: 28)
+                                        )
+                                        .foregroundStyle(textColor)
                                 }
                             }
                         }

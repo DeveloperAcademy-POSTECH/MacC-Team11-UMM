@@ -21,6 +21,7 @@ struct UpcomingTravelView: View {
     @State private var currentPage = 0
     @State var flagImageDict: [UUID: [String]] = [:]
     @State var defaultImg: [UUID: [String]] = [:]
+    @State private var countryName: [UUID: [String]] = [:]
     
     var body: some View {
         
@@ -42,7 +43,8 @@ struct UpcomingTravelView: View {
                                     participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
                                     participantArr: upcomingTravel?[index].participantArray ?? [],
                                     flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? [],
-                                    defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
+                                    defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
+                                    koreanNM: countryName[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
                                         ZStack {
                                             if let imageString = {
                                                 return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
@@ -120,6 +122,7 @@ struct UpcomingTravelView: View {
                                                 
                                                 var flagImageNames: [String] = []
                                                 var countryDefaultImg: [String] = []
+                                                var koreanName: [String] = []
                                                 
                                                 for countryValue in uniqueCountryValues {
                                                     let countryInfo = CountryInfoModel.shared
@@ -133,10 +136,16 @@ struct UpcomingTravelView: View {
                                                     } else {
                                                         countryDefaultImg.append("DefaultImage")
                                                     }
+                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                        koreanName.append(koreanString)
+                                                    } else {
+                                                        koreanName.append("")
+                                                    }
                                                 }
                                                 
                                                 self.flagImageDict[upcomingTravel?[index].id ?? UUID()] = flagImageNames
                                                 self.defaultImg[upcomingTravel?[index].id ?? UUID()] = countryDefaultImg
+                                                self.countryName[upcomingTravel?[index].id ?? UUID()] = koreanName
                                             }
                                         }
                                     })
@@ -168,7 +177,8 @@ struct UpcomingTravelView: View {
                                                                                              participantCnt: upcomingTravel?[index].participantArray?.count ?? 0,
                                                                                              participantArr: upcomingTravel?[index].participantArray ?? [],
                                                                                              flagImageArr: flagImageDict[upcomingTravel?[index].id ?? UUID()] ?? [],
-                                                                                             defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"), label: {
+                                                                                             defaultImageString: defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
+                                                                                             koreanNM: countryName[upcomingTravel?[index].id ?? UUID()] ?? []), label: {
                                                     ZStack {
                                                         if let imageString = {
                                                             return defaultImg[upcomingTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
@@ -246,6 +256,7 @@ struct UpcomingTravelView: View {
                                                             
                                                             var flagImageNames: [String] = []
                                                             var countryDefaultImg: [String] = []
+                                                            var koreanName: [String] = []
                                                             
                                                             for countryValue in uniqueCountryValues {
                                                                 let countryInfo = CountryInfoModel.shared
@@ -259,10 +270,16 @@ struct UpcomingTravelView: View {
                                                                 } else {
                                                                     countryDefaultImg.append("DefaultImage")
                                                                 }
+                                                                if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                                    koreanName.append(koreanString)
+                                                                } else {
+                                                                    koreanName.append("")
+                                                                }
                                                             }
                                                             
                                                             self.flagImageDict[upcomingTravel?[index].id ?? UUID()] = flagImageNames
                                                             self.defaultImg[upcomingTravel?[index].id ?? UUID()] = countryDefaultImg
+                                                            self.countryName[upcomingTravel?[index].id ?? UUID()] = koreanName
                                                         }
                                                     }
                                                 })

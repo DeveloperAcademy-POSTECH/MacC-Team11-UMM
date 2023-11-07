@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "xmark 2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -9,7 +10,6 @@
       "scale" : "2x"
     },
     {
-      "filename" : "selectActive.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

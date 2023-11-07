@@ -41,7 +41,6 @@ struct TodayExpenseDetailView: View {
         .padding(.horizontal, 20)
         .onAppear {
             expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
 
             expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
@@ -154,9 +153,16 @@ struct TodayExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(expenseViewModel.filteredTodayExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.id) { expense in
+            ForEach(expenseViewModel.filteredTodayExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.self) { expense in
+                
                 NavigationLink {
-                    ManualRecordView(selectedExpense: expense)
+                    ManualRecordInExpenseView(
+                        given_wantToActivateAutoSaveTimer: false,
+                        given_payAmount: expense.payAmount,
+                        given_info: expense.info,
+                        given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
+                        given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
+                        given_soundRecordData: expense.voiceRecordFile)
                         .environmentObject(mainVM) // ^^^
                 } label: {
                     HStack(alignment: .center, spacing: 0) {

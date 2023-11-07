@@ -80,12 +80,24 @@ final class RecordViewModel: ObservableObject {
     // view state
     
     @Published var manualRecordViewIsShown = false
-    @Published var alertView_emptyIsShown = false
-    @Published var alertView_shortIsShown = false
+    @Published var alertView_emptyIsShown = false {
+        didSet {
+            if alertView_emptyIsShown {
+                alertView_shortIsShown = false
+            }
+        }
+    }
+    @Published var alertView_shortIsShown = false {
+        didSet {
+            if alertView_shortIsShown {
+                alertView_emptyIsShown = false
+            }
+        }
+    }
     
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
-    var recordButtonIsUsed = true
+    var wantToActivateAutoSaveTimer = true
     
     // STT
     private let audioEngine = AVAudioEngine()
@@ -464,7 +476,7 @@ final class RecordViewModel: ObservableObject {
             if monoB[0] == "십" {
                 monoB[0] = "10"
             } else if monoB[0] == "백" {
-                monoA[0] = "100"
+                monoB[0] = "100"
             } else if monoB[0] == "천" {
                 monoB[0] = "1000"
             }

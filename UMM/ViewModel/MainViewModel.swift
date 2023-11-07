@@ -17,8 +17,6 @@ class MainViewModel: ObservableObject {
     @Published var selectedTravel: Travel?
     @Published var chosenTravelInManualRecord: Travel?
     
-    @Published var alertView_savedIsShown: Bool = false
-    
     private init() {}
     
     func navigationToRecordView() {

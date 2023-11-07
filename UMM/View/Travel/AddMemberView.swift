@@ -44,6 +44,7 @@ struct AddMemberView: View {
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
+            
             if !isBackButton {
                 if participantArr.count > 0 {
                     participantCnt -= 1
@@ -55,11 +56,15 @@ struct AddMemberView: View {
                 }
                 viewModel.startDate = startDate
                 viewModel.endDate = endDate
+                
+                // 여행 이름
                 if let arr = viewModel.participantArr {
-                    if arr.count > 0 {
-                        viewModel.travelName = arr[0] + "외 \(participantCnt)명"
-                    } else {
+                    if arr.count == 2 {
+                        viewModel.travelName = "me 나, \(participantArr[0])"
+                    } else if arr.count <= 1 {
                         viewModel.travelName = "나의 여행"
+                    } else {
+                        viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
                     }
                 }
                 viewModel.travelID = travelID
@@ -67,8 +72,6 @@ struct AddMemberView: View {
                 viewModel.saveTravel()
                 isDisappear = true
             }
-            
-            print("ddddd : ", viewModel.participantArr)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -79,7 +82,7 @@ struct AddMemberView: View {
         VStack {
             
             HStack {
-                Text("누구와 함께하나요?")
+                Text("이 여행은 누구와 함께하나요?")
                     .font(.display2)
                 
                 Spacer()
@@ -88,7 +91,7 @@ struct AddMemberView: View {
             .padding(.bottom, 10)
             
             HStack {
-                Text("여행 정산을 함께 할 참여자를 설정해요.")
+                Text("가계부에 표시할 여행 인원의 이름을 알려주세요. ")
                     .font(.subhead2_2)
                     .foregroundStyle(Color.gray300)
                 
@@ -104,7 +107,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedAlone = true
                 self.isSelectedTogether = false
-                print("정산이 필요 없어요")
+                print("혼자 하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -130,7 +133,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedTogether = true
                 self.isSelectedAlone = false
-                print("여러 명이서 정산이 필요한 여행이에요")
+                print("여러 명이서 함께하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -164,46 +167,46 @@ struct AddMemberView: View {
                         ZStack {
                             Rectangle()
                                 .foregroundColor(.clear)
-                                .frame(width: 76, height: 30)
+                                .frame(width: 57, height: 28)
                                 .background(Color.gray100)
-                                .cornerRadius(15)
+                                .cornerRadius(6)
                             
                             Text("me")
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                                .foregroundStyle(Color.white)
+                                .font(.subhead2_1)
+                                .foregroundStyle(Color.gray300)
                             +
                             Text(" 나")
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .font(.subhead2_2)
                                 .foregroundStyle(Color.black)
                         }
                         
-                        participantListView
-                        
-                        Button {
-                            participantArr.append("")
-                            participantCnt += 1
-                            print("participantArr", $viewModel.participantArr)
-                        } label: {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 44, height: 30)
-                                    .cornerRadius(15)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .inset(by: 0.5)
-                                            .stroke(.black, style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                                    )
+                        HStack {
+                            participantListView
+                            
+                            Button {
+                                participantArr.append("")
+                                participantCnt += 1
+                                print("participantArr", $viewModel.participantArr)
+                            } label: {
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundStyle(Color.gray200)
+                                        .frame(width: 32, height: 28)
+                                        .cornerRadius(6)
+                                    
+                                    Image("plus_gray")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 13, height: 13)
+                                }
                                 
-                                Image(systemName: "plus")
-                                    .foregroundStyle(Color.black)
                             }
                         }
                     }
                 }
                 Spacer()
             }
-            .padding(.leading, 36)
+            .padding(.horizontal, 32)
             
             Spacer()
         }
@@ -213,31 +216,86 @@ struct AddMemberView: View {
         // LazyVGrid 로 해서 Count에 너비를 개수로 나눈 값으로
         HStack {
             if participantCnt != 0 {
-                ForEach(0..<participantCnt, id: \.self) { index in
-                    
-                    HStack {
-                        
-                        TextField("참여자 \(index+1)", text: $participantArr[index])
-                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                            .foregroundStyle(Color.black)
-                            .textFieldStyle(CustomTextFieldStyle())
+                HStack {
+                    ForEach(0..<participantCnt, id: \.self) { index in
+                        ZStack {
+                            Text(participantArr[index] + "이름입력")
+                                .hidden()
+                            
+                            TextField("", text: $participantArr[index])
+                                .modifier(ClearTextFieldButton(text: $participantArr[index]))
+                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .foregroundStyle(Color.black)
+                                .textFieldStyle(CustomTextFieldStyle())
+                                .layoutPriority(-1)
+                        }
+                        .padding(.horizontal, 5)
                     }
                 }
                 
             } else {
-               Text(" ")
+                Text(" ")
             }
         }
     }
+    
+    struct ClearTextFieldButton: ViewModifier {
+        
+        @Binding var text: String
+        
+        public func body(content: Content) -> some View {
+            ZStack(alignment: .trailing) {
+                content
+                
+                if !text.isEmpty || text.isEmpty {
+                    Button {
+                        self.text = ""
+                    } label: {
+                        Image("xmark 1")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 10, height: 10)
+                            .padding(.trailing, 15)
+                    }
+                }
+            }
+        }
+    }
+    
+    // 이슈 : 위에서 만든 히든 뷰의 index 범위 오류
+//    struct ClearTextFieldButton: ViewModifier {
+//        
+//        @Binding var text: String
+//        @Binding var participantArr: [String]
+//        
+//        public func body(content: Content) -> some View {
+//            ZStack(alignment: .trailing) {
+//                content
+//                
+//                if !text.isEmpty || text.isEmpty {
+//                    Button {
+//                        self.text = ""
+//                        self.participantArr = Array(self.participantArr.dropLast())
+//                    } label: {
+//                        Image("xmark 1")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 10, height: 10)
+//                            .padding(.trailing, 15)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     struct CustomTextFieldStyle: TextFieldStyle {
         func _body(configuration: TextField<Self._Label>) -> some View {
             configuration
                 .padding(10)
                 .foregroundColor(.black)
-                .frame(width: 83, height: 30)
+                .frame(height: 30)
                 .background(Color.gray100)
-                .cornerRadius(15)
+                .cornerRadius(6)
         }
     }
     
@@ -252,7 +310,11 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, travelID: $travelID, travelNM: travelName ?? "nil", isDisappear: $isDisappear)) {
+                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, 
+                                                                  memberViewModel: viewModel,
+                                                                  travelID: $travelID,
+                                                                  travelNM: travelName ?? "nil",
+                                                                  isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
                         isBackButton = false
                     })

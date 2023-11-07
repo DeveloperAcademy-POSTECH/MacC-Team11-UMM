@@ -225,11 +225,11 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func setupSelectedTravel() {
-        print("setupSelectedTravel !!!!!!!!!!!")
         MainViewModel.shared.$selectedTravel
             .removeDuplicates()
             .sink { [weak self] travel in
                 guard let self = self else { return }
+                print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
 //                self.filteredTodayExpenses = self.getFilteredTodayExpenses()
 //                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })

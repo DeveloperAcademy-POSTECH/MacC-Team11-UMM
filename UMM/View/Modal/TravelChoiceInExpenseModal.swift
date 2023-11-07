@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TravelChoiceInExpenseModal: View {
     @Binding var selectedTravel: Travel?
-    private var travelArray: [Travel]
+    @State private var travelArray = [Travel]()
     @Binding var selectedCountry: Int64
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
     
@@ -27,18 +27,12 @@ struct TravelChoiceInExpenseModal: View {
             }
         }
         .onAppear {
+            do {
+                try travelArray = PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: sortRule)
+            } catch {
+                print("error fetching travelArray: \(error.localizedDescription)")
+            }
             updateFlagNameArrayDict()
-        }
-    }
-    
-    init(selectedTravel: Binding<Travel?>, selectedCountry: Binding<Int64>) {
-        _selectedTravel = selectedTravel
-        travelArray = [Travel]()
-        _selectedCountry = selectedCountry
-        do {
-            try travelArray = PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: sortRule)
-        } catch {
-            print("error fetching travelArray: \(error.localizedDescription)")
         }
     }
     
