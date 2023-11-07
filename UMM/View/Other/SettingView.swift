@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
-import UserNotifications
+import CoreData
 
 struct SettingView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.managedObjectContext) var managedObjectContext
     let appID = "나중에 입력할 것" // ^^^
     let appleID = "나중에 입력할 것" // ^^^
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
@@ -21,7 +22,7 @@ struct SettingView: View {
             feedbackAndQuestion
             essentialSetting
             appVersionCheck
-            deleteAll
+//            deleteAll
         }
         .navigationTitle("설정")
         .navigationBarBackButtonHidden(true)
@@ -45,7 +46,7 @@ struct SettingView: View {
     
     private var defaultSetting: some View {
         Section {
-            listButton(title: "알림 설정", target: UIApplication.openSettingsURLString)
+            listButton(title: "위치 설정", target: UIApplication.openSettingsURLString)
             listButton(title: "마이크 설정", target: UIApplication.openSettingsURLString)
         } header: {
             Text("기본 설정")
@@ -85,10 +86,14 @@ struct SettingView: View {
     
     private var deleteAll: some View {
         Section {
-            HStack(spacing: 0) {
-                Text("모든 데이터 삭제하기")
-                    .font(.caption3)
-                    .foregroundStyle(.red)
+            Button {
+                deleteAllData()
+            } label: {
+                HStack(spacing: 0) {
+                    Text("모든 데이터 삭제하기")
+                        .font(.caption3)
+                        .foregroundStyle(.red)
+                }
             }
         }
     }
@@ -161,6 +166,21 @@ struct SettingView: View {
                 completion(appStoreVersion == appVersion)
             }
         }.resume()
+    }
+    
+    private func deleteAllData() {
+        let entities = ["Expense", "Travel", "User"]
+        for entity in entities {
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity)
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            
+            do {
+                try managedObjectContext.execute(deleteRequest)
+                try managedObjectContext.save()
+            } catch let error as NSError {
+                print("Error: \(error), \(error.userInfo)")
+            }
+        }
     }
 }
 
