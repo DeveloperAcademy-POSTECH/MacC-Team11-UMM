@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct TravelDetailView: View {
     
     @EnvironmentObject var mainVM: MainViewModel
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @ObservedObject var viewModel = TravelDetailViewModel()
     @State var selectedTravel: [Travel]?
     @State var travelID: UUID = UUID()
@@ -22,6 +25,8 @@ struct TravelDetailView: View {
     @State var flagImageArr: [String] = []
     @State var defaultImageString: String
     @State var koreanNM: [String]
+    
+    @State var isWarningOn = false
     
     var body: some View {
         NavigationStack {
@@ -91,9 +96,11 @@ struct TravelDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
                         Button {
-                            
+                            // deleteItems에서 강제 언래핑을 사용하고 있으므로 혹시나모를 상황을 대비해 selectedTravel이 nil일 경우 임의의 Travel을 생성..?
+//                            PersistenceController().deleteItems(viewContext, self.selectedTravel?.first)
+                            isWarningOn = true
                         } label: {
-                            Image("pencil")
+                            Image(systemName: "trash")
                                 .frame(width: 20, height: 20)
                         }
                         
@@ -106,6 +113,14 @@ struct TravelDetailView: View {
                     }
                 }
             }
+            .alert("Alert Title", isPresented: $isWarningOn) {
+                        Button("Ok") {
+                            PersistenceController().deleteItems(viewContext, self.selectedTravel?.first ?? Travel())
+                            NavigationUtil.popToRootView()
+                        }
+                    } message: {
+                        Text("정말로 취소하시겠습니까?")
+                    }
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
