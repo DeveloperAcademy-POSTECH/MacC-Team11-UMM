@@ -95,8 +95,11 @@ struct InterimRecordView: View {
                                 Group {
                                     Text("\(viewModel.formatAmount(amount: defaultExpense?[index].payAmount))")
                                     +
-                                    Text(" 원") // Doris
+                                    Text(" ")
+                                    +
+                                    Text((CountryInfoModel.shared.countryResult[Int(((defaultExpense?[index].country) ?? -1))]?.relatedCurrencyArray[0]) ?? "-")
                                 }
+
                                 .font(.display2)
                                 .foregroundStyle(Color.black)
                                 

@@ -27,6 +27,7 @@ struct TravelListView: View {
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
     @State private var countryName: [String] = []
+//    @State private var tempTravelCurrency: String
     
     let handler = ExchangeRateHandler.shared
     
@@ -241,7 +242,6 @@ struct TravelListView: View {
                                         
                                     }
                                     .onAppear {
-                                        print("indexxxxx", index)
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                             self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                             if let savedExpenses = savedExpenses {
