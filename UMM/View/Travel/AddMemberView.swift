@@ -44,17 +44,22 @@ struct AddMemberView: View {
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
+            print("ooooo disappear")
             if !isBackButton {
-                if participantArr.count > 0 {
+                
+                if participantCnt == 0 {
+                    viewModel.travelName = "나의 여행"
+                } else if participantArr.count > 0 {
                     participantCnt -= 1
                     let updateArr = Array(participantArr.dropLast())
                     viewModel.participantArr = ["me"] + updateArr
                 } else {
-                    
                     viewModel.participantArr = ["me"] + participantArr
                 }
+                
                 viewModel.startDate = startDate
                 viewModel.endDate = endDate
+                
                 if let arr = viewModel.participantArr {
                     if arr.count > 0 {
                         viewModel.travelName = arr[0] + "외 \(participantCnt)명"
