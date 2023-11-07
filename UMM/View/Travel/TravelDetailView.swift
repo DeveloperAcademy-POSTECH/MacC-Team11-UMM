@@ -20,24 +20,11 @@ struct TravelDetailView: View {
     @State var participantCnt: Int
     @State var participantArr: [String]
     @State var flagImageArr: [String] = []
+    @State var defaultImageString: String
     
     var body: some View {
         NavigationStack {
             ZStack {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .background(
-                        LinearGradient(
-                            stops: [
-                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                            ],
-                            startPoint: UnitPoint(x: 0.5, y: 0),
-                            endPoint: UnitPoint(x: 0.5, y: 1)
-                        )
-                    )
-                    .ignoresSafeArea()
-                
                 VStack(alignment: .leading, spacing: 20) {
                     Spacer()
                     // 1. 여행중 + Day 3
@@ -70,9 +57,29 @@ struct TravelDetailView: View {
                     }
                 }
             }
+            .background(
+                Image(defaultImageString)
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+                    .overlay(
+                        LinearGradient(
+                            stops: [
+                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                            ],
+                            startPoint: UnitPoint(x: 0.5, y: 0),
+                            endPoint: UnitPoint(x: 0.5, y: 1)
+                        )
+//                        Rectangle()
+//                            .foregroundStyle(Color.gray400)
+//                            .ignoresSafeArea()
+//                            .opacity(0.5)
+                    )
+            )
             .onAppear {
                 viewModel.fetchTravel()
-//                travelID = mainVM.selectedTravel?.id ?? UUID()
+                //                travelID = mainVM.selectedTravel?.id ?? UUID()
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
                 
             }
