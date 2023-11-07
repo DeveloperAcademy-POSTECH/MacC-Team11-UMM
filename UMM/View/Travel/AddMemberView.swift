@@ -23,6 +23,8 @@ struct AddMemberView: View {
     @State private var isBackButton = false
     @State var isDisappear = false
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         VStack {
             
@@ -54,8 +56,8 @@ struct AddMemberView: View {
                     
                     viewModel.participantArr = ["me"] + participantArr
                 }
-                viewModel.startDate = startDate
-                viewModel.endDate = endDate
+                viewModel.startDate = dateGapHandler.convertBeforeSaving(date: startDate ?? Date())
+                viewModel.endDate = dateGapHandler.convertBeforeSaving(date: endDate ?? Date())
                 
                 // 여행 이름
                 if let arr = viewModel.participantArr {
