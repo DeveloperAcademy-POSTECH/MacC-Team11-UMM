@@ -243,6 +243,9 @@ struct TravelListView: View {
                                     }
                                     .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            viewModel.updateTravel()
+                                            viewModel.saveTravel()
+                                            
                                             self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                             if let savedExpenses = savedExpenses {
                                                 let countryValues: [Int64] = savedExpenses.map { expense in

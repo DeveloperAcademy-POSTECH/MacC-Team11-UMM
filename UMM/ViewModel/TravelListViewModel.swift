@@ -30,6 +30,20 @@ class TravelListViewModel: ObservableObject {
         }
     }
     
+    func updateTravel() {
+        let travel = Travel(context: viewContext)
+        travel.name = nowTravel.first?.name
+    }
+    
+    func saveTravel() {
+        do {
+            try viewContext.save()
+            print("save travel")
+        } catch let error {
+            print("Error while SaveTravel: \(error.localizedDescription)")
+        }
+    }
+    
     func fetchDefaultTravel() {
         let request = NSFetchRequest<Travel>(entityName: "Travel")
         do {
