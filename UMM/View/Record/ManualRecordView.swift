@@ -93,6 +93,8 @@ struct ManualRecordView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
+            viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
+            
             viewModel.payAmount = given_payAmount
             if viewModel.payAmount == -1 {
                 viewModel.visiblePayAmount = ""
@@ -230,7 +232,6 @@ struct ManualRecordView: View {
             fraction0NumberFormatter.maximumFractionDigits = 0
             
             // MARK: - timer
-            
             if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
                 viewModel.secondCounter = 8
                 viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
@@ -244,7 +245,6 @@ struct ManualRecordView: View {
                                 if mainVM.chosenTravelInManualRecord != nil {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
-                                mainVM.alertView_savedIsShown = true
                                 viewModel.deleteUselessAudioFiles()
                                 self.dismiss()
                                 timer.invalidate()
@@ -843,7 +843,6 @@ struct ManualRecordView: View {
                 } else {
                     mainVM.selectedTravel = defaultTravel
                 }
-                mainVM.alertView_savedIsShown = true
                 viewModel.deleteUselessAudioFiles()
                 dismiss()
                 
