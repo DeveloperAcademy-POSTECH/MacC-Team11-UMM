@@ -45,7 +45,7 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
                     viewModel.fetchDefaultTravel()

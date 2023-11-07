@@ -98,11 +98,10 @@ struct TravelDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
                         Button {
-                            // deleteItems에서 강제 언래핑을 사용하고 있으므로 혹시나모를 상황을 대비해 selectedTravel이 nil일 경우 임의의 Travel을 생성..?
-//                            PersistenceController().deleteItems(viewContext, self.selectedTravel?.first)
                             isWarningOn = true
                         } label: {
                             Image(systemName: "trash")
+                                .foregroundStyle(Color.gray200)
                                 .frame(width: 20, height: 20)
                         }
                         
@@ -114,6 +113,14 @@ struct TravelDetailView: View {
                         }
                     }
                 }
+            }
+            .alert("Alert Title", isPresented: $isWarningOn) {
+                Button("Ok") {
+                    PersistenceController().deleteItems(object: self.selectedTravel?.first)
+                    NavigationUtil.popToRootView()
+                }
+            } message: {
+                Text("This is alert dialog sample")
             }
         }
         .toolbar(.hidden, for: .tabBar)
