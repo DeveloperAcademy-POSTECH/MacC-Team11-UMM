@@ -44,6 +44,8 @@ struct ManualRecordView: View {
                 Spacer()
                     .frame(height: 16)
                 saveButtonView
+                Spacer()
+                    .frame(height: 45)
             }
             .ignoresSafeArea()
         }
@@ -157,6 +159,7 @@ struct ManualRecordView: View {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
                                 mainVM.alertView_savedIsShown = true
+                                viewModel.deleteUselessAudioFiles()
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -843,6 +846,7 @@ struct ManualRecordView: View {
                     mainVM.selectedTravel = defaultTravel
                 }
                 mainVM.alertView_savedIsShown = true
+                viewModel.deleteUselessAudioFiles()
                 dismiss()
                 
             }
