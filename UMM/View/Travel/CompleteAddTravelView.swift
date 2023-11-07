@@ -13,6 +13,7 @@ struct CompleteAddTravelView: View {
     @EnvironmentObject var mainVM: MainViewModel
     @ObservedObject var viewModel = CompleteAddTravelViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
+    @ObservedObject var memberViewModel: AddMemberViewModel
     @Binding var travelID: UUID
     @State var travelNM: String
     @State var selectedTravel: [Travel]?
@@ -24,37 +25,39 @@ struct CompleteAddTravelView: View {
             
             Text("여행 생성 완료 !")
                 .font(.display2)
+                .padding(.bottom, 10)
             
             travelSquareView
             
             Spacer()
             
             HStack {
-                MediumButtonUnactive(title: "홈으로 가기", action: {
+                MediumButtonStroke(title: "여행 확인하기", action: {
                     // 선택값 초기화
                     NavigationUtil.popToRootView()
                     addViewModel.startDate = Date()
                     addViewModel.endDate = nil
                 })
                 
-                MediumButtonActive(title: "기록하기", action: {
+                MediumButtonActive(title: "지출 기록하기", action: {
                     NavigationUtil.popToRootView()
                     mainVM.navigationToRecordView()
-//                    DispatchQueue.main.async {
-//                        mainVM.selectedTravel = self.selectedTravel?.first
-//                    }
+                    DispatchQueue.main.async {
+                        mainVM.selectedTravel = self.selectedTravel?.first
+                    }
                 })
             }
         }
         .onAppear {
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
-                    self.travelNM = firstParticipant + "와의 여행"
-                } else {
-                    self.travelNM = "나의 여행"
-                }
+//                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
+//                    self.travelNM = firstParticipant + "외" + "\(String(describing: selectedTravel?.first?.participantArray?.count))명의 여행"
+//                } else {
+//                    self.travelNM = "나의 여행"
+//                }
+                self.travelNM = memberViewModel.travelName ?? "제목 미정"
             }
         }
         .onDisappear {
@@ -72,13 +75,17 @@ struct CompleteAddTravelView: View {
                     .foregroundColor(.clear)
                     .frame(width: 141, height: 141)
                     .background(
-                        Image("testImage")
+                        Image("DefaultImage")
                             .resizable()
                             .scaledToFill()
                             .frame(width: 141, height: 141) // 원하는 크기로 조정
                             .cornerRadius(15.16129)
+                            .overlay(
+                                Color.black.opacity(0.2)
+                                    .cornerRadius(15.16129)
+                                )
                     )
-                
+                    
                 Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
                     .font(.custom(FontsManager.Pretendard.medium, size: 20))
                     .padding(.top, 90)
@@ -90,7 +97,7 @@ struct CompleteAddTravelView: View {
             HStack {
                 Spacer(minLength: 125)
                 
-                TextField("나의 여행", text: $travelNM)
+                TextField(String(viewModel.travelName ?? ""), text: $travelNM)
                 
                 Image(systemName: "pencil")
                 

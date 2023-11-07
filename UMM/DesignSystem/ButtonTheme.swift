@@ -76,6 +76,31 @@ struct MediumButtonWhite: View {
     }
 }
 
+struct MediumButtonStroke: View {
+    
+    var title: String
+    var action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(Color.black)
+                .padding(.vertical, 14.5)
+                .frame(maxWidth: .infinity)
+
+        }
+        .background(Color.white)
+        .cornerRadius(12).overlay(
+            RoundedRectangle(cornerRadius: 12)
+            .inset(by: 0.5)
+            .stroke(Color.gray200)
+
+            )
+        .padding(.leading, 16)
+    }
+}
+
 struct MediumButtonMain: View {
     
     var title: String
