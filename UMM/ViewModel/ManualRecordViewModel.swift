@@ -306,6 +306,23 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     func stopPlayingAudio() {
         audioPlayer?.stop()
     }
+    
+    func deleteUselessAudioFiles() {
+        let soundRecordPath: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        
+        // VOICE로 시작하는 파일 삭제
+        if let soundRecordPath {
+            do {
+                let fileManager = FileManager.default
+                let filesInDirectory = try fileManager.contentsOfDirectory(at: soundRecordPath, includingPropertiesForKeys: nil)
+                for fileURL in filesInDirectory where fileURL.lastPathComponent.hasPrefix("VOICE") {
+                    try fileManager.removeItem(at: fileURL)
+                }
+            } catch {
+                print("error deleting sound files: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 extension ManualRecordViewModel: AVAudioPlayerDelegate {

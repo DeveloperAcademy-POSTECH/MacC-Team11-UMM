@@ -159,6 +159,7 @@ struct ManualRecordView: View {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
                                 mainVM.alertView_savedIsShown = true
+                                viewModel.deleteUselessAudioFiles()
                                 self.dismiss()
                                 timer.invalidate()
                             } else {
@@ -845,6 +846,7 @@ struct ManualRecordView: View {
                     mainVM.selectedTravel = defaultTravel
                 }
                 mainVM.alertView_savedIsShown = true
+                viewModel.deleteUselessAudioFiles()
                 dismiss()
                 
             }
