@@ -216,14 +216,19 @@ struct AddMemberView: View {
         // LazyVGrid 로 해서 Count에 너비를 개수로 나눈 값으로
         HStack {
             if participantCnt != 0 {
-                ForEach(0..<participantCnt, id: \.self) { index in
-                    
-                    HStack {
-                        
-                        TextField("이름 입력", text: $participantArr[index])
-                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                            .foregroundStyle(Color.black)
-                            .textFieldStyle(CustomTextFieldStyle())
+                HStack {
+                    ForEach(0..<participantCnt, id: \.self) { index in
+                        ZStack {
+                            Text(participantArr[index] + "++++")
+                                .hidden()
+                            
+                            TextField("이름 입력", text: $participantArr[index])
+                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .foregroundStyle(Color.black)
+                                .textFieldStyle(CustomTextFieldStyle())
+                                .layoutPriority(-1)
+                        }
+                        .padding(.horizontal, 5)
                     }
                 }
                 
@@ -238,7 +243,7 @@ struct AddMemberView: View {
             configuration
                 .padding(10)
                 .foregroundColor(.black)
-                .frame(width: 83, height: 30)
+                .frame(height: 30)
                 .background(Color.gray100)
                 .cornerRadius(6)
         }
