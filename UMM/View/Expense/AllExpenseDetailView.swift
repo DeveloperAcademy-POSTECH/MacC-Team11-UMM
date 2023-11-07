@@ -150,7 +150,7 @@ struct AllExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            let sortedExpenses = expenseViewModel.filteredAllExpenses.sorted(by: { $0.payDate ?? Date() < $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
+            let sortedExpenses = expenseViewModel.filteredAllExpenses.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
             let groupedByDate = Dictionary(grouping: sortedExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) }) // 날짜별로 그룹화
             
             ForEach(groupedByDate.keys.sorted(), id: \.self) { date in

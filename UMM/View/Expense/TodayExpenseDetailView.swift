@@ -154,7 +154,7 @@ struct TodayExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(expenseViewModel.filteredTodayExpenses, id: \.id) { expense in
+            ForEach(expenseViewModel.filteredTodayExpenses.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.id) { expense in
                 HStack(alignment: .center, spacing: 0) {
                     Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
                         .font(.system(size: 36))
