@@ -46,8 +46,10 @@ struct TodayExpenseView: View {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
             
-            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
-            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
+//            expenseViewModel.setupTodaySelectedTravel()
+            
+//            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
+//            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
         }
     }
     
@@ -61,7 +63,6 @@ struct TodayExpenseView: View {
                 pickerId: pickerId,
                 startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
         }
-//        .padding(.top, 4) // ^^^
         .padding(.bottom, 12)
     }
     

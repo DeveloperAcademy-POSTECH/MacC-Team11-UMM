@@ -44,25 +44,13 @@ struct ExpenseView: View {
             }
             .padding(.horizontal, 20)
             .ignoresSafeArea()
-            .onAppear {
-                expenseViewModel.fetchExpense()
-                expenseViewModel.fetchTravel()
-            }
+//            .onAppear {
+//                expenseViewModel.fetchExpense()
+//                expenseViewModel.fetchTravel()
+//            }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
-            }
-            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading) {
-//                    travelChoiceView
-//                }
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    NavigationLink(destination: SettingView()) {
-//                        Image(systemName: "gearshape.fill")
-//                            .font(.system(size: 20))
-//                            .foregroundStyle(Color.gray300)
-//                    }
-//                }
             }
         }
     }

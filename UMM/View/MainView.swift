@@ -10,11 +10,13 @@ import SwiftUI
 struct MainView: View {
     
     @StateObject private var viewModel = MainViewModel.shared
+    @State private var selectedTab = 0
     
     var body: some View {
         TabView(selection: $viewModel.selection) {
             
-            TravelListView(month: Date())
+//            TravelListView(month: Date())
+            EmptyView()
                 .tabItem {
                     VStack {
                         if viewModel.selection == 0 {
@@ -28,7 +30,8 @@ struct MainView: View {
                 }
                 .tag(0)
             
-            RecordView()
+//            RecordView()
+            EmptyView()
                 .tabItem {
                     VStack {
                         if viewModel.selection == 1 {
@@ -60,11 +63,17 @@ struct MainView: View {
         
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
+            print("MainView onAppear")
+//            print("MainView | viewModel.selectedTravel: \(String(describing: viewModel.selectedTravel?.name))")
 //            let travel = findCurrentTravel()
-//            if let travel, let selectedTravel = viewModel.selectedTravel, travel != selectedTravel {
+//            if viewModel.selectedTravel == nil {
 //                viewModel.selectedTravel = travel
+//            } else {
+//                if let travel, let selectedTravel = viewModel.selectedTravel, travel != selectedTravel {
+//                    viewModel.selectedTravel = travel
+//                }
 //            }
-//            
+            
             viewModel.selectedTravel = findCurrentTravel()
         }
         .accentColor(Color.mainPink)

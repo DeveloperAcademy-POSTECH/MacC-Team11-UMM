@@ -23,6 +23,7 @@ struct TodayExpenseDetailView: View {
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     let dateGapHandler = DateGapHandler.shared
+    let viewContext = PersistenceController.shared.container.viewContext
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -42,9 +43,8 @@ struct TodayExpenseDetailView: View {
             expenseViewModel.fetchExpense()
             expenseViewModel.fetchTravel()
 
-            let filteredResult = getFilteredExpenses()
-            expenseViewModel.filteredTodayExpenses = filteredResult
-            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
+            expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
@@ -71,8 +71,8 @@ struct TodayExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredTodayExpenses = getFilteredExpenses()
-                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
+                        expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {
                         if selectedPaymentMethod == Int64(idx) {
@@ -154,7 +154,7 @@ struct TodayExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(expenseViewModel.filteredTodayExpenses.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.id) { expense in
+            ForEach(expenseViewModel.filteredTodayExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.id) { expense in
                 NavigationLink {
                     ManualRecordView(selectedExpense: expense)
                         .environmentObject(mainVM) // ^^^
@@ -209,26 +209,4 @@ struct TodayExpenseDetailView: View {
             .padding(.bottom, 24)
         }
     }
-    
-    // 최종 배열
-    private func getFilteredExpenses() -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
-        print("Filtered by travel: \(filteredByTravel.count)")
-        
-        let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-        print("Filtered by date: \(filteredByDate.count)")
-        
-        let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByDate, country: selectedCountry)
-        print("Filtered by Country: \(filteredByCountry.count)")
-        
-        if selectedPaymentMethod == -2 {
-            return filteredByCountry
-        } else {
-            let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
-            return filterByPaymentMethod
-        }
-    }
 }
-//  #Preview {
-//      TodayExpenseDetailView()
-//  }

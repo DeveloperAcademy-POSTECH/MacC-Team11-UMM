@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ManualRecordView: View {
-    @ObservedObject var viewModel: ManualRecordViewModel
+    @ObservedObject var viewModel = ManualRecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
@@ -180,7 +180,6 @@ struct ManualRecordView: View {
     }
     
     init(selectedExpense: Expense) {
-        viewModel = ManualRecordViewModel()
         viewModel.payAmount = selectedExpense.payAmount
         viewModel.currency = Int(selectedExpense.currency)
         viewModel.info = selectedExpense.info
@@ -202,7 +201,6 @@ struct ManualRecordView: View {
     
     init(prevViewModel: RecordViewModel) {
         print("ManualRecordView | init")
-        viewModel = ManualRecordViewModel()
         
         viewModel.recordButtonIsUsed = prevViewModel.recordButtonIsFocused
         
