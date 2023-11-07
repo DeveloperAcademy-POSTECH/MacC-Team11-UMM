@@ -186,7 +186,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     // MARK: - view state
     
-    @Published var recordButtonIsUsed = false
+    @Published var wantToActivateAutoSaveTimer = false
     @Published var travelChoiceModalIsShown = false
     @Published var categoryChoiceModalIsShown = false
     @Published var countryChoiceModalIsShown = false

@@ -16,7 +16,7 @@ struct ManualRecordView: View {
     let exchangeHandler = ExchangeRateHandler.shared
     let fraction0NumberFormatter = NumberFormatter()
     
-    let given_recordButtonIsFocused: Bool
+    let given_wantToActivateAutoSaveTimer: Bool
     let given_payAmount: Double
     let given_info: String?
     let given_infoCategory: ExpenseInfoCategory
@@ -93,24 +93,20 @@ struct ManualRecordView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
-            viewModel.recordButtonIsUsed = given_recordButtonIsFocused
-
-            if viewModel.recordButtonIsUsed {
-                viewModel.payAmount = given_payAmount
-                if viewModel.payAmount == -1 {
-                    viewModel.visiblePayAmount = ""
+            viewModel.payAmount = given_payAmount
+            if viewModel.payAmount == -1 {
+                viewModel.visiblePayAmount = ""
+            } else {
+                if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
+                    viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
                 } else {
-                    if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
-                        viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
-                    } else {
-                        viewModel.visiblePayAmount = String(viewModel.payAmount)
-                    }
+                    viewModel.visiblePayAmount = String(viewModel.payAmount)
                 }
-                viewModel.info = given_info
-                viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
-                viewModel.category = given_infoCategory
-                viewModel.paymentMethod = given_paymentMethod
             }
+            viewModel.info = given_info
+            viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
+            viewModel.category = given_infoCategory
+            viewModel.paymentMethod = given_paymentMethod
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -176,7 +172,6 @@ struct ManualRecordView: View {
             }
             viewModel.soundRecordFileName = given_soundRecordFileName
 
-            
             viewModel.getLocation()
             viewModel.country = viewModel.currentCountry
             viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
@@ -236,7 +231,7 @@ struct ManualRecordView: View {
             
             // MARK: - timer
             
-            if viewModel.recordButtonIsUsed && (viewModel.payAmount != -1 || viewModel.info != nil) {
+            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
                 viewModel.secondCounter = 8
                 viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                     if let secondCounter = viewModel.secondCounter {

@@ -94,7 +94,7 @@ struct RecordView: View {
             .ignoresSafeArea()
             .onAppear {
                 viewModel.resetInStringProperties()
-                viewModel.recordButtonIsUsed = true
+                viewModel.wantToActivateAutoSaveTimer = true
                 viewModel.defaultTravelNameReplacer = "-"
                 if let foundTravelName = findCurrentTravel()?.name {
                     if foundTravelName == "Default" {
@@ -126,7 +126,7 @@ struct RecordView: View {
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 if viewModel.manualRecordViewIsShown {
                     ManualRecordView(
-                        given_recordButtonIsFocused: viewModel.recordButtonIsUsed,
+                        given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
                         given_payAmount: viewModel.payAmount,
                         given_info: viewModel.info,
                         given_infoCategory: viewModel.infoCategory,
@@ -413,7 +413,7 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
-            viewModel.recordButtonIsUsed = false
+            viewModel.wantToActivateAutoSaveTimer = false
             viewModel.manualRecordViewIsShown = true
         } label: {
                 HStack(spacing: 4) {
