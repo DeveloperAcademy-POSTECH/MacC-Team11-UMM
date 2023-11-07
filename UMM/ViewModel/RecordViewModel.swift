@@ -657,7 +657,6 @@ final class RecordViewModel: ObservableObject {
                 let filesInDirectory = try fileManager.contentsOfDirectory(at: soundRecordPath, includingPropertiesForKeys: nil)
                 for fileURL in filesInDirectory where fileURL.lastPathComponent.hasPrefix("VOICE") {
                     try fileManager.removeItem(at: fileURL)
-                    print("Deleted file: \(fileURL.lastPathComponent)")
                 }
             } catch {
                 print("error deleting sound files: \(error.localizedDescription)")
