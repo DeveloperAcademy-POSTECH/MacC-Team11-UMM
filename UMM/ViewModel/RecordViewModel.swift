@@ -80,8 +80,20 @@ final class RecordViewModel: ObservableObject {
     // view state
     
     @Published var manualRecordViewIsShown = false
-    @Published var alertView_emptyIsShown = false
-    @Published var alertView_shortIsShown = false
+    @Published var alertView_emptyIsShown = false {
+        didSet {
+            if alertView_emptyIsShown {
+                alertView_shortIsShown = false
+            }
+        }
+    }
+    @Published var alertView_shortIsShown = false {
+        didSet {
+            if alertView_shortIsShown {
+                alertView_emptyIsShown = false
+            }
+        }
+    }
     
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
