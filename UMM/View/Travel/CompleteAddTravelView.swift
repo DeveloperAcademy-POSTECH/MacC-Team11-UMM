@@ -13,6 +13,7 @@ struct CompleteAddTravelView: View {
     @EnvironmentObject var mainVM: MainViewModel
     @ObservedObject var viewModel = CompleteAddTravelViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
+    @ObservedObject var memberViewModel: AddMemberViewModel
     @Binding var travelID: UUID
     @State var travelNM: String
     @State var selectedTravel: [Travel]?
@@ -49,14 +50,14 @@ struct CompleteAddTravelView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                print("ooooo appear")
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
-                    self.travelNM = firstParticipant + "외" + "\(String(describing: selectedTravel?.first?.participantArray?.count))명의 여행"
-                } else {
-                    self.travelNM = "나의 여행"
-                }
+//                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
+//                    self.travelNM = firstParticipant + "외" + "\(String(describing: selectedTravel?.first?.participantArray?.count))명의 여행"
+//                } else {
+//                    self.travelNM = "나의 여행"
+//                }
+                self.travelNM = memberViewModel.travelName ?? "제목 미정"
             }
         }
         .onDisappear {
@@ -85,7 +86,6 @@ struct CompleteAddTravelView: View {
                                 )
                     )
                     
-                
                 Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
                     .font(.custom(FontsManager.Pretendard.medium, size: 20))
                     .padding(.top, 90)
@@ -97,7 +97,7 @@ struct CompleteAddTravelView: View {
             HStack {
                 Spacer(minLength: 125)
                 
-                TextField("나의 여행", text: $travelNM)
+                TextField(String(viewModel.travelName ?? ""), text: $travelNM)
                 
                 Image(systemName: "pencil")
                 

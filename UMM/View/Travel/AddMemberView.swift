@@ -44,27 +44,27 @@ struct AddMemberView: View {
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
-            print("ooooo disappear")
+            
             if !isBackButton {
-                
-                if participantCnt == 0 {
-                    viewModel.travelName = "나의 여행"
-                } else if participantArr.count > 0 {
+                if participantArr.count > 0 {
                     participantCnt -= 1
                     let updateArr = Array(participantArr.dropLast())
                     viewModel.participantArr = ["me"] + updateArr
                 } else {
+                    
                     viewModel.participantArr = ["me"] + participantArr
                 }
-                
                 viewModel.startDate = startDate
                 viewModel.endDate = endDate
                 
+                // 여행 이름
                 if let arr = viewModel.participantArr {
-                    if arr.count > 0 {
-                        viewModel.travelName = arr[0] + "외 \(participantCnt)명"
-                    } else {
+                    if arr.count == 2 {
+                        viewModel.travelName = "me 나, \(participantArr[0])"
+                    } else if arr.count <= 1 {
                         viewModel.travelName = "나의 여행"
+                    } else {
+                        viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
                     }
                 }
                 viewModel.travelID = travelID
@@ -72,8 +72,6 @@ struct AddMemberView: View {
                 viewModel.saveTravel()
                 isDisappear = true
             }
-            
-            print("ddddd : ", viewModel.participantArr)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -257,7 +255,11 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, travelID: $travelID, travelNM: travelName ?? "nil", isDisappear: $isDisappear)) {
+                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, 
+                                                                  memberViewModel: viewModel,
+                                                                  travelID: $travelID,
+                                                                  travelNM: travelName ?? "nil",
+                                                                  isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
                         isBackButton = false
                     })
