@@ -23,6 +23,8 @@ struct InterimRecordView: View {
     
     @ObservedObject private var viewModel = InterimRecordViewModel()
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         VStack(spacing: 0) {
             titleHeader
@@ -122,11 +124,11 @@ struct InterimRecordView: View {
                             }
                             
                             Group {
-                                Text(dateFormatterWithDay.string(from: defaultExpense?[index].payDate ?? Date()))
+                                Text(dateFormatterWithDay.string(from: dateGapHandler.convertBeforeShowing(date: defaultExpense?[index].payDate ?? Date())))
                                 +
                                 Text(" ")
                                 +
-                                Text(dateFormatterWithHourMiniute(date: defaultExpense?[index].payDate ?? Date()))
+                                Text(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: defaultExpense?[index].payDate ?? Date())))
                             }
                             .font(.caption2)
                             .foregroundStyle(Color.gray400)

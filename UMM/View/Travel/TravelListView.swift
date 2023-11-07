@@ -27,8 +27,8 @@ struct TravelListView: View {
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
     @State private var countryName: [String] = []
-//    @State private var tempTravelCurrency: String
-    
+
+    let dateGapHandler = DateGapHandler.shared
     let handler = ExchangeRateHandler.shared
     
     var body: some View {
@@ -196,7 +196,7 @@ struct TravelListView: View {
                                             Group {
                                                 Text("Day ")
                                                 +
-                                                Text("\(viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()))")
+                                                Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date())))")
                                             }
                                             .font(.caption1)
                                             .foregroundStyle(Color.white)
@@ -210,9 +210,9 @@ struct TravelListView: View {
                                             
                                             HStack {
                                                 Group {
-                                                    Text(nowTravel?[index].startDate ?? Date(), formatter: TravelListViewModel.dateFormatter) +
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter) +
                                                     Text(" ~ ") +
-                                                    Text(nowTravel?[index].endDate ?? Date(), formatter: TravelListViewModel.dateFormatter)
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
                                                 }
                                                 .font(.subhead2_2)
                                                 .foregroundStyle(Color.white.opacity(0.75))

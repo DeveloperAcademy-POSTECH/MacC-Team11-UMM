@@ -25,6 +25,8 @@ struct InterimProceedingView: View {
     
     @Binding var isSelectedTravel: Bool
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         ZStack {
             if proceedingCnt == 0 {
@@ -118,14 +120,14 @@ struct InterimProceedingView: View {
                                             // Doris : 날짜 표시
                                             VStack(alignment: .leading, spacing: 0) {
                                                 HStack {
-                                                    Text(nowTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                     
                                                     Text("~")
                                                 }
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(nowTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                             }
@@ -275,14 +277,14 @@ struct InterimProceedingView: View {
                                                               // Doris : 날짜 표시
                                                               VStack(alignment: .leading, spacing: 0) {
                                                                   HStack {
-                                                                      Text(nowTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                      Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                       
                                                                       Text("~")
                                                                   }
                                                                   .font(.caption2)
                                                                   .foregroundStyle(Color.white.opacity(0.75))
                                                                   
-                                                                  Text(nowTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                  Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                       .font(.caption2)
                                                                       .foregroundStyle(Color.white.opacity(0.75))
                                                               }

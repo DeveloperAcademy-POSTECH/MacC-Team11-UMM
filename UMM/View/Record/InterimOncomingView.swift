@@ -19,12 +19,13 @@ struct InterimOncomingView: View {
     @State var chosenTravel: Travel?
     @State var flagImageDict: [UUID: [String]] = [:]
     @State var defaultImg: [UUID: [String]] = [:]
-    
     @State var savedExpenses: [Expense]? = []
     
     @ObservedObject var viewModel: InterimRecordViewModel
     
     @Binding var isSelectedTravel: Bool
+    
+    let dateGapHandler = DateGapHandler.shared
     
     var body: some View {
         ZStack {
@@ -119,14 +120,14 @@ struct InterimOncomingView: View {
                                             // Doris : 날짜 표시
                                             VStack(alignment: .leading, spacing: 0) {
                                                 HStack {
-                                                    Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                     
                                                     Text("~")
                                                 }
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                             }
@@ -273,14 +274,14 @@ struct InterimOncomingView: View {
                                                             // Doris : 날짜 표시
                                                             VStack(alignment: .leading, spacing: 0) {
                                                                 HStack {
-                                                                    Text(onComingTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     
                                                                     Text("~")
                                                                 }
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(onComingTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     .font(.caption2)
                                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                             }

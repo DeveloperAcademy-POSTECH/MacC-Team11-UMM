@@ -28,6 +28,8 @@ struct TravelDetailView: View {
     
     @State var isWarningOn = false
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -198,7 +200,7 @@ struct TravelDetailView: View {
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(startDate, formatter: TravelDetailViewModel.dateFormatter)
+                    Text(dateGapHandler.convertBeforeShowing(date: startDate), formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
@@ -217,7 +219,7 @@ struct TravelDetailView: View {
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(endDate, formatter: TravelDetailViewModel.dateFormatter)
+                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelDetailViewModel.dateFormatter)
                         .font(.body4)
                         .foregroundStyle(Color.white)
                 }
