@@ -89,7 +89,7 @@ struct MediumButtonMain: View {
                 .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
         }
-        .background(Color.red)
+        .background(Color.mainPink)
         .cornerRadius(12)
         .padding(.trailing, 16)
 //        .padding(.bottom, 45)

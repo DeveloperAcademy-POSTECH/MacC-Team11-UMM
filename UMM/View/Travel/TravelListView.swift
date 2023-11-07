@@ -26,6 +26,7 @@ struct TravelListView: View {
     @State private var defaultTravelCnt = 0
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
+    @State private var countryName: [String] = []
     
     let handler = ExchangeRateHandler.shared
     
@@ -127,7 +128,8 @@ struct TravelListView: View {
                                     participantCnt: nowTravel?[index].participantArray?.count ?? 0,
                                     participantArr: nowTravel?[index].participantArray ?? [],
                                     flagImageArr: self.flagImageName,
-                                    defaultImageString: String(defaultImageName.first ?? "DefaultImage")
+                                    defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
+                                    koreanNM: self.countryName
                                 ), label: {
                                     ZStack(alignment: .top) {
                                         Rectangle()
@@ -250,6 +252,8 @@ struct TravelListView: View {
                                                 
                                                 var flagImageNames: [String] = []
                                                 var defaultImage: [String] = []
+                                                var koreanName: [String] = []
+                                                
                                                 for countryValue in uniqueCountryValues {
                                                     
                                                     if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
@@ -263,10 +267,17 @@ struct TravelListView: View {
                                                     } else {
                                                         defaultImage.append("DefaultImage")
                                                     }
+                                                    
+                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                        koreanName.append(koreanString)
+                                                    } else {
+                                                        koreanName.append("")
+                                                    }
                                                 }
                                                 
                                                 self.flagImageName = flagImageNames
                                                 self.defaultImageName = defaultImage
+                                                self.countryName = koreanName
                                                 print("defaultImageName :", defaultImageName)
                                             }
                                         }

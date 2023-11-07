@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct TravelDetailView: View {
     
     @EnvironmentObject var mainVM: MainViewModel
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @ObservedObject var viewModel = TravelDetailViewModel()
     @State var selectedTravel: [Travel]?
     @State var travelID: UUID = UUID()
@@ -21,6 +24,9 @@ struct TravelDetailView: View {
     @State var participantArr: [String]
     @State var flagImageArr: [String] = []
     @State var defaultImageString: String
+    @State var koreanNM: [String]
+    
+    @State var isWarningOn = false
     
     var body: some View {
         NavigationStack {
@@ -30,26 +36,26 @@ struct TravelDetailView: View {
                     // 1. 여행중 + Day 3
                     dayCounter
                     
+                    // 2. 시작일 + 종료일
+                    dateBox
+                    
                     // 3. 여행 국가
                     travelCountry
                     
-                    // 4. 시작일 + 종료일
-                    dateBox
-                    
-                    // 5. 힘께하는 사람
+                    // 4. 힘께하는 사람
                     participantGroup
                     
                     Spacer()
                     
                     // 6. 버튼
                     HStack {
-                        MediumButtonUnactive(title: "가계부 보기", action: {
+                        MediumButtonWhite(title: "가계부 보기", action: {
                             // 선택값 초기화
                             NavigationUtil.popToRootView()
                             mainVM.navigationToExpenseView()
                         })
                         
-                        MediumButtonActive(title: "지출 기록하기", action: {
+                        MediumButtonMain(title: "지출 기록하기", action: {
                             NavigationUtil.popToRootView()
                             mainVM.navigationToRecordView()
                             
@@ -71,11 +77,8 @@ struct TravelDetailView: View {
                             startPoint: UnitPoint(x: 0.5, y: 0),
                             endPoint: UnitPoint(x: 0.5, y: 1)
                         )
-//                        Rectangle()
-//                            .foregroundStyle(Color.gray400)
-//                            .ignoresSafeArea()
-//                            .opacity(0.5)
                     )
+                    .blur(radius: 10)
             )
             .onAppear {
                 viewModel.fetchTravel()
@@ -93,9 +96,11 @@ struct TravelDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
                         Button {
-                            
+                            // deleteItems에서 강제 언래핑을 사용하고 있으므로 혹시나모를 상황을 대비해 selectedTravel이 nil일 경우 임의의 Travel을 생성..?
+//                            PersistenceController().deleteItems(viewContext, self.selectedTravel?.first)
+                            isWarningOn = true
                         } label: {
-                            Image("pencil")
+                            Image(systemName: "trash")
                                 .frame(width: 20, height: 20)
                         }
                         
@@ -116,24 +121,28 @@ struct TravelDetailView: View {
     private var dayCounter: some View {
         VStack(alignment: .leading) {
             HStack {
-                HStack(alignment: .center, spacing: 10) {
-                    Text("여행 중")
-                        .font(
-                            Font.custom("Pretendard", size: 14)
-                                .weight(.medium)
-                        )
-                        .foregroundColor(Color.mainPink)
+                
+                if Date() <= endDate {
+                    HStack(alignment: .center, spacing: 10) {
+                        Text("여행 중")
+                            .font(
+                                Font.custom("Pretendard", size: 14)
+                                    .weight(.medium)
+                            )
+                            .foregroundColor(Color.mainPink)
+                    }
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 7)
+                    .background(.white)
+                    .cornerRadius(5)
                 }
-                .padding(.horizontal, 11)
-                .padding(.vertical, 7)
-                .background(.white)
-                .cornerRadius(5)
                 
                 Group {
                     Text("DAY ")
                     +
                     Text("\(dayCnt)")
                 }
+                .padding(.vertical, 7)
                 .font(.subhead2_1)
                 .foregroundStyle(Color.white)
             }
@@ -153,27 +162,38 @@ struct TravelDetailView: View {
                 .foregroundStyle(Color.white)
             
             HStack {
-                ForEach(flagImageArr, id: \.self) { imgString in
-                    Image(imgString)
-                        .resizable()
-                        .frame(width: 24, height: 24)
+                
+                ForEach(0..<koreanNM.count, id: \.self) { index in
+                    
+                    HStack {
+                        Image(flagImageArr[index])
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                        
+                        Text(koreanNM[index])
+                            .font(.body2)
+                            .foregroundStyle(Color.white)
+                    }
+                    .padding(.trailing, 18)
                     
                 }
+                
                 Spacer()
             }
+            .padding(.bottom, 20)
+            
+            Rectangle()
+                .foregroundColor(.clear)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
+                .background(.white)
         }
         .padding(.horizontal, 20)
     }
     
     private var dateBox: some View {
         VStack {
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
-                .background(.white)
-            
             HStack(alignment: .center) {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text("시작일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
@@ -192,7 +212,7 @@ struct TravelDetailView: View {
                 
                 Spacer()
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text("종료일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
@@ -221,42 +241,91 @@ struct TravelDetailView: View {
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
             
-            HStack {
-                HStack(alignment: .center, spacing: 8) {
+            if participantCnt <= 1 {
+                
+                HStack(alignment: .center, spacing: 4) {
                     Text("me")
-                        .font(
-                            Font.custom("Pretendard", size: 16)
-                                .weight(.medium)
-                        )
+                        .font(.subhead2_1)
                         .foregroundColor(Color.gray200)
                     
                     Text("나")
-                        .font(
-                            Font.custom("Pretendard", size: 16)
-                                .weight(.medium)
-                        )
+                        .font(.subhead2_2)
                         .foregroundColor(.white)
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(.white.opacity(0.25))
-                .cornerRadius(18.07692)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .frame(height: 28, alignment: .center)
+                .background(Color(red: 0.2, green: 0.2, blue: 0.2))
+                .cornerRadius(6)
                 
-                ForEach(0..<participantCnt, id: \.self) { index in
-                    HStack(alignment: .center, spacing: 10) {
-                        Text("\(participantArr[index])")
-                            .font(
-                                Font.custom("Pretendard", size: 16)
-                                    .weight(.medium)
-                            )
+            } else if participantCnt <= 4 {
+                
+                HStack {
+                    HStack(alignment: .center, spacing: 4) {
+                        Text("me")
+                            .font(.subhead2_1)
+                            .foregroundColor(Color.gray200)
+                        
+                        Text("나")
+                            .font(.subhead2_2)
                             .foregroundColor(.white)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(.white.opacity(0.25))
-                    .cornerRadius(18.07692)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .frame(height: 28, alignment: .center)
+                    .background(Color(red: 0.2, green: 0.2, blue: 0.2))
+                    .cornerRadius(6)
+                    
+                    ForEach(2..<participantCnt, id: \.self) { index in
+                        HStack(alignment: .center, spacing: 10) {
+                            Text("\(participantArr[index])")
+                                .font(.subhead2_2)
+                                .foregroundColor(.white)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(red: 0.2, green: 0.2, blue: 0.2))
+                        .cornerRadius(6)
+                    }
+                }
+            } else {
+                HStack {
+                    HStack(alignment: .center, spacing: 4) {
+                        Text("me")
+                            .font(.subhead2_1)
+                            .foregroundColor(Color.gray200)
+                        
+                        Text("나")
+                            .font(.subhead2_2)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    //                    .frame(height: 28, alignment: .center)
+                    .background(Color(red: 0.2, green: 0.2, blue: 0.2))
+                    .cornerRadius(6)
+                    
+                    HStack {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(alignment: .center, spacing: 10) {
+                            ForEach(1..<participantCnt, id: \.self) { index in
+                                
+                                    Text("\(participantArr[index])")
+                                        .font(.subhead2_2)
+                                        .foregroundColor(.white)
+                                }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color(red: 0.2, green: 0.2, blue: 0.2))
+                            .cornerRadius(6)
+                            }
+                        }
+                    }
                 }
             }
+            
+            Spacer()
+            
         }
         .padding(.horizontal, 20)
     }
