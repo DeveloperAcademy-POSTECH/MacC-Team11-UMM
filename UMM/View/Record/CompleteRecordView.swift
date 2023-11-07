@@ -1,5 +1,5 @@
 //
-//  TestRecordView.swift
+//  CompleteRecordView.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/16/23.
@@ -8,9 +8,9 @@
 import AVFoundation
 import SwiftUI
 
-struct TestRecordView: View {
+struct CompleteRecordView: View {
     
-    var viewModel = TestRecordViewModel()
+    var viewModel = CompleteRecordViewModel()
     
     var body: some View {
         VStack(spacing: 60) {
@@ -53,10 +53,10 @@ struct TestRecordView: View {
 }
 
 #Preview {
-    TestRecordView()
+    CompleteRecordView()
 }
 
-class TestRecordViewModel: NSObject, ObservableObject {
+class CompleteRecordViewModel: NSObject, ObservableObject {
     
     private var audioPlayer: AVAudioPlayer?
     
@@ -86,7 +86,7 @@ class TestRecordViewModel: NSObject, ObservableObject {
     }
 }
 
-extension TestRecordViewModel: AVAudioPlayerDelegate {
+extension CompleteRecordViewModel: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
             if flag {
                 // 재생이 성공적으로 끝났을 때 실행할 코드
