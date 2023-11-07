@@ -223,7 +223,7 @@ struct AddMemberView: View {
                                 .hidden()
                             
                             TextField("", text: $participantArr[index])
-                                .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr))
+                                .modifier(ClearTextFieldButton(text: $participantArr[index]))
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
                                 .textFieldStyle(CustomTextFieldStyle())
