@@ -67,7 +67,7 @@ struct RecordView: View {
                             speakWhilePressingView
                             alertView_empty
                             alertView_short
-                            alertView_saved
+//                            alertView_saved
                         }
                         Spacer()
                             .frame(height: 16)
@@ -77,11 +77,10 @@ struct RecordView: View {
                             .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
                     }
                 }
-                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown || mainVM.alertView_savedIsShown)
+                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown)
                 .onTapGesture {
                     viewModel.alertView_emptyIsShown = false
                     viewModel.alertView_shortIsShown = false
-                    mainVM.alertView_savedIsShown = false
                 }
                 
                 VStack(spacing: 0) {
@@ -94,7 +93,7 @@ struct RecordView: View {
             .ignoresSafeArea()
             .onAppear {
                 viewModel.resetInStringProperties()
-                viewModel.recordButtonIsUsed = true
+                viewModel.wantToActivateAutoSaveTimer = true
                 viewModel.defaultTravelNameReplacer = "-"
                 if let foundTravelName = findCurrentTravel()?.name {
                     if foundTravelName == "Default" {
@@ -125,7 +124,14 @@ struct RecordView: View {
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
                 if viewModel.manualRecordViewIsShown {
-                    ManualRecordView(prevViewModel: viewModel)
+                    ManualRecordView(
+                        given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
+                        given_payAmount: viewModel.payAmount,
+                        given_info: viewModel.info,
+                        given_infoCategory: viewModel.infoCategory,
+                        given_paymentMethod: viewModel.paymentMethod,
+                        given_soundRecordFileName: viewModel.soundRecordFileName
+                    )
                         .environmentObject(mainVM)
                 } else {
                     EmptyView()
@@ -406,7 +412,7 @@ struct RecordView: View {
     
     private var manualRecordButtonView: some View {
         Button {
-            viewModel.recordButtonIsUsed = false
+            viewModel.wantToActivateAutoSaveTimer = false
             viewModel.manualRecordViewIsShown = true
         } label: {
                 HStack(spacing: 4) {
@@ -498,9 +504,10 @@ struct RecordView: View {
                         isDetectingPress_showOnButton = true
                         viewModel.alertView_emptyIsShown = false
                         viewModel.alertView_shortIsShown = false
-//                        mainVM.alertView_savedIsShown = false // 이걸 추가하면 STT가 안 됨
                         viewModel.recordButtonIsFocused = true
+                        viewModel.wantToActivateAutoSaveTimer = true
                     }
+                    
                 default:
                     break
                 }
@@ -559,38 +566,38 @@ struct RecordView: View {
         .padding(.horizontal, 30)
     }
     
-    private var alertView_saved: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 18)
-                .foregroundStyle(.white)
-                .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
-                .shadow(color: Color(0xCCCCCC), radius: 5)
-                .layoutPriority(-1)
-            
-            VStack(spacing: 8) {
-                Image("recordBigMainPinkCheck")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                Text("지출 기록이 저장되었습니다")
-                    .font(.subhead2_2)
-                    .foregroundStyle(.gray300)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 41)
-            }
-            .padding(.top, 12)
-            .padding(.bottom, 16)
-            .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
-        }
-        .padding(.horizontal, 30)
-    }
+//    private var alertView_saved: some View {
+//        ZStack {
+//            RoundedRectangle(cornerRadius: 18)
+//                .foregroundStyle(.white)
+//                .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
+//                .shadow(color: Color(0xCCCCCC), radius: 5)
+//                .layoutPriority(-1)
+//            
+//            VStack(spacing: 8) {
+//                Image("recordBigMainPinkCheck")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 24, height: 24)
+//                Text("지출 기록이 저장되었습니다")
+//                    .font(.subhead2_2)
+//                    .foregroundStyle(.gray300)
+//                    .multilineTextAlignment(.center)
+//                    .padding(.horizontal, 41)
+//            }
+//            .padding(.top, 12)
+//            .padding(.bottom, 16)
+//            .opacity(mainVM.alertView_savedIsShown ? 1 : 0.0000001)
+//        }
+//        .padding(.horizontal, 30)
+//    }
     
     private var speakWhilePressingView: some View {
         Text("누르는 동안 말하기")
             .font(.subhead3_2)
             .foregroundStyle(.gray300)
             .multilineTextAlignment(.center)
-            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown && !mainVM.alertView_savedIsShown ? 1 : 0.0000001)
+            .opacity(!isDetectingPress && !viewModel.alertView_emptyIsShown && !viewModel.alertView_shortIsShown ? 1 : 0.0000001)
             .allowsHitTesting(false)
     }
 }

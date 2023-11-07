@@ -35,11 +35,14 @@ import Foundation
 import CoreData
 
 func findCurrentTravel() -> Travel? {
-    let expenseViewModel = ExpenseViewModel()
+    var allTravels: [Travel] = []
+    do {
+        allTravels = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest())
+    } catch {
+        print("error fetching all travels: \(error.localizedDescription)")
+    }
     var currentTravel: Travel?
     
-    expenseViewModel.fetchTravel()
-    let allTravels = expenseViewModel.savedTravels
     let todayDate = Date()
     var currentTravels: [Travel] = []
     // 여행 중인 경우 여기에 해당하는 코드를 구현
