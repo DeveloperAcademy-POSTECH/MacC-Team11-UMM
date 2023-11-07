@@ -985,6 +985,6 @@ struct PlayngRecordSoundView: View {
     }
 }
 
-//#Preview {
-//    ManualRecordView()
-//}
+//    #Preview {
+//        ManualRecordView()
+//    }
