@@ -46,7 +46,7 @@ class ExpenseViewModel: ObservableObject {
     private var travelStream: Set<AnyCancellable> = []
     
     init() {
-        setupSelectedTravel()
+//        setupSelectedTravel()
     }
     
     func fetchTravel() {

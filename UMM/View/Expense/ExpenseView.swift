@@ -18,7 +18,7 @@ struct ExpenseView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 
-//                settingViewButton
+                //                settingViewButton
                 
                 travelChoiceView
                 
@@ -44,10 +44,6 @@ struct ExpenseView: View {
             }
             .padding(.horizontal, 20)
             .ignoresSafeArea()
-//            .onAppear {
-//                expenseViewModel.fetchExpense()
-//                expenseViewModel.fetchTravel()
-//            }
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
