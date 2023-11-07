@@ -82,7 +82,7 @@ struct AddMemberView: View {
         VStack {
             
             HStack {
-                Text("누구와 함께하나요?")
+                Text("이 여행은 누구와 함께하나요?")
                     .font(.display2)
                 
                 Spacer()
@@ -91,7 +91,7 @@ struct AddMemberView: View {
             .padding(.bottom, 10)
             
             HStack {
-                Text("여행 정산을 함께 할 참여자를 설정해요.")
+                Text("가계부에 표시할 여행 인원의 이름을 알려주세요. ")
                     .font(.subhead2_2)
                     .foregroundStyle(Color.gray300)
                 
@@ -107,7 +107,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedAlone = true
                 self.isSelectedTogether = false
-                print("정산이 필요 없어요")
+                print("혼자 하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -133,7 +133,7 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedTogether = true
                 self.isSelectedAlone = false
-                print("여러 명이서 정산이 필요한 여행이에요")
+                print("여러 명이서 함께하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -167,46 +167,46 @@ struct AddMemberView: View {
                         ZStack {
                             Rectangle()
                                 .foregroundColor(.clear)
-                                .frame(width: 76, height: 30)
+                                .frame(width: 57, height: 28)
                                 .background(Color.gray100)
-                                .cornerRadius(15)
+                                .cornerRadius(6)
                             
                             Text("me")
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                                .foregroundStyle(Color.white)
+                                .font(.subhead2_1)
+                                .foregroundStyle(Color.gray300)
                             +
                             Text(" 나")
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                                .font(.subhead2_2)
                                 .foregroundStyle(Color.black)
                         }
                         
-                        participantListView
-                        
-                        Button {
-                            participantArr.append("")
-                            participantCnt += 1
-                            print("participantArr", $viewModel.participantArr)
-                        } label: {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 44, height: 30)
-                                    .cornerRadius(15)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .inset(by: 0.5)
-                                            .stroke(.black, style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                                    )
+                        HStack {
+                            participantListView
+                            
+                            Button {
+                                participantArr.append("")
+                                participantCnt += 1
+                                print("participantArr", $viewModel.participantArr)
+                            } label: {
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundStyle(Color.gray200)
+                                        .frame(width: 32, height: 28)
+                                        .cornerRadius(6)
+                                    
+                                    Image("plus_gray")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 13, height: 13)
+                                }
                                 
-                                Image(systemName: "plus")
-                                    .foregroundStyle(Color.black)
                             }
                         }
                     }
                 }
                 Spacer()
             }
-            .padding(.leading, 36)
+            .padding(.horizontal, 32)
             
             Spacer()
         }
@@ -220,7 +220,7 @@ struct AddMemberView: View {
                     
                     HStack {
                         
-                        TextField("참여자 \(index+1)", text: $participantArr[index])
+                        TextField("이름 입력", text: $participantArr[index])
                             .font(.custom(FontsManager.Pretendard.medium, size: 16))
                             .foregroundStyle(Color.black)
                             .textFieldStyle(CustomTextFieldStyle())
@@ -240,7 +240,7 @@ struct AddMemberView: View {
                 .foregroundColor(.black)
                 .frame(width: 83, height: 30)
                 .background(Color.gray100)
-                .cornerRadius(15)
+                .cornerRadius(6)
         }
     }
     
