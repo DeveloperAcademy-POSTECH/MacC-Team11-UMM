@@ -29,12 +29,12 @@ struct ExpenseView: View {
                 Spacer()
                 
                 TabView(selection: $selectedTab) {
-                    TodayExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
+                    TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(0)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
                         .simultaneousGesture(TapGesture())
-                    AllExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
+                    AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(1)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))

@@ -15,8 +15,7 @@ struct MainView: View {
     var body: some View {
         TabView(selection: $viewModel.selection) {
             
-//            TravelListView(month: Date())
-            EmptyView()
+            TravelListView(month: Date())
                 .tabItem {
                     VStack {
                         if viewModel.selection == 0 {
@@ -30,8 +29,7 @@ struct MainView: View {
                 }
                 .tag(0)
             
-//            RecordView()
-            EmptyView()
+            RecordView()
                 .tabItem {
                     VStack {
                         if viewModel.selection == 1 {

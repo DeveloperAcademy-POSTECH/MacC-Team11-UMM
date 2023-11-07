@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllExpenseView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
@@ -16,12 +16,6 @@ struct AllExpenseView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
-    
-    init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
-        self.expenseViewModel = expenseViewModel
-        self._selectedTab = selectedTab
-        self.namespace = namespace
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -251,11 +245,6 @@ struct CurrencyForChart: Identifiable, Hashable {
     let id = UUID()
     let currency: Int64
     let sum: Double
-    
-    init(currency: Int64, sum: Double) {
-        self.currency = currency
-        self.sum = sum
-    }
 }
 
 struct ExpenseForChart: Identifiable, Hashable {

@@ -8,21 +8,15 @@
 import SwiftUI
 
 struct TodayExpenseView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
+    @EnvironmentObject var mainVM: MainViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     let dateGapHandler = DateGapHandler.shared
-    
-    init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
-        self.expenseViewModel = expenseViewModel
-        self._selectedTab = selectedTab
-        self.namespace = namespace
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
