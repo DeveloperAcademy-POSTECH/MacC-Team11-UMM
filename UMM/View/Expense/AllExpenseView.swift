@@ -34,10 +34,7 @@ struct AllExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            print("AllExpenseView | selctedTravel: \(String(describing: mainVM.selectedTravel?.name))")
-            print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
             expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
             expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }

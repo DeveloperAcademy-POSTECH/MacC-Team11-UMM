@@ -40,9 +40,7 @@ struct TodayExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.fetchExpense()
-
-            expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+            expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
@@ -70,7 +68,7 @@ struct TodayExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+                        expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
                         currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {

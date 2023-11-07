@@ -21,6 +21,7 @@ struct AllExpenseDetailView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let dateGapHandler = DateGapHandler.shared
+    let viewContext = PersistenceController.shared.container.viewContext
 
     var body: some View {
         
@@ -38,14 +39,8 @@ struct AllExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
-            expenseViewModel.filteredAllExpenses = getFilteredExpenses()
+            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
-            
-            print("AllExpenseDetailView | selectedTravel: \(String(describing: selectedTravel?.name))")
-            print("AllExpenseDetailView | selectedCountry: \(selectedCountry)")
-            print("AllExpenseDetailView | mainVM.selectedTravel : \(String(describing: mainVM.selectedTravel?.name))")
         }
     }
     
@@ -70,7 +65,7 @@ struct AllExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredAllExpenses = getFilteredExpenses()
+                        expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
                         currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
                         isPaymentModalPresented = false
                     }, label: {
@@ -231,25 +226,6 @@ struct AllExpenseDetailView: View {
             }
             .padding(.bottom, 24)
         }
-    }
-
-    // 최종 배열
-    func getFilteredExpenses() -> [Expense] {
-        var filteredExpenses = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
-        
-        if selectedPaymentMethod != -2 {
-            filteredExpenses = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredExpenses, paymentMethod: selectedPaymentMethod)
-        }
-        
-        if selectedCategory != -2 {
-            filteredExpenses = expenseViewModel.filterExpensesByCategory(expenses: filteredExpenses, category: selectedCategory)
-        }
-
-        if selectedCountry != -2 {
-            filteredExpenses = expenseViewModel.filterExpensesByCountry(expenses: filteredExpenses, country: selectedCountry)
-        }
-        
-        return filteredExpenses
     }
 }
 
