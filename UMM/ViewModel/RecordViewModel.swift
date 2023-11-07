@@ -464,7 +464,7 @@ final class RecordViewModel: ObservableObject {
             if monoB[0] == "십" {
                 monoB[0] = "10"
             } else if monoB[0] == "백" {
-                monoA[0] = "100"
+                monoB[0] = "100"
             } else if monoB[0] == "천" {
                 monoB[0] = "1000"
             }
