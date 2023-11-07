@@ -11,6 +11,7 @@ struct TravelChoiceInRecordModal: View {
     @Binding var chosenTravel: Travel?
     @State private var travelArray = [Travel]()
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
+    @State private var defaultImageStringDict: [UUID: String] = [:]
     
     var body: some View {
         ZStack {
@@ -31,7 +32,7 @@ struct TravelChoiceInRecordModal: View {
             } catch {
                 print("error fetching travelArray: \(error.localizedDescription)")
             }
-            updateFlagNameArrayDict()
+            updateFlagNameArrayDictAndDefaultImageStringDict()
         }
     }
     
@@ -63,7 +64,7 @@ struct TravelChoiceInRecordModal: View {
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule), id: \.self) { travel in
                     HStack(spacing: 0) {
-                        TravelBlockView(travel: travel, chosenTravel: chosenTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
+                        TravelBlockView(travel: travel, chosenTravel: chosenTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [], defaultImageString: defaultImageStringDict[travel.id ?? UUID()] ?? "DefaultImage")
                             .onTapGesture {
                                 chosenTravel = travel
                             }
@@ -77,7 +78,7 @@ struct TravelChoiceInRecordModal: View {
         }
     }
     
-    private func updateFlagNameArrayDict() {
+    private func updateFlagNameArrayDictAndDefaultImageStringDict() {
         for travel in travelArray {
             let expenseArray = travel.expenseArray!.allObjects as? [Expense]
             var countryArray: [Int] = []
@@ -110,6 +111,8 @@ struct TravelChoiceInRecordModal: View {
             
             if let travelId = travel.id {
                 flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
+                
+                defaultImageStringDict[travelId] = CountryInfoModel.shared.countryResult[countryWeightedArray.first?.0 ?? -1]?.defaultImageString ?? "DefaultImage"
             }
         }
     }
@@ -120,6 +123,7 @@ struct TravelBlockView: View {
     let chosenTravel: Travel?
     let now = Date()
     let flagNameArray: [String]
+    let defaultImageString: String
     
     var body: some View {
         VStack(spacing: 0) { // ^^^
@@ -180,7 +184,7 @@ struct TravelBlockView: View {
                     ZStack {
                         Group {
                             ZStack {
-                                Image("travelChoiceExample")
+                                Image(defaultImageString)
                                     .resizable()
                                     .scaledToFill()
                                 LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .top, endPoint: .bottom)

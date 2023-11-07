@@ -12,6 +12,7 @@ struct TravelChoiceInExpenseModal: View {
     @State private var travelArray = [Travel]()
     @Binding var selectedCountry: Int64
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
+    @State private var defaultImageStringDict: [UUID: String] = [:]
     
     var body: some View {
         ZStack {
@@ -32,7 +33,7 @@ struct TravelChoiceInExpenseModal: View {
             } catch {
                 print("error fetching travelArray: \(error.localizedDescription)")
             }
-            updateFlagNameArrayDict()
+            updateFlagNameArrayDictAndDefaultImageStringDict()
         }
     }
     
@@ -64,7 +65,7 @@ struct TravelChoiceInExpenseModal: View {
                     .frame(width: 20)
                 ForEach(travelArray.sorted(by: sortRule).filter { $0.name ?? "" != "Default" }, id: \.self) { travel in // 임시 기록("Default") 제외
                     HStack(spacing: 0) {
-                        TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [])
+                        TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [], defaultImageString: defaultImageStringDict[travel.id ?? UUID()] ?? "DefaultImage")
                             .onTapGesture {
                                 if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId != travelId {
                                     selectedTravel = travel
@@ -82,7 +83,7 @@ struct TravelChoiceInExpenseModal: View {
         }
     }
     
-    private func updateFlagNameArrayDict() {
+    private func updateFlagNameArrayDictAndDefaultImageStringDict() {
         for travel in travelArray {
             let expenseArray = travel.expenseArray!.allObjects as? [Expense]
             var countryArray: [Int] = []
@@ -112,9 +113,11 @@ struct TravelChoiceInExpenseModal: View {
             if countryWeightedArray.count > 0 {
                 countryWeightedArray = [(Int, Int)](countryWeightedArray[0..<min(countryWeightedArray.count, 4)])
             }
-                            
+            
             if let travelId = travel.id {
                 flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
+                
+                defaultImageStringDict[travelId] = CountryInfoModel.shared.countryResult[countryWeightedArray.first?.0 ?? -1]?.defaultImageString ?? "DefaultImage"
             }
         }
     }
