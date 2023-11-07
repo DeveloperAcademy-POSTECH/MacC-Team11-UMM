@@ -44,6 +44,8 @@ struct ManualRecordView: View {
                 Spacer()
                     .frame(height: 16)
                 saveButtonView
+                Spacer()
+                    .frame(height: 45)
             }
             .ignoresSafeArea()
         }
