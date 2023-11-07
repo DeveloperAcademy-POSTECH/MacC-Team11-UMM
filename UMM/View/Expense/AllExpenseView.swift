@@ -65,6 +65,7 @@ struct AllExpenseView: View {
                 selectedPaymentMethod: -2,
                 sumPaymentMethod: totalSum
             )
+            .environmentObject(mainVM)
         } label: {
             HStack(spacing: 0) {
                 Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
@@ -194,6 +195,7 @@ struct AllExpenseView: View {
                             selectedPaymentMethod: -2,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
                             Image(ExpenseInfoCategory(rawValue: Int(categoryName))?.modalImageString ?? "nil")

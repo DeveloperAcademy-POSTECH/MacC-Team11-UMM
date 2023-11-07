@@ -24,10 +24,8 @@ struct CustomDatePicker: View {
                     expenseViewModel.triggerDatePickerPopover(pickerId: pickerId)
                 } label: {
                     Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
-//                    Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithHMS)")
                         .foregroundStyle(.black)
                 }
-                .padding(.horizontal, 8)
                 
                 // 안 보이게 하고 Button으로 호출
                 DatePicker("", selection: $expenseViewModel.selectedDate, in: startDateOfTravel...Date(), displayedComponents: [.date])

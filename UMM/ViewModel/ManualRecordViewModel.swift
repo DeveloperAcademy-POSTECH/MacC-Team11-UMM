@@ -294,7 +294,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.delegate = self
+            audioPlayer?.delegate = self // 
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
             

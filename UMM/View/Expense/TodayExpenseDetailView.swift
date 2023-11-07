@@ -155,49 +155,54 @@ struct TodayExpenseDetailView: View {
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(expenseViewModel.filteredTodayExpenses.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.id) { expense in
-                HStack(alignment: .center, spacing: 0) {
-                    Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
-                        .font(.system(size: 36))
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("\(expense.info ?? "info: unknown")")
-                            .font(.subhead2_1)
-                        HStack(alignment: .center, spacing: 0) {
-                            // 소비 기록을 한 시각을 보여주는 부분
-                            // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
-                            if let payDate = expense.payDate {
-                                Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray300)
-                            } else {
-                                Text("-")
+                NavigationLink {
+                    ManualRecordView(selectedExpense: expense)
+                        .environmentObject(mainVM) // ^^^
+                } label: {
+                    HStack(alignment: .center, spacing: 0) {
+                        Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
+                            .font(.system(size: 36))
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("\(expense.info ?? "info: unknown")")
+                                .font(.subhead2_1)
+                            HStack(alignment: .center, spacing: 0) {
+                                // 소비 기록을 한 시각을 보여주는 부분
+                                // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                if let payDate = expense.payDate {
+                                    Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray300)
+                                } else {
+                                    Text("-")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray300)
+                                }
+                                Divider()
+                                    .padding(.horizontal, 3)
+                                Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                     .font(.caption2)
                                     .foregroundStyle(.gray300)
                             }
-                            Divider()
-                                .padding(.horizontal, 3)
-                            Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
-                                .font(.caption2)
-                                .foregroundStyle(.gray300)
-                        }
-                        .padding(.top, 4)
-                    }
-                    .padding(.leading, 10)
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing, spacing: 0) {
-                        HStack(alignment: .center, spacing: 0) {
-                            Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
-                                .font(.subhead2_1)
-                            Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
-                                .font(.subhead2_1)
-                                .padding(.leading, 3)
-                        }
-                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
-                            .font(.caption2)
-                            .foregroundStyle(.gray200)
                             .padding(.top, 4)
+                        }
+                        .padding(.leading, 10)
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 0) {
+                            HStack(alignment: .center, spacing: 0) {
+                                Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
+                                    .font(.subhead2_1)
+                                Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
+                                    .font(.subhead2_1)
+                                    .padding(.leading, 3)
+                            }
+                            Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
+                                .font(.caption2)
+                                .foregroundStyle(.gray200)
+                                .padding(.top, 4)
+                        }
                     }
                 }
             }

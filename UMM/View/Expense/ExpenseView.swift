@@ -17,7 +17,11 @@ struct ExpenseView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-        
+                
+//                settingViewButton
+                
+                travelChoiceView
+                
                 todayExpenseHeader
                 
                 tabViewButton
@@ -39,6 +43,7 @@ struct ExpenseView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .padding(.horizontal, 20)
+            .ignoresSafeArea()
             .onAppear {
                 expenseViewModel.fetchExpense()
                 expenseViewModel.fetchTravel()
@@ -48,23 +53,39 @@ struct ExpenseView: View {
                     .presentationDetents([.height(289 - 34)])
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    travelChoiceView
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingView()) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Color.gray300)
-                    }
-                }
+//                ToolbarItem(placement: .navigationBarLeading) {
+//                    travelChoiceView
+//                }
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    NavigationLink(destination: SettingView()) {
+//                        Image(systemName: "gearshape.fill")
+//                            .font(.system(size: 20))
+//                            .foregroundStyle(Color.gray300)
+//                    }
+//                }
             }
+        }
+    }
+    
+    private var settingViewButton: some View {
+        NavigationLink {
+            SettingView()
+        } label: {
+            HStack {
+                Spacer()
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: 26))
+                    .foregroundStyle(Color.gray300)
+            }
+            .ignoresSafeArea(.all)
+            .padding(.leading, 3)
+            .padding(.top, 3)
         }
     }
     
     private var todayExpenseHeader: some View {
         HStack(spacing: 0) {
-            Text("지출 관리")
+            Text("가계부")
                 .font(.display2)
             Spacer()
         }
@@ -72,32 +93,37 @@ struct ExpenseView: View {
     }
     
     private var travelChoiceView: some View {
-        Button {
-            expenseViewModel.travelChoiceHalfModalIsShown = true
-        } label: {
-            ZStack {
-                Capsule()
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                Capsule()
-                    .strokeBorder(.mainPink, lineWidth: 1.0)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 12) {
-                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
-                        .font(.subhead2_2)
-                        .foregroundStyle(.black)
-                    Image("recordTravelChoiceDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
+        HStack(alignment: .center, spacing: 0) {
+            Spacer()
+            Button {
+                expenseViewModel.travelChoiceHalfModalIsShown = true
+            } label: {
+                ZStack {
+                    Capsule()
+                        .foregroundStyle(.white)
+                        .layoutPriority(-1)
+                    
+                    Capsule()
+                        .strokeBorder(.mainPink, lineWidth: 1.0)
+                        .layoutPriority(-1)
+                    
+                    HStack(spacing: 12) {
+                        Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
+                            .font(.subhead2_2)
+                            .foregroundStyle(.black)
+                        Image("recordTravelChoiceDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                    .padding(.vertical, 6)
+                    .padding(.leading, 16)
+                    .padding(.trailing, 12)
                 }
-                .padding(.vertical, 6)
-                .padding(.leading, 16)
-                .padding(.trailing, 12)
             }
+            Spacer()
         }
+        .padding(.top, 80)
     }
     
         private var tabViewButton: some View {

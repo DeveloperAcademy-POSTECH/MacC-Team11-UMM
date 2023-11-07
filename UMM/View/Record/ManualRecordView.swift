@@ -15,6 +15,7 @@ struct ManualRecordView: View {
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     let fraction0NumberFormatter = NumberFormatter()
+    let dateGapHandler = DateGapHandler.shared
     
     var body: some View {
         ZStack {
@@ -176,6 +177,27 @@ struct ManualRecordView: View {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
         }
+    }
+    
+    init(selectedExpense: Expense) {
+        viewModel = ManualRecordViewModel()
+        viewModel.payAmount = selectedExpense.payAmount
+        viewModel.currency = Int(selectedExpense.currency)
+        viewModel.info = selectedExpense.info
+        viewModel.category = ExpenseInfoCategory(rawValue: Int(selectedExpense.category)) ?? .unknown
+        viewModel.paymentMethod = PaymentMethod(rawValue: Int(selectedExpense.paymentMethod)) ?? .unknown
+        viewModel.participantTupleArray = selectedExpense.participantArray!.map { (name: $0, isOn: true) } //^^^
+        viewModel.payDate = dateGapHandler.convertBeforeShowing(date: selectedExpense.payDate ?? dateGapHandler.convertBeforeSaving(date: Date()))
+        viewModel.locationExpression = selectedExpense.location ?? ""
+        
+        guard let audioData = selectedExpense.voiceRecordFile else { return }
+        let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
+        do {
+            try audioData.write(to: audioURL)
+        } catch {
+            print("Failed to write audioData to \(audioURL): \(error)")
+        }
+        viewModel.soundRecordFileName = audioURL
     }
     
     init(prevViewModel: RecordViewModel) {

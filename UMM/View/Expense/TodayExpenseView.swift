@@ -60,9 +60,9 @@ struct TodayExpenseView: View {
                 selectedDate: $expenseViewModel.selectedDate,
                 pickerId: pickerId,
                 startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
-                .padding(.top, 12)
-                .padding(.bottom, 12)
         }
+//        .padding(.top, 4) // ^^^
+        .padding(.bottom, 12)
     }
     
     // 국가별 + 결제수단별 지출액 표시
@@ -103,6 +103,7 @@ struct TodayExpenseView: View {
                             selectedPaymentMethod: -2,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(spacing: 0) {
                             Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
@@ -137,6 +138,7 @@ struct TodayExpenseView: View {
                             selectedPaymentMethod: paymentMethod,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
                             VStack(alignment: .leading, spacing: 0) {
