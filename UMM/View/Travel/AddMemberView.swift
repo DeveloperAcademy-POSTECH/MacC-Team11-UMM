@@ -223,7 +223,7 @@ struct AddMemberView: View {
                                 .hidden()
                             
                             TextField("", text: $participantArr[index])
-                                .modifier(ClearTextFieldButton(text: $participantArr[index]))
+                                .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr))
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
                                 .textFieldStyle(CustomTextFieldStyle())
@@ -234,33 +234,59 @@ struct AddMemberView: View {
                 }
                 
             } else {
-               Text(" ")
+                Text(" ")
             }
         }
     }
     
     struct ClearTextFieldButton: ViewModifier {
-            
-            @Binding var text: String
-            
-            public func body(content: Content) -> some View {
-                ZStack(alignment: .trailing) {
-                    content
-                    
-                    if !text.isEmpty || text.isEmpty {
-                        Button {
-                            self.text = ""
-                        } label: {
-                            Image("xmark 1")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 10, height: 10)
-                                .padding(.trailing, 15)
-                        }
+        
+        @Binding var text: String
+        
+        public func body(content: Content) -> some View {
+            ZStack(alignment: .trailing) {
+                content
+                
+                if !text.isEmpty || text.isEmpty {
+                    Button {
+                        self.text = ""
+                    } label: {
+                        Image("xmark 1")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 10, height: 10)
+                            .padding(.trailing, 15)
                     }
                 }
             }
         }
+    }
+    
+    // 이슈 : 위에서 만든 히든 뷰의 index 범위 오류
+//    struct ClearTextFieldButton: ViewModifier {
+//        
+//        @Binding var text: String
+//        @Binding var participantArr: [String]
+//        
+//        public func body(content: Content) -> some View {
+//            ZStack(alignment: .trailing) {
+//                content
+//                
+//                if !text.isEmpty || text.isEmpty {
+//                    Button {
+//                        self.text = ""
+//                        self.participantArr = Array(self.participantArr.dropLast())
+//                    } label: {
+//                        Image("xmark 1")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 10, height: 10)
+//                            .padding(.trailing, 15)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     struct CustomTextFieldStyle: TextFieldStyle {
         func _body(configuration: TextField<Self._Label>) -> some View {
