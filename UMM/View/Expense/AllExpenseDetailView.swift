@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllExpenseDetailView: View {
-    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @StateObject var expenseViewModel = ExpenseViewModel()
     
     var selectedTravel: Travel?
     var selectedCategory: Int64

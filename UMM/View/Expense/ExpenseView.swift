@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ExpenseView: View {
     @State var selectedTab = 0
@@ -13,6 +14,7 @@ struct ExpenseView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     let exchangeRateHandler = ExchangeRateHandler.shared
     @EnvironmentObject var mainVM: MainViewModel
+    private var travelStream: Set<AnyCancellable> = []
     
     var body: some View {
         NavigationStack {

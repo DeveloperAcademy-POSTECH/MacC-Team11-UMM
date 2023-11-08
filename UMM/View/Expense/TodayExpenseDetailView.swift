@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct TodayExpenseDetailView: View {
-    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @StateObject var expenseViewModel = ExpenseViewModel()
     
     var selectedTravel: Travel?
     var selectedDate: Date
