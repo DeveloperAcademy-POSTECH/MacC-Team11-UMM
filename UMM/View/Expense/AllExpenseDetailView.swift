@@ -39,7 +39,7 @@ struct AllExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.filteredAllExpensesForDetail = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+            expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
         }
     }
@@ -65,7 +65,7 @@ struct AllExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredAllExpensesForDetail = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+                        expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
                         currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {
@@ -226,6 +226,24 @@ struct AllExpenseDetailView: View {
             }
             .padding(.bottom, 24)
         }
+    }
+    
+    private func getFilteredAllExpenses(selectedTravel: Travel, selectedPaymentMethod: Int64, selectedCategory: Int64, selectedCountry: Int64) -> [Expense] {
+        var filteredExpenses = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
+        
+        if selectedPaymentMethod != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredExpenses, paymentMethod: selectedPaymentMethod)
+        }
+        
+        if selectedCategory != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByCategory(expenses: filteredExpenses, category: selectedCategory)
+        }
+
+        if selectedCountry != -2 {
+            filteredExpenses = expenseViewModel.filterExpensesByCountry(expenses: filteredExpenses, country: selectedCountry)
+        }
+        
+        return filteredExpenses
     }
 }
 

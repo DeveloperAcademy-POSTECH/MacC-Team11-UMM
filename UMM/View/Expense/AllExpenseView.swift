@@ -34,8 +34,8 @@ struct AllExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            expenseViewModel.fetchExpense()
-            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
+//            expenseViewModel.fetchExpense()
+//            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }
     

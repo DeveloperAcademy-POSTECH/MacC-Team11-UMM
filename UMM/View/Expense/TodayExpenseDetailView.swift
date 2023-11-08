@@ -40,7 +40,7 @@ struct TodayExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+            expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
@@ -68,7 +68,7 @@ struct TodayExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredTodayExpensesForDetail = expenseViewModel.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+                        expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
                         currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {
@@ -211,6 +211,24 @@ struct TodayExpenseDetailView: View {
                 }
             }
             .padding(.bottom, 24)
+        }
+    }
+    
+    private func getFilteredTodayExpenses(selectedTravel: Travel, selectedDate: Date, selctedCountry: Int64, selectedPaymentMethod: Int64) -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
+        print("Filtered by travel: \(filteredByTravel.count)")
+        
+        let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        print("Filtered by date: \(filteredByDate.count)")
+        
+        let filteredByCountry = expenseViewModel.filterExpensesByCountry(expenses: filteredByDate, country: selectedCountry)
+        print("Filtered by Country: \(filteredByCountry.count)")
+        
+        if selectedPaymentMethod == -2 {
+            return filteredByCountry
+        } else {
+            let filterByPaymentMethod = expenseViewModel.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
+            return filterByPaymentMethod
         }
     }
 }
