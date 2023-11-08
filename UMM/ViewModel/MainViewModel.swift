@@ -12,7 +12,7 @@ class MainViewModel: ObservableObject {
     
     static let shared = MainViewModel()
     
-    @Published var selection: Int = 0
+    @Published var selection: Int = 1
     @Published var selectedTravel: Travel?
     @Published var chosenTravelInManualRecord: Travel?
     
