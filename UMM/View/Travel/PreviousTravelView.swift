@@ -22,6 +22,8 @@ struct PreviousTravelView: View {
     @State var defaultImg: [UUID: [String]] = [:]
     @State private var countryName: [UUID: [String]] = [:]
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         
         ZStack {
@@ -91,7 +93,7 @@ struct PreviousTravelView: View {
                                                 VStack(alignment: .leading, spacing: 0) {
                                                     
                                                     HStack {
-                                                        Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                         
                                                         Text("~")
                                                         
@@ -100,7 +102,7 @@ struct PreviousTravelView: View {
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                     
-                                                    Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                    Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white.opacity(0.75))
                                                 }
@@ -225,7 +227,7 @@ struct PreviousTravelView: View {
                                                             VStack(alignment: .leading, spacing: 0) {
                                                                 
                                                                 HStack {
-                                                                    Text(previousTravel?[index].startDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     
                                                                     Text("~")
                                                                     
@@ -234,7 +236,7 @@ struct PreviousTravelView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(previousTravel?[index].endDate ?? Date(), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                     .font(.caption2)
                                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                             }

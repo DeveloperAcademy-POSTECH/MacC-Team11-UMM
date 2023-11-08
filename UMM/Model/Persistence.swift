@@ -41,4 +41,25 @@ struct PersistenceController {
         container.viewContext.undoManager = nil
         container.viewContext.shouldDeleteInaccessibleFaults = true
       }
+    
+    func deleteItems(object: Travel?) {
+
+        var travelToBeDeleted: Travel?
+        do {
+            travelToBeDeleted = try self.container.viewContext.fetch(Travel.fetchRequest()).filter { travel in
+                if let object {
+                    return object.id == travel.id
+                }
+                return false
+            }.first
+        } catch {
+            print("error fetching travel: \(error.localizedDescription)")
+        }
+        
+        if travelToBeDeleted != nil {
+            self.container.viewContext.delete(travelToBeDeleted!)
+        }
+
+        try? self.container.viewContext.save()
+    }
 }
