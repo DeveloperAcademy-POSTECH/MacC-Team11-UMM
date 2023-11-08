@@ -101,25 +101,30 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         ZStack(alignment: .center) {
-            if travelCount == 0 {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 350, height: 137)
-                    .background(
-                        ZStack {
-                            Color.gray100
-                            Text("현재 진행 중인 여행이 없어요")
-                                .font(.body2)
-                                .foregroundStyle(Color(0xA6A6A6))
-                        }
-                    )
-                    .cornerRadius(10)
-                    .padding(.bottom, 18)
+            if Int(nowTravel?.count ?? 0) == 0 {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 350, height: 137)
+                        .background(
+                            ZStack {
+                                Color.gray100
+                                Text("현재 진행 중인 여행이 없어요")
+                                    .font(.body2)
+                                    .foregroundStyle(Color(0xA6A6A6))
+                            }
+                        )
+                        .cornerRadius(10)
+                        .padding(.bottom, 22)
+                }
+                .onAppear {
+                    print("rrrrr zero view shown")
+                }
             } else {
                 ZStack(alignment: .center) {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0..<travelCount, id: \.self) { index in
+                            ForEach(0..<Int(nowTravel?.count ?? 0), id: \.self) { index in
                                 NavigationLink(destination: TravelDetailView(
                                     travelID: nowTravel?[index].id ?? UUID(),
                                     travelName: nowTravel?[index].name ?? "",
