@@ -83,11 +83,11 @@ class TravelListViewModel: ObservableObject {
     
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
-            if let startDate = travel.startDate, let endDate = travel.endDate {
-                print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
-                return todayDate >= startDate && todayDate < endDate
+            if let startDate = travel.startDate {
+                let endDate = travel.endDate ?? Date.distantFuture
+                return todayDate >= startDate && todayDate <= endDate
             } else {
-                print("filterTravelByDate | travel.id: nil")
+                print("filterTravelByDate | travel.startDate: nil")
                 return false
             }
         }

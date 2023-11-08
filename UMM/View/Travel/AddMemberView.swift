@@ -56,8 +56,12 @@ struct AddMemberView: View {
                     
                     viewModel.participantArr = ["me"] + participantArr
                 }
-                viewModel.startDate = dateGapHandler.convertBeforeSaving(date: startDate ?? Date())
-                viewModel.endDate = dateGapHandler.convertBeforeSaving(date: endDate ?? Date())
+                viewModel.startDate = (startDate ?? Date()).local000().convertBeforeSaving()
+                if let endDate = viewModel.endDate {
+                    viewModel.endDate = endDate.local235959().convertBeforeSaving()
+                } else {
+                    viewModel.endDate = nil
+                }
                 
                 // 여행 이름
                 if let arr = viewModel.participantArr {

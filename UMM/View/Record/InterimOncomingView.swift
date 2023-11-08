@@ -127,9 +127,13 @@ struct InterimOncomingView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                if let endDate = onComingTravel?[index].endDate {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                } else {
+                                                    Text("")
+                                                }
                                             }
                                             .padding(.horizontal, 8)
                                             .padding(.bottom, 8)
@@ -281,9 +285,13 @@ struct InterimOncomingView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                    .font(.caption2)
-                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                                if let endDate = onComingTravel?[index].endDate {
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                        .font(.caption2)
+                                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                                } else {
+                                                                    Text("")
+                                                                }
                                                             }
                                                             .padding(.horizontal, 8)
                                                             .padding(.bottom, 8)

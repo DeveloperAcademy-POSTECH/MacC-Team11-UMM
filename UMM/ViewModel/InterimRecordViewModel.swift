@@ -141,7 +141,8 @@ class InterimRecordViewModel: ObservableObject {
     
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
-            if let startDate = travel.startDate, let endDate = travel.endDate {
+            if let startDate = travel.startDate {
+                let endDate = travel.endDate ?? Date.distantFuture
                 print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
                 return todayDate >= startDate && todayDate < endDate
             } else {

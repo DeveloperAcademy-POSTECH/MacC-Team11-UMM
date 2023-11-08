@@ -124,7 +124,7 @@ struct TravelListView: View {
                                     travelID: nowTravel?[index].id ?? UUID(),
                                     travelName: nowTravel?[index].name ?? "",
                                     startDate: nowTravel?[index].startDate ?? Date(),
-                                    endDate: nowTravel?[index].endDate ?? Date(),
+                                    endDate: nowTravel?[index].endDate,
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
                                     participantCnt: nowTravel?[index].participantArray?.count ?? 0,
                                     participantArr: nowTravel?[index].participantArray ?? [],
@@ -209,14 +209,24 @@ struct TravelListView: View {
                                                 .padding(.leading, 16)
                                             
                                             HStack {
-                                                Group {
-                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter) +
-                                                    Text(" ~ ") +
-                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
+                                                HStack(spacing: 0) {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
+                                                        .font(.subhead2_2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                        .padding(.leading, 16)
+                                                    
+                                                    Text(" ~ ")
+                                                        .font(.subhead2_2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                    
+                                                    if let endDate = nowTravel?[index].endDate {
+                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelListViewModel.dateFormatter)
+                                                            .font(.subhead2_2)
+                                                            .foregroundStyle(Color.white.opacity(0.75))
+                                                    } else {
+                                                        Text("")
+                                                    }
                                                 }
-                                                .font(.subhead2_2)
-                                                .foregroundStyle(Color.white.opacity(0.75))
-                                                .padding(.leading, 16)
                                                 
                                                 Spacer()
                                                 

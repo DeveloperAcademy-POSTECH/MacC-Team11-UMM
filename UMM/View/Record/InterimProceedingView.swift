@@ -127,9 +127,13 @@ struct InterimProceedingView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                if let endDate = nowTravel?[index].endDate {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                } else {
+                                                    Text("")
+                                                }
                                             }
                                             .padding(.horizontal, 8)
                                             .padding(.bottom, 8)
@@ -276,7 +280,7 @@ struct InterimProceedingView: View {
                                                               
                                                               // Doris : 날짜 표시
                                                               VStack(alignment: .leading, spacing: 0) {
-                                                                  HStack {
+                                                                  HStack(spacing: 0) {
                                                                       Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                                       
                                                                       Text("~")
@@ -284,9 +288,13 @@ struct InterimProceedingView: View {
                                                                   .font(.caption2)
                                                                   .foregroundStyle(Color.white.opacity(0.75))
                                                                   
-                                                                  Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                      .font(.caption2)
-                                                                      .foregroundStyle(Color.white.opacity(0.75))
+                                                                  if let endDate = nowTravel?[index].endDate {
+                                                                      Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                          .font(.caption2)
+                                                                          .foregroundStyle(Color.white.opacity(0.75))
+                                                                  } else {
+                                                                      Text("")
+                                                                  }
                                                               }
                                                               .padding(.horizontal, 8)
                                                               .padding(.bottom, 8)

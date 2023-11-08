@@ -18,7 +18,7 @@ struct TravelDetailView: View {
     @State var travelID: UUID = UUID()
     @State var travelName: String
     @State var startDate: Date
-    @State var endDate: Date
+    @State var endDate: Date?
     @State var dayCnt: Int
     @State var participantCnt: Int
     @State var participantArr: [String]
@@ -86,6 +86,7 @@ struct TravelDetailView: View {
                 viewModel.fetchTravel()
                 //                travelID = mainVM.selectedTravel?.id ?? UUID()
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
+                print("tttttt", endDate)
                 
             }
             .onDisappear {
@@ -134,7 +135,7 @@ struct TravelDetailView: View {
         VStack(alignment: .leading) {
             HStack {
                 
-                if Date() <= endDate {
+                if Date() <= endDate ?? Date.distantFuture {
                     HStack(alignment: .center, spacing: 10) {
                         Text("여행 중")
                             .font(
@@ -203,16 +204,23 @@ struct TravelDetailView: View {
     }
     
     private var dateBox: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("시작일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(dateGapHandler.convertBeforeShowing(date: startDate), formatter: TravelDetailViewModel.dateFormatter)
-                        .font(.body4)
-                        .foregroundStyle(Color.white)
+                    
+                    ZStack(alignment: .leading) {
+                        Text("00.00.00 (수)")
+                            .font(.body4)
+                            .hidden()
+                        
+                        Text(dateGapHandler.convertBeforeShowing(date: startDate), formatter: TravelDetailViewModel.dateFormatter)
+                            .font(.body4)
+                            .foregroundStyle(Color.white)
+                    }
                 }
                 
                 Spacer()
@@ -229,9 +237,22 @@ struct TravelDetailView: View {
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelDetailViewModel.dateFormatter)
-                        .font(.body4)
-                        .foregroundStyle(Color.white)
+                    
+                    if let endDate = endDate {
+                        ZStack(alignment: .leading) {
+                            Text("00.00.00 (수)")
+                                .font(.body4)
+                                .hidden()
+                            
+                            Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelDetailViewModel.dateFormatter)
+                                .font(.body4)
+                                .foregroundStyle(Color.white)
+                        }
+                    } else {
+                        Text("00.00.00 (수)")
+                            .font(.body4)
+                            .hidden()
+                    }
                 }
                 
                 Spacer()
