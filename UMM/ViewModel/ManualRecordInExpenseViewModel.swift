@@ -1,5 +1,5 @@
 //
-//  ManualRecordViewModel.swift
+//  ManualRecordInExpenseViewModel.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/21/23.
@@ -9,8 +9,8 @@ import AVFoundation
 import Combine
 import CoreLocation
 
-class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
-    var parent: ManualRecordViewModel?
+class LocationManagerDelegateForExpense: NSObject, CLLocationManagerDelegate {
+    var parent: ManualRecordInExpenseViewModel?
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         parent?.location = locations.first
@@ -35,14 +35,14 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-final class ManualRecordViewModel: NSObject, ObservableObject {
+final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     
     // MARK: - 위치 정보
     private var locationManager: CLLocationManager?
-    private var locationManagerDelegate = LocationManagerDelegate()
+    private var locationManagerDelegate = LocationManagerDelegateForExpense()
     @Published var location: CLLocation?
     @Published var placemark: CLPlacemark?
     
@@ -182,7 +182,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var currencyCandidateArray: [Int] = []
     @Published var visibleNewNameOfParticipant: String = ""
     
-    var soundRecordFileName: URL?
+    var soundRecordData: Data?
     
     // MARK: - view state
     
@@ -203,7 +203,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     override init() {
         super.init()
-        print("ManualRecordViewModel | init")
+        print("ManualRecordInExpenseViewModel | init")
         locationManager = CLLocationManager()
         locationManager?.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self
@@ -255,9 +255,10 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         
-        if let soundRecordFileName, let soundData = try? Data(contentsOf: soundRecordFileName) {
-            expense.voiceRecordFile = soundData
-        }
+//        if let soundRecordData, let soundData = try? Data(contentsOf: soundRecordData) {
+//            expense.voiceRecordFile = soundData
+//        }
+        expense.voiceRecordFile = soundRecordData
         
         if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             var fetchedTravel: Travel?
@@ -294,7 +295,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.delegate = self // 
+            audioPlayer?.delegate = self //
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
             
@@ -325,7 +326,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     }
 }
 
-extension ManualRecordViewModel: AVAudioPlayerDelegate {
+extension ManualRecordInExpenseViewModel: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
             if flag {
                 // 재생이 성공적으로 끝났을 때 실행할 코드

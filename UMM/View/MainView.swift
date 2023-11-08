@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     
     @StateObject private var viewModel = MainViewModel.shared
+    @State private var selectedTab = 0
     
     var body: some View {
         TabView(selection: $viewModel.selection) {
@@ -60,7 +61,9 @@ struct MainView: View {
         
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
-            viewModel.selectedTravel = findCurrentTravel()
+            print("MainView onAppear")
+//            viewModel.selectedTravel = findCurrentTravel()
+//            viewModel.selectedTravelInExpense = findCurrentTravel()
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)

@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct TodayExpenseDetailView: View {
-    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @StateObject var expenseViewModel = ExpenseViewModel()
     
     var selectedTravel: Travel?
     var selectedDate: Date
@@ -23,6 +23,7 @@ struct TodayExpenseDetailView: View {
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     let dateGapHandler = DateGapHandler.shared
+    let viewContext = PersistenceController.shared.container.viewContext
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -39,12 +40,8 @@ struct TodayExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
-
-            let filteredResult = getFilteredExpenses()
-            expenseViewModel.filteredTodayExpenses = filteredResult
-            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
+            expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
@@ -71,8 +68,8 @@ struct TodayExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredTodayExpenses = getFilteredExpenses()
-                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpenses)
+                        expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {
                         if selectedPaymentMethod == Int64(idx) {
@@ -154,50 +151,62 @@ struct TodayExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(expenseViewModel.filteredTodayExpenses, id: \.id) { expense in
-                HStack(alignment: .center, spacing: 0) {
-                    Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
-                        .font(.system(size: 36))
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("\(expense.info ?? "info: unknown")")
-                            .font(.subhead2_1)
-                        HStack(alignment: .center, spacing: 0) {
-                            // 소비 기록을 한 시각을 보여주는 부분
-                            // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
-                            if let payDate = expense.payDate {
-                                Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray300)
-                            } else {
-                                Text("-")
+            ForEach(expenseViewModel.filteredTodayExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }), id: \.self) { expense in
+                
+                NavigationLink {
+                    ManualRecordInExpenseView(
+                        given_wantToActivateAutoSaveTimer: false,
+                        given_payAmount: expense.payAmount,
+                        given_info: expense.info,
+                        given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
+                        given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
+                        given_soundRecordData: expense.voiceRecordFile)
+                        .environmentObject(mainVM) // ^^^
+                } label: {
+                    HStack(alignment: .center, spacing: 0) {
+                        Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
+                            .font(.system(size: 36))
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("\(expense.info ?? "info: unknown")")
+                                .font(.subhead2_1)
+                            HStack(alignment: .center, spacing: 0) {
+                                // 소비 기록을 한 시각을 보여주는 부분
+                                // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                if let payDate = expense.payDate {
+                                    Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray300)
+                                } else {
+                                    Text("-")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray300)
+                                }
+                                Divider()
+                                    .padding(.horizontal, 3)
+                                Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                     .font(.caption2)
                                     .foregroundStyle(.gray300)
                             }
-                            Divider()
-                                .padding(.horizontal, 3)
-                            Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
-                                .font(.caption2)
-                                .foregroundStyle(.gray300)
-                        }
-                        .padding(.top, 4)
-                    }
-                    .padding(.leading, 10)
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing, spacing: 0) {
-                        HStack(alignment: .center, spacing: 0) {
-                            Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
-                                .font(.subhead2_1)
-                            Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
-                                .font(.subhead2_1)
-                                .padding(.leading, 3)
-                        }
-                        Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
-                            .font(.caption2)
-                            .foregroundStyle(.gray200)
                             .padding(.top, 4)
+                        }
+                        .padding(.leading, 10)
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 0) {
+                            HStack(alignment: .center, spacing: 0) {
+                                Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
+                                    .font(.subhead2_1)
+                                Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
+                                    .font(.subhead2_1)
+                                    .padding(.leading, 3)
+                            }
+                            Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
+                                .font(.caption2)
+                                .foregroundStyle(.gray200)
+                                .padding(.top, 4)
+                        }
                     }
                 }
             }
@@ -205,9 +214,8 @@ struct TodayExpenseDetailView: View {
         }
     }
     
-    // 최종 배열
-    private func getFilteredExpenses() -> [Expense] {
-        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel?.id ?? UUID())
+    private func getFilteredTodayExpenses(selectedTravel: Travel, selectedDate: Date, selctedCountry: Int64, selectedPaymentMethod: Int64) -> [Expense] {
+        let filteredByTravel = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
         print("Filtered by travel: \(filteredByTravel.count)")
         
         let filteredByDate = expenseViewModel.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
@@ -224,6 +232,3 @@ struct TodayExpenseDetailView: View {
         }
     }
 }
-//  #Preview {
-//      TodayExpenseDetailView()
-//  }

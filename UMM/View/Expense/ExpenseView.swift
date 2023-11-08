@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ExpenseView: View {
     @State var selectedTab = 0
@@ -13,11 +14,16 @@ struct ExpenseView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     let exchangeRateHandler = ExchangeRateHandler.shared
     @EnvironmentObject var mainVM: MainViewModel
+    private var travelStream: Set<AnyCancellable> = []
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-        
+                
+                //                settingViewButton
+                
+                travelChoiceView
+                
                 todayExpenseHeader
                 
                 tabViewButton
@@ -25,12 +31,12 @@ struct ExpenseView: View {
                 Spacer()
                 
                 TabView(selection: $selectedTab) {
-                    TodayExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
+                    TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(0)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
                         .simultaneousGesture(TapGesture())
-                    AllExpenseView(expenseViewModel: expenseViewModel, selectedTab: $selectedTab, namespace: namespace)
+                    AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(1)
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
@@ -39,32 +45,33 @@ struct ExpenseView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .padding(.horizontal, 20)
-            .onAppear {
-                expenseViewModel.fetchExpense()
-                expenseViewModel.fetchTravel()
-            }
+            .ignoresSafeArea()
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-                TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
+                TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravelInExpense, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    travelChoiceView
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingView()) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Color.gray300)
-                    }
-                }
+        }
+    }
+    
+    private var settingViewButton: some View {
+        NavigationLink {
+            SettingView()
+        } label: {
+            HStack {
+                Spacer()
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: 26))
+                    .foregroundStyle(Color.gray300)
             }
+            .ignoresSafeArea(.all)
+            .padding(.leading, 3)
+            .padding(.top, 3)
         }
     }
     
     private var todayExpenseHeader: some View {
         HStack(spacing: 0) {
-            Text("지출 관리")
+            Text("가계부")
                 .font(.display2)
             Spacer()
         }
@@ -72,32 +79,37 @@ struct ExpenseView: View {
     }
     
     private var travelChoiceView: some View {
-        Button {
-            expenseViewModel.travelChoiceHalfModalIsShown = true
-        } label: {
-            ZStack {
-                Capsule()
-                    .foregroundStyle(.white)
-                    .layoutPriority(-1)
-                
-                Capsule()
-                    .strokeBorder(.mainPink, lineWidth: 1.0)
-                    .layoutPriority(-1)
-                
-                HStack(spacing: 12) {
-                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
-                        .font(.subhead2_2)
-                        .foregroundStyle(.black)
-                    Image("recordTravelChoiceDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
+        HStack(alignment: .center, spacing: 0) {
+            Spacer()
+            Button {
+                expenseViewModel.travelChoiceHalfModalIsShown = true
+            } label: {
+                ZStack {
+                    Capsule()
+                        .foregroundStyle(.white)
+                        .layoutPriority(-1)
+                    
+                    Capsule()
+                        .strokeBorder(.mainPink, lineWidth: 1.0)
+                        .layoutPriority(-1)
+                    
+                    HStack(spacing: 12) {
+                        Text(mainVM.selectedTravelInExpense?.name != "Default" ? mainVM.selectedTravelInExpense?.name ?? "-" : "-")
+                            .font(.subhead2_2)
+                            .foregroundStyle(.black)
+                        Image("recordTravelChoiceDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                    .padding(.vertical, 6)
+                    .padding(.leading, 16)
+                    .padding(.trailing, 12)
                 }
-                .padding(.vertical, 6)
-                .padding(.leading, 16)
-                .padding(.trailing, 12)
             }
+            Spacer()
         }
+        .padding(.top, 80)
     }
     
         private var tabViewButton: some View {

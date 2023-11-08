@@ -31,7 +31,6 @@ struct CompleteRecordView: View {
                 if let audioData = expense.voiceRecordFile {
                     let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
                     try? audioData.write(to: audioURL)
-                    
                     viewModel.startPlayingAudio(url: audioURL)
                 }
                 

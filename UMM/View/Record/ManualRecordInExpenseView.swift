@@ -1,5 +1,5 @@
 //
-//  ManualRecordView.swift
+//  ManualRecordInExpenseView.swift
 //  UMM
 //
 //  Created by Wonil Lee on 10/16/23.
@@ -8,8 +8,8 @@
 import SwiftUI
 import CoreLocation
 
-struct ManualRecordView: View {
-    @ObservedObject var viewModel = ManualRecordViewModel()
+struct ManualRecordInExpenseView: View {
+    @ObservedObject var viewModel = ManualRecordInExpenseViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
@@ -22,7 +22,7 @@ struct ManualRecordView: View {
     let given_info: String?
     let given_infoCategory: ExpenseInfoCategory
     let given_paymentMethod: PaymentMethod
-    let given_soundRecordFileName: URL?
+    let given_soundRecordData: Data?
     
     var body: some View {
         ZStack {
@@ -94,6 +94,12 @@ struct ManualRecordView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
+            print("given_info: \(given_info)")
+            print("given_payAmount: \(given_payAmount)")
+            print("given_paymentMethod: \(given_paymentMethod)")
+            print("given_infoCategory: \(given_infoCategory)")
+            print("given_soundRecordData: \(given_soundRecordData)")
+            print("given_wantToActivateAutoSaveTimer: \(given_wantToActivateAutoSaveTimer)")
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             viewModel.payAmount = given_payAmount
@@ -110,6 +116,7 @@ struct ManualRecordView: View {
             viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
             viewModel.category = given_infoCategory
             viewModel.paymentMethod = given_paymentMethod
+            viewModel.soundRecordData = given_soundRecordData
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -173,7 +180,7 @@ struct ManualRecordView: View {
                     viewModel.payAmountInWon = -1
                 }
             }
-            viewModel.soundRecordFileName = given_soundRecordFileName
+            viewModel.soundRecordData = given_soundRecordData
 
             viewModel.getLocation()
             viewModel.country = viewModel.currentCountry
@@ -348,7 +355,7 @@ struct ManualRecordView: View {
                 Spacer()
                 
                 Group {
-                    if viewModel.soundRecordFileName == nil {
+                    if viewModel.soundRecordData == nil {
                         ZStack {
                             Circle()
                                 .foregroundStyle(.white)
@@ -417,10 +424,18 @@ struct ManualRecordView: View {
                     viewModel.autoSaveTimer?.invalidate()
                     viewModel.secondCounter = nil
                     
-                    if viewModel.soundRecordFileName != nil {
+                    if viewModel.soundRecordData != nil {
                         if !viewModel.playingRecordSound {
-                            if let soundRecordFileName = viewModel.soundRecordFileName {
-                                viewModel.startPlayingAudio(url: soundRecordFileName)
+                            if let soundRecordData = viewModel.soundRecordData {
+                                
+                                let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("VOICE \(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
+                                do {
+                                    try soundRecordData.write(to: audioURL)
+                                } catch {
+                                    print("Failed to write audioData to \(audioURL): \(error)")
+                                }
+                                
+                                viewModel.startPlayingAudio(url: audioURL)
                                 viewModel.playingRecordSound = true
                             }
                         } else {
@@ -858,138 +873,6 @@ struct ManualRecordView: View {
     }
 }
 
-struct ParticipantArrayView: View {
-    @Binding var participantTupleArray: [(name: String, isOn: Bool)]
-    @Binding var autoSaveTimer: Timer?
-    @Binding var secondCounter: Int?
-    
-    let buttonCountInARow = 3
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            ForEach(0..<((participantTupleArray.count - 1) / buttonCountInARow + 1), id: \.self) { rowNum in
-                let diff = participantTupleArray.count - 1 - rowNum * buttonCountInARow
-                if diff == 0 {
-                    HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow)
-                    }
-                } else if diff == 1 {
-                    HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow + 1)
-                    }
-                } else {
-                    HStack(spacing: 6) {
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow + 1)
-                        ParticipantToggleView(participantTupleArray: $participantTupleArray, autoSaveTimer: $autoSaveTimer, secondCounter: $secondCounter, index: rowNum *  buttonCountInARow + 2)
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct ParticipantToggleView: View {
-    @Binding var participantTupleArray: [(name: String, isOn: Bool)]
-    @Binding var autoSaveTimer: Timer?
-    @Binding var secondCounter: Int?
-    let index: Int
-    
-    var body: some View {
-        if index < participantTupleArray.count {
-            let tuple = participantTupleArray[index]
-            ZStack {
-                RoundedRectangle(cornerRadius: 6)
-                    .foregroundStyle(tuple.isOn ? Color(0x333333) : .gray100) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                    .layoutPriority(-1)
-                
-                // 높이 설정용 히든 뷰
-                Text("금")
-                    .lineLimit(1)
-                    .font(.subhead2_2)
-                    .padding(.vertical, 6)
-                    .hidden()
-                
-                HStack(spacing: 4) {
-                    if tuple.name == "나" {
-                        Text("me")
-                            .lineLimit(1)
-                            .foregroundStyle(tuple.isOn ? .gray200 : .gray300)
-                            .font(.subhead2_1)
-                    }
-                    Text(tuple.0)
-                        .lineLimit(1)
-                        .foregroundStyle(tuple.isOn ? .white : .gray300)
-                        .font(.subhead2_2)
-                }
-                .padding(.vertical, 6)
-                .padding(.horizontal, 12)
-            }
-            .onTapGesture {
-                print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
-                autoSaveTimer?.invalidate()
-                secondCounter = nil
-                participantTupleArray[index].isOn.toggle()
-            }
-        } else {
-            EmptyView()
-        }
-    }
-}
-
-struct PlayngRecordSoundView: View {
-    
-    @State var timer: Timer?
-    @State var level = 0
-    @State var flicker = true
-    
-    let stepLength = 0.5
-    
-    func levelUp() {
-        level = (level + 1) % 3
-    }
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .foregroundStyle(.white)
-                .frame(width: 54, height: 54)
-                .onAppear {
-                    timer = Timer.scheduledTimer(withTimeInterval: stepLength, repeats: true) { _ in
-                        levelUp()
-                    }
-                }
-                .onDisappear {
-                    timer?.invalidate()
-                }
-                .shadow(color: .mainPink, radius: 3)
-            
-            Circle()
-                .strokeBorder(.mainPink, lineWidth: 1)
-            
-            HStack(spacing: 3) {
-                Capsule()
-                    .foregroundStyle(.mainPink)
-                    .frame(width: 1.5, height: level == 2 ? 10 : 7)
-                Capsule()
-                    .foregroundStyle(.mainPink)
-                    .frame(width: 1.5, height: level == 1 ? 15 : 12)
-                Capsule()
-                    .foregroundStyle(.mainPink)
-                    .frame(width: 1.5, height: level == 0 ? 20 : 17)
-                Capsule()
-                    .foregroundStyle(.mainPink)
-                    .frame(width: 1.5, height: level == 1 ? 15 : 12)
-                Capsule()
-                    .foregroundStyle(.mainPink)
-                    .frame(width: 1.5, height: level == 2 ? 10 : 7)
-            }
-            .animation(.bouncy(duration: stepLength * 1.25), value: level)
-        }
-    }
-}
-
 //    #Preview {
-//        ManualRecordView()
+//        ManualRecordInExpenseView()
 //    }

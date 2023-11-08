@@ -111,7 +111,6 @@ struct TravelChoiceInExpenseModal: View {
                             .onTapGesture {
                                 if let selectedId = selectedTravel?.id, let travelId = travel.id, selectedId != travelId {
                                     selectedTravel = travel
-                                    selectedTravel = selectedTravel
                                     selectedCountry = Int64(-2)
                                 }
                             }

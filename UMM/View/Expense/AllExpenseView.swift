@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllExpenseView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
     @State private var selectedPaymentMethod: Int = -2
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
@@ -16,12 +16,6 @@ struct AllExpenseView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
-    
-    init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
-        self.expenseViewModel = expenseViewModel
-        self._selectedTab = selectedTab
-        self.namespace = namespace
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -40,11 +34,8 @@ struct AllExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            print("AllExpenseView | selctedTravel: \(String(describing: mainVM.selectedTravel?.name))")
-            print("AllExpenseView | selctedCountry: \(expenseViewModel.selectedCountry)")
-            expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
-            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
+//            expenseViewModel.fetchExpense()
+//            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }
     
@@ -59,12 +50,13 @@ struct AllExpenseView: View {
         }
         return NavigationLink {
             AllExpenseDetailView(
-                selectedTravel: mainVM.selectedTravel,
+                selectedTravel: mainVM.selectedTravelInExpense,
                 selectedCategory: -2,
                 selectedCountry: expenseViewModel.selectedCountry,
                 selectedPaymentMethod: -2,
                 sumPaymentMethod: totalSum
             )
+            .environmentObject(mainVM)
         } label: {
             HStack(spacing: 0) {
                 Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
@@ -188,12 +180,13 @@ struct AllExpenseView: View {
                     
                     NavigationLink {
                         AllExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
                             selectedCountry: expenseViewModel.selectedCountry,
                             selectedPaymentMethod: -2,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
                             Image(ExpenseInfoCategory(rawValue: Int(categoryName))?.modalImageString ?? "nil")
@@ -249,11 +242,6 @@ struct CurrencyForChart: Identifiable, Hashable {
     let id = UUID()
     let currency: Int64
     let sum: Double
-    
-    init(currency: Int64, sum: Double) {
-        self.currency = currency
-        self.sum = sum
-    }
 }
 
 struct ExpenseForChart: Identifiable, Hashable {

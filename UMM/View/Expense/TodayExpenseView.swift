@@ -8,21 +8,15 @@
 import SwiftUI
 
 struct TodayExpenseView: View {
-    @ObservedObject var expenseViewModel: ExpenseViewModel
+    @EnvironmentObject var mainVM: MainViewModel
+    @ObservedObject var expenseViewModel = ExpenseViewModel()
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     let dateGapHandler = DateGapHandler.shared
-    
-    init(expenseViewModel: ExpenseViewModel, selectedTab: Binding<Int>, namespace: Namespace.ID) {
-        self.expenseViewModel = expenseViewModel
-        self._selectedTab = selectedTab
-        self.namespace = namespace
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -43,11 +37,9 @@ struct TodayExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            expenseViewModel.fetchExpense()
-            expenseViewModel.fetchTravel()
-            
-            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
-            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
+//            expenseViewModel.fetchExpense()
+//            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
+//            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
         }
     }
     
@@ -59,10 +51,9 @@ struct TodayExpenseView: View {
                 expenseViewModel: expenseViewModel, 
                 selectedDate: $expenseViewModel.selectedDate,
                 pickerId: pickerId,
-                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
-                .padding(.top, 12)
-                .padding(.bottom, 12)
+                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravelInExpense?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
         }
+        .padding(.bottom, 12)
     }
     
     // 국가별 + 결제수단별 지출액 표시
@@ -97,12 +88,13 @@ struct TodayExpenseView: View {
                     // 결제 수단: 전체: 합계
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: -2,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(spacing: 0) {
                             Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
@@ -131,12 +123,13 @@ struct TodayExpenseView: View {
 
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: paymentMethod,
                             sumPaymentMethod: totalSum
                         )
+                        .environmentObject(mainVM)
                     } label: {
                         HStack(alignment: .center, spacing: 0) {
                             VStack(alignment: .leading, spacing: 0) {
