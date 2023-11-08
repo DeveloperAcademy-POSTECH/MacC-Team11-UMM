@@ -39,6 +39,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
+    var expenseId = ObjectIdentifier(NSObject())
     
     // MARK: - 위치 정보
     private var locationManager: CLLocationManager?
@@ -241,8 +242,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
         
     func save() {
+        var expense: Expense?
+        do {
+            expense = try viewContext.fetch(Expense.fetchRequest()).filter { expense in
+                return expense.id == expenseId
+            }.first
+        } catch let error {
+            print("\(error.localizedDescription)")
+        }
+        guard let expense = expense else { return }
         
-        let expense = Expense(context: viewContext)
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country)
         expense.currency = Int64(currency)

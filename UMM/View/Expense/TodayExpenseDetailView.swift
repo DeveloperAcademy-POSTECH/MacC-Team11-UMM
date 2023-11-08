@@ -162,7 +162,11 @@ struct TodayExpenseDetailView: View {
                         given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
                         given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
                         given_soundRecordData: expense.voiceRecordFile,
-                        given_expense: expense
+                        given_expense: expense,
+                        given_payDate: expense.payDate,
+                        given_country: Int(expense.country),
+                        given_location: expense.location,
+                        given_id: expense.id
                     )
                         .environmentObject(mainVM) // ^^^
                 } label: {

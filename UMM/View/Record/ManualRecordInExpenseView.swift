@@ -25,6 +25,10 @@ struct ManualRecordInExpenseView: View {
     let given_paymentMethod: PaymentMethod
     let given_soundRecordData: Data?
     let given_expense: Expense
+    let given_payDate: Date?
+    let given_country: Int
+    let given_location: String?
+    let given_id: ObjectIdentifier
     
     var body: some View {
         ZStack {
@@ -122,6 +126,10 @@ struct ManualRecordInExpenseView: View {
             viewModel.paymentMethod = given_paymentMethod
             viewModel.soundRecordData = given_soundRecordData
             viewModel.currency = given_currency
+            viewModel.payDate = given_payDate ?? Date()
+            viewModel.country = given_country
+            viewModel.locationExpression = given_location ?? ""
+            viewModel.expenseId = given_id
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -194,9 +202,9 @@ struct ManualRecordInExpenseView: View {
             viewModel.soundRecordData = given_soundRecordData
 
             viewModel.getLocation()
-            viewModel.country = viewModel.currentCountry
-            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
-            viewModel.locationExpression = viewModel.currentLocation
+//            viewModel.country = viewModel.currentCountry
+            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.country]?.koreanNm ?? "알 수 없음"
+//            viewModel.locationExpression = viewModel.currentLocation
             
             if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
                 viewModel.otherCountryCandidateArray.append(viewModel.country)
