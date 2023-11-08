@@ -114,13 +114,16 @@ struct TravelDetailView: View {
                     }
                 }
             }
-            .alert("Alert Title", isPresented: $isWarningOn) {
-                Button("Ok") {
+            .alert("여행 삭제하기", isPresented: $isWarningOn) {
+                Button("취소") {
+                    isWarningOn = false
+                }
+                Button("삭제하기") {
                     PersistenceController().deleteItems(object: self.selectedTravel?.first)
                     NavigationUtil.popToRootView()
                 }
             } message: {
-                Text("This is alert dialog sample")
+                Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?")
             }
         }
         .toolbar(.hidden, for: .tabBar)
