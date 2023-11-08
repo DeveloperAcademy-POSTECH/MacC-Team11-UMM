@@ -215,14 +215,12 @@ class ExpenseViewModel: ObservableObject {
                 guard let self = self else { return }
                 print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
+//                self.filteredTodayExpenses = self.getFilteredTodayExpenses()
+//                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
                 
-                self.filteredTodayExpenses = self.getFilteredTodayExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
-                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
-
-                self.filteredAllExpenses = getFilteredAllExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
-                self.filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: selectedCountry)
-                self.groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
-                self.indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
+//                self.filteredAllExpenses = self.getFilteredAllExpenses()
+//                self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
+//                self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
             }
             .store(in: &travelStream)
     }

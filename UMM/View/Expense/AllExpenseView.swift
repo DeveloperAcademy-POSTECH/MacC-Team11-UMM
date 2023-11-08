@@ -35,10 +35,7 @@ struct AllExpenseView: View {
         .frame(maxWidth: .infinity)
         .onAppear {
             expenseViewModel.fetchExpense()
-            
-//            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses()
-//            expenseViewModel.filteredAllExpensesByCountry = expenseViewModel.filterExpensesByCountry(expenses: expenseViewModel.filteredAllExpenses, country: Int64(-2))
-//            expenseViewModel.groupedAllExpenses = Dictionary(grouping: expenseViewModel.filteredAllExpensesByCountry, by: { $0.category })
+            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
         }
     }
     
