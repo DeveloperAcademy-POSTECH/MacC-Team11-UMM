@@ -51,7 +51,7 @@ struct TodayExpenseView: View {
                 expenseViewModel: expenseViewModel, 
                 selectedDate: $expenseViewModel.selectedDate,
                 pickerId: pickerId,
-                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravel?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
+                startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravelInExpense?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
         }
         .padding(.bottom, 12)
     }
@@ -88,7 +88,7 @@ struct TodayExpenseView: View {
                     // 결제 수단: 전체: 합계
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: -2,
@@ -123,7 +123,7 @@ struct TodayExpenseView: View {
 
                     NavigationLink {
                         TodayExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedDate: expenseViewModel.selectedDate,
                             selectedCountry: country,
                             selectedPaymentMethod: paymentMethod,

@@ -31,7 +31,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedCountry: Int64 = -2 {
         didSet {
             print("Country changed to: \(selectedCountry)")
-            self.fetchCountryForAllExpense(country: selectedCountry)
+//            self.fetchCountryForAllExpense(country: selectedCountry)
         }
     }
     @Published var selectedCategory: Int64 = 0
@@ -131,7 +131,7 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func daysBetweenTravelDates(selectedTravel: Travel, selectedDate: Date) -> Int {
-        guard let startDate = selectedTravel.startDate else { return 0 }
+        guard let startDate = MainViewModel.shared.selectedTravelInExpense?.startDate else { return 0 }
         let calendar = Calendar.current
         let startOfDayStartDate = calendar.startOfDay(for: startDate)
         let startOfDayEndDate = calendar.startOfDay(for: selectedDate)
@@ -209,13 +209,12 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func setupSelectedTravel() {
-        MainViewModel.shared.$selectedTravel
+        MainViewModel.shared.$selectedTravelInExpense
             .removeDuplicates()
             .sink { [weak self] travel in
                 guard let self = self else { return }
                 print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
-                
                 self.filteredTodayExpenses = self.getFilteredTodayExpenses()
                 
 //                self.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
@@ -226,6 +225,7 @@ class ExpenseViewModel: ObservableObject {
                 print("setup | Filtered by filteredAllExpenses: \(filteredAllExpenses.count)")
                 
 //                self.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+                
                 print("setup | Filtered by filteredAllExpensesForDetail: \(filteredAllExpensesForDetail.count)")
                 
                 self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
@@ -242,13 +242,13 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func getFilteredTodayExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravelInExpense?.id ?? UUID())
         let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
         return filteredByDate
     }
     
     func getFilteredAllExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravelInExpense?.id ?? UUID())
         return filteredByTravel
     }
     

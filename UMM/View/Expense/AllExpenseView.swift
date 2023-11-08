@@ -50,7 +50,7 @@ struct AllExpenseView: View {
         }
         return NavigationLink {
             AllExpenseDetailView(
-                selectedTravel: mainVM.selectedTravel,
+                selectedTravel: mainVM.selectedTravelInExpense,
                 selectedCategory: -2,
                 selectedCountry: expenseViewModel.selectedCountry,
                 selectedPaymentMethod: -2,
@@ -180,7 +180,7 @@ struct AllExpenseView: View {
                     
                     NavigationLink {
                         AllExpenseDetailView(
-                            selectedTravel: mainVM.selectedTravel,
+                            selectedTravel: mainVM.selectedTravelInExpense,
                             selectedCategory: indexedSumArrayInPayAmountOrder[index].0,
                             selectedCountry: expenseViewModel.selectedCountry,
                             selectedPaymentMethod: -2,

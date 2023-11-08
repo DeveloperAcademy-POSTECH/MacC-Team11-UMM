@@ -45,7 +45,7 @@ struct ExpenseView: View {
             .padding(.horizontal, 20)
             .ignoresSafeArea()
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
-                TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravel, selectedCountry: $expenseViewModel.selectedCountry)
+                TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravelInExpense, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
             }
         }
@@ -92,7 +92,7 @@ struct ExpenseView: View {
                         .layoutPriority(-1)
                     
                     HStack(spacing: 12) {
-                        Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "-")
+                        Text(mainVM.selectedTravelInExpense?.name != "Default" ? mainVM.selectedTravelInExpense?.name ?? "-" : "-")
                             .font(.subhead2_2)
                             .foregroundStyle(.black)
                         Image("recordTravelChoiceDownChevron")

@@ -73,6 +73,7 @@ struct MainView: View {
 //            }
             
             viewModel.selectedTravel = findCurrentTravel()
+            viewModel.selectedTravelInExpense = findCurrentTravel()
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)
