@@ -39,8 +39,8 @@ struct AllExpenseDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         .onAppear {
-            expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
-            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
+            expenseViewModel.filteredAllExpensesForDetail = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+            currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
         }
     }
     
@@ -65,8 +65,8 @@ struct AllExpenseDetailView: View {
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
-                        expenseViewModel.filteredAllExpenses = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
-                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpenses)
+                        expenseViewModel.filteredAllExpensesForDetail = expenseViewModel.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+                        currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
                         isPaymentModalPresented = false
                     }, label: {
                         if selectedPaymentMethod == Int64(idx) {
@@ -145,7 +145,7 @@ struct AllExpenseDetailView: View {
     // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            let sortedExpenses = expenseViewModel.filteredAllExpenses.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
+            let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
             let groupedByDate = Dictionary(grouping: sortedExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) }) // 날짜별로 그룹화
             
             ForEach(groupedByDate.keys.sorted(), id: \.self) { date in

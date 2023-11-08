@@ -20,6 +20,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var filteredTodayExpenses: [Expense] = []
     @Published var filteredTodayExpensesForDetail: [Expense] = []
     @Published var filteredAllExpenses: [Expense] = []
+    @Published var filteredAllExpensesForDetail: [Expense] = []
     @Published var filteredAllExpensesByCountry: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
     @Published var groupedAllExpenses: [Int64: [Expense]] = [:]
@@ -34,13 +35,7 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     @Published var selectedCategory: Int64 = 0
-    @Published var travelChoiceHalfModalIsShown = false {
-        willSet {
-            if newValue {
-                print("travelChoiceHalfModalIsShown: \(newValue)")
-            }
-        }
-    }
+    @Published var travelChoiceHalfModalIsShown = false
     @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
     let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
     private var travelStream: Set<AnyCancellable> = []
@@ -74,17 +69,6 @@ class ExpenseViewModel: ObservableObject {
         } catch let error {
             print("Error while saveExpense: \(error.localizedDescription)")
         }
-    }
-
-    func getFilteredTodayExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
-        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-        return filteredByDate
-    }
-    
-    func getFilteredAllExpenses() -> [Expense] {
-        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
-        return filteredByTravel
     }
     
     func filterExpensesByTravel(expenses: [Expense], selectedTravelID: UUID) -> [Expense] {
@@ -218,12 +202,11 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func fetchCountryForAllExpense(country: Int64) {
-        filteredAllExpenses = getFilteredAllExpenses()
+        filteredAllExpenses = getFilteredAllExpenses(selectedTravel: MainViewModel.shared.selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: country)
         filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: country)
         groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
         indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
     }
-
     
     func setupSelectedTravel() {
         MainViewModel.shared.$selectedTravel
@@ -232,17 +215,28 @@ class ExpenseViewModel: ObservableObject {
                 guard let self = self else { return }
                 print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
-                fetchCountryForAllExpense(country: selectedCountry)
                 
-//                self.filteredTodayExpenses = self.getFilteredTodayExpenses()
-//                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
+                self.filteredTodayExpenses = self.getFilteredTodayExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
+                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
 
-//                self.filteredAllExpenses = self.getFilteredAllExpenses()
-//                self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
-//                self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
+                self.filteredAllExpenses = getFilteredAllExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
+                self.filteredAllExpensesByCountry = filterExpensesByCountry(expenses: filteredAllExpenses, country: selectedCountry)
+                self.groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
+                self.indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
             }
             .store(in: &travelStream)
     }
+    
+    func getFilteredTodayExpenses() -> [Expense] {
+        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
+        let filteredByDate = filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
+        return filteredByDate
+    }
+//    
+//    func getFilteredAllExpenses() -> [Expense] {
+//        let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravel?.id ?? UUID())
+//        return filteredByTravel
+//    }
     
     // 최종 배열
     func getFilteredTodayExpenses(selectedTravel: Travel, selectedDate: Date, selctedCountry: Int64, selectedPaymentMethod: Int64) -> [Expense] {
