@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ManualRecordInExpenseView: View {
-    @ObservedObject var viewModel = ManualRecordInExpenseViewModel()
+    @StateObject var viewModel = ManualRecordInExpenseViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
@@ -19,10 +19,12 @@ struct ManualRecordInExpenseView: View {
     
     let given_wantToActivateAutoSaveTimer: Bool
     let given_payAmount: Double
+    let given_currency: Int
     let given_info: String?
     let given_infoCategory: ExpenseInfoCategory
     let given_paymentMethod: PaymentMethod
     let given_soundRecordData: Data?
+    let given_expense: Expense
     
     var body: some View {
         ZStack {
@@ -94,12 +96,14 @@ struct ManualRecordInExpenseView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
-            print("given_info: \(given_info)")
-            print("given_payAmount: \(given_payAmount)")
-            print("given_paymentMethod: \(given_paymentMethod)")
-            print("given_infoCategory: \(given_infoCategory)")
-            print("given_soundRecordData: \(given_soundRecordData)")
             print("given_wantToActivateAutoSaveTimer: \(given_wantToActivateAutoSaveTimer)")
+            print("given_payAmount: \(given_payAmount)")
+            print("given_currency: \(given_currency)")
+            print("given_info: \(given_info)")
+            print("given_infoCategory: \(given_infoCategory)")
+            print("given_paymentMethod: \(given_paymentMethod)")
+            print("given_soundRecordData: \(given_soundRecordData)")
+            print("given_expense: \(given_expense)")
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             viewModel.payAmount = given_payAmount
@@ -117,6 +121,7 @@ struct ManualRecordInExpenseView: View {
             viewModel.category = given_infoCategory
             viewModel.paymentMethod = given_paymentMethod
             viewModel.soundRecordData = given_soundRecordData
+            viewModel.currency = given_currency
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -133,6 +138,10 @@ struct ManualRecordInExpenseView: View {
             } else {
                 viewModel.participantTupleArray = [("나", true)]
             }
+            
+            // 초기값
+            MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
+            
             var expenseArray: [Expense] = []
             if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
                 do {
@@ -147,8 +156,10 @@ struct ManualRecordInExpenseView: View {
                     print("error fetching expenses: \(error.localizedDescription)")
                 }
             }
+            
             viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
 
+            // MARK: - ^^^
             if viewModel.currentCountry == 3 {
                 viewModel.currencyCandidateArray = [4, 0]
             } else {
@@ -191,16 +202,16 @@ struct ManualRecordInExpenseView: View {
                 viewModel.otherCountryCandidateArray.append(viewModel.country)
             }
             
-            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
+//            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
             
-            viewModel.currency =  4 // 미국 달러
+//            viewModel.currency =  4 // 미국 달러
             
-            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                if tuple.value.isoCodeNm == stringCurrency {
-                    viewModel.currency = tuple.key
-                    break
-                }
-            }
+//            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+//                if tuple.value.isoCodeNm == stringCurrency {
+//                    viewModel.currency = tuple.key
+//                    break
+//                }
+//            }
             
             if viewModel.currentCountry == 3 { // 미국
                 viewModel.currencyCandidateArray = [4, 0]

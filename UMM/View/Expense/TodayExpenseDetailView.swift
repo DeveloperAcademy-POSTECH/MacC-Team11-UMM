@@ -157,10 +157,13 @@ struct TodayExpenseDetailView: View {
                     ManualRecordInExpenseView(
                         given_wantToActivateAutoSaveTimer: false,
                         given_payAmount: expense.payAmount,
+                        given_currency: Int(expense.currency),
                         given_info: expense.info,
                         given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
                         given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
-                        given_soundRecordData: expense.voiceRecordFile)
+                        given_soundRecordData: expense.voiceRecordFile,
+                        given_expense: expense
+                    )
                         .environmentObject(mainVM) // ^^^
                 } label: {
                     HStack(alignment: .center, spacing: 0) {
