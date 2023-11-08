@@ -27,7 +27,8 @@ struct TravelListView: View {
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
     @State private var countryName: [String] = []
-    
+
+    let dateGapHandler = DateGapHandler.shared
     let handler = ExchangeRateHandler.shared
     
     var body: some View {
@@ -44,7 +45,7 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
                     viewModel.fetchDefaultTravel()
@@ -195,7 +196,7 @@ struct TravelListView: View {
                                             Group {
                                                 Text("Day ")
                                                 +
-                                                Text("\(viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()))")
+                                                Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date())))")
                                             }
                                             .font(.caption1)
                                             .foregroundStyle(Color.white)
@@ -209,9 +210,9 @@ struct TravelListView: View {
                                             
                                             HStack {
                                                 Group {
-                                                    Text(nowTravel?[index].startDate ?? Date(), formatter: TravelListViewModel.dateFormatter) +
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter) +
                                                     Text(" ~ ") +
-                                                    Text(nowTravel?[index].endDate ?? Date(), formatter: TravelListViewModel.dateFormatter)
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
                                                 }
                                                 .font(.subhead2_2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
@@ -241,8 +242,10 @@ struct TravelListView: View {
                                         
                                     }
                                     .onAppear {
-                                        print("indexxxxx", index)
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            viewModel.updateTravel()
+                                            viewModel.saveTravel()
+                                            
                                             self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
                                             if let savedExpenses = savedExpenses {
                                                 let countryValues: [Int64] = savedExpenses.map { expense in
@@ -349,7 +352,9 @@ struct TravelListView: View {
                                 +
                                 Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
                                 +
-                                Text("원") // Doris
+                                Text(" ")
+                                +
+                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.first?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
                             }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)

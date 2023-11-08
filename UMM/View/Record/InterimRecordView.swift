@@ -23,6 +23,8 @@ struct InterimRecordView: View {
     
     @ObservedObject private var viewModel = InterimRecordViewModel()
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         VStack(spacing: 0) {
             titleHeader
@@ -95,8 +97,11 @@ struct InterimRecordView: View {
                                 Group {
                                     Text("\(viewModel.formatAmount(amount: defaultExpense?[index].payAmount))")
                                     +
-                                    Text(" 원") // Doris
+                                    Text(" ")
+                                    +
+                                    Text((CountryInfoModel.shared.countryResult[Int(((defaultExpense?[index].country) ?? -1))]?.relatedCurrencyArray[0]) ?? "-")
                                 }
+
                                 .font(.display2)
                                 .foregroundStyle(Color.black)
                                 
@@ -119,11 +124,11 @@ struct InterimRecordView: View {
                             }
                             
                             Group {
-                                Text(dateFormatterWithDay.string(from: defaultExpense?[index].payDate ?? Date()))
+                                Text(dateFormatterWithDay.string(from: dateGapHandler.convertBeforeShowing(date: defaultExpense?[index].payDate ?? Date())))
                                 +
                                 Text(" ")
                                 +
-                                Text(dateFormatterWithHourMiniute(date: defaultExpense?[index].payDate ?? Date()))
+                                Text(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: defaultExpense?[index].payDate ?? Date())))
                             }
                             .font(.caption2)
                             .foregroundStyle(Color.gray400)
