@@ -223,6 +223,7 @@ class ExpenseViewModel: ObservableObject {
         groupedAllExpenses = Dictionary(grouping: filteredAllExpensesByCountry, by: { $0.category })
         indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
     }
+
     
     func setupSelectedTravel() {
         MainViewModel.shared.$selectedTravel
@@ -231,9 +232,11 @@ class ExpenseViewModel: ObservableObject {
                 guard let self = self else { return }
                 print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
+                fetchCountryForAllExpense(country: selectedCountry)
+                
 //                self.filteredTodayExpenses = self.getFilteredTodayExpenses()
 //                self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
-                
+
 //                self.filteredAllExpenses = self.getFilteredAllExpenses()
 //                self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
 //                self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })

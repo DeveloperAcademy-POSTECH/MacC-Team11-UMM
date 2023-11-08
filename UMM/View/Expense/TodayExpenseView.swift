@@ -37,7 +37,7 @@ struct TodayExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-            expenseViewModel.fetchExpense()
+//            expenseViewModel.fetchExpense()
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
         }
