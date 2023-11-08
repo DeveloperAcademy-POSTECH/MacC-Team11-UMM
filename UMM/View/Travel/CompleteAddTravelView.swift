@@ -52,17 +52,13 @@ struct CompleteAddTravelView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-//                if let firstParticipant = selectedTravel?.first?.participantArray?.first {
-//                    self.travelNM = firstParticipant + "외" + "\(String(describing: selectedTravel?.first?.participantArray?.count))명의 여행"
-//                } else {
-//                    self.travelNM = "나의 여행"
-//                }
                 self.travelNM = memberViewModel.travelName ?? "제목 미정"
             }
         }
         .onDisappear {
             selectedTravel?.first?.name = travelNM
             mainVM.selectedTravel = self.selectedTravel?.first
+            viewModel.saveTravel()
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
