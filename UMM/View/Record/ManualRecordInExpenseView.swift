@@ -94,6 +94,12 @@ struct ManualRecordInExpenseView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
+            print("given_info: \(given_info)")
+            print("given_payAmount: \(given_payAmount)")
+            print("given_paymentMethod: \(given_paymentMethod)")
+            print("given_infoCategory: \(given_infoCategory)")
+            print("given_soundRecordData: \(given_soundRecordData)")
+            print("given_wantToActivateAutoSaveTimer: \(given_wantToActivateAutoSaveTimer)")
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             viewModel.payAmount = given_payAmount

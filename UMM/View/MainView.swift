@@ -62,18 +62,8 @@ struct MainView: View {
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
             print("MainView onAppear")
-//            print("MainView | viewModel.selectedTravel: \(String(describing: viewModel.selectedTravel?.name))")
-//            let travel = findCurrentTravel()
-//            if viewModel.selectedTravel == nil {
-//                viewModel.selectedTravel = travel
-//            } else {
-//                if let travel, let selectedTravel = viewModel.selectedTravel, travel != selectedTravel {
-//                    viewModel.selectedTravel = travel
-//                }
-//            }
-            
-            viewModel.selectedTravel = findCurrentTravel()
-            viewModel.selectedTravelInExpense = findCurrentTravel()
+//            viewModel.selectedTravel = findCurrentTravel()
+//            viewModel.selectedTravelInExpense = findCurrentTravel()
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)

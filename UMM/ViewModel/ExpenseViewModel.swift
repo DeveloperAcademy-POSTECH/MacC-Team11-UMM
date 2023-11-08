@@ -15,11 +15,11 @@ class ExpenseViewModel: ObservableObject {
     private let exchangeRateHandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
 
-    @Published var savedTravels: [Travel] = []
-    @Published var savedExpenses: [Expense] = []
-    @Published var filteredTodayExpenses: [Expense] = []
+    var savedTravels: [Travel] = []
+    var savedExpenses: [Expense] = []
+    var filteredTodayExpenses: [Expense] = []
     @Published var filteredTodayExpensesForDetail: [Expense] = []
-    @Published var filteredAllExpenses: [Expense] = []
+    var filteredAllExpenses: [Expense] = []
     @Published var filteredAllExpensesForDetail: [Expense] = []
     @Published var filteredAllExpensesByCountry: [Expense] = []
     @Published var groupedTodayExpenses: [Int64: [Expense]] = [:]
@@ -28,17 +28,14 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedDate = Date()
     @Published var selectedLocation: String = ""
     @Published var selectedPaymentMethod: Int64 = 0
-    @Published var selectedCountry: Int64 = -2 {
-        didSet {
-            print("Country changed to: \(selectedCountry)")
-//            self.fetchCountryForAllExpense(country: selectedCountry)
-        }
-    }
+    @Published var selectedCountry: Int64 = -2
     @Published var selectedCategory: Int64 = 0
     @Published var travelChoiceHalfModalIsShown = false
     @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
     let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
     private var travelStream: Set<AnyCancellable> = []
+    private var prevSelectedDate: Date?
+    private var prevSelectedCountry: Int64?
     
     init() {
         setupSelectedTravel()
@@ -213,30 +210,13 @@ class ExpenseViewModel: ObservableObject {
             .removeDuplicates()
             .sink { [weak self] travel in
                 guard let self = self else { return }
-                print("setupSelectedTravel !!!!!!!!!!!")
                 self.fetchExpense()
                 self.filteredTodayExpenses = self.getFilteredTodayExpenses()
-                
-//                self.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
-                
                 self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
-                
                 self.filteredAllExpenses = self.getFilteredAllExpenses()
-                print("setup | Filtered by filteredAllExpenses: \(filteredAllExpenses.count)")
-                
-//                self.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: travel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
-                
-                print("setup | Filtered by filteredAllExpensesForDetail: \(filteredAllExpensesForDetail.count)")
-                
                 self.filteredAllExpensesByCountry = self.filterExpensesByCountry(expenses: self.filteredAllExpenses, country: Int64(-2))
-                print("setup | Filtered by filteredAllExpensesByCountry: \(filteredAllExpensesByCountry.count)")
-
                 self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
-                print("setup | Filtered by groupedAllExpenses: \(groupedAllExpenses.count)")
-
                 self.indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
-                print("setup | Filtered by indexedSumArrayInPayAmountOrder: \(indexedSumArrayInPayAmountOrder.count)")
-
             }
             .store(in: &travelStream)
     }
@@ -251,41 +231,4 @@ class ExpenseViewModel: ObservableObject {
         let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravelInExpense?.id ?? UUID())
         return filteredByTravel
     }
-    
-    // 최종 배열
-//    func getFilteredTodayExpenses(selectedTravel: Travel, selectedDate: Date, selctedCountry: Int64, selectedPaymentMethod: Int64) -> [Expense] {
-//        let filteredByTravel = self.filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
-//        print("Filtered by travel: \(filteredByTravel.count)")
-//        
-//        let filteredByDate = self.filterExpensesByDate(expenses: filteredByTravel, selectedDate: selectedDate)
-//        print("Filtered by date: \(filteredByDate.count)")
-//        
-//        let filteredByCountry = self.filterExpensesByCountry(expenses: filteredByDate, country: selectedCountry)
-//        print("Filtered by Country: \(filteredByCountry.count)")
-//        
-//        if selectedPaymentMethod == -2 {
-//            return filteredByCountry
-//        } else {
-//            let filterByPaymentMethod = self.filterExpensesByPaymentMethod(expenses: filteredByCountry, paymentMethod: selectedPaymentMethod)
-//            return filterByPaymentMethod
-//        }
-//    }
-    
-//    func getFilteredAllExpenses(selectedTravel: Travel, selectedPaymentMethod: Int64, selectedCategory: Int64, selectedCountry: Int64) -> [Expense] {
-//        var filteredExpenses = self.filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
-//        
-//        if selectedPaymentMethod != -2 {
-//            filteredExpenses = self.filterExpensesByPaymentMethod(expenses: filteredExpenses, paymentMethod: selectedPaymentMethod)
-//        }
-//        
-//        if selectedCategory != -2 {
-//            filteredExpenses = self.filterExpensesByCategory(expenses: filteredExpenses, category: selectedCategory)
-//        }
-//
-//        if selectedCountry != -2 {
-//            filteredExpenses = self.filterExpensesByCountry(expenses: filteredExpenses, country: selectedCountry)
-//        }
-//        
-//        return filteredExpenses
-//    }
 }
