@@ -13,7 +13,7 @@ class MainViewModel: ObservableObject {
     static let shared = MainViewModel()
     
     // didSet으로 selection == 2일 때, default
-    @Published var selection: Int = 0
+    @Published var selection: Int = 1
     @Published var selectedTravel: Travel?
     @Published var selectedTravelInExpense: Travel?
     @Published var chosenTravelInManualRecord: Travel?
