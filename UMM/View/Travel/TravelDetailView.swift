@@ -65,6 +65,7 @@ struct TravelDetailView: View {
                     }
                 }
             }
+            .ignoresSafeArea(edges: .bottom)
             .background(
                 Image(defaultImageString)
                     .resizable()

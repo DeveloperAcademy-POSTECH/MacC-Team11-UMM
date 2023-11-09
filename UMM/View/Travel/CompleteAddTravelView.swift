@@ -54,6 +54,7 @@ struct CompleteAddTravelView: View {
                 })
             }
         }
+        .ignoresSafeArea(edges: .bottom)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 viewModel.fetchTravel()

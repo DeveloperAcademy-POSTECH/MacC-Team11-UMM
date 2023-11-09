@@ -46,6 +46,7 @@ struct InterimRecordView: View {
                 })
             }
         }
+        .ignoresSafeArea(edges: .bottom)
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)

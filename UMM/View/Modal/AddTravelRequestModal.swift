@@ -42,7 +42,6 @@ struct AddTravelRequestModal: View {
                 MainViewModel.shared.selection = 0
             }
         }
-        .padding(.bottom, 45)
     }
 }
 

@@ -26,7 +26,7 @@ struct LargeButtonActive: View {
         .cornerRadius(12)
         .padding(.horizontal, 16)
         .padding(.top, 4)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
         .background(Color.white)
     }
 }
@@ -50,7 +50,7 @@ struct LargeButtonUnactive: View {
         .cornerRadius(12)
         .padding(.horizontal, 16)
         .padding(.top, 4)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
         .background(Color.white)
     }
 }
@@ -72,7 +72,7 @@ struct MediumButtonWhite: View {
         .background(Color.white)
         .cornerRadius(12)
         .padding(.leading, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -98,6 +98,7 @@ struct MediumButtonStroke: View {
 
             )
         .padding(.leading, 16)
+        .padding(.bottom, 45)
     }
 }
 
@@ -117,7 +118,7 @@ struct MediumButtonMain: View {
         .background(Color.mainPink)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -137,7 +138,7 @@ struct MediumButtonActive: View {
         .background(Color.black)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -157,7 +158,7 @@ struct MediumButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.leading, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -182,7 +183,7 @@ struct NextButtonActive: View {
         .background(Color.black)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -208,7 +209,7 @@ struct NextButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -229,7 +230,7 @@ struct DoneButtonActive: View {
         .background(Color.black)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)
+        .padding(.bottom, 45)
     }
 }
 
@@ -250,7 +251,7 @@ struct DoneButtonUnactive: View {
         .background(Color.gray)
         .cornerRadius(12)
         .padding(.trailing, 16)
-//        .padding(.bottom, 45)        
+        .padding(.bottom, 45)        
     }
 }
 

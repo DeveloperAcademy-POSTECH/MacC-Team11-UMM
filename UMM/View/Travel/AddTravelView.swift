@@ -60,10 +60,11 @@ struct AddTravelView: View {
                             
                         })
                         .disabled(true)
-                        .ignoresSafeArea()
+                        .ignoresSafeArea(edges: .bottom)
                     }
                 }
             }
+            .ignoresSafeArea(edges: .bottom)
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationTitle("새로운 여행 생성")
