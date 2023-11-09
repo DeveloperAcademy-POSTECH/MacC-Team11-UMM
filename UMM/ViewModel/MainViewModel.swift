@@ -17,6 +17,7 @@ class MainViewModel: ObservableObject {
     @Published var selectedTravel: Travel?
     @Published var selectedTravelInExpense: Travel?
     @Published var chosenTravelInManualRecord: Travel?
+    var firstChosenTravelInManualRecord: Travel?
     
     private init() {
         print("mainViewModel init")
@@ -30,5 +31,9 @@ class MainViewModel: ObservableObject {
     
     func navigationToExpenseView() {
         self.selection = 2
+    }
+    
+    func isSameFirstAndNowChosenTravel() -> Bool {
+        return self.firstChosenTravelInManualRecord == self.chosenTravelInManualRecord
     }
 }

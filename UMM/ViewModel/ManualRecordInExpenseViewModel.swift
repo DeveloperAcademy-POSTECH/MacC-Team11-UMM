@@ -63,7 +63,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     // MARK: FirstValue
     var firstPaymentMethod: PaymentMethod?
-    var firstTravelArray: [Travel]?
     var firstParticipantTupleArray: [(name: String, isOn: Bool)]?
     var firstPayDate: Date?
     var firstCountryExpression: String?
@@ -528,7 +527,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
            let firstCategory = self.firstCategory,
            let firstCurrency = self.firstCurrency,
            let firstPayDate = self.firstPayDate,
-           let firstTravelArray = self.firstTravelArray,
            let firstVisibleInfo = self.firstVisibleInfo,
            let firstPaymentMethod = self.firstPaymentMethod,
            let firstCountryExpression = self.firstCountryExpression,
@@ -540,7 +538,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             (firstCategory == category) &&
             (firstCurrency == currency) &&
             (firstPayDate == payDate) &&
-            (firstTravelArray == travelArray) &&
             (firstVisibleInfo == visibleInfo) &&
             (firstPaymentMethod == paymentMethod) &&
             (firstCountryExpression == countryExpression) &&
