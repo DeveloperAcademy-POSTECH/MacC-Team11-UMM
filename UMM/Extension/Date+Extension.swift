@@ -11,7 +11,7 @@ extension Date {
     func toString(dateFormat: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
-//        dateFormatter.timeZone = ...
+        //        dateFormatter.timeZone = ...
         return dateFormatter.string(from: self)
     }
     
@@ -33,11 +33,13 @@ extension Date {
     
     func isTimeEqual(to otherDate: Date) -> Bool {
         let calendar = Calendar.current
-        let componentsA = calendar.dateComponents([.hour, .minute, .second], from: self)
-        let componentsB = calendar.dateComponents([.hour, .minute, .second], from: otherDate)
+        let componentsA = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
+        let componentsB = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: otherDate)
         
-        return componentsA.hour == componentsB.hour &&
-            componentsA.minute == componentsB.minute &&
-            componentsA.second == componentsB.second
+        return componentsA.year == componentsB.year &&
+        componentsA.month == componentsB.month &&
+        componentsA.day == componentsB.day &&
+        componentsA.hour == componentsB.hour &&
+        componentsA.minute == componentsB.minute
     }
 }

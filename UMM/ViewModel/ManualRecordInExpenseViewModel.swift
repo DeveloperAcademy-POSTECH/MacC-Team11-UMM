@@ -608,8 +608,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             return false
         }
     }
-
-
     
     func checkFirstAppear() {
         print("checkFirstAppear")
