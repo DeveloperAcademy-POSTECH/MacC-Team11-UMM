@@ -282,11 +282,7 @@ struct ManualRecordInExpenseView: View {
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onAppear {
             viewModel.checkFirstAppear()
-            print("before | MainViewModel.shared.firstChosenTravelInManualRecord: \(MainViewModel.shared.firstChosenTravelInManualRecord?.name)")
-            print("before | MainViewModel.shared.ChosenTravelInManual \(MainViewModel.shared.chosenTravelInManualRecord?.name)")
             MainViewModel.shared.firstChosenTravelInManualRecord = MainViewModel.shared.chosenTravelInManualRecord
-            print("after | MainViewModel.shared.firstChosenTravelInManualRecord: \(MainViewModel.shared.firstChosenTravelInManualRecord?.name)")
-            print("after | MainViewModel.shared.ChosenTravelInManualRecord: \(MainViewModel.shared.chosenTravelInManualRecord?.name)")
         }
         .onDisappear {
             viewModel.autoSaveTimer?.invalidate()

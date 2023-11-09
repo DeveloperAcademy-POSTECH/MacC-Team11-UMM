@@ -103,8 +103,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstVisiblePayAmount = firstVisiblePayAmount {
                 print(firstVisiblePayAmount == visiblePayAmount)
             }
-            print("VisiblePayAmount | firstVisiblePayAmount: \(firstVisiblePayAmount)")
-            print("VisiblePayAmount | VisiblePayAmount: \(visiblePayAmount)")
             if isFirstAppear {
                 firstVisiblePayAmount = visiblePayAmount
             } else {
@@ -136,8 +134,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstVisibleInfo = firstVisibleInfo {
                 print(firstVisibleInfo == visibleInfo)
             }
-            print("VisibleInfo | firstVisibleInfo: \(firstVisibleInfo)")
-            print("VisibleInfo | VisibleInfo: \(visibleInfo)")
             if isFirstAppear {
                 firstVisibleInfo = visibleInfo
             } else {
@@ -157,8 +153,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstCategory = firstCategory {
                 print(firstCategory == category)
             }
-            print("Category | firstCategory: \(firstCategory)")
-            print("Category | Category: \(category)")
             if isFirstAppear {
                 firstCategory = category
             } else {
@@ -173,8 +167,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstPaymentMethod = firstPaymentMethod {
                 print(firstPaymentMethod == paymentMethod)
             }
-            print("paymentMethod | firstPaymentMethod: \(firstPaymentMethod)")
-            print("paymentMethod | PaymentMethod: \(paymentMethod)")
             if isFirstAppear {
                 firstPaymentMethod = paymentMethod
             } else {
@@ -192,8 +184,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstParticipantTupleArray = firstParticipantTupleArray {
                 print((zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }))
             }
-            print("ParticipantTupleArray | firstParticipantTupleArray: \(firstParticipantTupleArray)")
-            print("ParticipantTupleArray | ParticipantTupleArray: \(participantTupleArray)")
             if isFirstAppear {
                 firstParticipantTupleArray = participantTupleArray
             } else {
@@ -208,8 +198,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstPayDate = firstPayDate {
                 print(firstPayDate == payDate)
             }
-            print("PayDate | firstPayDate: \(firstPayDate)")
-            print("PayDate | PayDate: \(payDate)")
             if isFirstAppear {
                 firstPayDate = payDate
             } else {
@@ -262,8 +250,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstCountryExpression = firstCountryExpression {
                 print(firstCountryExpression == countryExpression)
             }
-            print("CountryExpression | firstCountryExpression: \(firstCountryExpression)")
-            print("CountryExpression | CountryExpression: \(countryExpression)")
             if isFirstAppear {
                 firstCountryExpression = countryExpression
             } else {
@@ -278,8 +264,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstLocationExpression = firstLocationExpression {
                 print(firstLocationExpression == locationExpression)
             }
-            print("LocationExpression | firstLocationExpression: \(firstLocationExpression)")
-            print("LocationExpression | LocationExpression: \(locationExpression)")
             if isFirstAppear {
                 firstLocationExpression = locationExpression
             } else {
@@ -298,8 +282,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             if let firstCurrency = firstCurrency {
                 print(firstCurrency == currency)
             }
-            print("Currency | firstCurrency: \(firstCurrency)")
-            print("Currency | Currency: \(currency)")
             if isFirstAppear {
                 firstCurrency = currency
             } else {
@@ -537,9 +519,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
            let firstCountryExpression = self.firstCountryExpression,
            let firstLocationExpression = self.firstLocationExpression,
            let firstVisiblePayAmount = self.firstVisiblePayAmount,
-           let firstParticipantTupleArray = self.firstParticipantTupleArray
-        {
-            // 변수 할당이 모두 성공한 경우
+           let firstParticipantTupleArray = self.firstParticipantTupleArray {
             let isSameCountry = firstCountry == country
             let isSameCategory = firstCategory == category
             let isSameCurrency = firstCurrency == currency

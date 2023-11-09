@@ -27,12 +27,12 @@ struct CustomDatePicker: View {
             // selectedDate == startDateOfTravel이면 inActiveLeft
             // 나머지 경우에는 activeLeft
             if Calendar.current.isDate(selectedDate, equalTo: startDateOfTravel, toGranularity: .day) {
-                Button(action: {}) {
+                Button(action: {}, label: {
                     Image("inActivatedLeft")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
-                }
+                })
             } else {
                 Button(action: {
                     selectedDate = selectedDate.addingTimeInterval(-86400)
@@ -68,12 +68,12 @@ struct CustomDatePicker: View {
                     .colorMultiply(Color.clear)
             }
             if Calendar.current.isDate(selectedDate, equalTo: endDateOfTravel, toGranularity: .day) {
-                Button(action: {}) {
+                Button(action: {}, label: {
                     Image("inActivatedRight")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 16, height: 16)
-                }
+                })
             } else {
                 Button(action: {
                     selectedDate = selectedDate.addingTimeInterval(86400)
