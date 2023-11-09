@@ -100,8 +100,9 @@ struct TravelDetailView: View {
                             isWarningOn = true
                         } label: {
                             Image(systemName: "trash")
-                                .foregroundStyle(Color.gray200)
+                                .foregroundStyle(Color.white)
                                 .frame(width: 20, height: 20)
+                                .padding(.trailing, 5)
                         }
                         
                         Button {
@@ -113,16 +114,11 @@ struct TravelDetailView: View {
                     }
                 }
             }
-            .alert("여행 삭제하기", isPresented: $isWarningOn) {
-                Button("취소") {
-                    isWarningOn = false
-                }
-                Button("삭제하기") {
+            .alert(isPresented: $isWarningOn) {
+                Alert(title: Text("여행 삭제하기"), message: Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
                     PersistenceController().deleteItems(object: self.selectedTravel?.first)
                     NavigationUtil.popToRootView()
-                }
-            } message: {
-                Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?")
+                }), secondaryButton: .cancel(Text("취소")))
             }
         }
         .toolbar(.hidden, for: .tabBar)
@@ -132,7 +128,7 @@ struct TravelDetailView: View {
     private var dayCounter: some View {
         VStack(alignment: .leading) {
             HStack {
-                if Date() <= endDate ?? Date.distantFuture {
+                if Date() <= endDate ?? Date.distantFuture && startDate <= Date() {
                     HStack(alignment: .center, spacing: 10) {
                         Text("여행 중")
                             .font(
