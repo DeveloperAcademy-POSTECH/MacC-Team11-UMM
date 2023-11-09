@@ -40,6 +40,15 @@ class CompleteAddTravelViewModel: ObservableObject {
         }
     }
     
+    func saveTravel() {
+        do {
+            try viewContext.save()
+            print("save travel")
+        } catch let error {
+            print("Error while SaveTravel: \(error.localizedDescription)")
+        }
+    }
+    
     func dateToString(in date: Date?) -> String {
         if date == nil {
             return ""

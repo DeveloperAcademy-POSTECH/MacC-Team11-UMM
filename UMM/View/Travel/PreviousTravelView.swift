@@ -102,9 +102,14 @@ struct PreviousTravelView: View {
                                                     .font(.caption2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                                     
-                                                    Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                    if let endDate = previousTravel?[index].endDate {
+                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                            .font(.caption2)
+                                                            .foregroundStyle(Color.white.opacity(0.75))
+                                                    } else {
+                                                        Text("")
+                                                    }
+
                                                 }
                                                 .padding(.horizontal, 8)
                                                 .padding(.bottom, 8)
@@ -236,9 +241,13 @@ struct PreviousTravelView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                    .font(.caption2)
-                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                                if let endDate = previousTravel?[index].endDate {
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                        .font(.caption2)
+                                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                                } else {
+                                                                    Text("")
+                                                                }
                                                             }
                                                             .padding(.horizontal, 8)
                                                             .padding(.bottom, 8)

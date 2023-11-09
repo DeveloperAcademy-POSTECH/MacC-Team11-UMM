@@ -354,12 +354,12 @@ struct AddTravelView: View {
             }
         }
         
-        // 시작일과 종료일
-        private func makeSquare(date: Date) -> Bool {
-            if let startDate = viewModel.startDate, let endDate = viewModel.endDate {
-                return date == startDate || date == endDate
+        private func isEndDateSelected(date: Date?) -> Bool {
+            if date == nil {
+                return false
+            } else {
+                return true
             }
-            return false
         }
         
         var body: some View {
@@ -398,28 +398,20 @@ struct AddTravelView: View {
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
-                            } else if makeSquare(date: self.date!) {
+                            } else if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
                                 ZStack {
-                                    ZStack {
-                                        Rectangle()
-                                            .frame(width: 80, height: 33)
-                                            .foregroundStyle(
-                                                LinearGradient(
-                                                    gradient: Gradient(colors: [Color.mainPink.opacity(1), Color.mainPink.opacity(0)]),
-                                                    startPoint: .leading,
-                                                    endPoint: .trailing
-                                                )
-                                            )
-                                            .offset(x: 40)
-                                        
-                                        Circle()
-                                            .frame(width: 33, height: 33)
-                                            .overlay(
-                                                Circle()
-                                                    .stroke(Color.white)
-                                                    .fill(Color.mainPink)
-                                            )
-                                    }
+                                    Rectangle()
+                                        .frame(width: 28, height: 33)
+                                        .foregroundStyle(isEndDateSelected(date: viewModel.endDate) ? Color(0xFFCCD5) : Color.clear)
+                                        .offset(x: 15)
+                                    
+                                    Circle()
+                                        .frame(width: 33, height: 33)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white)
+                                                .fill(Color.mainPink)
+                                        )
                                     
                                     Text(String(day))
                                         .padding(9.81)
@@ -427,27 +419,28 @@ struct AddTravelView: View {
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
-                            } else if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
+                            } else if isSelected(date: self.date!) {
                                 ZStack {
-                                    ZStack {
-                                        
-                                        Circle()
-                                            .frame(width: 33, height: 33)
-                                            .overlay(
-                                                Circle()
-                                                    .stroke(Color.white)
-                                                    .fill(Color.mainPink)
-                                            )
-                                    }
                                     
                                     Text(String(day))
                                         .padding(9.81)
                                         .font(.calendar2)
-                                        .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
+                                        .frame(width: 47) // 45
+                                        .background(
+                                            Rectangle()
+                                                .foregroundStyle(Color(0xFFCCD5))
+                                                .frame(width: 50, height: 33)
+                                        )
+                                        .foregroundStyle(textColor)
                                 }
                             } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
                                 ZStack {
+                                    Rectangle()
+                                        .frame(width: 28, height: 33)
+                                        .foregroundStyle(Color(0xFFCCD5))
+                                        .offset(x: -15)
+                                    
                                     Circle()
                                         .frame(width: 33, height: 33)
                                         .overlay(
@@ -461,21 +454,6 @@ struct AddTravelView: View {
                                         .padding(9.81)
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
-                                }
-                            } else if isSelected(date: self.date!) {
-                                ZStack {
-                                    
-                                    Text(String(day))
-                                        .padding(9.81)
-                                        .font(.calendar2)
-                                        .foregroundStyle(Color.black)
-                                        .frame(width: 47) // 45
-                                        .background(
-                                            Rectangle()
-                                                .foregroundStyle(Color(0xFBEFFB))
-                                                .frame(width: 50, height: 28)
-                                        )
-                                        .foregroundStyle(textColor)
                                 }
                             }
                         }

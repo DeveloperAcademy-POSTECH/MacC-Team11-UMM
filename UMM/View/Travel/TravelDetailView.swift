@@ -18,7 +18,7 @@ struct TravelDetailView: View {
     @State var travelID: UUID = UUID()
     @State var travelName: String
     @State var startDate: Date
-    @State var endDate: Date
+    @State var endDate: Date?
     @State var dayCnt: Int
     @State var participantCnt: Int
     @State var participantArr: [String]
@@ -84,7 +84,6 @@ struct TravelDetailView: View {
             )
             .onAppear {
                 viewModel.fetchTravel()
-                //                travelID = mainVM.selectedTravel?.id ?? UUID()
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
                 
             }
@@ -114,13 +113,16 @@ struct TravelDetailView: View {
                     }
                 }
             }
-            .alert("Alert Title", isPresented: $isWarningOn) {
-                Button("Ok") {
+            .alert("여행 삭제하기", isPresented: $isWarningOn) {
+                Button("취소") {
+                    isWarningOn = false
+                }
+                Button("삭제하기") {
                     PersistenceController().deleteItems(object: self.selectedTravel?.first)
                     NavigationUtil.popToRootView()
                 }
             } message: {
-                Text("This is alert dialog sample")
+                Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?")
             }
         }
         .toolbar(.hidden, for: .tabBar)
@@ -131,7 +133,7 @@ struct TravelDetailView: View {
         VStack(alignment: .leading) {
             HStack {
                 
-                if Date() <= endDate {
+                if Date() <= endDate ?? Date.distantFuture {
                     HStack(alignment: .center, spacing: 10) {
                         Text("여행 중")
                             .font(
@@ -200,16 +202,23 @@ struct TravelDetailView: View {
     }
     
     private var dateBox: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("시작일")
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(dateGapHandler.convertBeforeShowing(date: startDate), formatter: TravelDetailViewModel.dateFormatter)
-                        .font(.body4)
-                        .foregroundStyle(Color.white)
+                    
+                    ZStack(alignment: .leading) {
+                        Text("00.00.00 (수)")
+                            .font(.body4)
+                            .hidden()
+                        
+                        Text(dateGapHandler.convertBeforeShowing(date: startDate), formatter: TravelDetailViewModel.dateFormatter)
+                            .font(.body4)
+                            .foregroundStyle(Color.white)
+                    }
                 }
                 
                 Spacer()
@@ -226,9 +235,22 @@ struct TravelDetailView: View {
                         .font(.subhead1)
                         .foregroundStyle(Color.white)
                         .padding(.bottom, 8)
-                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelDetailViewModel.dateFormatter)
-                        .font(.body4)
-                        .foregroundStyle(Color.white)
+                    
+                    if let endDate = endDate {
+                        ZStack(alignment: .leading) {
+                            Text("00.00.00 (수)")
+                                .font(.body4)
+                                .hidden()
+                            
+                            Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelDetailViewModel.dateFormatter)
+                                .font(.body4)
+                                .foregroundStyle(Color.white)
+                        }
+                    } else {
+                        Text("00.00.00 (수)")
+                            .font(.body4)
+                            .hidden()
+                    }
                 }
                 
                 Spacer()
@@ -250,7 +272,7 @@ struct TravelDetailView: View {
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
             
-            if participantCnt <= 1 {
+            if participantCnt < 1 {
                 
                 HStack(alignment: .center, spacing: 4) {
                     Text("me")
@@ -267,7 +289,7 @@ struct TravelDetailView: View {
                 .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                 .cornerRadius(6)
                 
-            } else if participantCnt <= 4 {
+            } else if participantCnt <= 3 {
                 
                 HStack {
                     HStack(alignment: .center, spacing: 4) {
@@ -285,9 +307,9 @@ struct TravelDetailView: View {
                     .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                     .cornerRadius(6)
                     
-                    ForEach(2..<participantCnt, id: \.self) { index in
+                    ForEach(1..<participantCnt+1, id: \.self) { index in
                         HStack(alignment: .center, spacing: 10) {
-                            Text("\(participantArr[index])")
+                            Text("\(participantArr[index-1])")
                                 .font(.subhead2_2)
                                 .foregroundColor(.white)
                         }
@@ -310,16 +332,15 @@ struct TravelDetailView: View {
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    //                    .frame(height: 28, alignment: .center)
                     .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                     .cornerRadius(6)
                     
                     HStack {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(alignment: .center, spacing: 10) {
-                            ForEach(1..<participantCnt, id: \.self) { index in
+                            ForEach(1..<participantCnt+1, id: \.self) { index in
                                 
-                                    Text("\(participantArr[index])")
+                                    Text("\(participantArr[index-1])")
                                         .font(.subhead2_2)
                                         .foregroundColor(.white)
                                 }

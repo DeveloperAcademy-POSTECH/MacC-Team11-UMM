@@ -60,8 +60,6 @@ struct InterimRecordView: View {
             // ViewModel의 Save함수가 실행됨
             DispatchQueue.main.async {
                 viewModel.update()
-//                print("xxxxxx : chose Expense", defaultExpense?[selectedTravelIndex])
-//                print("xxxxxx", viewModel.chosenExpense?.travel?.name)
             }
         }
     }
