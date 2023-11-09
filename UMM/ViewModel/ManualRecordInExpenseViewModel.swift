@@ -156,6 +156,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
 
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
+            if let firstPaymentMethod = firstPaymentMethod {
+                print(firstPaymentMethod == paymentMethod)
+            }
+            print("paymentMethod | firstPaymentMethod: \(firstPaymentMethod)")
+            print("paymentMethod | PaymentMethod: \(paymentMethod)")
             if isFirstAppear {
                 firstPaymentMethod = paymentMethod
             } else {
@@ -513,7 +518,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                    (firstVisiblePayAmount == visiblePayAmount) &&
                    (zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 })
         }
-        print("updateIsSameDataState | updateIsSameDataState | updateIsSameDataState: false")
         return false
     }
     
