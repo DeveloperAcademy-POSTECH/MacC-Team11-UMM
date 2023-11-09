@@ -312,9 +312,9 @@ struct TravelBlockView: View {
             Spacer()
                 .frame(height: 6)
             
-            Text(travel.name != "Default" ? travel.name ?? "-" : " ")
+            Text(travel.name != "Default" ? travel.name ?? "-" : "임시 기록")
                 .lineLimit(3)
-                .foregroundStyle(.black)
+                .foregroundStyle(travel.name != "Default" ? .black : .gray400)
                 .font(.subhead1)
                 .opacity(travel.id == (chosenTravel?.id ?? UUID()) ? 1 : 0.6)
                 .padding(.horizontal, 10)
