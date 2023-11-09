@@ -54,7 +54,7 @@ struct InterimRecordView: View {
             DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
-                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
                 self.defaultExpense = sortExpenseByDate(expenseArr: defaultExpense)
             }
         }

@@ -104,7 +104,7 @@ class TempSave {
     func addDefaultTravel() {
         let tempTravel = Travel(context: viewContext)
         tempTravel.id = UUID()
-        tempTravel.name = "Default"
+        tempTravel.name = tempTravelName
         tempTravel.startDate = TempSave.nowDate
         tempTravel.endDate = TempSave.nowDate
         tempTravel.lastUpdate = TempSave.nowDate

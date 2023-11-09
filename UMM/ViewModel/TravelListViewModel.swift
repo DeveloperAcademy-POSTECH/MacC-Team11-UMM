@@ -112,7 +112,7 @@ class TravelListViewModel: ObservableObject {
     func findTravelNameDefault() -> [Travel] {
         return defaultTravel.filter { travel in
             if let name = travel.name {
-                return name == "Default"
+                return name == tempTravelName
             } else {
                 return false
             }

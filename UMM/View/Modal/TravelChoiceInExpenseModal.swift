@@ -40,9 +40,9 @@ struct TravelChoiceInExpenseModal: View {
     let sortRule: (Travel, Travel) -> Bool = {
         let nowDate = Date()
         
-        if $0.name != "Default" && $1.name == "Default" {
+        if $0.name != tempTravelName && $1.name == tempTravelName {
             return false
-        } else if $0.name == "Default" && $1.name != "Default" {
+        } else if $0.name == tempTravelName && $1.name != tempTravelName {
             return true
         }
         
@@ -105,7 +105,7 @@ struct TravelChoiceInExpenseModal: View {
             LazyHStack(alignment: .top, spacing: 0) {
                 Spacer()
                     .frame(width: 20)
-                ForEach(travelArray.sorted(by: sortRule).filter { $0.name ?? "" != "Default" }, id: \.self) { travel in // 임시 기록("Default") 제외
+                ForEach(travelArray.sorted(by: sortRule).filter { $0.name ?? "" != tempTravelName }, id: \.self) { travel in // 임시 기록(tempTravelName) 제외
                     HStack(spacing: 0) {
                         TravelBlockView(travel: travel, chosenTravel: selectedTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [], defaultImageString: defaultImageStringDict[travel.id ?? UUID()] ?? "DefaultImage")
                             .onTapGesture {

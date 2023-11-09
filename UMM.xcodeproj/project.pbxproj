@@ -33,6 +33,7 @@
 		57A65D142AD7D65600131266 /* ExpenseInfoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */; };
 		57A65D162AD7D6B000131266 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D152AD7D6B000131266 /* PaymentMethod.swift */; };
 		57A65D182AD7DDA700131266 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A65D172AD7DDA700131266 /* RecordView.swift */; };
+		57B213DE2AFD167A00AFADC7 /* String+DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B213DD2AFD167A00AFADC7 /* String+DesignSystem.swift */; };
 		57B2AA422AEFD3980042E55C /* EmtpyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B2AA412AEFD3980042E55C /* EmtpyFile.swift */; };
 		57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C41DFB2AD4F1EB00345253 /* Persistence.swift */; };
 		57C8342F2AF8B2540097AE99 /* DateChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C8342E2AF8B2540097AE99 /* DateChoiceModal.swift */; };
@@ -132,6 +133,7 @@
 		57A65D132AD7D65600131266 /* ExpenseInfoCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseInfoCategory.swift; sourceTree = "<group>"; };
 		57A65D152AD7D6B000131266 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
 		57A65D172AD7DDA700131266 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
+		57B213DD2AFD167A00AFADC7 /* String+DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+DesignSystem.swift"; sourceTree = "<group>"; };
 		57B2AA412AEFD3980042E55C /* EmtpyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmtpyFile.swift; sourceTree = "<group>"; };
 		57C41DFB2AD4F1EB00345253 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		57C8342E2AF8B2540097AE99 /* DateChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChoiceModal.swift; sourceTree = "<group>"; };
@@ -438,6 +440,7 @@
 			children = (
 				C17965F52ADD64340036E866 /* Fonts */,
 				C190C20B2ADCD47E0099EE3A /* ButtonTheme.swift */,
+				57B213DD2AFD167A00AFADC7 /* String+DesignSystem.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -611,6 +614,7 @@
 				E2D5C05E2ADD922000907501 /* DummyRecordView.swift in Sources */,
 				57A65D182AD7DDA700131266 /* RecordView.swift in Sources */,
 				C179660E2ADD6BF90036E866 /* Color+Extension.swift in Sources */,
+				57B213DE2AFD167A00AFADC7 /* String+DesignSystem.swift in Sources */,
 				C1EAD6A22AF6717C00EB3B89 /* InterimRecordView.swift in Sources */,
 				C19AFAEC2AE107460037A5F5 /* SettingView.swift in Sources */,
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,

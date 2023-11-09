@@ -34,7 +34,7 @@ struct PreviousTravelView: View {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
-                            if previousTravel?[index].name != "Default" {
+                            if previousTravel?[index].name != tempTravelName {
                                 VStack {
                                     NavigationLink(destination: TravelDetailView(
                                         travelID: previousTravel?[index].id ?? UUID(),
@@ -178,7 +178,7 @@ struct PreviousTravelView: View {
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                                         ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
-                                            if previousTravel?[index].name != "Default" {
+                                            if previousTravel?[index].name != tempTravelName {
                                                 VStack {
                                                     NavigationLink(destination: TravelDetailView(travelName: previousTravel?[index].name ?? "",
                                                                                                  startDate: previousTravel?[index].startDate ?? Date(),
