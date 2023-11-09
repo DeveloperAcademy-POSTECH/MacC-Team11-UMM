@@ -315,7 +315,8 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     func startPlayingAudio(data: Data) {
         let tempDirectoryURL = FileManager.default.temporaryDirectory
-        let fileURL = tempDirectoryURL.appendingPathComponent(UUID().uuidString).appendingPathExtension("m4a")
+        let randomID = UUID().uuidString
+        let fileURL = tempDirectoryURL.appendingPathComponent(randomID).appendingPathExtension("m4a")
 
         do {
             try data.write(to: fileURL, options: .atomic)
@@ -344,7 +345,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
-
         } catch {
             print("Playing Failed")
         }

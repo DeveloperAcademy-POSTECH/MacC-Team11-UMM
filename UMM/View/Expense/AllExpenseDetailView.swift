@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AllExpenseDetailView: View {
     @StateObject var expenseViewModel = ExpenseViewModel()
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var mainVM: MainViewModel
     
     var selectedTravel: Travel?
     var selectedCategory: Int64
@@ -17,7 +19,6 @@ struct AllExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
     var sumPaymentMethod: Double
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let dateGapHandler = DateGapHandler.shared
@@ -49,9 +50,13 @@ struct AllExpenseDetailView: View {
     }
     
     private var backButtonView: some View {
-        Image(systemName: "chevron.left")
-            .imageScale(.large)
-            .foregroundColor(Color.black)
+        Button {
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
+        }
     }
     
     private var paymentModal: some View {

@@ -10,6 +10,8 @@ import CoreData
 
 struct TodayExpenseDetailView: View {
     @StateObject var expenseViewModel = ExpenseViewModel()
+    @EnvironmentObject var mainVM: MainViewModel
+    @Environment(\.presentationMode) var presentationMode
     
     var selectedTravel: Travel?
     var selectedDate: Date
@@ -18,7 +20,6 @@ struct TodayExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
@@ -52,9 +53,13 @@ struct TodayExpenseDetailView: View {
     }
     
     private var backButtonView: some View {
-        Image(systemName: "chevron.left")
-            .imageScale(.large)
-            .foregroundColor(Color.black)
+        Button {
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
+        }
     }
     
     private var paymentModal: some View {
