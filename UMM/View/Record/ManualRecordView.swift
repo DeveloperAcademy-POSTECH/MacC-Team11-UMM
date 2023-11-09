@@ -705,7 +705,7 @@ struct ManualRecordView: View {
                             .padding(.vertical, 6)
                             .hidden()
                         
-                        Text(viewModel.payDate.toString(dateFormat: "yyyy년 M월 d일 a hh:mm"))
+                        Text(viewModel.payDate.toString(dateFormat: "yy.MM.dd(E) HH:mm"))
                             .foregroundStyle(.black)
                             .font(.subhead2_2)
                     }
