@@ -10,6 +10,8 @@ import CoreData
 
 struct TodayExpenseDetailView: View {
     @StateObject var expenseViewModel = ExpenseViewModel()
+    @EnvironmentObject var mainVM: MainViewModel
+    @Environment(\.presentationMode) var presentationMode
     
     var selectedTravel: Travel?
     var selectedDate: Date
@@ -18,7 +20,6 @@ struct TodayExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     var sumPaymentMethod: Double
     @State private var isPaymentModalPresented = false
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
@@ -44,6 +45,20 @@ struct TodayExpenseDetailView: View {
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbarBackground(.white, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
+    }
+    
+    private var backButtonView: some View {
+        Button {
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
     }
     
@@ -157,10 +172,17 @@ struct TodayExpenseDetailView: View {
                     ManualRecordInExpenseView(
                         given_wantToActivateAutoSaveTimer: false,
                         given_payAmount: expense.payAmount,
+                        given_currency: Int(expense.currency),
                         given_info: expense.info,
                         given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
                         given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
-                        given_soundRecordData: expense.voiceRecordFile)
+                        given_soundRecordData: expense.voiceRecordFile,
+                        given_expense: expense,
+                        given_payDate: expense.payDate,
+                        given_country: Int(expense.country),
+                        given_location: expense.location,
+                        given_id: expense.id
+                    )
                         .environmentObject(mainVM) // ^^^
                 } label: {
                     HStack(alignment: .center, spacing: 0) {

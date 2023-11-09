@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ManualRecordInExpenseView: View {
-    @ObservedObject var viewModel = ManualRecordInExpenseViewModel()
+    @StateObject var viewModel = ManualRecordInExpenseViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
@@ -19,10 +19,16 @@ struct ManualRecordInExpenseView: View {
     
     let given_wantToActivateAutoSaveTimer: Bool
     let given_payAmount: Double
+    let given_currency: Int
     let given_info: String?
     let given_infoCategory: ExpenseInfoCategory
     let given_paymentMethod: PaymentMethod
     let given_soundRecordData: Data?
+    let given_expense: Expense
+    let given_payDate: Date?
+    let given_country: Int
+    let given_location: String?
+    let given_id: ObjectIdentifier
     
     var body: some View {
         ZStack {
@@ -94,12 +100,14 @@ struct ManualRecordInExpenseView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
-            print("given_info: \(given_info)")
-            print("given_payAmount: \(given_payAmount)")
-            print("given_paymentMethod: \(given_paymentMethod)")
-            print("given_infoCategory: \(given_infoCategory)")
-            print("given_soundRecordData: \(given_soundRecordData)")
             print("given_wantToActivateAutoSaveTimer: \(given_wantToActivateAutoSaveTimer)")
+            print("given_payAmount: \(given_payAmount)")
+            print("given_currency: \(given_currency)")
+            print("given_info: \(given_info)")
+            print("given_infoCategory: \(given_infoCategory)")
+            print("given_paymentMethod: \(given_paymentMethod)")
+            print("given_soundRecordData: \(given_soundRecordData)")
+            print("given_expense: \(given_expense)")
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             viewModel.payAmount = given_payAmount
@@ -117,6 +125,11 @@ struct ManualRecordInExpenseView: View {
             viewModel.category = given_infoCategory
             viewModel.paymentMethod = given_paymentMethod
             viewModel.soundRecordData = given_soundRecordData
+            viewModel.currency = given_currency
+            viewModel.payDate = given_payDate ?? Date()
+            viewModel.country = given_country
+            viewModel.locationExpression = given_location ?? ""
+            viewModel.expenseId = given_id
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -133,6 +146,10 @@ struct ManualRecordInExpenseView: View {
             } else {
                 viewModel.participantTupleArray = [("나", true)]
             }
+            
+            // 초기값
+            MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
+            
             var expenseArray: [Expense] = []
             if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
                 do {
@@ -147,8 +164,10 @@ struct ManualRecordInExpenseView: View {
                     print("error fetching expenses: \(error.localizedDescription)")
                 }
             }
+            
             viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
 
+            // MARK: - ^^^
             if viewModel.currentCountry == 3 {
                 viewModel.currencyCandidateArray = [4, 0]
             } else {
@@ -183,24 +202,24 @@ struct ManualRecordInExpenseView: View {
             viewModel.soundRecordData = given_soundRecordData
 
             viewModel.getLocation()
-            viewModel.country = viewModel.currentCountry
-            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
-            viewModel.locationExpression = viewModel.currentLocation
+//            viewModel.country = viewModel.currentCountry
+            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.country]?.koreanNm ?? "알 수 없음"
+//            viewModel.locationExpression = viewModel.currentLocation
             
             if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
                 viewModel.otherCountryCandidateArray.append(viewModel.country)
             }
             
-            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
+//            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
             
-            viewModel.currency =  4 // 미국 달러
+//            viewModel.currency =  4 // 미국 달러
             
-            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                if tuple.value.isoCodeNm == stringCurrency {
-                    viewModel.currency = tuple.key
-                    break
-                }
-            }
+//            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
+//                if tuple.value.isoCodeNm == stringCurrency {
+//                    viewModel.currency = tuple.key
+//                    break
+//                }
+//            }
             
             if viewModel.currentCountry == 3 { // 미국
                 viewModel.currencyCandidateArray = [4, 0]
@@ -240,30 +259,30 @@ struct ManualRecordInExpenseView: View {
             fraction0NumberFormatter.maximumFractionDigits = 0
             
             // MARK: - timer
-            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
-                viewModel.secondCounter = 8
-                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                    if let secondCounter = viewModel.secondCounter {
-                        if secondCounter > 1 {
-                            viewModel.secondCounter! -= 1
-                        } else {
-                            if viewModel.payAmount != -1 || viewModel.info != nil {
-                                viewModel.secondCounter = nil
-                                viewModel.save()
-                                if mainVM.chosenTravelInManualRecord != nil {
-                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                                }
-                                viewModel.deleteUselessAudioFiles()
-                                self.dismiss()
-                                timer.invalidate()
-                            } else {
-                                viewModel.secondCounter = nil
-                                timer.invalidate()
-                            }
-                        }
-                    }
-                }
-            }
+//            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
+//                viewModel.secondCounter = 8
+//                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//                    if let secondCounter = viewModel.secondCounter {
+//                        if secondCounter > 1 {
+//                            viewModel.secondCounter! -= 1
+//                        } else {
+//                            if viewModel.payAmount != -1 || viewModel.info != nil {
+//                                viewModel.secondCounter = nil
+//                                viewModel.save()
+//                                if mainVM.chosenTravelInManualRecord != nil {
+//                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
+//                                }
+//                                viewModel.deleteUselessAudioFiles()
+//                                self.dismiss()
+//                                timer.invalidate()
+//                            } else {
+//                                viewModel.secondCounter = nil
+//                                timer.invalidate()
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
@@ -427,16 +446,10 @@ struct ManualRecordInExpenseView: View {
                     if viewModel.soundRecordData != nil {
                         if !viewModel.playingRecordSound {
                             if let soundRecordData = viewModel.soundRecordData {
-                                
-                                let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("VOICE \(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
-                                do {
-                                    try soundRecordData.write(to: audioURL)
-                                } catch {
-                                    print("Failed to write audioData to \(audioURL): \(error)")
-                                }
-                                
-                                viewModel.startPlayingAudio(url: audioURL)
+                                viewModel.startPlayingAudio(data: soundRecordData)
                                 viewModel.playingRecordSound = true
+                            } else {
+                                print("ManualRecordInExpenseView | payAmountBlockView | Failed to unwrapping soundRecordData")
                             }
                         } else {
                             viewModel.stopPlayingAudio()

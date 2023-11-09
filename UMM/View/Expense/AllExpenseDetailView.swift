@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AllExpenseDetailView: View {
     @StateObject var expenseViewModel = ExpenseViewModel()
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var mainVM: MainViewModel
     
     var selectedTravel: Travel?
     var selectedCategory: Int64
@@ -17,7 +19,6 @@ struct AllExpenseDetailView: View {
     @State private var currencyAndSums: [CurrencyAndSum] = []
     @State private var isPaymentModalPresented = false
     var sumPaymentMethod: Double
-    @EnvironmentObject var mainVM: MainViewModel
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let dateGapHandler = DateGapHandler.shared
@@ -41,6 +42,20 @@ struct AllExpenseDetailView: View {
         .onAppear {
             expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbarBackground(.white, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
+    }
+    
+    private var backButtonView: some View {
+        Button {
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .imageScale(.large)
+                .foregroundColor(Color.black)
         }
     }
     
@@ -167,57 +182,75 @@ struct AllExpenseDetailView: View {
                     .padding(.bottom, 16)
                     
                     ForEach(expensesForDate, id: \.id) { expense in
-                        HStack(alignment: .center, spacing: 0) {
-                            
-                            Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
-                                .font(.system(size: 36))
-                            
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text("\(expense.info ?? "info : unknown")")
-                                    .font(.subhead2_1)
+                        
+                        NavigationLink {
+                            ManualRecordInExpenseView(
+                                given_wantToActivateAutoSaveTimer: false,
+                                given_payAmount: expense.payAmount,
+                                given_currency: Int(expense.currency),
+                                given_info: expense.info,
+                                given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
+                                given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
+                                given_soundRecordData: expense.voiceRecordFile,
+                                given_expense: expense,
+                                given_payDate: expense.payDate,
+                                given_country: Int(expense.country),
+                                given_location: expense.location,
+                                given_id: expense.id
+                            )
+                            .environmentObject(mainVM) // ^^^
+                        } label : {
+                            HStack(alignment: .center, spacing: 0) {
+                                Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
+                                    .font(.system(size: 36))
                                 
-                                HStack(alignment: .center, spacing: 0) {
-                                    // 소비 기록을 한 시각을 보여주는 부분
-                                    // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
-                                    if let payDate = expense.payDate {
-                                        Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                            .font(.caption2)
-                                            .foregroundStyle(.gray300)
-                                    } else {
-                                        Text("-")
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("\(expense.info ?? "info : unknown")")
+                                        .font(.subhead2_1)
+                                    
+                                    HStack(alignment: .center, spacing: 0) {
+                                        // 소비 기록을 한 시각을 보여주는 부분
+                                        // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                        if let payDate = expense.payDate {
+                                            Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                                .font(.caption2)
+                                                .foregroundStyle(.gray300)
+                                        } else {
+                                            Text("-")
+                                                .font(.caption2)
+                                                .foregroundStyle(.gray300)
+                                        }
+                                        Divider()
+                                            .padding(.horizontal, 3 )
+                                        
+                                        Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                             .font(.caption2)
                                             .foregroundStyle(.gray300)
                                     }
-                                    Divider()
-                                        .padding(.horizontal, 3 )
-                                    
-                                    Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
+                                    .padding(.top, 4)
+                                }
+                                .padding(.leading, 10)
+                                
+                                Spacer()
+                                
+                                VStack(alignment: .trailing, spacing: 0) {
+                                    HStack(alignment: .center, spacing: 0) {
+                                        Text("\(Currency.getSymbol(of: Int(expense.currency)))")
+                                            .font(.subhead2_1)
+                                        
+                                        Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
+                                            .font(.subhead2_1)
+                                            .padding(.leading, 3 )
+                                    }
+                                    let currencyCodeName = Currency.getCurrencyCodeName(of: Int(expense.currency))
+                                    let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
+                                    let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
+                                    let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
+                                    Text("(\(formattedPayAmount)원)")
                                         .font(.caption2)
-                                        .foregroundStyle(.gray300)
+                                        .foregroundStyle(.gray200)
+                                        .padding(.top, 4 )
                                 }
-                                .padding(.top, 4)
-                            }
-                            .padding(.leading, 10)
-                            
-                            Spacer()
-                            
-                            VStack(alignment: .trailing, spacing: 0) {
-                                HStack(alignment: .center, spacing: 0) {
-                                    Text("\(Currency.getSymbol(of: Int(expense.currency)))")
-                                        .font(.subhead2_1)
-                                    
-                                    Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
-                                        .font(.subhead2_1)
-                                        .padding(.leading, 3 )
-                                }
-                                let currencyCodeName = Currency.getCurrencyCodeName(of: Int(expense.currency))
-                                let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
-                                let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
-                                let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
-                                Text("(\(formattedPayAmount)원)")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray200)
-                                    .padding(.top, 4 )
                             }
                         }
                     }
