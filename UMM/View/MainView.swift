@@ -11,6 +11,7 @@ struct MainView: View {
     
     @StateObject private var viewModel = MainViewModel.shared
     @State private var selectedTab = 0
+    let exchangeRateHandler = ExchangeRateHandler.shared
     
     var body: some View {
         TabView(selection: $viewModel.selection) {
@@ -61,9 +62,10 @@ struct MainView: View {
         
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
-            print("MainView onAppear")
-//            viewModel.selectedTravel = findCurrentTravel()
-//            viewModel.selectedTravelInExpense = findCurrentTravel()
+            let loadedData = exchangeRateHandler.loadExchangeRatesFromUserDefaults()
+            if loadedData == nil || !exchangeRateHandler.isSameDate(loadedData?.time_last_update_unix) {
+                exchangeRateHandler.fetchAndSaveExchangeRates()
+            }
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)
