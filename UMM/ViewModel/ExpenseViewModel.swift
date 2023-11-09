@@ -231,4 +231,25 @@ class ExpenseViewModel: ObservableObject {
         let filteredByTravel = filterExpensesByTravel(expenses: self.savedExpenses, selectedTravelID: MainViewModel.shared.selectedTravelInExpense?.id ?? UUID())
         return filteredByTravel
     }
+    
+    func datePickerRange() -> ClosedRange<Date> {
+        let now = Date()
+        let now235959 = DateGapHandler.shared.getLocal235959(of: Date())
+        let startDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.startDate ?? Date()
+        let endDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.endDate ?? Date()
+
+        if startDateOfTravel > now235959 {
+            // 여행의 시작 날짜가 오늘보다 미래에 있을 때
+            return DateGapHandler.shared.convertBeforeShowing(date: startDateOfTravel)...DateGapHandler.shared.convertBeforeShowing(date: endDateOfTravel)
+        } else {
+            // 여행의 시작 날짜가 오늘과 같거나 과거에 있을 때
+            if endDateOfTravel < now {
+                // 여행의 끝 날짜가 현재보다 과거에 있을 때
+                return DateGapHandler.shared.convertBeforeShowing(date: startDateOfTravel)...DateGapHandler.shared.convertBeforeShowing(date: endDateOfTravel)
+            } else {
+                // 그 외의 경우 (여행의 끝 날짜가 현재보다 미래에 있을 때)
+                return DateGapHandler.shared.convertBeforeShowing(date: startDateOfTravel)...DateGapHandler.shared.convertBeforeShowing(date: now)
+            }
+        }
+    }
 }

@@ -52,6 +52,7 @@ struct TodayExpenseView: View {
                 selectedDate: $expenseViewModel.selectedDate,
                 pickerId: pickerId,
                 startDateOfTravel: dateGapHandler.convertBeforeShowing(date: mainVM.selectedTravelInExpense?.startDate ?? dateGapHandler.convertBeforeSaving(date: Date().addingTimeInterval(-24*60*60))))
+            .environmentObject(mainVM)
         }
         .padding(.bottom, 12)
     }

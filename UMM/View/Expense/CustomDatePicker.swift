@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct CustomDatePicker: View {
+    @EnvironmentObject var mainVM: MainViewModel
     @ObservedObject var expenseViewModel: ExpenseViewModel
     @Binding var selectedDate: Date
     var pickerId: String
     let startDateOfTravel: Date
+    let dateGapHandler = DateGapHandler.shared
     
     var body: some View {
         HStack(spacing: 0) {
@@ -28,7 +30,9 @@ struct CustomDatePicker: View {
                 }
                 
                 // 안 보이게 하고 Button으로 호출
-                DatePicker("", selection: $expenseViewModel.selectedDate, in: startDateOfTravel...Date(), displayedComponents: [.date])
+                DatePicker("", selection: $expenseViewModel.selectedDate,
+                           in: expenseViewModel.datePickerRange(),
+                           displayedComponents: [.date])
                     .labelsHidden()
                     .accessibilityIdentifier(pickerId)
                     .onReceive(expenseViewModel.$selectedDate) { _ in

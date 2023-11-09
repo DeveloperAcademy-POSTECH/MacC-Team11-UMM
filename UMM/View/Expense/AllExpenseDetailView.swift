@@ -169,7 +169,7 @@ struct AllExpenseDetailView: View {
                     let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date)
                     
                     HStack(alignment: .center, spacing: 0) {
-                        Text("Day: \(calculatedDay)")
+                        Text("Day \(calculatedDay)")
                             .font(.subhead1)
                             .foregroundStyle(.gray400)
                         // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
@@ -182,7 +182,6 @@ struct AllExpenseDetailView: View {
                     .padding(.bottom, 16)
                     
                     ForEach(expensesForDate, id: \.id) { expense in
-                        
                         NavigationLink {
                             ManualRecordInExpenseView(
                                 given_wantToActivateAutoSaveTimer: false,
@@ -207,7 +206,6 @@ struct AllExpenseDetailView: View {
                                 VStack(alignment: .leading, spacing: 0) {
                                     Text("\(expense.info ?? "info : unknown")")
                                         .font(.subhead2_1)
-                                    
                                     HStack(alignment: .center, spacing: 0) {
                                         // 소비 기록을 한 시각을 보여주는 부분
                                         // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
