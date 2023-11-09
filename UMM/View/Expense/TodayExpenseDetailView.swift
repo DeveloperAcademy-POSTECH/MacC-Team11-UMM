@@ -173,6 +173,7 @@ struct TodayExpenseDetailView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("\(expense.info ?? "info: unknown")")
                                 .font(.subhead2_1)
+                                .foregroundStyle(.black)
                             HStack(alignment: .center, spacing: 0) {
                                 // 소비 기록을 한 시각을 보여주는 부분
                                 // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
