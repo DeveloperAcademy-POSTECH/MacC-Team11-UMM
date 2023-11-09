@@ -31,7 +31,9 @@ struct InterimProceedingView: View {
         ZStack {
             if proceedingCnt == 0 {
                 
-                Text("현재 진행 중인 여행이 없어요") // Doris
+                Text("현재 진행 중인 여행이 없어요")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                    .foregroundStyle(Color(0xA6A6A6))
                 
             } else if proceedingCnt <= 6 {
                 VStack {

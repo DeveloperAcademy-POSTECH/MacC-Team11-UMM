@@ -31,7 +31,9 @@ struct InterimOncomingView: View {
         ZStack {
             if onComingCnt == 0 {
                 
-                Text("예정된 여행이 없어요") // Doris
+                Text("예정된 여행이 없어요")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                    .foregroundStyle(Color(0xA6A6A6))
                 
             } else if onComingCnt <= 6 {
                 VStack {

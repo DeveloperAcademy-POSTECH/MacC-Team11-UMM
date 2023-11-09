@@ -31,7 +31,9 @@ struct InterimPastView: View {
         ZStack {
             if pastCnt == 0 {
                 
-                Text("완료된 여행이 없어요") // Doris
+                Text("완료된 여행이 없어요")
+                    .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                    .foregroundStyle(Color(0xA6A6A6))
                 
             } else if pastCnt <= 6 {
                 VStack {
