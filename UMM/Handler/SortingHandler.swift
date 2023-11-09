@@ -20,6 +20,6 @@ func sortExpenseByDate(expenseArr: [Expense]?) -> [Expense] {
     return expenses
 }
 
-//func sortTravelByDate(dateArray: [Travel]?) -> [Travel] {
-//    return
-//}
+// func sortTravelByDate(dateArray: [Travel]?) -> [Travel] {
+//     return
+// }
