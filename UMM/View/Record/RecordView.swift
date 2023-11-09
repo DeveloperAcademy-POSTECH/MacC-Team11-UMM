@@ -94,7 +94,6 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.wantToActivateAutoSaveTimer = true
-                viewModel.defaultTravelNameReplacer = "-"
                 if let foundTravelName = findCurrentTravel()?.name {
                     if foundTravelName == "Default" {
                         viewModel.addTravelRequestModalIsShown = true
@@ -154,9 +153,9 @@ struct RecordView: View {
                     .layoutPriority(-1)
                 
                 HStack(spacing: 12) {
-                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : viewModel.defaultTravelNameReplacer)
+                    Text(mainVM.selectedTravel?.name != "Default" ? mainVM.selectedTravel?.name ?? "-" : "임시 기록")
                         .font(.subhead2_2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(mainVM.selectedTravel?.name != "Default" ? .black : .gray400)
                     Image("recordTravelChoiceDownChevron")
                         .resizable()
                         .scaledToFit()
