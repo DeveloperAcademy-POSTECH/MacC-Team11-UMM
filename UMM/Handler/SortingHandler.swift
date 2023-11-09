@@ -14,9 +14,11 @@ func sortExpenseByDate(expenseArr: [Expense]?) -> [Expense] {
     }
     
     expenses.sort { (expense1, expense2) -> Bool in
-        return expense1.payDate! >= expense2.payDate!
+        if let date1 = expense1.payDate, let date2 = expense2.payDate {
+            return date1 >= date2
+        }
+        return false
     }
-    
     return expenses
 }
 
