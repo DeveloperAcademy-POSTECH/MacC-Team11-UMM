@@ -370,7 +370,7 @@ struct TravelListView: View {
                             Group {
                                 Text("최근 지출 ")
                                 +
-                                Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
+                                Text("\(viewModel.formatAmount(amount: defaultExpense?.last?.payAmount))")
                                 +
                                 Text(" ")
                                 +

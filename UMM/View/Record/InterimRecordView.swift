@@ -54,6 +54,7 @@ struct InterimRecordView: View {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+                self.defaultExpense = viewModel.sortDefaultExpense(expenseArr: defaultExpense)
             }
         }
         .onDisappear {
@@ -257,7 +258,6 @@ struct DefaultTabBarView: View {
         .padding(.top, 30) // Doris
         .background(Color.clear)
         .frame(height: 39)
-//        .background(Color.red)
         .ignoresSafeArea(.all)
     }
 }
