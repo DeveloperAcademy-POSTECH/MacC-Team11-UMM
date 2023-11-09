@@ -148,6 +148,7 @@ struct InterimProceedingView: View {
                                     .onAppear {
                                         
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                        self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                         
                                         if let savedExpenses = savedExpenses {
                                             let countryValues: [Int64] = savedExpenses.map { expense in
@@ -310,6 +311,7 @@ struct InterimProceedingView: View {
                                                       .onAppear {
                                                           
                                                           self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                                          self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                                           
                                                           if let savedExpenses = savedExpenses {
                                                               let countryValues: [Int64] = savedExpenses.map { expense in

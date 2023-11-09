@@ -265,9 +265,10 @@ struct TravelListView: View {
                                 
                             }
                             .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                     
                                     self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravelWithDummy?[index].id ?? UUID())
+                                    self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                     
                                     if let savedExpenses = savedExpenses {
                                         let countryValues: [Int64] = savedExpenses.map { expense in
@@ -374,7 +375,7 @@ struct TravelListView: View {
                                 +
                                 Text(" ")
                                 +
-                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.first?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
+                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.last?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
                             }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)

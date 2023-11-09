@@ -54,7 +54,7 @@ struct InterimRecordView: View {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
-                self.defaultExpense = viewModel.sortDefaultExpense(expenseArr: defaultExpense)
+                self.defaultExpense = sortExpenseByDate(expenseArr: defaultExpense)
             }
         }
         .onDisappear {

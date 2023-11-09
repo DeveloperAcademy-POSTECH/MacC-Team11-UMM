@@ -193,16 +193,16 @@ class InterimRecordViewModel: ObservableObject {
     }
     
     // defaultExpense를 최신순으로 정렬합니다.
-    func sortDefaultExpense(expenseArr: [Expense]?) -> [Expense] {
-        
-        guard var expenses = expenseArr else {
-            return []
-        }
-        
-        expenses.sort { (expense1, expense2) -> Bool in
-            return expense1.payDate! >= expense2.payDate!
-        }
-        
-        return expenses
-    }
+//    func sortDefaultExpense(expenseArr: [Expense]?) -> [Expense] {
+//        
+//        guard var expenses = expenseArr else {
+//            return []
+//        }
+//        
+//        expenses.sort { (expense1, expense2) -> Bool in
+//            return expense1.payDate! >= expense2.payDate!
+//        }
+//        
+//        return expenses
+//    }
 }
