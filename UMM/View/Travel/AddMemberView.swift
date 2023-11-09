@@ -51,10 +51,9 @@ struct AddMemberView: View {
                 if participantArr.count > 0 {
                     participantCnt -= 1
                     let updateArr = Array(participantArr.dropLast())
-                    viewModel.participantArr = ["me"] + updateArr
+                    viewModel.participantArr = updateArr
                 } else {
-                    
-                    viewModel.participantArr = ["me"] + participantArr
+                    viewModel.participantArr = participantArr
                 }
                 viewModel.startDate = (startDate ?? Date()).local000().convertBeforeSaving()
 //                if let endDate = viewModel.endDate {

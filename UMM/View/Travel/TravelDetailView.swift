@@ -84,9 +84,7 @@ struct TravelDetailView: View {
             )
             .onAppear {
                 viewModel.fetchTravel()
-                //                travelID = mainVM.selectedTravel?.id ?? UUID()
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
-                print("tttttt", endDate)
                 
             }
             .onDisappear {
@@ -274,7 +272,7 @@ struct TravelDetailView: View {
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
             
-            if participantCnt <= 1 {
+            if participantCnt < 1 {
                 
                 HStack(alignment: .center, spacing: 4) {
                     Text("me")
@@ -291,7 +289,7 @@ struct TravelDetailView: View {
                 .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                 .cornerRadius(6)
                 
-            } else if participantCnt <= 4 {
+            } else if participantCnt <= 3 {
                 
                 HStack {
                     HStack(alignment: .center, spacing: 4) {
@@ -309,9 +307,9 @@ struct TravelDetailView: View {
                     .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                     .cornerRadius(6)
                     
-                    ForEach(2..<participantCnt, id: \.self) { index in
+                    ForEach(1..<participantCnt+1, id: \.self) { index in
                         HStack(alignment: .center, spacing: 10) {
-                            Text("\(participantArr[index])")
+                            Text("\(participantArr[index-1])")
                                 .font(.subhead2_2)
                                 .foregroundColor(.white)
                         }
@@ -334,16 +332,15 @@ struct TravelDetailView: View {
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    //                    .frame(height: 28, alignment: .center)
                     .background(Color(red: 0.2, green: 0.2, blue: 0.2))
                     .cornerRadius(6)
                     
                     HStack {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(alignment: .center, spacing: 10) {
-                            ForEach(1..<participantCnt, id: \.self) { index in
+                            ForEach(1..<participantCnt+1, id: \.self) { index in
                                 
-                                    Text("\(participantArr[index])")
+                                    Text("\(participantArr[index-1])")
                                         .font(.subhead2_2)
                                         .foregroundColor(.white)
                                 }

@@ -235,12 +235,18 @@ struct TravelListView: View {
                                                 
                                                 Spacer()
                                                 
-                                                HStack {
-                                                    Image(systemName: "person.fill")
-                                                        .frame(width: 12, height: 12)
-                                                        .foregroundStyle(Color.white)
+                                                HStack(spacing: 0) {
+                                                    HStack {
+                                                        Image(systemName: "person.fill")
+                                                            .frame(width: 12, height: 12)
+                                                            .foregroundStyle(Color.white)
+                                                        
+                                                        Text("me")
+                                                            .font(.caption2)
+                                                            .foregroundStyle(Color.white)
+                                                    }
                                                     
-                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
+                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? [""]))
                                                         .lineLimit(1)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white)
@@ -248,6 +254,7 @@ struct TravelListView: View {
                                                 }
                                                 .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
                                                 .padding(.trailing, 16)
+                                                
                                             }
                                             .frame(height: 16)
                                             
