@@ -204,6 +204,7 @@ struct TodayExpenseDetailView: View {
                                     .font(.subhead2_1)
                                 Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
                                     .font(.subhead2_1)
+                                    .foregroundStyle(.black)
                                     .padding(.leading, 3)
                             }
                             Text("(\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount * (exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "-") ?? -100) : Double.nan, to: 0))원)")
