@@ -23,14 +23,20 @@ struct TodayExpenseView: View {
             if expenseViewModel.filteredTodayExpenses.count == 0 {
                 HStack {
                     datePicker
+                        .padding(.horizontal, 20)
+
                     Spacer()
                 }
                 noDataView
+                    .padding(.horizontal, 20)
+
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
                         datePicker
-                        drawExpensesByCountry // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
+                            .padding(.horizontal, 20)
+                        drawExpensesByCountry
+                            .padding(.horizontal, 20) // 결제 데이터 그리기: 국가 > 결제수단 순서로 분류
                     }
                 }
             }

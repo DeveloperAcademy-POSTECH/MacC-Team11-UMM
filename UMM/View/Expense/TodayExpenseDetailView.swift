@@ -29,7 +29,9 @@ struct TodayExpenseDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             paymentModal
+                .padding(.horizontal, 20)
             todayExpenseSummary
+                .padding(.horizontal, 20)
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -37,9 +39,9 @@ struct TodayExpenseDetailView: View {
                     drawExpensesDetail
                 }
             }
+            .padding(.horizontal, 20)
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 20)
         .onAppear {
             expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
