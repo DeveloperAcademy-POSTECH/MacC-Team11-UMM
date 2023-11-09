@@ -17,6 +17,7 @@ struct RecordView: View {
     
     @ObservedObject var viewModel = RecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
+    let exchangeRateHandler = ExchangeRateHandler.shared
     
     @GestureState private var isDetectingPress = false
     @State private var isDetectingPress_showOnButton = false {
@@ -134,6 +135,12 @@ struct RecordView: View {
                         .environmentObject(mainVM)
                 } else {
                     EmptyView()
+                }
+            }
+            .onAppear {
+                let loadedData = exchangeRateHandler.loadExchangeRatesFromUserDefaults()
+                if loadedData == nil || !exchangeRateHandler.isSameDate(loadedData?.time_last_update_unix) {
+                    exchangeRateHandler.fetchAndSaveExchangeRates()
                 }
             }
         }
