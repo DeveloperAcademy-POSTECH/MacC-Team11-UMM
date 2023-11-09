@@ -124,7 +124,7 @@ struct TravelListView: View {
                 ZStack(alignment: .center) {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0..<Int(nowTravel?.count ?? 0), id: \.self) { index in
+                            ForEach(0..<Int(nowTravel?.count ?? 1), id: \.self) { index in
                                 NavigationLink(destination: TravelDetailView(
                                     travelID: nowTravel?[index].id ?? UUID(),
                                     travelName: nowTravel?[index].name ?? "",
@@ -258,43 +258,44 @@ struct TravelListView: View {
                                     }
                                     .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            
-                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                            if let savedExpenses = savedExpenses {
-                                                let countryValues: [Int64] = savedExpenses.map { expense in
-                                                    return viewModel.getCountryForExpense(expense)
+                                            if index > 0 {
+                                                self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                                if let savedExpenses = savedExpenses {
+                                                    let countryValues: [Int64] = savedExpenses.map { expense in
+                                                        return viewModel.getCountryForExpense(expense)
+                                                    }
+                                                    let uniqueCountryValues = Array(Set(countryValues))
+                                                    
+                                                    var flagImageNames: [String] = []
+                                                    var defaultImage: [String] = []
+                                                    var koreanName: [String] = []
+                                                    
+                                                    for countryValue in uniqueCountryValues {
+                                                        
+                                                        if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                            flagImageNames.append(flagString)
+                                                        } else {
+                                                            flagImageNames.append("DefaultFlag")
+                                                        }
+                                                        
+                                                        if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                            defaultImage.append(defaultString)
+                                                        } else {
+                                                            defaultImage.append("DefaultImage")
+                                                        }
+                                                        
+                                                        if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                            koreanName.append(koreanString)
+                                                        } else {
+                                                            koreanName.append("")
+                                                        }
+                                                    }
+                                                    
+                                                    self.flagImageName = flagImageNames
+                                                    self.defaultImageName = defaultImage
+                                                    self.countryName = koreanName
+                                                    print("defaultImageName :", defaultImageName)
                                                 }
-                                                let uniqueCountryValues = Array(Set(countryValues))
-                                                
-                                                var flagImageNames: [String] = []
-                                                var defaultImage: [String] = []
-                                                var koreanName: [String] = []
-                                                
-                                                for countryValue in uniqueCountryValues {
-                                                    
-                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                    
-                                                    if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                        defaultImage.append(defaultString)
-                                                    } else {
-                                                        defaultImage.append("DefaultImage")
-                                                    }
-                                                    
-                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                        koreanName.append(koreanString)
-                                                    } else {
-                                                        koreanName.append("")
-                                                    }
-                                                }
-                                                
-                                                self.flagImageName = flagImageNames
-                                                self.defaultImageName = defaultImage
-                                                self.countryName = koreanName
-                                                print("defaultImageName :", defaultImageName)
                                             }
                                         }
                                     }
