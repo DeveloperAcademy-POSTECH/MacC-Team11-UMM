@@ -163,7 +163,7 @@ struct TodayExpenseView: View {
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16))
-                                .foregroundStyle(.gray200)
+                                .foregroundStyle(.gray300)
                                 .padding(.trailing, 16)
                         }
                         .padding(16)

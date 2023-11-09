@@ -112,10 +112,8 @@ struct AllExpenseView: View {
             HStack(spacing: 4) {
                 
                 Button(action: {
-                    DispatchQueue.main.async {
                         expenseViewModel.selectedCountry = Int64(-2)
                         expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
-                    }
                 }, label: {
                     Text("전체")
                         .padding(.vertical, 7)
@@ -128,10 +126,8 @@ struct AllExpenseView: View {
                 
                 ForEach(countries, id: \.self) { country in
                     Button(action: {
-                        DispatchQueue.main.async {
                             expenseViewModel.selectedCountry = Int64(country)
                             expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
-                        }
                     }, label: {
                         HStack(spacing: 4) {
                             Image(countryInfoModel[Int(country)]?.flagString ?? "")

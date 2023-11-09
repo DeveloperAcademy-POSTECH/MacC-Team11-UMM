@@ -190,7 +190,7 @@ struct TodayExpenseDetailView: View {
                             .font(.system(size: 36))
                         
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("\(expense.info ?? "info: unknown")")
+                            Text("\(expense.info ?? "알 수 없는 내역")")
                                 .font(.subhead2_1)
                                 .foregroundStyle(.black)
                             HStack(alignment: .center, spacing: 0) {
