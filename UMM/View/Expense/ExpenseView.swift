@@ -79,12 +79,12 @@ struct ExpenseView: View {
     }
     
     private var travelChoiceView: some View {
-        HStack(alignment: .center, spacing: 0) {
+        return HStack(alignment: .center, spacing: 10) {
+            Spacer()
             Button {
                 expenseViewModel.travelChoiceHalfModalIsShown = true
             } label: {
-                Spacer()
-                HStack(spacing: 10) {
+                HStack(spacing: 0) {
                     ZStack {
                         Capsule()
                             .foregroundStyle(.white)
@@ -107,15 +107,15 @@ struct ExpenseView: View {
                         .padding(.leading, 16)
                         .padding(.trailing, 12)
                     }
-                    Text("가계부")
-                        .font(.display1)
-                        .foregroundStyle(.black)
                 }
-                Spacer()
             }
-            .padding(.bottom, 20)
+            Text("가계부")
+                .font(.display1)
+                .foregroundStyle(.black)
+            Spacer()
         }
         .padding(.top, 80)
+        .padding(.bottom, 20)
     }
     
         private var tabViewButton: some View {

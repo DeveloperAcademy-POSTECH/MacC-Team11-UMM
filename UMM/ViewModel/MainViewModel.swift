@@ -14,8 +14,26 @@ class MainViewModel: ObservableObject {
     
     // didSet으로 selection == 2일 때, default
     @Published var selection: Int = 1
-    @Published var selectedTravel: Travel?
-    @Published var selectedTravelInExpense: Travel?
+    @Published var selectedTravel: Travel? {
+        didSet {
+            if selectedTravel?.name != "Default" {
+                if selectedTravel != selectedTravelInExpense {
+                    if let selectedTravel = selectedTravel, selectedTravel.name == "Default" {
+                        self.selectedTravelInExpense = findCurrentTravel()
+                    } else {
+                        updateSelectedTravelInExpense()
+                    }
+                }
+            }
+        }
+    }
+    @Published var selectedTravelInExpense: Travel? {
+        didSet {
+            if selectedTravelInExpense != selectedTravel {
+                updateSelectedTravel()
+            }
+        }
+    }
     @Published var chosenTravelInManualRecord: Travel?
     var firstChosenTravelInManualRecord: Travel?
     
@@ -35,5 +53,13 @@ class MainViewModel: ObservableObject {
     
     func isSameFirstAndNowChosenTravel() -> Bool {
         return self.firstChosenTravelInManualRecord == self.chosenTravelInManualRecord
+    }
+    
+    private func updateSelectedTravelInExpense() {
+        selectedTravelInExpense = selectedTravel
+    }
+    
+    private func updateSelectedTravel() {
+        selectedTravel = selectedTravelInExpense
     }
 }
