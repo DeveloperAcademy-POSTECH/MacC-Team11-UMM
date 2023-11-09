@@ -34,12 +34,12 @@ struct AddTravelRequestModal: View {
     
     private var twoButtonsView: some View {
         HStack {
-            MediumButtonUnactive(title: "여행 생성하기") {
+            MediumButtonUnactive(title: "임시 기록하기") {
+                viewModel.addTravelRequestModalIsShown = false
+            }
+            MediumButtonActive(title: "여행 생성하기") {
                 viewModel.addTravelRequestModalIsShown = false
                 // 탭 이동하고 여행 생성하는 페이지로 자동으로 넘어가기 구현하기 ^^^
-            }
-            MediumButtonActive(title: "임시 기록하기") {
-                viewModel.addTravelRequestModalIsShown = false
             }
         }
         .padding(.bottom, 45) // 버튼 템플릿 변화하면 변화에 맞춰서 수정하기 ^^^
