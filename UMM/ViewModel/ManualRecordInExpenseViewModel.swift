@@ -541,7 +541,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             let isSameCountry = firstCountry == country
             let isSameCategory = firstCategory == category
             let isSameCurrency = firstCurrency == currency
-            let isSamePayDate = firstPayDate == payDate
+            let isSamePayDate = firstPayDate.isTimeEqual(to: payDate)
             let isSameVisibleInfo = firstVisibleInfo == visibleInfo
             let isSamePaymentMethod = firstPaymentMethod == paymentMethod
             let isSameCountryExpression = firstCountryExpression == countryExpression
