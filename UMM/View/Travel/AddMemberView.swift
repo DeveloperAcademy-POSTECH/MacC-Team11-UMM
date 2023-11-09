@@ -65,9 +65,9 @@ struct AddMemberView: View {
                 
                 // 여행 이름
                 if let arr = viewModel.participantArr {
-                    if arr.count == 2 {
+                    if arr.count == 1 {
                         viewModel.travelName = "me 나, \(participantArr[0])"
-                    } else if arr.count <= 1 {
+                    } else if arr.count < 1 {
                         viewModel.travelName = "나의 여행"
                     } else {
                         viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
