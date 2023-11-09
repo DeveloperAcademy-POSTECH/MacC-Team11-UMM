@@ -133,9 +133,7 @@ struct TravelChoiceInRecordModal: View {
                         return true
                     }
                 }
-            
-            print("expenseArray: \(expenseArray)")
-            
+                        
             for expense in expenseArray {
                 if !includedCountryArray.contains(Int(expense.country)) {
                     includedCountryArray.append(Int(expense.country))
@@ -144,9 +142,7 @@ struct TravelChoiceInRecordModal: View {
                     break
                 }
             }
-            
-            print("includedCountryArray: \(includedCountryArray)")
-            
+                        
             if let travelId = travel.id {
                 flagNameArrayDict[travelId] = includedCountryArray.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
                 
