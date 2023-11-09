@@ -62,6 +62,6 @@ func findCurrentTravel() -> Travel? {
         }
     }
     // 여행 중이 아님
-    let defaultTravel = allTravels.first(where: { $0.name == tempTravelName })
+    let defaultTravel = Travel(context: PersistenceController.shared.container.viewContext)
     return defaultTravel
 }
