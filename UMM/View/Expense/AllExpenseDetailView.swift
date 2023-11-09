@@ -28,17 +28,19 @@ struct AllExpenseDetailView: View {
         
         VStack(alignment: .leading, spacing: 0) {
             paymentModal
+                .padding(.horizontal, 20)
             allExpenseSummary
+                .padding(.horizontal, 20)
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     drawExpensesDetail
                 }
             }
+            .padding(.horizontal, 20)
         }
 
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 20)
         .onAppear {
             expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
