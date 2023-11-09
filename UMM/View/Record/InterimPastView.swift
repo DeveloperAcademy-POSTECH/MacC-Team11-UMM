@@ -142,7 +142,7 @@ struct InterimPastView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(width: 110, height: 80)
                                             .foregroundStyle(.gray100)
-                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.3)
+                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.4)
                                     }
                                     .frame(width: 110, height: 80)
                                     .onAppear {
@@ -179,6 +179,7 @@ struct InterimPastView: View {
                                     }
                                 }
                                 Text(previousTravel?[index].name ?? "제목 미정")
+                                    .foregroundStyle(chosenTravel == previousTravel?[index] ? Color.black : Color.gray300)
                                     .font(.subhead1)
                                     .lineLimit(1)
                             }
@@ -302,7 +303,7 @@ struct InterimPastView: View {
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
-                                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.3)
+                                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.4)
                                                     }
                                                     .frame(width: 110, height: 80)
                                                     .onAppear {
@@ -339,6 +340,7 @@ struct InterimPastView: View {
                                                     }
                                                 }
                                                 Text(previousTravel?[index].name ?? "제목 미정")
+                                                    .foregroundStyle(chosenTravel == previousTravel?[index] ? Color.black : Color.gray300)
                                                     .font(.subhead1)
                                                     .lineLimit(1)
                                             }

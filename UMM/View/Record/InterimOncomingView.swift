@@ -142,7 +142,7 @@ struct InterimOncomingView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(width: 110, height: 80)
                                             .foregroundStyle(.gray100)
-                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.4)
                                     }
                                     .frame(width: 110, height: 80)
                                     .onAppear {
@@ -178,6 +178,7 @@ struct InterimOncomingView: View {
                                     }
                                 }
                                 Text(onComingTravel?[index].name ?? "제목 미정")
+                                    .foregroundStyle(chosenTravel == onComingTravel?[index] ? Color.black : Color.gray300)
                                     .font(.subhead1)
                                     .lineLimit(1)
                             }
@@ -300,7 +301,7 @@ struct InterimOncomingView: View {
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
-                                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.4)
                                                     }
                                                     .frame(width: 110, height: 80)
                                                     .onAppear {
@@ -337,6 +338,7 @@ struct InterimOncomingView: View {
                                                 }
                                                 
                                                 Text(onComingTravel?[index].name ?? "제목 미정")
+                                                    .foregroundStyle(chosenTravel == onComingTravel?[index] ? Color.black : Color.gray300)
                                                     .font(.subhead1)
                                                     .lineLimit(1)
                                             }
