@@ -122,39 +122,35 @@ struct TravelChoiceInRecordModal: View {
     
     private func updateFlagNameArrayDictAndDefaultImageStringDict() {
         for travel in travelArray {
-            let expenseArray = travel.expenseArray!.allObjects as? [Expense]
-            var countryArray: [Int] = []
-            var countryWeightedArray: [(Int, Int)] = [] // (국가 키, 등장 횟수)
-            if let expenseArray {
-                for expense in expenseArray {
-                    if !countryArray.contains(Int(expense.country)) {
-                        countryArray.append(Int(expense.country))
-                        countryWeightedArray.append((Int(expense.country), 1))
+            var expenseArray = (travel.expenseArray!.allObjects as? [Expense]) ?? []
+            var includedCountryArray: [Int] = []
+            
+            expenseArray
+                .sort {
+                    if let date0 = $0.payDate, let date1 = $1.payDate {
+                        return date0 >= date1
                     } else {
-                        let index = countryWeightedArray.firstIndex { $0.0 == Int(expense.country) }
-                        if let index {
-                            countryWeightedArray[index].1 += 1
-                        }
+                        return true
                     }
                 }
-            }
-            countryWeightedArray.sort { tuple0, tuple1 in
-                if tuple0.1 > tuple1.1 { // 등장 횟수의 내림차순으로 정렬
-                    return true
-                } else if tuple0.1 < tuple1.1 {
-                    return false
-                } else {
-                    return tuple0.0 < tuple1.0 // 등장 횟수 같으면 키 순서로 정렬
+            
+            print("expenseArray: \(expenseArray)")
+            
+            for expense in expenseArray {
+                if !includedCountryArray.contains(Int(expense.country)) {
+                    includedCountryArray.append(Int(expense.country))
+                }
+                if includedCountryArray.count >= 4 {
+                    break
                 }
             }
-            if countryWeightedArray.count > 0 {
-                countryWeightedArray = [(Int, Int)](countryWeightedArray[0..<min(countryWeightedArray.count, 4)])
-            }
+            
+            print("includedCountryArray: \(includedCountryArray)")
             
             if let travelId = travel.id {
-                flagNameArrayDict[travelId] = countryWeightedArray.map { $0.0 }.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
+                flagNameArrayDict[travelId] = includedCountryArray.map { CountryInfoModel.shared.countryResult[$0]?.flagString ?? "DefaultFlag" }
                 
-                defaultImageStringDict[travelId] = CountryInfoModel.shared.countryResult[countryWeightedArray.first?.0 ?? -1]?.defaultImageString ?? "DefaultImage"
+                defaultImageStringDict[travelId] = CountryInfoModel.shared.countryResult[includedCountryArray.first ?? -1]?.defaultImageString ?? "DefaultImage"
             }
         }
     }
