@@ -235,8 +235,8 @@ class ExpenseViewModel: ObservableObject {
     func datePickerRange() -> ClosedRange<Date> {
         let now = Date()
         let now235959 = DateGapHandler.shared.getLocal235959(of: Date())
-        let startDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.startDate ?? Date()
-        let endDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.endDate ?? Date()
+        let startDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.startDate ?? Date.distantPast
+        let endDateOfTravel = MainViewModel.shared.selectedTravelInExpense?.endDate ?? Date.distantFuture
 
         if startDateOfTravel > now235959 {
             // 여행의 시작 날짜가 오늘보다 미래에 있을 때
