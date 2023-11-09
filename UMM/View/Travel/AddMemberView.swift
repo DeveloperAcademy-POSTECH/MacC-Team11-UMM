@@ -62,7 +62,7 @@ struct AddMemberView: View {
                 // 여행 이름
                 if let arr = viewModel.participantArr {
                     if arr.count == 1 {
-                        viewModel.travelName = "me 나, \(participantArr[0])"
+                        viewModel.travelName = "\(participantArr[0])와의 여행"
                     } else if arr.count < 1 {
                         viewModel.travelName = "나의 여행"
                     } else {
@@ -315,7 +315,7 @@ struct AddMemberView: View {
                 NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, 
                                                                   memberViewModel: viewModel,
                                                                   travelID: $travelID,
-                                                                  travelNM: travelName ?? "nil",
+                                                                  travelNM: travelName ?? "",
                                                                   isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
                         isBackButton = false
