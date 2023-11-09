@@ -271,6 +271,7 @@ struct TravelDetailView: View {
             Text("함께하는 사람")
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
+                .padding(.bottom, 5)
             
             if participantCnt < 1 {
                 
