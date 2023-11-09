@@ -101,30 +101,35 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         ZStack(alignment: .center) {
-            if travelCount == 0 {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 350, height: 137)
-                    .background(
-                        ZStack {
-                            Color.gray100
-                            Text("현재 진행 중인 여행이 없어요")
-                                .font(.body2)
-                                .foregroundStyle(Color(0xA6A6A6))
-                        }
-                    )
-                    .cornerRadius(10)
-                    .padding(.bottom, 18)
+            if Int(nowTravel?.count ?? 0) == 0 {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 350, height: 137)
+                        .background(
+                            ZStack {
+                                Color.gray100
+                                Text("현재 진행 중인 여행이 없어요")
+                                    .font(.body2)
+                                    .foregroundStyle(Color(0xA6A6A6))
+                            }
+                        )
+                        .cornerRadius(10)
+                        .padding(.bottom, 22)
+                }
+                .onAppear {
+                    print("rrrrr zero view shown")
+                }
             } else {
                 ZStack(alignment: .center) {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0..<travelCount, id: \.self) { index in
+                            ForEach(0..<Int(nowTravel?.count ?? 1), id: \.self) { index in
                                 NavigationLink(destination: TravelDetailView(
                                     travelID: nowTravel?[index].id ?? UUID(),
                                     travelName: nowTravel?[index].name ?? "",
                                     startDate: nowTravel?[index].startDate ?? Date(),
-                                    endDate: nowTravel?[index].endDate ?? Date(),
+                                    endDate: nowTravel?[index].endDate,
                                     dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
                                     participantCnt: nowTravel?[index].participantArray?.count ?? 0,
                                     participantArr: nowTravel?[index].participantArray ?? [],
@@ -209,23 +214,39 @@ struct TravelListView: View {
                                                 .padding(.leading, 16)
                                             
                                             HStack {
-                                                Group {
-                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter) +
-                                                    Text(" ~ ") +
-                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].endDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
+                                                HStack(spacing: 0) {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
+                                                        .font(.subhead2_2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                        .padding(.leading, 16)
+                                                    
+                                                    Text(" ~ ")
+                                                        .font(.subhead2_2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                    
+                                                    if let endDate = nowTravel?[index].endDate {
+                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelListViewModel.dateFormatter)
+                                                            .font(.subhead2_2)
+                                                            .foregroundStyle(Color.white.opacity(0.75))
+                                                    } else {
+                                                        Text("")
+                                                    }
                                                 }
-                                                .font(.subhead2_2)
-                                                .foregroundStyle(Color.white.opacity(0.75))
-                                                .padding(.leading, 16)
                                                 
                                                 Spacer()
                                                 
-                                                HStack {
-                                                    Image(systemName: "person.fill")
-                                                        .frame(width: 12, height: 12)
-                                                        .foregroundStyle(Color.white)
+                                                HStack(spacing: 0) {
+                                                    HStack {
+                                                        Image(systemName: "person.fill")
+                                                            .frame(width: 12, height: 12)
+                                                            .foregroundStyle(Color.white)
+                                                        
+                                                        Text("me")
+                                                            .font(.caption2)
+                                                            .foregroundStyle(Color.white)
+                                                    }
                                                     
-                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? ["me"]))
+                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? [""]))
                                                         .lineLimit(1)
                                                         .font(.caption2)
                                                         .foregroundStyle(Color.white)
@@ -233,6 +254,7 @@ struct TravelListView: View {
                                                 }
                                                 .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
                                                 .padding(.trailing, 16)
+                                                
                                             }
                                             .frame(height: 16)
                                             
@@ -243,45 +265,44 @@ struct TravelListView: View {
                                     }
                                     .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            viewModel.updateTravel()
-                                            viewModel.saveTravel()
-                                            
-                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                            if let savedExpenses = savedExpenses {
-                                                let countryValues: [Int64] = savedExpenses.map { expense in
-                                                    return viewModel.getCountryForExpense(expense)
+                                            if index > 0 {
+                                                self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
+                                                if let savedExpenses = savedExpenses {
+                                                    let countryValues: [Int64] = savedExpenses.map { expense in
+                                                        return viewModel.getCountryForExpense(expense)
+                                                    }
+                                                    let uniqueCountryValues = Array(Set(countryValues))
+                                                    
+                                                    var flagImageNames: [String] = []
+                                                    var defaultImage: [String] = []
+                                                    var koreanName: [String] = []
+                                                    
+                                                    for countryValue in uniqueCountryValues {
+                                                        
+                                                        if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                            flagImageNames.append(flagString)
+                                                        } else {
+                                                            flagImageNames.append("DefaultFlag")
+                                                        }
+                                                        
+                                                        if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                            defaultImage.append(defaultString)
+                                                        } else {
+                                                            defaultImage.append("DefaultImage")
+                                                        }
+                                                        
+                                                        if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                            koreanName.append(koreanString)
+                                                        } else {
+                                                            koreanName.append("")
+                                                        }
+                                                    }
+                                                    
+                                                    self.flagImageName = flagImageNames
+                                                    self.defaultImageName = defaultImage
+                                                    self.countryName = koreanName
+                                                    print("defaultImageName :", defaultImageName)
                                                 }
-                                                let uniqueCountryValues = Array(Set(countryValues))
-                                                
-                                                var flagImageNames: [String] = []
-                                                var defaultImage: [String] = []
-                                                var koreanName: [String] = []
-                                                
-                                                for countryValue in uniqueCountryValues {
-                                                    
-                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                    
-                                                    if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                        defaultImage.append(defaultString)
-                                                    } else {
-                                                        defaultImage.append("DefaultImage")
-                                                    }
-                                                    
-                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                        koreanName.append(koreanString)
-                                                    } else {
-                                                        koreanName.append("")
-                                                    }
-                                                }
-                                                
-                                                self.flagImageName = flagImageNames
-                                                self.defaultImageName = defaultImage
-                                                self.countryName = koreanName
-                                                print("defaultImageName :", defaultImageName)
                                             }
                                         }
                                     }

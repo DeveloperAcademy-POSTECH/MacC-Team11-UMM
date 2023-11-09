@@ -119,7 +119,7 @@ struct InterimPastView: View {
                                             
                                             // Doris : 날짜 표시
                                             VStack(alignment: .leading, spacing: 0) {
-                                                HStack {
+                                                HStack(spacing: 0) {
                                                     Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
                                                     
                                                     Text("~")
@@ -127,9 +127,13 @@ struct InterimPastView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                if let endDate = previousTravel?[index].endDate {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                } else {
+                                                    Text("")
+                                                }
                                             }
                                             .padding(.horizontal, 8)
                                             .padding(.bottom, 8)
@@ -138,7 +142,7 @@ struct InterimPastView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(width: 110, height: 80)
                                             .foregroundStyle(.gray100)
-                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.3)
+                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.4)
                                     }
                                     .frame(width: 110, height: 80)
                                     .onAppear {
@@ -175,6 +179,7 @@ struct InterimPastView: View {
                                     }
                                 }
                                 Text(previousTravel?[index].name ?? "제목 미정")
+                                    .foregroundStyle(chosenTravel == previousTravel?[index] ? Color.black : Color.gray300)
                                     .font(.subhead1)
                                     .lineLimit(1)
                             }
@@ -283,9 +288,13 @@ struct InterimPastView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                    .font(.caption2)
-                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                                if let endDate = previousTravel?[index].endDate {
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                        .font(.caption2)
+                                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                                } else {
+                                                                    Text("")
+                                                                }
                                                             }
                                                             .padding(.horizontal, 8)
                                                             .padding(.bottom, 8)
@@ -294,7 +303,7 @@ struct InterimPastView: View {
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
-                                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.3)
+                                                            .opacity(chosenTravel == previousTravel?[index] ? 0.0 : 0.4)
                                                     }
                                                     .frame(width: 110, height: 80)
                                                     .onAppear {
@@ -331,6 +340,7 @@ struct InterimPastView: View {
                                                     }
                                                 }
                                                 Text(previousTravel?[index].name ?? "제목 미정")
+                                                    .foregroundStyle(chosenTravel == previousTravel?[index] ? Color.black : Color.gray300)
                                                     .font(.subhead1)
                                                     .lineLimit(1)
                                             }

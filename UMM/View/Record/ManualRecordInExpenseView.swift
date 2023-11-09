@@ -674,9 +674,9 @@ struct ManualRecordInExpenseView: View {
                         }
                         .hidden()
                         
-                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "-")
+                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
                             .lineLimit(nil)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != "Default" ? .black : .gray400)
                             .font(.subhead2_1)
                     }
                     Spacer()
@@ -729,7 +729,7 @@ struct ManualRecordInExpenseView: View {
                             .padding(.vertical, 6)
                             .hidden()
                         
-                        Text(viewModel.payDate.toString(dateFormat: "yyyy년 M월 d일 a hh:mm"))
+                        Text(viewModel.payDate.toString(dateFormat: "yy.MM.dd(E) HH:mm"))
                             .foregroundStyle(.black)
                             .font(.subhead2_2)
                     }

@@ -127,9 +127,13 @@ struct InterimOncomingView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 
-                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                if let endDate = onComingTravel?[index].endDate {
+                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                } else {
+                                                    Text("")
+                                                }
                                             }
                                             .padding(.horizontal, 8)
                                             .padding(.bottom, 8)
@@ -138,7 +142,7 @@ struct InterimOncomingView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(width: 110, height: 80)
                                             .foregroundStyle(.gray100)
-                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.4)
                                     }
                                     .frame(width: 110, height: 80)
                                     .onAppear {
@@ -174,6 +178,7 @@ struct InterimOncomingView: View {
                                     }
                                 }
                                 Text(onComingTravel?[index].name ?? "제목 미정")
+                                    .foregroundStyle(chosenTravel == onComingTravel?[index] ? Color.black : Color.gray300)
                                     .font(.subhead1)
                                     .lineLimit(1)
                             }
@@ -281,9 +286,13 @@ struct InterimOncomingView: View {
                                                                 .font(.caption2)
                                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                                 
-                                                                Text(dateGapHandler.convertBeforeShowing(date: onComingTravel?[index].endDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                    .font(.caption2)
-                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                                if let endDate = onComingTravel?[index].endDate {
+                                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                        .font(.caption2)
+                                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                                } else {
+                                                                    Text("")
+                                                                }
                                                             }
                                                             .padding(.horizontal, 8)
                                                             .padding(.bottom, 8)
@@ -292,7 +301,7 @@ struct InterimOncomingView: View {
                                                         RoundedRectangle(cornerRadius: 10)
                                                             .frame(width: 110, height: 80)
                                                             .foregroundStyle(.gray100)
-                                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.3)
+                                                            .opacity(chosenTravel == onComingTravel?[index] ? 0.0 : 0.4)
                                                     }
                                                     .frame(width: 110, height: 80)
                                                     .onAppear {
@@ -329,6 +338,7 @@ struct InterimOncomingView: View {
                                                 }
                                                 
                                                 Text(onComingTravel?[index].name ?? "제목 미정")
+                                                    .foregroundStyle(chosenTravel == onComingTravel?[index] ? Color.black : Color.gray300)
                                                     .font(.subhead1)
                                                     .lineLimit(1)
                                             }

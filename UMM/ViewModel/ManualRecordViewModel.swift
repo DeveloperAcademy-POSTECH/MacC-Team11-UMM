@@ -195,10 +195,12 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var addingParticipant = false
     @Published var countryIsModified = false
     @Published var playingRecordSound = false
+    @Published var savingIsDone = false
     
     // MARK: - timer
     
     @Published var autoSaveTimer: Timer?
+    @Published var afterSavingTimer: Timer?
     @Published var secondCounter: Int?
     
     override init() {

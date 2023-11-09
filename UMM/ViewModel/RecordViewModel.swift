@@ -116,7 +116,6 @@ final class RecordViewModel: ObservableObject {
     var startRecordTime = CFAbsoluteTimeGetCurrent()
     var endRecordTime = CFAbsoluteTimeGetCurrent()
     
-    @Published var defaultTravelNameReplacer = "-"
     private var cancellables = Set<AnyCancellable>()
     private var hapticCounter = 0
     
