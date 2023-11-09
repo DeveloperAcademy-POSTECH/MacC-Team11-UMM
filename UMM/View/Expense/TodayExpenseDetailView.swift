@@ -45,6 +45,16 @@ struct TodayExpenseDetailView: View {
             
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbarBackground(.white, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
+    }
+    
+    private var backButtonView: some View {
+        Image(systemName: "chevron.left")
+            .imageScale(.large)
+            .foregroundColor(Color.black)
     }
     
     private var paymentModal: some View {
