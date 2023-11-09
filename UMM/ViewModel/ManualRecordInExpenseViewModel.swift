@@ -51,15 +51,27 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-
+        
         locationManager.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self
-
+        
         // locationManager(_:didUpdateLocations:) 메서드가 호출될 때까지 기다림.
         while location == nil || placemark == nil {
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         }
     }
+    
+    // MARK: FirstValue
+    var firstPaymentMethod: PaymentMethod?
+    var firstParticipantTupleArray: [(name: String, isOn: Bool)]?
+    var firstPayDate: Date?
+    var firstCountryExpression: String?
+    var firstLocationExpression: String?
+    var firstCountry: Int?
+    var firstCurrency: Int?
+    var firstVisiblePayAmount: String?
+    var firstCategory: ExpenseInfoCategory?
+    var firstVisibleInfo: String?
     
     // MARK: - combine
     
@@ -88,6 +100,17 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     @Published var visiblePayAmount: String = "" {
         didSet {
+            if let firstVisiblePayAmount = firstVisiblePayAmount {
+                print(firstVisiblePayAmount == visiblePayAmount)
+            }
+            print("VisiblePayAmount | firstVisiblePayAmount: \(firstVisiblePayAmount)")
+            print("VisiblePayAmount | VisiblePayAmount: \(visiblePayAmount)")
+            if isFirstAppear {
+                firstVisiblePayAmount = visiblePayAmount
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             var tempVisiblePayAmount = visiblePayAmount.filter { [.arabicNumeric, .arabicDot].contains($0.getCharacterForm()) }
             if let dotIndex = tempVisiblePayAmount.firstIndex(of: ".") {
                 if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
@@ -106,10 +129,21 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
-
+    
     var info: String? // passive
     @Published var visibleInfo: String = "" {
         didSet {
+            if let firstVisibleInfo = firstVisibleInfo {
+                print(firstVisibleInfo == visibleInfo)
+            }
+            print("VisibleInfo | firstVisibleInfo: \(firstVisibleInfo)")
+            print("VisibleInfo | VisibleInfo: \(visibleInfo)")
+            if isFirstAppear {
+                firstVisibleInfo = visibleInfo
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             if visibleInfo == "" {
                 info = nil
             } else {
@@ -118,23 +152,83 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     
-    @Published var category: ExpenseInfoCategory = .unknown
-    @Published var paymentMethod: PaymentMethod = .unknown
+    @Published var category: ExpenseInfoCategory = .unknown {
+        didSet {
+            if let firstCategory = firstCategory {
+                print(firstCategory == category)
+            }
+            print("Category | firstCategory: \(firstCategory)")
+            print("Category | Category: \(category)")
+            if isFirstAppear {
+                firstCategory = category
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
+    
+    @Published var paymentMethod: PaymentMethod = .unknown {
+        didSet {
+            if let firstPaymentMethod = firstPaymentMethod {
+                print(firstPaymentMethod == paymentMethod)
+            }
+            print("paymentMethod | firstPaymentMethod: \(firstPaymentMethod)")
+            print("paymentMethod | PaymentMethod: \(paymentMethod)")
+            if isFirstAppear {
+                firstPaymentMethod = paymentMethod
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
     
     // MARK: - not-in-string property
     
     @Published var travelArray: [Travel] = []
+    @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] {
+        didSet {
+            if let firstParticipantTupleArray = firstParticipantTupleArray {
+                print((zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }))
+            }
+            print("ParticipantTupleArray | firstParticipantTupleArray: \(firstParticipantTupleArray)")
+            print("ParticipantTupleArray | ParticipantTupleArray: \(participantTupleArray)")
+            if isFirstAppear {
+                firstParticipantTupleArray = participantTupleArray
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    } // passive
     
-    @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
+    @Published var payDate: Date = Date() {
+        didSet {
+            if let firstPayDate = firstPayDate {
+                print(firstPayDate == payDate)
+            }
+            print("PayDate | firstPayDate: \(firstPayDate)")
+            print("PayDate | PayDate: \(payDate)")
+            if isFirstAppear {
+                firstPayDate = payDate
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
     
-    @Published var payDate: Date = Date()
     var currentDate: Date = Date()
-
+    
     @Published var country: Int = -1 {
         didSet {
+            if isFirstAppear {
+                firstCountry = country
+            }
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
             locationExpression = ""
-
+            
             if country == 3 { // 미국
                 currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
             } else {
@@ -163,14 +257,55 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     }
-    @Published var countryExpression: String = "" // passive
-    @Published var locationExpression: String = ""
+    @Published var countryExpression: String = "" {
+        didSet {
+            if let firstCountryExpression = firstCountryExpression {
+                print(firstCountryExpression == countryExpression)
+            }
+            print("CountryExpression | firstCountryExpression: \(firstCountryExpression)")
+            print("CountryExpression | CountryExpression: \(countryExpression)")
+            if isFirstAppear {
+                firstCountryExpression = countryExpression
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    } // passive
+    
+    @Published var locationExpression: String = "" {
+        didSet {
+            if let firstLocationExpression = firstLocationExpression {
+                print(firstLocationExpression == locationExpression)
+            }
+            print("LocationExpression | firstLocationExpression: \(firstLocationExpression)")
+            print("LocationExpression | LocationExpression: \(locationExpression)")
+            if isFirstAppear {
+                firstLocationExpression = locationExpression
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
+    
     var currentCountry: Int = -1
     var currentLocation: String = ""
     var otherCountryCandidateArray: [Int] = [] // passive
     
     @Published var currency: Int = 4 {
         didSet {
+            if let firstCurrency = firstCurrency {
+                print(firstCurrency == currency)
+            }
+            print("Currency | firstCurrency: \(firstCurrency)")
+            print("Currency | Currency: \(currency)")
+            if isFirstAppear {
+                firstCurrency = currency
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             if payAmount == -1 || currency == -1 {
                 payAmountInWon = -1
             } else {
@@ -198,6 +333,21 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     @Published var addingParticipant = false
     @Published var countryIsModified = false
     @Published var playingRecordSound = false
+    @Published var isSameData = true {
+        didSet {
+            print("isSameData: \(isSameData)")
+        }
+    }
+    @Published var showAlert = false {
+        didSet {
+            print("showAlert: \(showAlert)")
+        }
+    }
+    @Published var isFirstAppear = true {
+        didSet {
+            print("isFirstAppear: \(isFirstAppear)")
+        }
+    }
     
     // MARK: - timer
     
@@ -242,7 +392,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     deinit {
         stopPlayingAudio()
     }
-        
+    
     func save() {
         var expense: Expense?
         do {
@@ -266,16 +416,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         
-//        if let soundRecordData, let soundData = try? Data(contentsOf: soundRecordData) {
-//            expense.voiceRecordFile = soundData
-//        }
+        //        if let soundRecordData, let soundData = try? Data(contentsOf: soundRecordData) {
+        //            expense.voiceRecordFile = soundData
+        //        }
         expense.voiceRecordFile = soundRecordData
         
         if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             var fetchedTravel: Travel?
             do {
                 fetchedTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in
-                        return travel.id == chosenTravel.id
+                    return travel.id == chosenTravel.id
                 }.first
             } catch {
                 print("error fetching travelArray: \(error.localizedDescription)")
@@ -319,16 +469,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         let tempDirectoryURL = FileManager.default.temporaryDirectory
         let randomID = UUID().uuidString
         let fileURL = tempDirectoryURL.appendingPathComponent(randomID).appendingPathExtension("m4a")
-
+        
         do {
             try data.write(to: fileURL, options: .atomic)
         } catch {
             print("Failed to save file: \(error)")
             return
         }
-
+        
         let playSession = AVAudioSession.sharedInstance()
-
+        
         do {
             try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         } catch {
@@ -341,7 +491,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         } catch {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
-
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
             audioPlayer?.delegate = self
@@ -372,6 +522,121 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    func updateAlertState() {
+        showAlert = self.backButtonAlertIsShown && !self.isSameData
+    }
+    
+    func updateIsSameDataState() -> Bool {
+        if let firstCountry = self.firstCountry,
+           let firstCategory = self.firstCategory,
+           let firstCurrency = self.firstCurrency,
+           let firstPayDate = self.firstPayDate,
+           let firstVisibleInfo = self.firstVisibleInfo,
+           let firstPaymentMethod = self.firstPaymentMethod,
+           let firstCountryExpression = self.firstCountryExpression,
+           let firstLocationExpression = self.firstLocationExpression,
+           let firstVisiblePayAmount = self.firstVisiblePayAmount,
+           let firstParticipantTupleArray = self.firstParticipantTupleArray
+        {
+            // 변수 할당이 모두 성공한 경우
+            let isSameCountry = firstCountry == country
+            let isSameCategory = firstCategory == category
+            let isSameCurrency = firstCurrency == currency
+            let isSamePayDate = firstPayDate.isTimeEqual(to: payDate)
+            let isSameVisibleInfo = firstVisibleInfo == visibleInfo
+            let isSamePaymentMethod = firstPaymentMethod == paymentMethod
+            let isSameCountryExpression = firstCountryExpression == countryExpression
+            let isSameLocationExpression = firstLocationExpression == locationExpression
+            let isSameVisiblePayAmount = firstVisiblePayAmount == visiblePayAmount
+            let isSameParticipantTupleArray = zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }
+            
+            if !isSameCountry {
+                print("firstCountry is different")
+            }
+            if !isSameCategory {
+                print("firstCategory is different")
+            }
+            if !isSameCurrency {
+                print("firstCurrency is different")
+            }
+            if !isSamePayDate {
+                print("firstPayDate is different")
+            }
+            if !isSameVisibleInfo {
+                print("firstVisibleInfo is different")
+            }
+            if !isSamePaymentMethod {
+                print("firstPaymentMethod is different")
+            }
+            if !isSameCountryExpression {
+                print("firstCountryExpression is different")
+            }
+            if !isSameLocationExpression {
+                print("firstLocationExpression is different")
+            }
+            if !isSameVisiblePayAmount {
+                print("firstVisiblePayAmount is different")
+            }
+            if !isSameParticipantTupleArray {
+                print("participantTupleArray is different")
+            }
+            
+            return isSameCountry &&
+                isSameCategory &&
+                isSameCurrency &&
+                isSamePayDate &&
+                isSameVisibleInfo &&
+                isSamePaymentMethod &&
+                isSameCountryExpression &&
+                isSameLocationExpression &&
+                isSameVisiblePayAmount &&
+                isSameParticipantTupleArray
+        } else {
+            // 변수 할당이 실패한 경우
+            if self.firstCountry == nil {
+                print("firstCountry is nil")
+            }
+            if self.firstCategory == nil {
+                print("firstCategory is nil")
+            }
+            if self.firstCurrency == nil {
+                print("firstCurrency is nil")
+            }
+            if self.firstPayDate == nil {
+                print("firstPayDate is nil")
+            }
+            if self.firstVisibleInfo == nil {
+                print("firstVisibleInfo is nil")
+            }
+            if self.firstPaymentMethod == nil {
+                print("firstPaymentMethod is nil")
+            }
+            if self.firstCountryExpression == nil {
+                print("firstCountryExpression is nil")
+            }
+            if self.firstLocationExpression == nil {
+                print("firstLocationExpression is nil")
+            }
+            if self.firstVisiblePayAmount == nil {
+                print("firstVisiblePayAmount is nil")
+            }
+            if self.firstParticipantTupleArray == nil {
+                print("firstParticipantTupleArray is nil")
+            }
+            
+            return false
+        }
+    }
+
+
+    
+    func checkFirstAppear() {
+        print("checkFirstAppear")
+        if isFirstAppear {
+            isFirstAppear = false
+        }
+    }
 }
 
 extension ManualRecordInExpenseViewModel: AVAudioPlayerDelegate {
@@ -384,4 +649,5 @@ extension ManualRecordInExpenseViewModel: AVAudioPlayerDelegate {
                 print("Failed to play recorded sound.")
             }
         }
+    
 }

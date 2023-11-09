@@ -30,4 +30,14 @@ extension Date {
     func convertBeforeShowing() -> Date {
         return DateGapHandler.shared.convertBeforeShowing(date: self)
     }
+    
+    func isTimeEqual(to otherDate: Date) -> Bool {
+        let calendar = Calendar.current
+        let componentsA = calendar.dateComponents([.hour, .minute, .second], from: self)
+        let componentsB = calendar.dateComponents([.hour, .minute, .second], from: otherDate)
+        
+        return componentsA.hour == componentsB.hour &&
+            componentsA.minute == componentsB.minute &&
+            componentsA.second == componentsB.second
+    }
 }
