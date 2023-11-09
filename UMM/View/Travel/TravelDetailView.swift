@@ -132,7 +132,6 @@ struct TravelDetailView: View {
     private var dayCounter: some View {
         VStack(alignment: .leading) {
             HStack {
-                
                 if Date() <= endDate ?? Date.distantFuture {
                     HStack(alignment: .center, spacing: 10) {
                         Text("여행 중")
@@ -146,16 +145,16 @@ struct TravelDetailView: View {
                     .padding(.vertical, 7)
                     .background(.white)
                     .cornerRadius(5)
+                    
+                    Group {
+                        Text("DAY ")
+                        +
+                        Text("\(dayCnt+1)")
+                    }
+                    .padding(.vertical, 7)
+                    .font(.subhead2_1)
+                    .foregroundStyle(Color.white)
                 }
-                
-                Group {
-                    Text("DAY ")
-                    +
-                    Text("\(dayCnt)")
-                }
-                .padding(.vertical, 7)
-                .font(.subhead2_1)
-                .foregroundStyle(Color.white)
             }
             
             Text("\(travelName)")
@@ -167,7 +166,7 @@ struct TravelDetailView: View {
     }
     
     private var travelCountry: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text("여행 국가")
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
@@ -185,13 +184,14 @@ struct TravelDetailView: View {
                             .font(.body2)
                             .foregroundStyle(Color.white)
                     }
+                    
                     .padding(.trailing, 18)
                     
                 }
                 
                 Spacer()
             }
-            .padding(.bottom, 20)
+            .padding(.vertical, 20)
             
             Rectangle()
                 .foregroundColor(.clear)

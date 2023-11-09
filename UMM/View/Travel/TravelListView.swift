@@ -45,7 +45,7 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     viewModel.fetchTravel()
                     viewModel.fetchExpense()
                     viewModel.fetchDefaultTravel()
@@ -58,7 +58,7 @@ struct TravelListView: View {
                     if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                         handler.fetchAndSaveExchangeRates()
                     }
-                }
+//                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -117,9 +117,45 @@ struct TravelListView: View {
                         .cornerRadius(10)
                         .padding(.bottom, 22)
                 }
-                .onAppear {
-                    print("rrrrr zero view shown")
-                }
+//                .onAppear {
+//                    self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[0].id ?? UUID())
+//                    if let savedExpenses = savedExpenses {
+//                        let countryValues: [Int64] = savedExpenses.map { expense in
+//                            return viewModel.getCountryForExpense(expense)
+//                        }
+//                        let uniqueCountryValues = Array(Set(countryValues))
+//                        
+//                        var flagImageNames: [String] = []
+//                        var defaultImage: [String] = []
+//                        var koreanName: [String] = []
+//                        
+//                        for countryValue in uniqueCountryValues {
+//                            
+//                            if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+//                                flagImageNames.append(flagString)
+//                            } else {
+//                                flagImageNames.append("DefaultFlag")
+//                            }
+//                            
+//                            if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+//                                defaultImage.append(defaultString)
+//                            } else {
+//                                defaultImage.append("DefaultImage")
+//                            }
+//                            
+//                            if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+//                                koreanName.append(koreanString)
+//                            } else {
+//                                koreanName.append("")
+//                            }
+//                        }
+//                        
+//                        self.flagImageName = flagImageNames
+//                        self.defaultImageName = defaultImage
+//                        self.countryName = koreanName
+//                        print("defaultImageName :", defaultImageName)
+//                    }
+//                }
             } else {
                 ZStack(alignment: .center) {
                     ScrollView(.init()) {
@@ -201,7 +237,7 @@ struct TravelListView: View {
                                             Group {
                                                 Text("Day ")
                                                 +
-                                                Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date())))")
+                                                Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()))+1)")
                                             }
                                             .font(.caption1)
                                             .foregroundStyle(Color.white)

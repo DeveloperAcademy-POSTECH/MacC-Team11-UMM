@@ -240,7 +240,7 @@ struct DefaultTabBarView: View {
     @Binding var currentDefaultTab: Int
     @Namespace var namespace
     
-    var tabBarOptions: [String] = ["진행 중", "지난", "다가오는"]
+    var tabBarOptions: [String] = ["여행 중", "여행 완료", "여행 예정"]
     var body: some View {
         HStack {
             ForEach(Array(zip(self.tabBarOptions.indices,
