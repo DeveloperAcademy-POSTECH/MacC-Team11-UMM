@@ -290,7 +290,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     // MARK: - voice
     
-    private var audioPlayer: AVAudioPlayer?
+    var audioPlayer: AVAudioPlayer?
     
     func startPlayingAudio(url: URL) {
         
@@ -308,6 +308,43 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
             
+        } catch {
+            print("Playing Failed")
+        }
+    }
+    
+    func startPlayingAudio(data: Data) {
+        let tempDirectoryURL = FileManager.default.temporaryDirectory
+        let fileURL = tempDirectoryURL.appendingPathComponent(UUID().uuidString).appendingPathExtension("m4a")
+
+        do {
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            print("Failed to save file: \(error)")
+            return
+        }
+
+        let playSession = AVAudioSession.sharedInstance()
+
+        do {
+            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        } catch {
+            print("Playing failed in Device")
+        }
+        
+        do {
+            try playSession.setCategory(.playback)
+            try playSession.setActive(true)
+        } catch {
+            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
+            audioPlayer?.delegate = self
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+
         } catch {
             print("Playing Failed")
         }

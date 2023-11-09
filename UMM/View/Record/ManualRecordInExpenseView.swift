@@ -259,30 +259,30 @@ struct ManualRecordInExpenseView: View {
             fraction0NumberFormatter.maximumFractionDigits = 0
             
             // MARK: - timer
-            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
-                viewModel.secondCounter = 8
-                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                    if let secondCounter = viewModel.secondCounter {
-                        if secondCounter > 1 {
-                            viewModel.secondCounter! -= 1
-                        } else {
-                            if viewModel.payAmount != -1 || viewModel.info != nil {
-                                viewModel.secondCounter = nil
-                                viewModel.save()
-                                if mainVM.chosenTravelInManualRecord != nil {
-                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                                }
-                                viewModel.deleteUselessAudioFiles()
-                                self.dismiss()
-                                timer.invalidate()
-                            } else {
-                                viewModel.secondCounter = nil
-                                timer.invalidate()
-                            }
-                        }
-                    }
-                }
-            }
+//            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
+//                viewModel.secondCounter = 8
+//                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//                    if let secondCounter = viewModel.secondCounter {
+//                        if secondCounter > 1 {
+//                            viewModel.secondCounter! -= 1
+//                        } else {
+//                            if viewModel.payAmount != -1 || viewModel.info != nil {
+//                                viewModel.secondCounter = nil
+//                                viewModel.save()
+//                                if mainVM.chosenTravelInManualRecord != nil {
+//                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
+//                                }
+//                                viewModel.deleteUselessAudioFiles()
+//                                self.dismiss()
+//                                timer.invalidate()
+//                            } else {
+//                                viewModel.secondCounter = nil
+//                                timer.invalidate()
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
@@ -446,16 +446,10 @@ struct ManualRecordInExpenseView: View {
                     if viewModel.soundRecordData != nil {
                         if !viewModel.playingRecordSound {
                             if let soundRecordData = viewModel.soundRecordData {
-                                
-                                let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("VOICE \(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
-                                do {
-                                    try soundRecordData.write(to: audioURL)
-                                } catch {
-                                    print("Failed to write audioData to \(audioURL): \(error)")
-                                }
-                                
-                                viewModel.startPlayingAudio(url: audioURL)
+                                viewModel.startPlayingAudio(data: soundRecordData)
                                 viewModel.playingRecordSound = true
+                            } else {
+                                print("ManualRecordInExpenseView | payAmountBlockView | Failed to unwrapping soundRecordData")
                             }
                         } else {
                             viewModel.stopPlayingAudio()

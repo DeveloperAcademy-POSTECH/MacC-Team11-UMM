@@ -42,6 +42,16 @@ struct AllExpenseDetailView: View {
             expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
         }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbarBackground(.white, for: .navigationBar)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButtonView)
+    }
+    
+    private var backButtonView: some View {
+        Image(systemName: "chevron.left")
+            .imageScale(.large)
+            .foregroundColor(Color.black)
     }
     
     private var paymentModal: some View {
@@ -183,7 +193,7 @@ struct AllExpenseDetailView: View {
                                 given_location: expense.location,
                                 given_id: expense.id
                             )
-                                .environmentObject(mainVM) // ^^^
+                            .environmentObject(mainVM) // ^^^
                         } label : {
                             HStack(alignment: .center, spacing: 0) {
                                 Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
