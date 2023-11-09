@@ -401,9 +401,9 @@ struct AddTravelView: View {
                             } else if viewModel.startDateToString(in: viewModel.startDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.startDateToString(in: self.date! - 1) {
                                 ZStack {
                                     Rectangle()
-                                        .frame(width: 33, height: 33)
-                                        .foregroundStyle(isEndDateSelected(date: viewModel.endDate) ? Color(0xFF8298) : Color.clear)
-                                        .offset(x: 20)
+                                        .frame(width: 28, height: 33)
+                                        .foregroundStyle(isEndDateSelected(date: viewModel.endDate) ? Color(0xFFCCD5) : Color.clear)
+                                        .offset(x: 15)
                                     
                                     Circle()
                                         .frame(width: 33, height: 33)
@@ -416,27 +416,6 @@ struct AddTravelView: View {
                                     Text(String(day))
                                         .padding(9.81)
                                         .font(.calendar2)
-                                        .frame(width: 45, height: 41)
-                                        .foregroundStyle(Color.white)
-                                }
-                            } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
-                                ZStack {
-                                    Rectangle()
-                                        .frame(width: 33, height: 33)
-                                        .foregroundStyle(Color(0xFF8298))
-                                        .offset(x: -20)
-                                    
-                                    Circle()
-                                        .frame(width: 33, height: 33)
-                                        .overlay(
-                                            Circle()
-                                                .stroke(Color.white)
-                                                .fill(Color.mainPink)
-                                        )
-                                    
-                                    Text(String(day))
-                                        .font(.calendar2)
-                                        .padding(9.81)
                                         .frame(width: 45, height: 41)
                                         .foregroundStyle(Color.white)
                                 }
@@ -450,10 +429,31 @@ struct AddTravelView: View {
                                         .frame(width: 47) // 45
                                         .background(
                                             Rectangle()
-                                                .foregroundStyle(Color(0xFF8298))
+                                                .foregroundStyle(Color(0xFFCCD5))
                                                 .frame(width: 50, height: 33)
                                         )
                                         .foregroundStyle(textColor)
+                                }
+                            } else if viewModel.endDateToString(in: viewModel.endDate ?? Date(timeIntervalSinceReferenceDate: 8)) == viewModel.endDateToString(in: self.date! - 1) {
+                                ZStack {
+                                    Rectangle()
+                                        .frame(width: 28, height: 33)
+                                        .foregroundStyle(Color(0xFFCCD5))
+                                        .offset(x: -15)
+                                    
+                                    Circle()
+                                        .frame(width: 33, height: 33)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white)
+                                                .fill(Color.mainPink)
+                                        )
+                                    
+                                    Text(String(day))
+                                        .font(.calendar2)
+                                        .padding(9.81)
+                                        .frame(width: 45, height: 41)
+                                        .foregroundStyle(Color.white)
                                 }
                             }
                         }
