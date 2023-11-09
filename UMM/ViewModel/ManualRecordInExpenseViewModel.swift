@@ -223,6 +223,9 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     @Published var country: Int = -1 {
         didSet {
+            if isFirstAppear {
+                firstCountry = country
+            }
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
             locationExpression = ""
             
@@ -534,19 +537,97 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
            let firstVisiblePayAmount = self.firstVisiblePayAmount,
            let firstParticipantTupleArray = self.firstParticipantTupleArray
         {
-            return (firstCountry == country) &&
-            (firstCategory == category) &&
-            (firstCurrency == currency) &&
-            (firstPayDate == payDate) &&
-            (firstVisibleInfo == visibleInfo) &&
-            (firstPaymentMethod == paymentMethod) &&
-            (firstCountryExpression == countryExpression) &&
-            (firstLocationExpression == locationExpression) &&
-            (firstVisiblePayAmount == visiblePayAmount) &&
-            (zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 })
+            // 변수 할당이 모두 성공한 경우
+            let isSameCountry = firstCountry == country
+            let isSameCategory = firstCategory == category
+            let isSameCurrency = firstCurrency == currency
+            let isSamePayDate = firstPayDate == payDate
+            let isSameVisibleInfo = firstVisibleInfo == visibleInfo
+            let isSamePaymentMethod = firstPaymentMethod == paymentMethod
+            let isSameCountryExpression = firstCountryExpression == countryExpression
+            let isSameLocationExpression = firstLocationExpression == locationExpression
+            let isSameVisiblePayAmount = firstVisiblePayAmount == visiblePayAmount
+            let isSameParticipantTupleArray = zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }
+            
+            if !isSameCountry {
+                print("firstCountry is different")
+            }
+            if !isSameCategory {
+                print("firstCategory is different")
+            }
+            if !isSameCurrency {
+                print("firstCurrency is different")
+            }
+            if !isSamePayDate {
+                print("firstPayDate is different")
+            }
+            if !isSameVisibleInfo {
+                print("firstVisibleInfo is different")
+            }
+            if !isSamePaymentMethod {
+                print("firstPaymentMethod is different")
+            }
+            if !isSameCountryExpression {
+                print("firstCountryExpression is different")
+            }
+            if !isSameLocationExpression {
+                print("firstLocationExpression is different")
+            }
+            if !isSameVisiblePayAmount {
+                print("firstVisiblePayAmount is different")
+            }
+            if !isSameParticipantTupleArray {
+                print("participantTupleArray is different")
+            }
+            
+            return isSameCountry &&
+                isSameCategory &&
+                isSameCurrency &&
+                isSamePayDate &&
+                isSameVisibleInfo &&
+                isSamePaymentMethod &&
+                isSameCountryExpression &&
+                isSameLocationExpression &&
+                isSameVisiblePayAmount &&
+                isSameParticipantTupleArray
+        } else {
+            // 변수 할당이 실패한 경우
+            if self.firstCountry == nil {
+                print("firstCountry is nil")
+            }
+            if self.firstCategory == nil {
+                print("firstCategory is nil")
+            }
+            if self.firstCurrency == nil {
+                print("firstCurrency is nil")
+            }
+            if self.firstPayDate == nil {
+                print("firstPayDate is nil")
+            }
+            if self.firstVisibleInfo == nil {
+                print("firstVisibleInfo is nil")
+            }
+            if self.firstPaymentMethod == nil {
+                print("firstPaymentMethod is nil")
+            }
+            if self.firstCountryExpression == nil {
+                print("firstCountryExpression is nil")
+            }
+            if self.firstLocationExpression == nil {
+                print("firstLocationExpression is nil")
+            }
+            if self.firstVisiblePayAmount == nil {
+                print("firstVisiblePayAmount is nil")
+            }
+            if self.firstParticipantTupleArray == nil {
+                print("firstParticipantTupleArray is nil")
+            }
+            
+            return false
         }
-        return false
     }
+
+
     
     func checkFirstAppear() {
         print("checkFirstAppear")
