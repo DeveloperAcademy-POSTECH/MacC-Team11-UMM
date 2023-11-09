@@ -39,7 +39,6 @@ struct AddTravelRequestModal: View {
                 // 탭 이동하고 여행 생성하는 페이지로 자동으로 넘어가기 구현하기 ^^^
             }
             MediumButtonActive(title: "임시 기록하기") {
-                viewModel.defaultTravelNameReplacer = "임시 기록"
                 viewModel.addTravelRequestModalIsShown = false
             }
         }

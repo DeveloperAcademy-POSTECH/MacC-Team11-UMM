@@ -667,9 +667,9 @@ struct ManualRecordInExpenseView: View {
                         }
                         .hidden()
                         
-                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "-")
+                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
                             .lineLimit(nil)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != "Default" ? .black : .gray400)
                             .font(.subhead2_1)
                     }
                     Spacer()

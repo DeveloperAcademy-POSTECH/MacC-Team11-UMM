@@ -27,6 +27,8 @@ struct ManualRecordView: View {
     var body: some View {
         ZStack {
             Color(.white)
+                .ignoresSafeArea()
+            
             VStack(spacing: 0) {
                 ScrollView {
                     Spacer()
@@ -48,14 +50,19 @@ struct ManualRecordView: View {
             
             VStack(spacing: 0) {
                 Spacer()
-                autoSaveTextView
-                Spacer()
-                    .frame(height: 16)
+                ZStack(alignment: .bottom) {
+                    autoSaveTextView
+                    doneTextView
+                }
                 saveButtonView
                 Spacer()
                     .frame(height: 45)
             }
             .ignoresSafeArea()
+            
+            Color(.white)
+                .opacity(0.0000001)
+                .allowsHitTesting(viewModel.savingIsDone)
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
@@ -247,7 +254,11 @@ struct ManualRecordView: View {
                                     mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
                                 }
                                 viewModel.deleteUselessAudioFiles()
-                                self.dismiss()
+                                viewModel.savingIsDone = true
+                                viewModel.afterSavingTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { t in
+                                    dismiss()
+                                    t.invalidate()
+                                }
                                 timer.invalidate()
                             } else {
                                 viewModel.secondCounter = nil
@@ -639,9 +650,9 @@ struct ManualRecordView: View {
                         }
                         .hidden()
                         
-                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "-")
+                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
                             .lineLimit(nil)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != "Default" ? .black : .gray400)
                             .font(.subhead2_1)
                     }
                     Spacer()
@@ -827,6 +838,33 @@ struct ManualRecordView: View {
                 EmptyView()
             }
         }
+        .padding(.vertical, 16)
+        .background {
+            Color(.white)
+        }
+    }
+    
+    private var doneTextView: some View {
+        Group {
+            if viewModel.savingIsDone {
+                HStack(spacing: 6) {
+                    Image("recordMainPinkCheck")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                    
+                    Text("저장되었습니다")
+                        .foregroundStyle(.gray300)
+                        .font(.body2)
+                }
+            } else {
+                EmptyView()
+            }
+        }
+        .padding(.vertical, 16)
+        .background {
+            Color(.white)
+        }
     }
     
     private var saveButtonView: some View {
@@ -845,8 +883,11 @@ struct ManualRecordView: View {
                     mainVM.selectedTravel = defaultTravel
                 }
                 viewModel.deleteUselessAudioFiles()
-                dismiss()
-                
+                viewModel.savingIsDone = true
+                viewModel.afterSavingTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { timer in
+                    dismiss()
+                    timer.invalidate()
+                }
             }
             .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
             .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)
