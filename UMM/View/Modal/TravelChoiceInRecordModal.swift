@@ -313,15 +313,16 @@ struct TravelBlockView: View {
                 .frame(height: 6)
             
             Text(travel.name != tempTravelName ? travel.name ?? "-" : "임시 기록")
-                .lineLimit(3)
+                .lineLimit(1)
                 .foregroundStyle(travel.name != tempTravelName ? .black : .gray400)
                 .font(.subhead1)
                 .opacity(travel.id == (chosenTravel?.id ?? UUID()) ? 1 : 0.6)
                 .padding(.horizontal, 10)
                 .layoutPriority(-1)
+                .frame(maxWidth: 120) // 상수로 했다 ^^^
             
             Spacer()
-                .frame(height: 2) // 눈으로 보기에 비슷하게 적당히 수정했음
+                .frame(height: 2) // 눈으로 보기에 비슷하게 적당히 수정했음 ^^^
             
             Group {
                 if travel.name == tempTravelName {
@@ -347,7 +348,7 @@ struct TravelBlockView: View {
                             .padding(.horizontal, 8)
                     }
                 }
-            } // 일자와 시분초의 문제 해결하기 ^^^
+            }
         }
     }
 }
