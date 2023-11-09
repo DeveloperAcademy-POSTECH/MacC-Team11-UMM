@@ -31,7 +31,7 @@ struct InterimProceedingView: View {
         ZStack {
             if proceedingCnt == 0 {
                 
-                Text("현재 진행중인 여행이 없습니다.") // Doris
+                Text("현재 진행 중인 여행이 없어요") // Doris
                 
             } else if proceedingCnt <= 6 {
                 VStack {

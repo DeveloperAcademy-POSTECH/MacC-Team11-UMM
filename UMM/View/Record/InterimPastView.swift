@@ -31,7 +31,7 @@ struct InterimPastView: View {
         ZStack {
             if pastCnt == 0 {
                 
-                Text("지난 여행이 없습니다.") // Doris
+                Text("완료된 여행이 없어요") // Doris
                 
             } else if pastCnt <= 6 {
                 VStack {
