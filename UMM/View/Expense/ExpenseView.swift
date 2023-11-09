@@ -20,11 +20,14 @@ struct ExpenseView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 
-                // settingViewButton
+//                 settingViewButton
+//                    .padding(.horizontal, 20)
                 
                 travelChoiceView
+                    .padding(.horizontal, 20)
                 
-                // todayExpenseHeader
+//                 todayExpenseHeader
+//                    .padding(.horizontal, 20)
                 
                 tabViewButton
                 
@@ -36,6 +39,7 @@ struct ExpenseView: View {
                         .contentShape(Rectangle())
                         .gesture(DragGesture().onChanged({_ in}))
                         .simultaneousGesture(TapGesture())
+
                     AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
                         .tag(1)
                         .contentShape(Rectangle())
@@ -44,7 +48,6 @@ struct ExpenseView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
-            .padding(.horizontal, 20)
             .ignoresSafeArea()
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravelInExpense, selectedCountry: $expenseViewModel.selectedCountry)
@@ -118,16 +121,16 @@ struct ExpenseView: View {
         .padding(.bottom, 20)
     }
     
-        private var tabViewButton: some View {
-            HStack(spacing: 0) {
-                ForEach((TabbedItems.allCases), id: \.self) { item in
-                    ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                        .padding(.top, 8)
-                }
+    private var tabViewButton: some View {
+        HStack(spacing: 0) {
+            ForEach((TabbedItems.allCases), id: \.self) { item in
+                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+                    .padding(.top, 8)
             }
-            .padding(.top, 32)
-            .padding(.bottom, 0)
         }
+        .padding(.top, 32)
+        .padding(.bottom, 0)
+    }
 }
 
 struct ExpenseTabBarItem: View {

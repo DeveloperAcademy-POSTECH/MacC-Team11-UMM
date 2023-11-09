@@ -21,15 +21,21 @@ struct AllExpenseView: View {
         VStack(alignment: .leading, spacing: 0) {
             if expenseViewModel.filteredAllExpenses.count == 0 {
                 noDataView
+                    .padding(.horizontal, 20)
             } else {
                 countryPicker
+                    .padding(.horizontal, 20)
                 allExpenseSummaryTotal
+                    .padding(.horizontal, 20)
                 allExpenseSummaryByCurrency
+                    .padding(.horizontal, 20)
                 allExpenseBarGraph
+                    .padding(.horizontal, 20)
                 Divider()
                 ScrollView(showsIndicators: false) {
                     drawExpensesByCategory
                 }
+                .padding(.horizontal, 20)
             }
         }
         .frame(maxWidth: .infinity)
