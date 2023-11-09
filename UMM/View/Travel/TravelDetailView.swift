@@ -100,10 +100,8 @@ struct TravelDetailView: View {
                         Button {
                             isWarningOn = true
                         } label: {
-                            Image(systemName: "trash")
-                                .foregroundStyle(Color.white)
-                                .frame(width: 20, height: 20)
-                                .padding(.trailing, 5)
+                            Image("trashCan")
+                                .padding(.trailing, 10)
                         }
                         
                         Button {
@@ -111,6 +109,7 @@ struct TravelDetailView: View {
                         } label: {
                             Image("xmark_white")
                                 .frame(width: 20, height: 20)
+                                .padding(.trailing, 5)
                         }
                     }
                 }
