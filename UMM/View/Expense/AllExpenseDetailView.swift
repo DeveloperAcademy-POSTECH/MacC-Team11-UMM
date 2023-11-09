@@ -204,8 +204,9 @@ struct AllExpenseDetailView: View {
                                     .font(.system(size: 36))
                                 
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text("\(expense.info ?? "info : unknown")")
+                                    Text("\(expense.info ?? "알 수 없는 내역")")
                                         .font(.subhead2_1)
+                                        .foregroundStyle(.black)
                                     HStack(alignment: .center, spacing: 0) {
                                         // 소비 기록을 한 시각을 보여주는 부분
                                         // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
@@ -235,9 +236,11 @@ struct AllExpenseDetailView: View {
                                     HStack(alignment: .center, spacing: 0) {
                                         Text("\(Currency.getSymbol(of: Int(expense.currency)))")
                                             .font(.subhead2_1)
+                                            .foregroundStyle(.black)
                                         
                                         Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
                                             .font(.subhead2_1)
+                                            .foregroundStyle(.black)
                                             .padding(.leading, 3 )
                                     }
                                     let currencyCodeName = Currency.getCurrencyCodeName(of: Int(expense.currency))
