@@ -57,9 +57,11 @@ struct ManualRecordInExpenseView: View {
                 autoSaveTextView
                 Spacer()
                     .frame(height: 16)
-                saveButtonView
-                Spacer()
-                    .frame(height: 45)
+                if !viewModel.isSameData {
+                    saveButtonView
+                    Spacer()
+                        .frame(height: 45)
+                }
             }
             .ignoresSafeArea()
         }
@@ -84,7 +86,7 @@ struct ManualRecordInExpenseView: View {
             DateChoiceModal(date: $viewModel.payDate, startDate: mainVM.chosenTravelInManualRecord?.startDate ?? Date.distantPast, endDate: mainVM.chosenTravelInManualRecord?.endDate ?? Date.distantFuture)
                 .presentationDetents([.height(289 - 34)])
         }
-        .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.backButtonAlertIsShown) {
+        .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.showAlert) {
             Button {
                 viewModel.backButtonAlertIsShown = false
             } label: {
@@ -93,6 +95,7 @@ struct ManualRecordInExpenseView: View {
             Button {
                 dismiss()
                 viewModel.backButtonAlertIsShown = false
+                viewModel.isSameData = true
             } label: {
                 Text("나가기")
             }
@@ -100,14 +103,6 @@ struct ManualRecordInExpenseView: View {
             Text("현재 화면의 정보를 모두 초기화하고 이전 화면으로 돌아갈까요?")
         }
         .onAppear {
-            print("given_wantToActivateAutoSaveTimer: \(given_wantToActivateAutoSaveTimer)")
-            print("given_payAmount: \(given_payAmount)")
-            print("given_currency: \(given_currency)")
-            print("given_info: \(given_info)")
-            print("given_infoCategory: \(given_infoCategory)")
-            print("given_paymentMethod: \(given_paymentMethod)")
-            print("given_soundRecordData: \(given_soundRecordData)")
-            print("given_expense: \(given_expense)")
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             viewModel.payAmount = given_payAmount
@@ -285,6 +280,12 @@ struct ManualRecordInExpenseView: View {
 //            }
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
+        .onAppear {
+            viewModel.checkFirstAppear()
+            print("viewModel.isSameData: \(viewModel.isSameData)")
+            print("viewModel.category: \(viewModel.category)")
+            print("viewModel.firstCategory: \(viewModel.firstCategory)")
+        }
         .onDisappear {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
@@ -296,6 +297,10 @@ struct ManualRecordInExpenseView: View {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
             viewModel.backButtonAlertIsShown = true
+            viewModel.updateAlertState()
+            if !viewModel.showAlert {
+                dismiss()
+            }
             print("back button tapped")
         } label: {
             Image(systemName: "chevron.left")
@@ -874,7 +879,6 @@ struct ManualRecordInExpenseView: View {
                 }
                 viewModel.deleteUselessAudioFiles()
                 dismiss()
-                
             }
             .opacity((viewModel.payAmount != -1 || viewModel.info != nil) ? 1 : 0.0000001)
             .allowsHitTesting(viewModel.payAmount != -1 || viewModel.info != nil)

@@ -61,6 +61,19 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: FirstValue
+    var firstPaymentMethod: PaymentMethod?
+    var firstTravelArray: [Travel]?
+    var firstParticipantTupleArray: [(name: String, isOn: Bool)]?
+    var firstPayDate: Date?
+    var firstCountryExpression: String?
+    var firstLocationExpression: String?
+    var firstCountry: Int?
+    var firstCurrency: Int?
+    var firstVisiblePayAmount: String?
+    var firstCategory: ExpenseInfoCategory?
+    var firstVisibleInfo: String?
+    
     // MARK: - combine
     
     var travelPublisher: AnyPublisher<Travel?, Never> {
@@ -88,6 +101,12 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     @Published var visiblePayAmount: String = "" {
         didSet {
+            if isFirstAppear {
+                firstVisiblePayAmount = visiblePayAmount
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             var tempVisiblePayAmount = visiblePayAmount.filter { [.arabicNumeric, .arabicDot].contains($0.getCharacterForm()) }
             if let dotIndex = tempVisiblePayAmount.firstIndex(of: ".") {
                 if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
@@ -110,6 +129,12 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     var info: String? // passive
     @Published var visibleInfo: String = "" {
         didSet {
+            if isFirstAppear {
+                firstVisibleInfo = visibleInfo
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             if visibleInfo == "" {
                 info = nil
             } else {
@@ -118,16 +143,63 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     
-    @Published var category: ExpenseInfoCategory = .unknown
-    @Published var paymentMethod: PaymentMethod = .unknown
+    @Published var category: ExpenseInfoCategory = .unknown {
+        didSet {
+            if isFirstAppear {
+                firstCategory = category
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
+
+    @Published var paymentMethod: PaymentMethod = .unknown {
+        didSet {
+            if isFirstAppear {
+                firstPaymentMethod = paymentMethod
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
     
     // MARK: - not-in-string property
     
-    @Published var travelArray: [Travel] = []
+    @Published var travelArray: [Travel] = [] {
+        didSet {
+            if isFirstAppear {
+                firstTravelArray = travelArray
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
     
-    @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] // passive
+    @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] {
+        didSet {
+            if isFirstAppear {
+                firstParticipantTupleArray = participantTupleArray
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    } // passive
+
+    @Published var payDate: Date = Date() {
+        didSet {
+            if isFirstAppear {
+                firstPayDate = payDate
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
     
-    @Published var payDate: Date = Date()
     var currentDate: Date = Date()
 
     @Published var country: Int = -1 {
@@ -161,14 +233,40 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     }
-    @Published var countryExpression: String = "" // passive
-    @Published var locationExpression: String = ""
+    @Published var countryExpression: String = "" {
+        didSet {
+            if isFirstAppear {
+                firstCountryExpression = countryExpression
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    } // passive
+    
+    @Published var locationExpression: String = "" {
+        didSet {
+            if isFirstAppear {
+                firstLocationExpression = locationExpression
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
+        }
+    }
+    
     var currentCountry: Int = -1
     var currentLocation: String = ""
     @Published var otherCountryCandidateArray: [Int] = [] // passive
     
     @Published var currency: Int = 3 {
         didSet {
+            if isFirstAppear {
+                firstCurrency = currency
+            } else {
+                isSameData = updateIsSameDataState()
+                updateAlertState()
+            }
             if payAmount == -1 || currency == -1 {
                 payAmountInWon = -1
             } else {
@@ -196,6 +294,21 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     @Published var addingParticipant = false
     @Published var countryIsModified = false
     @Published var playingRecordSound = false
+    @Published var isSameData = true {
+        didSet {
+            print("isSameData: \(isSameData)")
+        }
+    }
+    @Published var showAlert = false {
+        didSet {
+            print("showAlert: \(showAlert)")
+        }
+    }
+    @Published var isFirstAppear = true {
+        didSet {
+            print("isFirstAppear: \(isFirstAppear)")
+        }
+    }
     
     // MARK: - timer
     
@@ -368,6 +481,46 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             } catch {
                 print("error deleting sound files: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    func updateAlertState() {
+        showAlert = self.backButtonAlertIsShown && !self.isSameData
+    }
+    
+    func updateIsSameDataState() -> Bool {
+        if let firstCountry = self.firstCountry,
+           let firstCategory = self.firstCategory,
+           let firstCurrency = self.firstCurrency,
+           let firstPayDate = self.firstPayDate,
+           let firstTravelArray = self.firstTravelArray,
+           let firstVisibleInfo = self.firstVisibleInfo,
+           let firstPaymentMethod = self.firstPaymentMethod,
+           let firstCountryExpression = self.firstCountryExpression,
+           let firstLocationExpression = self.firstLocationExpression,
+           let firstVisiblePayAmount = self.firstVisiblePayAmount,
+           let firstParticipantTupleArray = self.firstParticipantTupleArray
+        {
+            return (firstCountry == country) &&
+                   (firstCategory == category) &&
+                   (firstCurrency == currency) &&
+                   (firstPayDate == payDate) &&
+                   (firstTravelArray == travelArray) &&
+                   (firstVisibleInfo == visibleInfo) &&
+                   (firstPaymentMethod == paymentMethod) &&
+                   (firstCountryExpression == countryExpression) &&
+                   (firstLocationExpression == locationExpression) &&
+                   (firstVisiblePayAmount == visiblePayAmount) &&
+                   (zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 })
+        }
+        print("updateIsSameDataState | updateIsSameDataState | updateIsSameDataState: false")
+        return false
+    }
+    
+    func checkFirstAppear() {
+        print("checkFirstAppear")
+        if isFirstAppear {
+            isFirstAppear = false
         }
     }
 }
