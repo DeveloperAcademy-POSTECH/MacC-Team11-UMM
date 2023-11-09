@@ -315,7 +315,7 @@ struct AddMemberView: View {
                 NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, 
                                                                   memberViewModel: viewModel,
                                                                   travelID: $travelID,
-                                                                  travelNM: travelName ?? "nil",
+                                                                  travelNM: travelName ?? "",
                                                                   isDisappear: $isDisappear)) {
                     DoneButtonActive(title: "완료", action: {
                         isBackButton = false
