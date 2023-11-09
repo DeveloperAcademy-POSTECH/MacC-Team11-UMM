@@ -164,7 +164,7 @@ struct UpcomingTravelView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.vertical, 22)
+                    .padding(.vertical, 20)
                     
                     Spacer()
                 }
