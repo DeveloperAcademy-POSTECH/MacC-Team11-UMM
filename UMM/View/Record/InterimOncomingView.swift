@@ -31,7 +31,7 @@ struct InterimOncomingView: View {
         ZStack {
             if onComingCnt == 0 {
                 
-                Text("다가오는 여행이 없습니다.") // Doris
+                Text("예정된 여행이 없어요") // Doris
                 
             } else if onComingCnt <= 6 {
                 VStack {
