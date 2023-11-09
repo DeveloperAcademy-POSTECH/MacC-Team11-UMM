@@ -80,10 +80,10 @@ struct ExpenseView: View {
     
     private var travelChoiceView: some View {
         HStack(alignment: .center, spacing: 0) {
-            Spacer()
             Button {
                 expenseViewModel.travelChoiceHalfModalIsShown = true
             } label: {
+                Spacer()
                 HStack(spacing: 10) {
                     ZStack {
                         Capsule()
@@ -111,6 +111,7 @@ struct ExpenseView: View {
                         .font(.display1)
                         .foregroundStyle(.black)
                 }
+                Spacer()
             }
             .padding(.bottom, 20)
         }

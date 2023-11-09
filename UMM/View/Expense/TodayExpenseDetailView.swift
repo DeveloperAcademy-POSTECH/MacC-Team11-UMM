@@ -202,6 +202,7 @@ struct TodayExpenseDetailView: View {
                             HStack(alignment: .center, spacing: 0) {
                                 Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
                                     .font(.subhead2_1)
+                                    .foregroundStyle(.black)
                                 Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
                                     .font(.subhead2_1)
                                     .foregroundStyle(.black)
