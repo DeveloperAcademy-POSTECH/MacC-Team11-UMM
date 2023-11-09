@@ -55,13 +55,8 @@ struct AddMemberView: View {
                 } else {
                     viewModel.participantArr = participantArr
                 }
-                viewModel.startDate = (startDate ?? Date()).local000().convertBeforeSaving()
-//                if let endDate = viewModel.endDate {
-//                    viewModel.endDate = endDate.local235959().convertBeforeSaving()
-//                } else {
-//                    viewModel.endDate = nil
-//                }
-                viewModel.endDate = dateGapHandler.convertBeforeSaving(date: endDate ?? Date())
+                viewModel.startDate = startDate?.local000().convertBeforeSaving()
+                viewModel.endDate = endDate?.local235959().convertBeforeSaving()
                 
                 // 여행 이름
                 if let arr = viewModel.participantArr {

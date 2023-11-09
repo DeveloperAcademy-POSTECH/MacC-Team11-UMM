@@ -18,6 +18,7 @@ final class LocationManagerDelegateForDateGapHandler: NSObject, CLLocationManage
 
 final class DateGapHandler {
     static let shared = DateGapHandler()
+    let calendar = Calendar.current
     
     private init() {
         getLocation()
@@ -78,7 +79,6 @@ final class DateGapHandler {
     }
     
     func getLocal000(of date: Date) -> Date {
-        let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         
         var newComponents = DateComponents()
@@ -97,7 +97,6 @@ final class DateGapHandler {
     }
     
     func getLocal235959(of date: Date) -> Date {
-        let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         
         var newComponents = DateComponents()
