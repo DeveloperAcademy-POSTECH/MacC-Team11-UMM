@@ -59,8 +59,8 @@ struct ManualRecordInExpenseView: View {
                     .frame(height: 16)
                 if !viewModel.isSameData {
                     saveButtonView
-                    Spacer()
-                        .frame(height: 45)
+//                    Spacer()
+//                        .frame(height: 45)
                 }
             }
             .ignoresSafeArea()

@@ -41,6 +41,7 @@ struct AddMemberView: View {
             doneButton
             
         }
+        .ignoresSafeArea(edges: .bottom)
         .onAppear {
             isBackButton = false
         }

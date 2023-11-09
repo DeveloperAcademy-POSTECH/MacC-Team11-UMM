@@ -42,7 +42,6 @@ struct AddTravelRequestModal: View {
                 // 탭 이동하고 여행 생성하는 페이지로 자동으로 넘어가기 구현하기 ^^^
             }
         }
-        .padding(.bottom, 45) // 버튼 템플릿 변화하면 변화에 맞춰서 수정하기 ^^^
     }
 }
 
