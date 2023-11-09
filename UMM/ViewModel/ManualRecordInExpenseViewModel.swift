@@ -44,8 +44,8 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     // MARK: - 위치 정보
     private var locationManager: CLLocationManager?
     private var locationManagerDelegate = LocationManagerDelegateForExpense()
-    @Published var location: CLLocation?
-    @Published var placemark: CLPlacemark?
+    var location: CLLocation?
+    var placemark: CLPlacemark?
     
     func getLocation() {
         let locationManager = CLLocationManager()
@@ -139,17 +139,19 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
             } else {
                 let stringCurrencyArray = CountryInfoModel.shared.countryResult[country]?.relatedCurrencyArray ?? []
-                currencyCandidateArray = []
+                var tempCurrencyCandidateArray: [Int] = []
                 for t in CurrencyInfoModel.shared.currencyResult where stringCurrencyArray.contains(t.value.isoCodeNm) {
-                    currencyCandidateArray.append(t.key)
+                    tempCurrencyCandidateArray.append(t.key)
                 }
                 
-                if !currencyCandidateArray.contains(4) { // 미국 달러
-                    currencyCandidateArray.append(4)
+                if !tempCurrencyCandidateArray.contains(4) { // 미국 달러
+                    tempCurrencyCandidateArray.append(4)
                 }
-                if !currencyCandidateArray.contains(0) { // 한국 원
-                    currencyCandidateArray.append(0)
+                if !tempCurrencyCandidateArray.contains(0) { // 한국 원
+                    tempCurrencyCandidateArray.append(0)
                 }
+                
+                currencyCandidateArray = tempCurrencyCandidateArray
             }
             
             if currency == 4 && country != 3 { // 미국 달러, !미국
@@ -165,9 +167,9 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     @Published var locationExpression: String = ""
     var currentCountry: Int = -1
     var currentLocation: String = ""
-    @Published var otherCountryCandidateArray: [Int] = [] // passive
+    var otherCountryCandidateArray: [Int] = [] // passive
     
-    @Published var currency: Int = 3 {
+    @Published var currency: Int = 4 {
         didSet {
             if payAmount == -1 || currency == -1 {
                 payAmountInWon = -1
@@ -180,7 +182,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     }
-    @Published var currencyCandidateArray: [Int] = []
+    var currencyCandidateArray: [Int] = [4]
     @Published var visibleNewNameOfParticipant: String = ""
     
     var soundRecordData: Data?
@@ -199,7 +201,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     // MARK: - timer
     
-    @Published var autoSaveTimer: Timer?
+    var autoSaveTimer: Timer?
     @Published var secondCounter: Int?
     
     override init() {
