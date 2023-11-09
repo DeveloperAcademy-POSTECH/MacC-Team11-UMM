@@ -51,10 +51,10 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-
+        
         locationManager.delegate = locationManagerDelegate
         locationManagerDelegate.parent = self
-
+        
         // locationManager(_:didUpdateLocations:) 메서드가 호출될 때까지 기다림.
         while location == nil || placemark == nil {
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
@@ -101,6 +101,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     @Published var visiblePayAmount: String = "" {
         didSet {
+            if let firstVisiblePayAmount = firstVisiblePayAmount {
+                print(firstVisiblePayAmount == visiblePayAmount)
+            }
+            print("VisiblePayAmount | firstVisiblePayAmount: \(firstVisiblePayAmount)")
+            print("VisiblePayAmount | VisiblePayAmount: \(visiblePayAmount)")
             if isFirstAppear {
                 firstVisiblePayAmount = visiblePayAmount
             } else {
@@ -125,10 +130,15 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
-
+    
     var info: String? // passive
     @Published var visibleInfo: String = "" {
         didSet {
+            if let firstVisibleInfo = firstVisibleInfo {
+                print(firstVisibleInfo == visibleInfo)
+            }
+            print("VisibleInfo | firstVisibleInfo: \(firstVisibleInfo)")
+            print("VisibleInfo | VisibleInfo: \(visibleInfo)")
             if isFirstAppear {
                 firstVisibleInfo = visibleInfo
             } else {
@@ -145,6 +155,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     @Published var category: ExpenseInfoCategory = .unknown {
         didSet {
+            if let firstCategory = firstCategory {
+                print(firstCategory == category)
+            }
+            print("Category | firstCategory: \(firstCategory)")
+            print("Category | Category: \(category)")
             if isFirstAppear {
                 firstCategory = category
             } else {
@@ -153,7 +168,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     }
-
+    
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
             if let firstPaymentMethod = firstPaymentMethod {
@@ -172,19 +187,14 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     // MARK: - not-in-string property
     
-    @Published var travelArray: [Travel] = [] {
-        didSet {
-            if isFirstAppear {
-                firstTravelArray = travelArray
-            } else {
-                isSameData = updateIsSameDataState()
-                updateAlertState()
-            }
-        }
-    }
-    
+    @Published var travelArray: [Travel] = []
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] {
         didSet {
+            if let firstParticipantTupleArray = firstParticipantTupleArray {
+                print((zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }))
+            }
+            print("ParticipantTupleArray | firstParticipantTupleArray: \(firstParticipantTupleArray)")
+            print("ParticipantTupleArray | ParticipantTupleArray: \(participantTupleArray)")
             if isFirstAppear {
                 firstParticipantTupleArray = participantTupleArray
             } else {
@@ -193,9 +203,14 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
         }
     } // passive
-
+    
     @Published var payDate: Date = Date() {
         didSet {
+            if let firstPayDate = firstPayDate {
+                print(firstPayDate == payDate)
+            }
+            print("PayDate | firstPayDate: \(firstPayDate)")
+            print("PayDate | PayDate: \(payDate)")
             if isFirstAppear {
                 firstPayDate = payDate
             } else {
@@ -206,12 +221,12 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     
     var currentDate: Date = Date()
-
+    
     @Published var country: Int = -1 {
         didSet {
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
             locationExpression = ""
-
+            
             if country == 3 { // 미국
                 currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
             } else {
@@ -240,6 +255,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     @Published var countryExpression: String = "" {
         didSet {
+            if let firstCountryExpression = firstCountryExpression {
+                print(firstCountryExpression == countryExpression)
+            }
+            print("CountryExpression | firstCountryExpression: \(firstCountryExpression)")
+            print("CountryExpression | CountryExpression: \(countryExpression)")
             if isFirstAppear {
                 firstCountryExpression = countryExpression
             } else {
@@ -251,6 +271,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     @Published var locationExpression: String = "" {
         didSet {
+            if let firstLocationExpression = firstLocationExpression {
+                print(firstLocationExpression == locationExpression)
+            }
+            print("LocationExpression | firstLocationExpression: \(firstLocationExpression)")
+            print("LocationExpression | LocationExpression: \(locationExpression)")
             if isFirstAppear {
                 firstLocationExpression = locationExpression
             } else {
@@ -266,6 +291,11 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     @Published var currency: Int = 3 {
         didSet {
+            if let firstCurrency = firstCurrency {
+                print(firstCurrency == currency)
+            }
+            print("Currency | firstCurrency: \(firstCurrency)")
+            print("Currency | Currency: \(currency)")
             if isFirstAppear {
                 firstCurrency = currency
             } else {
@@ -358,7 +388,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     deinit {
         stopPlayingAudio()
     }
-        
+    
     func save() {
         var expense: Expense?
         do {
@@ -382,16 +412,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
         
-//        if let soundRecordData, let soundData = try? Data(contentsOf: soundRecordData) {
-//            expense.voiceRecordFile = soundData
-//        }
+        //        if let soundRecordData, let soundData = try? Data(contentsOf: soundRecordData) {
+        //            expense.voiceRecordFile = soundData
+        //        }
         expense.voiceRecordFile = soundRecordData
         
         if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
             var fetchedTravel: Travel?
             do {
                 fetchedTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in
-                        return travel.id == chosenTravel.id
+                    return travel.id == chosenTravel.id
                 }.first
             } catch {
                 print("error fetching travelArray: \(error.localizedDescription)")
@@ -435,16 +465,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         let tempDirectoryURL = FileManager.default.temporaryDirectory
         let randomID = UUID().uuidString
         let fileURL = tempDirectoryURL.appendingPathComponent(randomID).appendingPathExtension("m4a")
-
+        
         do {
             try data.write(to: fileURL, options: .atomic)
         } catch {
             print("Failed to save file: \(error)")
             return
         }
-
+        
         let playSession = AVAudioSession.sharedInstance()
-
+        
         do {
             try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         } catch {
@@ -457,7 +487,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         } catch {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
-
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
             audioPlayer?.delegate = self
@@ -507,16 +537,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
            let firstParticipantTupleArray = self.firstParticipantTupleArray
         {
             return (firstCountry == country) &&
-                   (firstCategory == category) &&
-                   (firstCurrency == currency) &&
-                   (firstPayDate == payDate) &&
-                   (firstTravelArray == travelArray) &&
-                   (firstVisibleInfo == visibleInfo) &&
-                   (firstPaymentMethod == paymentMethod) &&
-                   (firstCountryExpression == countryExpression) &&
-                   (firstLocationExpression == locationExpression) &&
-                   (firstVisiblePayAmount == visiblePayAmount) &&
-                   (zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 })
+            (firstCategory == category) &&
+            (firstCurrency == currency) &&
+            (firstPayDate == payDate) &&
+            (firstTravelArray == travelArray) &&
+            (firstVisibleInfo == visibleInfo) &&
+            (firstPaymentMethod == paymentMethod) &&
+            (firstCountryExpression == countryExpression) &&
+            (firstLocationExpression == locationExpression) &&
+            (firstVisiblePayAmount == visiblePayAmount) &&
+            (zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 })
         }
         return false
     }
@@ -539,4 +569,5 @@ extension ManualRecordInExpenseViewModel: AVAudioPlayerDelegate {
                 print("Failed to play recorded sound.")
             }
         }
+    
 }
