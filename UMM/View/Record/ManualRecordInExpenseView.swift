@@ -670,9 +670,9 @@ struct ManualRecordInExpenseView: View {
                         }
                         .hidden()
                         
-                        Text(mainVM.chosenTravelInManualRecord?.name != "Default" ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
+                        Text(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
                             .lineLimit(nil)
-                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != "Default" ? .black : .gray400)
+                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? .black : .gray400)
                             .font(.subhead2_1)
                     }
                     Spacer()
@@ -866,7 +866,7 @@ struct ManualRecordInExpenseView: View {
                 viewModel.save()
                 var defaultTravel = Travel()
                 do {
-                    defaultTravel = try viewContext.fetch(Travel.fetchRequest()).filter { $0.name == "Default" }.first ?? Travel()
+                    defaultTravel = try viewContext.fetch(Travel.fetchRequest()).filter { $0.name == tempTravelName }.first ?? Travel()
                 } catch {
                     print("error fetching default travel: \(error.localizedDescription)")
                 }

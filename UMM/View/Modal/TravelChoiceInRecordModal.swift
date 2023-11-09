@@ -39,9 +39,9 @@ struct TravelChoiceInRecordModal: View {
     let sortRule: (Travel, Travel) -> Bool = {
         let nowDate = Date()
         
-        if $0.name != "Default" && $1.name == "Default" {
+        if $0.name != tempTravelName && $1.name == tempTravelName {
             return false
-        } else if $0.name == "Default" && $1.name != "Default" {
+        } else if $0.name == tempTravelName && $1.name != tempTravelName {
             return true
         }
         
@@ -163,7 +163,7 @@ struct TravelBlockView: View {
         VStack(spacing: 0) { // ^^^
             
             Group {
-                if let name = travel.name, name == "Default" {
+                if let name = travel.name, name == tempTravelName {
                     ZStack {
                         Group {
                             RoundedRectangle(cornerRadius: 10)
@@ -312,9 +312,9 @@ struct TravelBlockView: View {
             Spacer()
                 .frame(height: 6)
             
-            Text(travel.name != "Default" ? travel.name ?? "-" : "임시 기록")
+            Text(travel.name != tempTravelName ? travel.name ?? "-" : "임시 기록")
                 .lineLimit(3)
-                .foregroundStyle(travel.name != "Default" ? .black : .gray400)
+                .foregroundStyle(travel.name != tempTravelName ? .black : .gray400)
                 .font(.subhead1)
                 .opacity(travel.id == (chosenTravel?.id ?? UUID()) ? 1 : 0.6)
                 .padding(.horizontal, 10)
@@ -324,7 +324,7 @@ struct TravelBlockView: View {
                 .frame(height: 2) // 눈으로 보기에 비슷하게 적당히 수정했음
             
             Group {
-                if travel.name == "Default" {
+                if travel.name == tempTravelName {
                     EmptyView()
                 } else {
                     if DateGapHandler.shared.convertBeforeShowing(date: travel.startDate ?? Date.distantPast) < now && DateGapHandler.shared.convertBeforeShowing(date: travel.endDate ?? Date.distantFuture) > now {

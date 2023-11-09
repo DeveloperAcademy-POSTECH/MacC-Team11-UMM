@@ -70,7 +70,7 @@ struct TravelListView: View {
                 viewModel.fetchExpense()
                 viewModel.fetchDefaultTravel()
                 self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
-                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
                 self.travelCount = Int(nowTravel?.count ?? 0)
                 self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
                 self.defaultTravel = viewModel.findTravelNameDefault()

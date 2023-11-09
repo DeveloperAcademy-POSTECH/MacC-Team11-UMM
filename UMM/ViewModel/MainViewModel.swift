@@ -16,9 +16,9 @@ class MainViewModel: ObservableObject {
     @Published var selection: Int = 1
     @Published var selectedTravel: Travel? {
         didSet {
-            if selectedTravel?.name != "Default" {
+            if selectedTravel?.name != tempTravelName {
                 if selectedTravel != selectedTravelInExpense {
-                    if let selectedTravel = selectedTravel, selectedTravel.name == "Default" {
+                    if let selectedTravel = selectedTravel, selectedTravel.name == tempTravelName {
                         self.selectedTravelInExpense = findCurrentTravel()
                     } else {
                         updateSelectedTravelInExpense()
