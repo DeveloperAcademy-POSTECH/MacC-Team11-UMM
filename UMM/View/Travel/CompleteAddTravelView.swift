@@ -34,12 +34,18 @@ struct CompleteAddTravelView: View {
             HStack {
                 MediumButtonStroke(title: "여행 확인하기", action: {
                     // 선택값 초기화
+                    selectedTravel?.first?.name = travelNM
+                    mainVM.selectedTravel = self.selectedTravel?.first
+                    viewModel.saveTravel()
                     NavigationUtil.popToRootView()
                     addViewModel.startDate = Date()
                     addViewModel.endDate = nil
                 })
                 
                 MediumButtonActive(title: "지출 기록하기", action: {
+                    selectedTravel?.first?.name = travelNM
+                    mainVM.selectedTravel = self.selectedTravel?.first
+                    viewModel.saveTravel()
                     NavigationUtil.popToRootView()
                     mainVM.navigationToRecordView()
                     DispatchQueue.main.async {
@@ -55,11 +61,11 @@ struct CompleteAddTravelView: View {
                 self.travelNM = memberViewModel.travelName ?? "제목 미정"
             }
         }
-        .onDisappear {
-            selectedTravel?.first?.name = travelNM
-            mainVM.selectedTravel = self.selectedTravel?.first
-            viewModel.saveTravel()
-        }
+//        .onDisappear {
+//            selectedTravel?.first?.name = travelNM
+//            mainVM.selectedTravel = self.selectedTravel?.first
+//            viewModel.saveTravel()
+//        }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
     }

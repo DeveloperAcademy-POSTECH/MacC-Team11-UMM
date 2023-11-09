@@ -100,8 +100,9 @@ struct TravelDetailView: View {
                             isWarningOn = true
                         } label: {
                             Image(systemName: "trash")
-                                .foregroundStyle(Color.gray200)
+                                .foregroundStyle(Color.white)
                                 .frame(width: 20, height: 20)
+                                .padding(.trailing, 5)
                         }
                         
                         Button {
@@ -113,16 +114,11 @@ struct TravelDetailView: View {
                     }
                 }
             }
-            .alert("여행 삭제하기", isPresented: $isWarningOn) {
-                Button("취소") {
-                    isWarningOn = false
-                }
-                Button("삭제하기") {
+            .alert(isPresented: $isWarningOn) {
+                Alert(title: Text("여행 삭제하기"), message: Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
                     PersistenceController().deleteItems(object: self.selectedTravel?.first)
                     NavigationUtil.popToRootView()
-                }
-            } message: {
-                Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?")
+                }), secondaryButton: .cancel(Text("취소")))
             }
         }
         .toolbar(.hidden, for: .tabBar)
@@ -132,8 +128,7 @@ struct TravelDetailView: View {
     private var dayCounter: some View {
         VStack(alignment: .leading) {
             HStack {
-                
-                if Date() <= endDate ?? Date.distantFuture {
+                if Date() <= endDate ?? Date.distantFuture && startDate <= Date() {
                     HStack(alignment: .center, spacing: 10) {
                         Text("여행 중")
                             .font(
@@ -146,16 +141,16 @@ struct TravelDetailView: View {
                     .padding(.vertical, 7)
                     .background(.white)
                     .cornerRadius(5)
+                    
+                    Group {
+                        Text("DAY ")
+                        +
+                        Text("\(dayCnt+1)")
+                    }
+                    .padding(.vertical, 7)
+                    .font(.subhead2_1)
+                    .foregroundStyle(Color.white)
                 }
-                
-                Group {
-                    Text("DAY ")
-                    +
-                    Text("\(dayCnt)")
-                }
-                .padding(.vertical, 7)
-                .font(.subhead2_1)
-                .foregroundStyle(Color.white)
             }
             
             Text("\(travelName)")
@@ -167,7 +162,7 @@ struct TravelDetailView: View {
     }
     
     private var travelCountry: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text("여행 국가")
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
@@ -185,13 +180,14 @@ struct TravelDetailView: View {
                             .font(.body2)
                             .foregroundStyle(Color.white)
                     }
+                    
                     .padding(.trailing, 18)
                     
                 }
                 
                 Spacer()
             }
-            .padding(.bottom, 20)
+            .padding(.vertical, 20)
             
             Rectangle()
                 .foregroundColor(.clear)
@@ -271,6 +267,7 @@ struct TravelDetailView: View {
             Text("함께하는 사람")
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
+                .padding(.bottom, 5)
             
             if participantCnt < 1 {
                 

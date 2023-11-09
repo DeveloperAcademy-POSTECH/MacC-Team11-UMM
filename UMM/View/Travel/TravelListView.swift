@@ -15,6 +15,7 @@ struct TravelListView: View {
     @ObservedObject var viewModel = TravelListViewModel()
     
     @State private var nowTravel: [Travel]?
+    
     @State private var defaultTravel: [Travel]?
     @State private var savedExpenses: [Expense]?
     @State private var defaultExpense: [Expense]?
@@ -37,7 +38,27 @@ struct TravelListView: View {
                 titleHeader
                     .padding(.bottom, 16)
                 
-                nowTravelingView
+                if travelCount > 0 {
+                    
+                    nowTravelingView
+                    
+                } else {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 350, height: 137)
+                            .background(
+                                ZStack {
+                                    Color.gray100
+                                    Text("현재 진행 중인 여행이 없어요")
+                                        .font(.body2)
+                                        .foregroundStyle(Color(0xA6A6A6))
+                                }
+                            )
+                            .cornerRadius(10)
+                            .padding(.bottom, 22)
+                    }
+                }
                 
                 tempTravelView
                     .offset(y: -18)
@@ -45,19 +66,17 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    viewModel.fetchTravel()
-                    viewModel.fetchExpense()
-                    viewModel.fetchDefaultTravel()
-                    self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
-                    self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
-                    self.travelCount = Int(nowTravel?.count ?? 0)
-                    self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
-                    self.defaultTravel = viewModel.findTravelNameDefault()
-                    let loadedData = handler.loadExchangeRatesFromUserDefaults()
-                    if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
-                        handler.fetchAndSaveExchangeRates()
-                    }
+                viewModel.fetchTravel()
+                viewModel.fetchExpense()
+                viewModel.fetchDefaultTravel()
+                self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: "Default")
+                self.travelCount = Int(nowTravel?.count ?? 0)
+                self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
+                self.defaultTravel = viewModel.findTravelNameDefault()
+                let loadedData = handler.loadExchangeRatesFromUserDefaults()
+                if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
+                    handler.fetchAndSaveExchangeRates()
                 }
             }
             .toolbar {
@@ -101,232 +120,213 @@ struct TravelListView: View {
     
     private var nowTravelingView: some View {
         ZStack(alignment: .center) {
-            if Int(nowTravel?.count ?? 0) == 0 {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 350, height: 137)
-                        .background(
-                            ZStack {
-                                Color.gray100
-                                Text("현재 진행 중인 여행이 없어요")
-                                    .font(.body2)
-                                    .foregroundStyle(Color(0xA6A6A6))
-                            }
-                        )
-                        .cornerRadius(10)
-                        .padding(.bottom, 22)
-                }
-                .onAppear {
-                    print("rrrrr zero view shown")
-                }
-            } else {
-                ZStack(alignment: .center) {
-                    ScrollView(.init()) {
-                        TabView(selection: $currentPage) {
-                            ForEach(0..<Int(nowTravel?.count ?? 1), id: \.self) { index in
-                                NavigationLink(destination: TravelDetailView(
-                                    travelID: nowTravel?[index].id ?? UUID(),
-                                    travelName: nowTravel?[index].name ?? "",
-                                    startDate: nowTravel?[index].startDate ?? Date(),
-                                    endDate: nowTravel?[index].endDate,
-                                    dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravel?[index].startDate ?? Date()),
-                                    participantCnt: nowTravel?[index].participantArray?.count ?? 0,
-                                    participantArr: nowTravel?[index].participantArray ?? [],
-                                    flagImageArr: self.flagImageName,
-                                    defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
-                                    koreanNM: self.countryName
-                                ), label: {
-                                    ZStack(alignment: .top) {
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 350, height: 137 + 46)
-                                        
-                                        if let imageString = {
-                                            return String(defaultImageName.first ?? "DefaultImage")
-                                        }() {
-                                            Image(imageString)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 350, height: 137)
-                                                .cornerRadius(10)
-                                                .overlay(
-                                                    LinearGradient(
-                                                        stops: [
-                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                        ],
-                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                    )
-                                                )
-                                                .cornerRadius(10)
-                                        }
-                                        
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 350, height: 137)
-                                            .background(
-                                                LinearGradient(
-                                                    stops: [
-                                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                        Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                    ],
-                                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                                    endPoint: UnitPoint(x: 0.5, y: 1)
-                                                )
+            ScrollView(.init()) {
+                TabView(selection: $currentPage) {
+                    ForEach(0..<travelCount, id: \.self) { index in
+                        let nowTravelWithDummy: [Travel]? = nowTravel != nil ? nowTravel! + [Travel()] : [Travel()]
+                        
+                        NavigationLink(destination: TravelDetailView(
+                            travelID: nowTravelWithDummy?[index].id ?? UUID(),
+                            travelName: nowTravelWithDummy?[index].name ?? "",
+                            startDate: nowTravelWithDummy?[index].startDate ?? Date(),
+                            endDate: nowTravelWithDummy?[index].endDate,
+                            dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: nowTravelWithDummy?[index].startDate ?? Date()),
+                            participantCnt: nowTravelWithDummy?[index].participantArray?.count ?? 0,
+                            participantArr: nowTravelWithDummy?[index].participantArray ?? [],
+                            flagImageArr: self.flagImageName,
+                            defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
+                            koreanNM: self.countryName
+                        ), label: {
+                            ZStack(alignment: .top) {
+                                
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 350, height: 137 + 46)
+                                
+                                if let imageString = {
+                                    return String(defaultImageName.first ?? "DefaultImage")
+                                }() {
+                                    Image(imageString)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 350, height: 137)
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            LinearGradient(
+                                                stops: [
+                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                ],
+                                                startPoint: UnitPoint(x: 0.5, y: 0),
+                                                endPoint: UnitPoint(x: 0.5, y: 1)
                                             )
-                                            .cornerRadius(10)
+                                        )
+                                        .cornerRadius(10)
+                                }
+                                
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 350, height: 137)
+                                    .background(
+                                        LinearGradient(
+                                            stops: [
+                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                            ],
+                                            startPoint: UnitPoint(x: 0.5, y: 0),
+                                            endPoint: UnitPoint(x: 0.5, y: 1)
+                                        )
+                                    )
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    
+                                    HStack(spacing: 0) {
+                                        Spacer()
                                         
-                                        VStack(alignment: .leading, spacing: 0) {
-                                            
-                                            HStack(spacing: 0) {
-                                                Spacer()
-                                                
-                                                ZStack {
-                                                    ForEach((0..<flagImageName.count).reversed(), id: \.self) { i in
-                                                        Image(flagImageName[i])
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
-                                                            .shadow(color: .gray400, radius: 4)
-                                                            .offset(x: -12 * CGFloat(flagImageName.count - 1 - Int(i)))
-                                                    }
-                                                }
+                                        ZStack {
+                                            ForEach((0..<flagImageName.count).reversed(), id: \.self) { i in
+                                                Image(flagImageName[i])
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                                    .shadow(color: .gray400, radius: 4)
+                                                    .offset(x: -12 * CGFloat(flagImageName.count - 1 - Int(i)))
                                             }
-                                            .frame(height: 24)
-                                            .padding(.trailing, 16)
-                                            
-                                            Spacer()
-                                            
-                                            Group {
-                                                Text("Day ")
-                                                +
-                                                Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date())))")
-                                            }
-                                            .font(.caption1)
-                                            .foregroundStyle(Color.white)
-                                            .opacity(0.75)
-                                            .padding(.leading, 16)
-                                            
-                                            Text(nowTravel?[index].name ?? "제목 미정")
-                                                .font(.display1)
-                                                .foregroundStyle(Color.white)
+                                        }
+                                    }
+                                    .frame(height: 24)
+                                    .padding(.trailing, 16)
+                                    
+                                    Spacer()
+                                    
+                                    Group {
+                                        Text("Day ")
+                                        +
+                                        Text("\(viewModel.differenceBetweenToday(today: dateGapHandler.convertBeforeShowing(date: Date()), startDate: dateGapHandler.convertBeforeShowing(date: nowTravelWithDummy?[index].startDate ?? Date()))+1)")
+                                    }
+                                    .font(.caption1)
+                                    .foregroundStyle(Color.white)
+                                    .opacity(0.75)
+                                    .padding(.leading, 16)
+                                    
+                                    Text(nowTravelWithDummy?[index].name ?? "제목 미정")
+                                        .font(.display1)
+                                        .foregroundStyle(Color.white)
+                                        .padding(.leading, 16)
+                                    
+                                    HStack {
+                                        HStack(spacing: 0) {
+                                            Text(dateGapHandler.convertBeforeShowing(date: nowTravelWithDummy?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
+                                                .font(.subhead2_2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
                                                 .padding(.leading, 16)
                                             
-                                            HStack {
-                                                HStack(spacing: 0) {
-                                                    Text(dateGapHandler.convertBeforeShowing(date: nowTravel?[index].startDate ?? Date()), formatter: TravelListViewModel.dateFormatter)
-                                                        .font(.subhead2_2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                        .padding(.leading, 16)
-                                                    
-                                                    Text(" ~ ")
-                                                        .font(.subhead2_2)
-                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                    
-                                                    if let endDate = nowTravel?[index].endDate {
-                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelListViewModel.dateFormatter)
-                                                            .font(.subhead2_2)
-                                                            .foregroundStyle(Color.white.opacity(0.75))
-                                                    } else {
-                                                        Text("")
-                                                    }
-                                                }
-                                                
-                                                Spacer()
-                                                
-                                                HStack(spacing: 0) {
-                                                    HStack {
-                                                        Image(systemName: "person.fill")
-                                                            .frame(width: 12, height: 12)
-                                                            .foregroundStyle(Color.white)
-                                                        
-                                                        Text("me")
-                                                            .font(.caption2)
-                                                            .foregroundStyle(Color.white)
-                                                    }
-                                                    
-                                                    Text(viewModel.arrayToString(partArray: nowTravel?[index].participantArray ?? [""]))
-                                                        .lineLimit(1)
-                                                        .font(.caption2)
-                                                        .foregroundStyle(Color.white)
-                                                    
-                                                }
-                                                .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
-                                                .padding(.trailing, 16)
-                                                
+                                            Text(" ~ ")
+                                                .font(.subhead2_2)
+                                                .foregroundStyle(Color.white.opacity(0.75))
+                                            
+                                            if let endDate = nowTravelWithDummy?[index].endDate {
+                                                Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: TravelListViewModel.dateFormatter)
+                                                    .font(.subhead2_2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                            } else {
+                                                Text("")
                                             }
-                                            .frame(height: 16)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        HStack(spacing: 0) {
+                                            HStack {
+                                                Image(systemName: "person.fill")
+                                                    .frame(width: 12, height: 12)
+                                                    .foregroundStyle(Color.white)
+                                                
+                                                Text("me")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(Color.white)
+                                            }
+                                            
+                                            Text(viewModel.arrayToString(partArray: nowTravelWithDummy?[index].participantArray ?? [""]))
+                                                .lineLimit(1)
+                                                .font(.caption2)
+                                                .foregroundStyle(Color.white)
                                             
                                         }
-                                        .padding(.vertical, 16)
-                                        .frame(width: 350, height: 137)
+                                        .padding(.leading, 50) // Doris : 참여자 뷰 제한을 위한 임의 수치
+                                        .padding(.trailing, 16)
                                         
                                     }
-                                    .onAppear {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            if index > 0 {
-                                                self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravel?[index].id ?? UUID())
-                                                if let savedExpenses = savedExpenses {
-                                                    let countryValues: [Int64] = savedExpenses.map { expense in
-                                                        return viewModel.getCountryForExpense(expense)
-                                                    }
-                                                    let uniqueCountryValues = Array(Set(countryValues))
-                                                    
-                                                    var flagImageNames: [String] = []
-                                                    var defaultImage: [String] = []
-                                                    var koreanName: [String] = []
-                                                    
-                                                    for countryValue in uniqueCountryValues {
-                                                        
-                                                        if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                            flagImageNames.append(flagString)
-                                                        } else {
-                                                            flagImageNames.append("DefaultFlag")
-                                                        }
-                                                        
-                                                        if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                            defaultImage.append(defaultString)
-                                                        } else {
-                                                            defaultImage.append("DefaultImage")
-                                                        }
-                                                        
-                                                        if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                            koreanName.append(koreanString)
-                                                        } else {
-                                                            koreanName.append("")
-                                                        }
-                                                    }
-                                                    
-                                                    self.flagImageName = flagImageNames
-                                                    self.defaultImageName = defaultImage
-                                                    self.countryName = koreanName
-                                                    print("defaultImageName :", defaultImageName)
-                                                }
+                                    .frame(height: 16)
+                                    
+                                }
+                                .padding(.vertical, 16)
+                                .frame(width: 350, height: 137)
+                                
+                            }
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    
+                                    self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravelWithDummy?[index].id ?? UUID())
+                                    self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
+                                    
+                                    if let savedExpenses = savedExpenses {
+                                        let countryValues: [Int64] = savedExpenses.map { expense in
+                                            return viewModel.getCountryForExpense(expense)
+                                        }
+                                        let uniqueCountryValues = Array(Set(countryValues))
+                                        
+                                        var flagImageNames: [String] = []
+                                        var defaultImage: [String] = []
+                                        var koreanName: [String] = []
+                                        
+                                        for countryValue in uniqueCountryValues {
+                                            
+                                            if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                flagImageNames.append(flagString)
+                                            } else {
+                                                flagImageNames.append("DefaultFlag")
+                                            }
+                                            
+                                            if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                defaultImage.append(defaultString)
+                                            } else {
+                                                defaultImage.append("DefaultImage")
+                                            }
+                                            
+                                            if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                koreanName.append(koreanString)
+                                            } else {
+                                                koreanName.append("")
                                             }
                                         }
+                                        
+                                        self.flagImageName = flagImageNames
+                                        self.defaultImageName = defaultImage
+                                        self.countryName = koreanName
+                                        print("defaultImageName :", defaultImageName)
                                     }
-                                })
+                                }
                             }
-                        }
-                        .frame(width: 350, height: 137 + 46)
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    }
-                    .frame(width: 350, height: 137 + 46)
-                    
-                    HStack(spacing: 6) {
-                        ForEach(0..<travelCount, id: \.self) { index in
-                            Capsule()
-                                .fill(currentPage == index ? Color.black : Color.gray200)
-                                .frame(width: 5, height: 5)
-                        }
-                    }
-                    .offset(y: 60)
-                    .onAppear {
-                        let screenWidth = getWidth()
-                        self.currentPage = Int(round(offset / screenWidth))
+                        })
                     }
                 }
+                .frame(width: 350, height: 137 + 46)
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            }
+            .frame(width: 350, height: 137 + 46)
+            
+            HStack(spacing: 6) {
+                ForEach(0..<travelCount, id: \.self) { index in
+                    Capsule()
+                        .fill(currentPage == index ? Color.black : Color.gray200)
+                        .frame(width: 5, height: 5)
+                }
+            }
+            .offset(y: 60)
+            .onAppear {
+                let screenWidth = getWidth()
+                self.currentPage = Int(round(offset / screenWidth))
             }
         }
     }
@@ -371,11 +371,11 @@ struct TravelListView: View {
                             Group {
                                 Text("최근 지출 ")
                                 +
-                                Text("\(viewModel.formatAmount(amount: defaultExpense?.first?.payAmount))")
+                                Text("\(viewModel.formatAmount(amount: defaultExpense?.last?.payAmount))")
                                 +
                                 Text(" ")
                                 +
-                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.first?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
+                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.last?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
                             }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)

@@ -34,130 +34,133 @@ struct PreviousTravelView: View {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
-                            VStack {
-                                NavigationLink(destination: TravelDetailView(
-                                    travelID: previousTravel?[index].id ?? UUID(),
-                                    travelName: previousTravel?[index].name ?? "",
-                                    startDate: previousTravel?[index].startDate ?? Date(),
-                                    endDate: previousTravel?[index].endDate ?? Date(),
-                                    dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
-                                    participantCnt: previousTravel?[index].participantArray?.count ?? 0,
-                                    participantArr: previousTravel?[index].participantArray ?? [],
-                                    flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [],
-                                    defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
-                                    koreanNM: countryName[previousTravel?[index].id ?? UUID()] ?? []), label: {
-                                        ZStack {
-                                            if let imageString = {
-                                                return defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
-                                            }() {
-                                                Image(imageString)
-                                                    .resizable()
-                                                    .scaledToFill()
-                                                    .frame(width: 110, height: 80)
-                                                    .cornerRadius(10)
-                                                    .overlay(
-                                                        LinearGradient(
-                                                            stops: [
-                                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                            ],
-                                                            startPoint: UnitPoint(x: 0.5, y: 0),
-                                                            endPoint: UnitPoint(x: 0.5, y: 1)
+                            if previousTravel?[index].name != "Default" {
+                                VStack {
+                                    NavigationLink(destination: TravelDetailView(
+                                        travelID: previousTravel?[index].id ?? UUID(),
+                                        travelName: previousTravel?[index].name ?? "",
+                                        startDate: previousTravel?[index].startDate ?? Date(),
+                                        endDate: previousTravel?[index].endDate ?? Date(),
+                                        dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
+                                        participantCnt: previousTravel?[index].participantArray?.count ?? 0,
+                                        participantArr: previousTravel?[index].participantArray ?? [],
+                                        flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [],
+                                        defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
+                                        koreanNM: countryName[previousTravel?[index].id ?? UUID()] ?? []), label: {
+                                            ZStack {
+                                                if let imageString = {
+                                                    return defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                                }() {
+                                                    Image(imageString)
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .frame(width: 110, height: 80)
+                                                        .cornerRadius(10)
+                                                        .overlay(
+                                                            LinearGradient(
+                                                                stops: [
+                                                                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                    Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                ],
+                                                                startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                endPoint: UnitPoint(x: 0.5, y: 1)
+                                                            )
                                                         )
-                                                    )
-                                                    .cornerRadius(10)
-                                            }
-                                            
-                                            VStack {
+                                                        .cornerRadius(10)
+                                                }
                                                 
-                                                HStack(spacing: 0) {
+                                                VStack {
+                                                    
+                                                    HStack(spacing: 0) {
+                                                        Spacer()
+                                                        
+                                                        ZStack {
+                                                            let imageNames = flagImageDict[previousTravel?[index].id ?? UUID()] ?? []
+                                                            ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                                Image(imageNames[i])
+                                                                    .resizable()
+                                                                    .frame(width: 24, height: 24)
+                                                                    .shadow(color: .gray400, radius: 4)
+                                                                    .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                            }
+                                                        }
+                                                        Spacer()
+                                                            .frame(width: 8)
+                                                    }
+                                                    .padding(.top, 8)
+                                                    //
                                                     Spacer()
                                                     
-                                                    ZStack {
-                                                        let imageNames = flagImageDict[previousTravel?[index].id ?? UUID()] ?? []
-                                                        ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
-                                                            Image(imageNames[i])
-                                                                .resizable()
-                                                                .frame(width: 24, height: 24)
-                                                                .shadow(color: .gray400, radius: 4)
-                                                                .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                    VStack(alignment: .leading, spacing: 0) {
+                                                        
+                                                        HStack {
+                                                            Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
+                                                            
+                                                            Text("~")
+                                                            
+                                                            Spacer()
+                                                        }
+                                                        .font(.caption2)
+                                                        .foregroundStyle(Color.white.opacity(0.75))
+                                                        
+                                                        if let endDate = previousTravel?[index].endDate {
+                                                            Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                .font(.caption2)
+                                                                .foregroundStyle(Color.white.opacity(0.75))
+                                                        } else {
+                                                            Text("")
+                                                        }
+                                                        
+                                                    }
+                                                    .padding(.horizontal, 8)
+                                                    .padding(.bottom, 8)
+                                                }
+                                                .frame(width: 110, height: 80)
+                                            }
+                                            .onAppear {
+                                                self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                                self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
+                                                
+                                                if let savedExpenses = savedExpenses {
+                                                    let countryValues: [Int64] = savedExpenses.map { expense in
+                                                        return viewModel.getCountryForExpense(expense)
+                                                    }
+                                                    let uniqueCountryValues = Array(Set(countryValues))
+                                                    
+                                                    var flagImageNames: [String] = []
+                                                    var countryDefaultImg: [String] = []
+                                                    var koreanName: [String] = []
+                                                    
+                                                    for countryValue in uniqueCountryValues {
+                                                        
+                                                        if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                            flagImageNames.append(flagString)
+                                                        } else {
+                                                            flagImageNames.append("DefaultFlag")
+                                                        }
+                                                        
+                                                        if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                            countryDefaultImg.append(imgString)
+                                                        } else {
+                                                            countryDefaultImg.append("DefaultImage")
+                                                        }
+                                                        
+                                                        if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                            koreanName.append(koreanString)
+                                                        } else {
+                                                            koreanName.append("")
                                                         }
                                                     }
-                                                    Spacer()
-                                                        .frame(width: 8)
+                                                    self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
+                                                    self.defaultImg[previousTravel?[index].id ?? UUID()] = countryDefaultImg
+                                                    self.countryName[previousTravel?[index].id ?? UUID()] = koreanName
                                                 }
-                                                .padding(.top, 8)
-                                                //
-                                                Spacer()
-                                                
-                                                VStack(alignment: .leading, spacing: 0) {
-                                                    
-                                                    HStack {
-                                                        Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                        
-                                                        Text("~")
-                                                        
-                                                        Spacer()
-                                                    }
-                                                    .font(.caption2)
-                                                    .foregroundStyle(Color.white.opacity(0.75))
-                                                    
-                                                    if let endDate = previousTravel?[index].endDate {
-                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
-                                                            .font(.caption2)
-                                                            .foregroundStyle(Color.white.opacity(0.75))
-                                                    } else {
-                                                        Text("")
-                                                    }
-
-                                                }
-                                                .padding(.horizontal, 8)
-                                                .padding(.bottom, 8)
                                             }
-                                            .frame(width: 110, height: 80)
-                                        }
-                                        .onAppear {
-                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
-                                            
-                                            if let savedExpenses = savedExpenses {
-                                                let countryValues: [Int64] = savedExpenses.map { expense in
-                                                    return viewModel.getCountryForExpense(expense)
-                                                }
-                                                let uniqueCountryValues = Array(Set(countryValues))
-                                                
-                                                var flagImageNames: [String] = []
-                                                var countryDefaultImg: [String] = []
-                                                var koreanName: [String] = []
-                                                
-                                                for countryValue in uniqueCountryValues {
-                                                    
-                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                        flagImageNames.append(flagString)
-                                                    } else {
-                                                        flagImageNames.append("DefaultFlag")
-                                                    }
-                                                    
-                                                    if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                        countryDefaultImg.append(imgString)
-                                                    } else {
-                                                        countryDefaultImg.append("DefaultImage")
-                                                    }
-                                                    
-                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                        koreanName.append(koreanString)
-                                                    } else {
-                                                        koreanName.append("")
-                                                    }
-                                                }
-                                                self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
-                                                self.defaultImg[previousTravel?[index].id ?? UUID()] = countryDefaultImg
-                                                self.countryName[previousTravel?[index].id ?? UUID()] = koreanName
-                                            }
-                                        }
-                                    })
-                                Text(previousTravel?[index].name ?? "제목 미정")
-                                    .font(.subhead1)
-                                    .lineLimit(1)
+                                        })
+                                    Text(previousTravel?[index].name ?? "제목 미정")
+                                        .font(.subhead1)
+                                        .lineLimit(1)
+                                }
                             }
                         }
                     }
@@ -175,127 +178,130 @@ struct PreviousTravelView: View {
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                                         ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
-                                            VStack {
-                                                NavigationLink(destination: TravelDetailView(travelName: previousTravel?[index].name ?? "",
-                                                                                             startDate: previousTravel?[index].startDate ?? Date(),
-                                                                                             endDate: previousTravel?[index].endDate ?? Date(),
-                                                                                             dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
-                                                                                             participantCnt: previousTravel?[index].participantArray?.count ?? 0,
-                                                                                             participantArr: previousTravel?[index].participantArray ?? [],
-                                                                                             flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
-                                                                                             koreanNM: countryName[previousTravel?[index].id ?? UUID()] ?? []), label: {
-                                                    ZStack {
-                                                        
-                                                        if let imageString = {
-                                                            return defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
-                                                        }() {
-                                                            Image(imageString)
-                                                                .resizable()
-                                                                .scaledToFill()
-                                                                .frame(width: 110, height: 80)
-                                                                .cornerRadius(10)
-                                                                .overlay(
-                                                                    LinearGradient(
-                                                                        stops: [
-                                                                            Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                                                            Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
-                                                                        ],
-                                                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                                                    )
-                                                                )
-                                                                .cornerRadius(10)
-                                                        }
-                                                        
-                                                        VStack {
+                                            if previousTravel?[index].name != "Default" {
+                                                VStack {
+                                                    NavigationLink(destination: TravelDetailView(travelName: previousTravel?[index].name ?? "",
+                                                                                                 startDate: previousTravel?[index].startDate ?? Date(),
+                                                                                                 endDate: previousTravel?[index].endDate ?? Date(),
+                                                                                                 dayCnt: viewModel.differenceBetweenToday(today: Date(), startDate: previousTravel?[index].startDate ?? Date()),
+                                                                                                 participantCnt: previousTravel?[index].participantArray?.count ?? 0,
+                                                                                                 participantArr: previousTravel?[index].participantArray ?? [],
+                                                                                                 flagImageArr: flagImageDict[previousTravel?[index].id ?? UUID()] ?? [], defaultImageString: defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage",
+                                                                                                 koreanNM: countryName[previousTravel?[index].id ?? UUID()] ?? []), label: {
+                                                        ZStack {
                                                             
-                                                            HStack(spacing: 0) {
+                                                            if let imageString = {
+                                                                return defaultImg[previousTravel?[index].id ?? UUID()]?.first ?? "DefaultImage"
+                                                            }() {
+                                                                Image(imageString)
+                                                                    .resizable()
+                                                                    .scaledToFill()
+                                                                    .frame(width: 110, height: 80)
+                                                                    .cornerRadius(10)
+                                                                    .overlay(
+                                                                        LinearGradient(
+                                                                            stops: [
+                                                                                Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                                                                                Gradient.Stop(color: .black.opacity(0.75), location: 1.00)
+                                                                            ],
+                                                                            startPoint: UnitPoint(x: 0.5, y: 0),
+                                                                            endPoint: UnitPoint(x: 0.5, y: 1)
+                                                                        )
+                                                                    )
+                                                                    .cornerRadius(10)
+                                                            }
+                                                            
+                                                            VStack {
+                                                                
+                                                                HStack(spacing: 0) {
+                                                                    Spacer()
+                                                                    
+                                                                    ZStack {
+                                                                        let imageNames = flagImageDict[previousTravel?[index].id ?? UUID()] ?? []
+                                                                        ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
+                                                                            Image(imageNames[i])
+                                                                                .resizable()
+                                                                                .frame(width: 24, height: 24)
+                                                                                .shadow(color: .gray400, radius: 4)
+                                                                                .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                                        }
+                                                                    }
+                                                                    Spacer()
+                                                                        .frame(width: 8)
+                                                                }
+                                                                .padding(.top, 8)
+                                                                //                                                            
                                                                 Spacer()
                                                                 
-                                                                ZStack {
-                                                                    let imageNames = flagImageDict[previousTravel?[index].id ?? UUID()] ?? []
-                                                                    ForEach((0..<imageNames.count).reversed(), id: \.self) { i in
-                                                                        Image(imageNames[i])
-                                                                            .resizable()
-                                                                            .frame(width: 24, height: 24)
-                                                                            .shadow(color: .gray400, radius: 4)
-                                                                            .offset(x: -13 * CGFloat(imageNames.count - 1 - Int(i)))
+                                                                VStack(alignment: .leading, spacing: 0) {
+                                                                    
+                                                                    HStack {
+                                                                        Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                        
+                                                                        Text("~")
+                                                                        
+                                                                        Spacer()
+                                                                    }
+                                                                    .font(.caption2)
+                                                                    .foregroundStyle(Color.white.opacity(0.75))
+                                                                    
+                                                                    if let endDate = previousTravel?[index].endDate {
+                                                                        Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                                                                            .font(.caption2)
+                                                                            .foregroundStyle(Color.white.opacity(0.75))
+                                                                    } else {
+                                                                        Text("")
                                                                     }
                                                                 }
-                                                                Spacer()
-                                                                    .frame(width: 8)
+                                                                .padding(.horizontal, 8)
+                                                                .padding(.bottom, 8)
                                                             }
-                                                            .padding(.top, 8)
-//                                                            
-                                                            Spacer()
-                                                            
-                                                            VStack(alignment: .leading, spacing: 0) {
-                                                                
-                                                                HStack {
-                                                                    Text(dateGapHandler.convertBeforeShowing(date: previousTravel?[index].startDate ?? Date()), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                    
-                                                                    Text("~")
-                                                                    
-                                                                    Spacer()
-                                                                }
-                                                                .font(.caption2)
-                                                                .foregroundStyle(Color.white.opacity(0.75))
-                                                                
-                                                                if let endDate = previousTravel?[index].endDate {
-                                                                    Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
-                                                                        .font(.caption2)
-                                                                        .foregroundStyle(Color.white.opacity(0.75))
-                                                                } else {
-                                                                    Text("")
-                                                                }
-                                                            }
-                                                            .padding(.horizontal, 8)
-                                                            .padding(.bottom, 8)
+                                                            .frame(width: 110, height: 80)
                                                         }
-                                                        .frame(width: 110, height: 80)
-                                                    }
-                                                    .onAppear {
-                                                        self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
-                                                        
-                                                        if let savedExpenses = savedExpenses {
-                                                            let countryValues: [Int64] = savedExpenses.map { expense in
-                                                                return viewModel.getCountryForExpense(expense)
-                                                            }
-                                                            let uniqueCountryValues = Array(Set(countryValues))
+                                                        .onAppear {
+                                                            self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                                            self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                                             
-                                                            var flagImageNames: [String] = []
-                                                            var countryDefaultImg: [String] = []
-                                                            var koreanName: [String] = []
-                                                            
-                                                            for countryValue in uniqueCountryValues {
-                                                                
-                                                                if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                                    flagImageNames.append(flagString)
-                                                                } else {
-                                                                    flagImageNames.append("DefaultFlag")
+                                                            if let savedExpenses = savedExpenses {
+                                                                let countryValues: [Int64] = savedExpenses.map { expense in
+                                                                    return viewModel.getCountryForExpense(expense)
                                                                 }
+                                                                let uniqueCountryValues = Array(Set(countryValues))
                                                                 
-                                                                if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                                    countryDefaultImg.append(imgString)
-                                                                } else {
-                                                                    countryDefaultImg.append("DefaultImage")
-                                                                }
+                                                                var flagImageNames: [String] = []
+                                                                var countryDefaultImg: [String] = []
+                                                                var koreanName: [String] = []
                                                                 
-                                                                if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                                    koreanName.append(koreanString)
-                                                                } else {
-                                                                    koreanName.append("")
+                                                                for countryValue in uniqueCountryValues {
+                                                                    
+                                                                    if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                                                        flagImageNames.append(flagString)
+                                                                    } else {
+                                                                        flagImageNames.append("DefaultFlag")
+                                                                    }
+                                                                    
+                                                                    if let imgString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                                                        countryDefaultImg.append(imgString)
+                                                                    } else {
+                                                                        countryDefaultImg.append("DefaultImage")
+                                                                    }
+                                                                    
+                                                                    if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                                                        koreanName.append(koreanString)
+                                                                    } else {
+                                                                        koreanName.append("")
+                                                                    }
                                                                 }
+                                                                self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
+                                                                self.defaultImg[previousTravel?[index].id ?? UUID()] = countryDefaultImg
+                                                                self.countryName[previousTravel?[index].id ?? UUID()] = koreanName
                                                             }
-                                                            self.flagImageDict[previousTravel?[index].id ?? UUID()] = flagImageNames
-                                                            self.defaultImg[previousTravel?[index].id ?? UUID()] = countryDefaultImg
-                                                            self.countryName[previousTravel?[index].id ?? UUID()] = koreanName
                                                         }
-                                                    }
-                                                })
-                                                Text(previousTravel?[index].name ?? "제목 미정")
-                                                    .font(.subhead1)
-                                                    .lineLimit(1)
+                                                    })
+                                                    Text(previousTravel?[index].name ?? "제목 미정")
+                                                        .font(.subhead1)
+                                                        .lineLimit(1)
+                                                }
                                             }
                                         }
                                         

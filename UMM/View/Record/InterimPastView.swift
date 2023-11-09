@@ -148,6 +148,7 @@ struct InterimPastView: View {
                                     .onAppear {
                                         
                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                        self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                         
                                         if let savedExpenses = savedExpenses {
                                             let countryValues: [Int64] = savedExpenses.map { expense in
@@ -309,6 +310,7 @@ struct InterimPastView: View {
                                                     .onAppear {
                                                         
                                                         self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: previousTravel?[index].id ?? UUID())
+                                                        self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                                         
                                                         if let savedExpenses = savedExpenses {
                                                             let countryValues: [Int64] = savedExpenses.map { expense in
