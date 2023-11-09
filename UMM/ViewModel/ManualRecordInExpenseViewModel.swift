@@ -39,6 +39,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
+    var expenseId = ObjectIdentifier(NSObject())
     
     // MARK: - 위치 정보
     private var locationManager: CLLocationManager?
@@ -241,8 +242,16 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
         
     func save() {
+        var expense: Expense?
+        do {
+            expense = try viewContext.fetch(Expense.fetchRequest()).filter { expense in
+                return expense.id == expenseId
+            }.first
+        } catch let error {
+            print("\(error.localizedDescription)")
+        }
+        guard let expense = expense else { return }
         
-        let expense = Expense(context: viewContext)
         expense.category = Int64(category.rawValue)
         expense.country = Int64(country)
         expense.currency = Int64(currency)
@@ -281,7 +290,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     // MARK: - voice
     
-    private var audioPlayer: AVAudioPlayer?
+    var audioPlayer: AVAudioPlayer?
     
     func startPlayingAudio(url: URL) {
         
@@ -299,6 +308,43 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
             
+        } catch {
+            print("Playing Failed")
+        }
+    }
+    
+    func startPlayingAudio(data: Data) {
+        let tempDirectoryURL = FileManager.default.temporaryDirectory
+        let randomID = UUID().uuidString
+        let fileURL = tempDirectoryURL.appendingPathComponent(randomID).appendingPathExtension("m4a")
+
+        do {
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            print("Failed to save file: \(error)")
+            return
+        }
+
+        let playSession = AVAudioSession.sharedInstance()
+
+        do {
+            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        } catch {
+            print("Playing failed in Device")
+        }
+        
+        do {
+            try playSession.setCategory(.playback)
+            try playSession.setActive(true)
+        } catch {
+            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
+            audioPlayer?.delegate = self
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
         } catch {
             print("Playing Failed")
         }

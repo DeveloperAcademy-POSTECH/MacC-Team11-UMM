@@ -25,6 +25,10 @@ struct ManualRecordInExpenseView: View {
     let given_paymentMethod: PaymentMethod
     let given_soundRecordData: Data?
     let given_expense: Expense
+    let given_payDate: Date?
+    let given_country: Int
+    let given_location: String?
+    let given_id: ObjectIdentifier
     
     var body: some View {
         ZStack {
@@ -122,6 +126,10 @@ struct ManualRecordInExpenseView: View {
             viewModel.paymentMethod = given_paymentMethod
             viewModel.soundRecordData = given_soundRecordData
             viewModel.currency = given_currency
+            viewModel.payDate = given_payDate ?? Date()
+            viewModel.country = given_country
+            viewModel.locationExpression = given_location ?? ""
+            viewModel.expenseId = given_id
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
@@ -194,9 +202,9 @@ struct ManualRecordInExpenseView: View {
             viewModel.soundRecordData = given_soundRecordData
 
             viewModel.getLocation()
-            viewModel.country = viewModel.currentCountry
-            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
-            viewModel.locationExpression = viewModel.currentLocation
+//            viewModel.country = viewModel.currentCountry
+            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.country]?.koreanNm ?? "알 수 없음"
+//            viewModel.locationExpression = viewModel.currentLocation
             
             if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
                 viewModel.otherCountryCandidateArray.append(viewModel.country)
@@ -251,30 +259,30 @@ struct ManualRecordInExpenseView: View {
             fraction0NumberFormatter.maximumFractionDigits = 0
             
             // MARK: - timer
-            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
-                viewModel.secondCounter = 8
-                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                    if let secondCounter = viewModel.secondCounter {
-                        if secondCounter > 1 {
-                            viewModel.secondCounter! -= 1
-                        } else {
-                            if viewModel.payAmount != -1 || viewModel.info != nil {
-                                viewModel.secondCounter = nil
-                                viewModel.save()
-                                if mainVM.chosenTravelInManualRecord != nil {
-                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                                }
-                                viewModel.deleteUselessAudioFiles()
-                                self.dismiss()
-                                timer.invalidate()
-                            } else {
-                                viewModel.secondCounter = nil
-                                timer.invalidate()
-                            }
-                        }
-                    }
-                }
-            }
+//            if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
+//                viewModel.secondCounter = 8
+//                viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//                    if let secondCounter = viewModel.secondCounter {
+//                        if secondCounter > 1 {
+//                            viewModel.secondCounter! -= 1
+//                        } else {
+//                            if viewModel.payAmount != -1 || viewModel.info != nil {
+//                                viewModel.secondCounter = nil
+//                                viewModel.save()
+//                                if mainVM.chosenTravelInManualRecord != nil {
+//                                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
+//                                }
+//                                viewModel.deleteUselessAudioFiles()
+//                                self.dismiss()
+//                                timer.invalidate()
+//                            } else {
+//                                viewModel.secondCounter = nil
+//                                timer.invalidate()
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
@@ -438,16 +446,10 @@ struct ManualRecordInExpenseView: View {
                     if viewModel.soundRecordData != nil {
                         if !viewModel.playingRecordSound {
                             if let soundRecordData = viewModel.soundRecordData {
-                                
-                                let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("VOICE \(Date().toString(dateFormat: "dd-MM-YY HH:mm:ss")).m4a")
-                                do {
-                                    try soundRecordData.write(to: audioURL)
-                                } catch {
-                                    print("Failed to write audioData to \(audioURL): \(error)")
-                                }
-                                
-                                viewModel.startPlayingAudio(url: audioURL)
+                                viewModel.startPlayingAudio(data: soundRecordData)
                                 viewModel.playingRecordSound = true
+                            } else {
+                                print("ManualRecordInExpenseView | payAmountBlockView | Failed to unwrapping soundRecordData")
                             }
                         } else {
                             viewModel.stopPlayingAudio()
