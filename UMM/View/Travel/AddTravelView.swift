@@ -75,7 +75,7 @@ struct AddTravelView: View {
     private var headerView: some View {
         
         return VStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 Spacer()
                 
                 HStack {

@@ -81,7 +81,7 @@ struct AddMemberView: View {
     }
     
     private var headerView: some View {
-        VStack {
+        VStack(spacing: 0) {
             
             HStack {
                 Text("이 여행은 누구와 함께하나요?")
