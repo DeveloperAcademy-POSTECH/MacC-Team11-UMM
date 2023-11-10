@@ -20,7 +20,10 @@ final class DateGapHandler {
     static let shared = DateGapHandler()
     let calendar = Calendar.current
     
-    private init() {
+    private init() {}
+    
+    func getTimeDifference() {
+        
         getLocation()
         let baseCoordinate = CLLocationCoordinate2D(latitude: 37.56, longitude: 127.00) // 서울 (latitude: 37.56, longitude: 127.00)
         // CLGeocoder를 사용하여 위치 정보를 가져온다.
@@ -52,7 +55,7 @@ final class DateGapHandler {
     private var locationManager: CLLocationManager?
     private var locationManagerDelegate = LocationManagerDelegateForDateGapHandler()
     var currentLocation: CLLocation?
-    var timeDifferenceInterval: TimeInterval = 0
+    private var timeDifferenceInterval: TimeInterval = 0
     
     private func getLocation() {
         let locationManager = CLLocationManager()
