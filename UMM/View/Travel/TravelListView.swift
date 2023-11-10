@@ -66,17 +66,19 @@ struct TravelListView: View {
                 TravelTabView()
             }
             .onAppear {
-                viewModel.fetchTravel()
-                viewModel.fetchExpense()
-                viewModel.fetchDefaultTravel()
-                self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
-                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
-                self.travelCount = Int(nowTravel?.count ?? 0)
-                self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
-                self.defaultTravel = viewModel.findTravelNameDefault()
-                let loadedData = handler.loadExchangeRatesFromUserDefaults()
-                if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
-                    handler.fetchAndSaveExchangeRates()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    viewModel.fetchTravel()
+                    viewModel.fetchExpense()
+                    viewModel.fetchDefaultTravel()
+                    self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                    self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
+                    self.travelCount = Int(nowTravel?.count ?? 0)
+                    self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
+                    self.defaultTravel = viewModel.findTravelNameDefault()
+                    let loadedData = handler.loadExchangeRatesFromUserDefaults()
+                    if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
+                        handler.fetchAndSaveExchangeRates()
+                    }
                 }
             }
             .toolbar {
