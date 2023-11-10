@@ -10,15 +10,23 @@ import CoreLocation
 
 final class LocationManagerDelegateForDateGapHandler: NSObject, CLLocationManagerDelegate {
     var parent: DateGapHandler?
+    var updateActivityIsDone = false
+    var authActivityIsDone = false
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        parent?.currentLocation = locations.first
-        parent?.getTimeDifference()
+        if !updateActivityIsDone {
+            parent?.currentLocation = locations.first
+            parent?.getTimeDifference()
+            updateActivityIsDone = true
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse || status == .authorizedAlways {
-            parent?.getLocation()
+            if !authActivityIsDone {
+                parent?.getLocation()
+                authActivityIsDone = true
+            }
         }
     }
 }
