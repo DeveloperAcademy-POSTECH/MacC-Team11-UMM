@@ -66,9 +66,8 @@ struct MainView: View {
             if loadedData == nil || !exchangeRateHandler.isSameDate(loadedData?.time_last_update_unix) {
                 exchangeRateHandler.fetchAndSaveExchangeRates()
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                DateGapHandler.shared.getTimeDifference()
-            }
+            
+            DateGapHandler.shared.requestAuthorization()
         }
         .accentColor(Color.mainPink)
         .environmentObject(viewModel)
