@@ -17,12 +17,15 @@ struct AddMemberView: View {
     @ObservedObject var addViewModel: AddTravelViewModel
     @ObservedObject var input = TextLimitter(limit: 5)
     
-    @State var participantArr: [String]
+    @State var participantArr: [String] {
+        didSet {
+            print("participantArr.count: \(participantArr.count)")
+        }
+    }
     @State var travelName: String?
     @State var travelID = UUID()
     @Binding var startDate: Date?
     @Binding var endDate: Date?
-    @State private var participantCnt = 0
     @State private var isBackButton = false
     @State var isDisappear = false
     
@@ -168,7 +171,6 @@ struct AddMemberView: View {
                             
                             Button {
                                 participantArr.append("")
-                                participantCnt += 1
                                 print("participantArr", $viewModel.participantArr)
                             } label: {
                                 ZStack {
@@ -198,15 +200,15 @@ struct AddMemberView: View {
     private var participantListView: some View {
         // LazyVGrid 로 해서 Count에 너비를 개수로 나눈 값으로
         HStack {
-            if participantCnt != 0 {
+            if participantArr.count != 0 {
                 HStack {
-                    ForEach(0..<participantCnt, id: \.self) { index in
+                    ForEach(0..<participantArr.count, id: \.self) { index in
                         ZStack {
                             Text(participantArr[index] + "이름입력")
                                 .hidden()
                             
                             TextField("", text: $participantArr[index])
-                                .modifier(ClearTextFieldButton(text: $participantArr[index]))
+                                .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr, index: index))
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
                                 .textFieldStyle(CustomTextFieldStyle())
@@ -238,6 +240,8 @@ struct AddMemberView: View {
     struct ClearTextFieldButton: ViewModifier {
         
         @Binding var text: String
+        @Binding var participantArr: [String]
+        let index: Int
         
         public func body(content: Content) -> some View {
             ZStack(alignment: .trailing) {
@@ -245,7 +249,8 @@ struct AddMemberView: View {
                 
                 if !text.isEmpty || text.isEmpty {
                     Button {
-                        self.text = ""
+//                        self.text = ""
+                        participantArr.remove(at: index)
                     } label: {
                         Image("xmark 1")
                             .resizable()
@@ -299,7 +304,7 @@ struct AddMemberView: View {
         HStack {
             Spacer()
             
-            if isSelectedTogether == true && participantCnt == 0 {
+            if isSelectedTogether == true && participantArr.count == 0 {
                 DoneButtonUnactive(title: "완료", action: {
                     
                 })
@@ -310,7 +315,6 @@ struct AddMemberView: View {
                     isBackButton = false
                     if !isBackButton {
                         if participantArr.count > 0 {
-                            participantCnt -= 1
                             let updateArr = Array(participantArr.dropLast())
                             viewModel.participantArr = updateArr
                         } else {
@@ -326,7 +330,7 @@ struct AddMemberView: View {
                             } else if arr.count < 1 {
                                 viewModel.travelName = "나의 여행"
                             } else {
-                                viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
+                                viewModel.travelName = "\(participantArr[0]) 외 \(participantArr.count + 1)명의 여행"
                             }
                         }
                         viewModel.travelID = travelID

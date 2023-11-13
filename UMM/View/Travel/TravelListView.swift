@@ -266,7 +266,6 @@ struct TravelListView: View {
                                 
                             }
                             .onAppear {
-                                print("ppppp : ", index)
                                 self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravelWithDummy?[index].id ?? UUID())
                                 self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                 
