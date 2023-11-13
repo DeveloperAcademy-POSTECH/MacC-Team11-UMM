@@ -33,13 +33,13 @@ struct AddTravelView: View {
                     
                     Spacer()
                 }
-                .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
                 .padding(20)
                 .overlay {
-                    RoundedRectangle(cornerRadius: 21.49123)
-                        .inset(by: 0.51)
-                        .stroke(Color.gray200, lineWidth: 1.02)
-                        .frame(width: UIScreen.main.bounds.size.width-30, height: 413)
+                    RoundedRectangle(cornerRadius: 16)
+                        .inset(by: 0.5)
+                        .stroke(Color.gray200, lineWidth: 1)
+                        .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
                 }
                 
                 Spacer()
@@ -315,7 +315,7 @@ struct AddTravelView: View {
                     print("onChange")
                 }
             }
-            .padding(.horizontal, 18)
+            .padding(.horizontal, 20)
         }
     }
 

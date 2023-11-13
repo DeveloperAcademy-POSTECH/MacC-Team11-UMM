@@ -158,7 +158,7 @@ struct TravelDetailView: View {
                 .foregroundStyle(Color.white)
                 
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
     }
     
     private var travelCountry: some View {

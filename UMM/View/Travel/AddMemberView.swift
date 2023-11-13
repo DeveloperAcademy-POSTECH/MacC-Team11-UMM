@@ -87,7 +87,6 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedAlone = true
                 self.isSelectedTogether = false
-                print("혼자 하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -95,9 +94,10 @@ struct AddMemberView: View {
                         .stroke(isSelectedAlone ? Color.mainPink : Color.gray200, lineWidth: 1)
                         .frame(width: 350, height: 53)
                     
-                    HStack {
+                    HStack(spacing: 0) {
                         Image(isSelectedTogether ? "selectUnactive" : "selectActive")
                             .frame(width: 21)
+                            .padding(.trailing, 12)
                         
                         Text("정산이 필요 없어요")
                             .foregroundStyle(isSelectedAlone ? Color.black : Color.gray300)
@@ -113,7 +113,6 @@ struct AddMemberView: View {
             Button {
                 self.isSelectedTogether = true
                 self.isSelectedAlone = false
-                print("여러 명이서 함께하는 여행이에요")
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -121,9 +120,10 @@ struct AddMemberView: View {
                         .stroke(isSelectedTogether ? Color.mainPink : Color.gray200, lineWidth: 1)
                         .frame(width: 350, height: 53)
                     
-                    HStack {
+                    HStack(spacing: 0) {
                         Image(isSelectedAlone ? "selectUnactive" : "selectActive")
                             .frame(width: 21)
+                            .padding(.trailing, 12)
                         
                         Text("여러 명이서 정산이 필요한 여행이에요")
                             .foregroundStyle(isSelectedTogether ? Color.black : Color.gray300)
@@ -306,7 +306,7 @@ struct AddMemberView: View {
                         // 여행 이름
                         if let arr = viewModel.participantArr {
                             if arr.count == 1 {
-                                viewModel.travelName = "\(participantArr[0])와의 여행"
+                                viewModel.travelName = "\(participantArr[0])님과의 여행"
                             } else if arr.count < 1 {
                                 viewModel.travelName = "나의 여행"
                             } else {
