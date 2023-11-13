@@ -84,12 +84,12 @@ struct TravelDetailView: View {
                     .blur(radius: 10)
             )
             .onAppear {
+                print("participantCnt \(participantArr.count)")
                 viewModel.fetchTravel()
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
                 
             }
             .onDisappear {
-                print("TravelID : ", travelID)
                 mainVM.selectedTravel = self.selectedTravel?.first
                 travelID = mainVM.selectedTravel?.id ?? UUID()
                 

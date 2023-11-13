@@ -16,6 +16,7 @@ struct CompleteAddTravelView: View {
     @ObservedObject var memberViewModel: AddMemberViewModel
     @Binding var travelID: UUID
     @State var travelNM: String
+    @State var participantArr: [String]
     @State var selectedTravel: [Travel]?
     
     var body: some View {
@@ -34,6 +35,7 @@ struct CompleteAddTravelView: View {
                 MediumButtonStroke(title: "여행 확인하기", action: {
                     // 선택값 초기화
                     selectedTravel?.first?.name = travelNM
+                    selectedTravel?.first?.participantArray = participantArr
                     mainVM.selectedTravel = self.selectedTravel?.first
                     viewModel.saveTravel()
                     NavigationUtil.popToRootView()
@@ -43,13 +45,11 @@ struct CompleteAddTravelView: View {
                 
                 MediumButtonActive(title: "지출 기록하기", action: {
                     selectedTravel?.first?.name = travelNM
+                    selectedTravel?.first?.participantArray = participantArr
                     mainVM.selectedTravel = self.selectedTravel?.first
                     viewModel.saveTravel()
                     NavigationUtil.popToRootView()
                     mainVM.navigationToRecordView()
-                    DispatchQueue.main.async {
-                        mainVM.selectedTravel = self.selectedTravel?.first
-                    }
                 })
             }
         }
@@ -58,8 +58,8 @@ struct CompleteAddTravelView: View {
             viewModel.fetchTravel()
             self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
             self.travelNM = memberViewModel.travelName ?? "제목 미정"
-        }
-        .navigationTitle("새로운 여행 생성")
+            self.participantArr = memberViewModel.participantArr ?? ["me"]
+        }        .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
     }
     

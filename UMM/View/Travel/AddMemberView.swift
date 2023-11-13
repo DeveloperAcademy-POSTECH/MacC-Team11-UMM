@@ -15,7 +15,6 @@ struct AddMemberView: View {
     
     @ObservedObject private var viewModel = AddMemberViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
-    @ObservedObject var input = TextLimitter(limit: 5)
     
     @State var participantArr: [String] {
         didSet {
@@ -57,7 +56,8 @@ struct AddMemberView: View {
             CompleteAddTravelView(addViewModel: addViewModel,
                                   memberViewModel: viewModel,
                                   travelID: $travelID,
-                                  travelNM: travelName ?? "")
+                                  travelNM: travelName ?? "", 
+                                  participantArr: participantArr)
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -171,7 +171,6 @@ struct AddMemberView: View {
                             
                             Button {
                                 participantArr.append("")
-                                print("participantArr", $viewModel.participantArr)
                             } label: {
                                 ZStack {
                                     Rectangle()
@@ -198,9 +197,8 @@ struct AddMemberView: View {
     }
     
     private var participantListView: some View {
-        // LazyVGrid 로 해서 Count에 너비를 개수로 나눈 값으로
         HStack {
-            if participantArr.count != 0 {
+//            if participantArr.count != 0 {
                 HStack {
                     ForEach(0..<participantArr.count, id: \.self) { index in
                         ZStack {
@@ -231,9 +229,9 @@ struct AddMemberView: View {
                     }
                 }
                 
-            } else {
-                Text(" ")
-            }
+//            } else {
+//                Text(" ")
+//            }
         }
     }
     
@@ -249,7 +247,6 @@ struct AddMemberView: View {
                 
                 if !text.isEmpty || text.isEmpty {
                     Button {
-//                        self.text = ""
                         participantArr.remove(at: index)
                     } label: {
                         Image("xmark 1")
@@ -262,32 +259,6 @@ struct AddMemberView: View {
             }
         }
     }
-    
-    // 이슈 : 위에서 만든 히든 뷰의 index 범위 오류
-//    struct ClearTextFieldButton: ViewModifier {
-//        
-//        @Binding var text: String
-//        @Binding var participantArr: [String]
-//        
-//        public func body(content: Content) -> some View {
-//            ZStack(alignment: .trailing) {
-//                content
-//                
-//                if !text.isEmpty || text.isEmpty {
-//                    Button {
-//                        self.text = ""
-//                        self.participantArr = Array(self.participantArr.dropLast())
-//                    } label: {
-//                        Image("xmark 1")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 10, height: 10)
-//                            .padding(.trailing, 15)
-//                    }
-//                }
-//            }
-//        }
-//    }
     
     struct CustomTextFieldStyle: TextFieldStyle {
         func _body(configuration: TextField<Self._Label>) -> some View {
@@ -309,30 +280,28 @@ struct AddMemberView: View {
                     
                 })
                 .disabled(true)
-                  
+                
             } else {
                 DoneButtonActive(title: "완료", action: {
                     isBackButton = false
                     if !isBackButton {
-                        if participantArr.count > 0 {
-                            let updateArr = Array(participantArr.dropLast())
-                            viewModel.participantArr = updateArr
-                        } else {
-                            viewModel.participantArr = participantArr
-                        }
+                        
                         viewModel.startDate = startDate?.local000().convertBeforeSaving()
                         viewModel.endDate = endDate?.local235959().convertBeforeSaving()
                         
                         // 여행 이름
-                        if let arr = viewModel.participantArr {
-                            if arr.count == 1 {
-                                viewModel.travelName = "\(participantArr[0])님과의 여행"
-                            } else if arr.count < 1 {
-                                viewModel.travelName = "나의 여행"
-                            } else {
-                                viewModel.travelName = "\(participantArr[0]) 외 \(participantArr.count + 1)명의 여행"
-                            }
+                        if participantArr.count == 1 && self.isSelectedTogether == true {
+                            viewModel.travelName = "\(participantArr[0])님과의 여행"
+                            viewModel.participantArr = participantArr
+                        } else if participantArr.count == 1 && self.isSelectedAlone == true {
+                            let updateArr = Array(participantArr.dropLast())
+                            viewModel.participantArr = updateArr
+                            viewModel.travelName = "나의 여행"
+                        } else {
+                            viewModel.travelName = "\(participantArr[0]) 외 \(participantArr.count)명의 여행"
+                            viewModel.participantArr = participantArr
                         }
+                        
                         viewModel.travelID = travelID
                         viewModel.addTravel()
                         viewModel.saveTravel()
@@ -353,26 +322,6 @@ struct AddMemberView: View {
                 .foregroundColor(Color.black)
         }
     }
-}
-
-class TextLimitter: ObservableObject {
-    private let limit: Int
-    
-    init(limit: Int) {
-        self.limit = limit
-    }
-    
-    @Published var value = "" {
-        didSet {
-            if value.count > self.limit {
-                value = String(value.prefix(self.limit))
-                self.hasReachedLimit = true
-            } else {
-                self.hasReachedLimit = false
-            }
-        }
-    }
-    @Published var hasReachedLimit = false
 }
 
 // #Preview {
