@@ -107,6 +107,8 @@
 		E2D5C06C2ADD926200907501 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */; };
 		E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C06E2ADD927B00907501 /* TempSave.swift */; };
 		E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */; };
+		E366F1732B01F72C003CCA88 /* API_KEY.plist in Resources */ = {isa = PBXBuildFile; fileRef = E366F1722B01F72C003CCA88 /* API_KEY.plist */; };
+		E366F1752B01F790003CCA88 /* Bundle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E366F1742B01F790003CCA88 /* Bundle+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -211,6 +213,8 @@
 		E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		E2D5C06E2ADD927B00907501 /* TempSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempSave.swift; sourceTree = "<group>"; };
 		E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = findCurrentTravel.swift; sourceTree = "<group>"; };
+		E366F1722B01F72C003CCA88 /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = API_KEY.plist; sourceTree = "<group>"; };
+		E366F1742B01F790003CCA88 /* Bundle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +232,7 @@
 		571A425D2ACE857500FA3D2B = {
 			isa = PBXGroup;
 			children = (
+				E366F1722B01F72C003CCA88 /* API_KEY.plist */,
 				571A42682ACE857500FA3D2B /* UMM */,
 				571A42672ACE857500FA3D2B /* Products */,
 			);
@@ -321,6 +326,7 @@
 				5785070D2AE5131B001C4FA1 /* View+Extension.swift */,
 				E23357A52AE273E700E17CFF /* NSObject+Extension.swift */,
 				C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */,
+				E366F1742B01F790003CCA88 /* Bundle+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -557,6 +563,7 @@
 				C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */,
 				E237338C2AF7E95B008C2613 /* CurrencyList.csv in Resources */,
 				C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */,
+				E366F1732B01F72C003CCA88 /* API_KEY.plist in Resources */,
 				C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */,
 				C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */,
 				C17966012ADD66F90036E866 /* Pretendard-ExtraLight.otf in Resources */,
@@ -638,6 +645,7 @@
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				57B2AA422AEFD3980042E55C /* EmtpyFile.swift in Sources */,
 				C157600C2AEACADC0089FFE5 /* TravelDetailViewModel.swift in Sources */,
+				E366F1752B01F790003CCA88 /* Bundle+Extension.swift in Sources */,
 				C18168022AFDE07000130F79 /* SplashView.swift in Sources */,
 				E2D4247E2AEF580E00A9ADC9 /* ExchangeRateHandler.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,

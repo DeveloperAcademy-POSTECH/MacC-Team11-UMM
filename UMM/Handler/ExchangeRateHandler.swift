@@ -21,7 +21,7 @@ class ExchangeRateHandler {
     private init() {}
     
     func fetchAndSaveExchangeRates() {
-        let apiKey = "7437a58231287f04d6c73124"
+        let apiKey = Bundle.main.exchangeRateAPIKey
         let baseCode = "KRW"
         guard let url = URL(string: "https://v6.exchangerate-api.com/v6/\(apiKey)/latest/\(baseCode)") else { return }
         URLSession.shared.dataTask(with: url) { (data, _, error) in
