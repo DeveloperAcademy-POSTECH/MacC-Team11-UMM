@@ -61,8 +61,9 @@ struct TravelListView: View {
                 }
                 
                 tempTravelView
+                    .padding(.top, 12)
                     .offset(y: -18)
-                
+                    
                 TravelTabView()
             }
             .onAppear {

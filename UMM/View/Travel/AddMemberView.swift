@@ -12,8 +12,11 @@ struct AddMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isSelectedAlone = true
     @State private var isSelectedTogether = false
+    
     @ObservedObject private var viewModel = AddMemberViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
+    @ObservedObject var input = TextLimitter(limit: 5)
+    
     @State var participantArr: [String]
     @State var travelName: String?
     @State var travelID = UUID()
@@ -207,6 +210,19 @@ struct AddMemberView: View {
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
                                 .textFieldStyle(CustomTextFieldStyle())
+                                .onChange(of: participantArr[index]) { _, newValue in
+                                    let maxLengthInKorean = 5
+                                    let maxLengthInEnglish = 8
+                                    
+                                    let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                                    let isEnglish = newValue.rangeOfCharacter(from: characterSet.inverted) == nil
+                                    
+                                    let maxLength = isEnglish ? maxLengthInEnglish : maxLengthInKorean
+                                    
+                                    if newValue.count > maxLength {
+                                        participantArr[index] = String(newValue.prefix(maxLength))
+                                    }
+                                }
                                 .layoutPriority(-1)
                         }
                         .padding(.horizontal, 5)
@@ -333,6 +349,26 @@ struct AddMemberView: View {
                 .foregroundColor(Color.black)
         }
     }
+}
+
+class TextLimitter: ObservableObject {
+    private let limit: Int
+    
+    init(limit: Int) {
+        self.limit = limit
+    }
+    
+    @Published var value = "" {
+        didSet {
+            if value.count > self.limit {
+                value = String(value.prefix(self.limit))
+                self.hasReachedLimit = true
+            } else {
+                self.hasReachedLimit = false
+            }
+        }
+    }
+    @Published var hasReachedLimit = false
 }
 
 // #Preview {

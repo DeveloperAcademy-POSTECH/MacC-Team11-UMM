@@ -311,9 +311,6 @@ struct AddTravelView: View {
                             .disabled(true)
                     }
                 }
-                .onChange(of: viewModel.endDate) {
-                    print("onChange")
-                }
             }
             .padding(.horizontal, 20)
         }
