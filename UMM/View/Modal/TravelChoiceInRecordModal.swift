@@ -312,7 +312,7 @@ struct TravelBlockView: View {
             Spacer()
                 .frame(height: 6)
             
-            Text(travel.name != tempTravelName ? travel.name ?? "-" : "임시 기록")
+            Text(travel.name != tempTravelName ? travel.name ?? "-" : " ")
                 .lineLimit(1)
                 .foregroundStyle(travel.name != tempTravelName ? .black : .gray400)
                 .font(.subhead1)
