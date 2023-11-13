@@ -107,8 +107,6 @@
 		E2D5C06C2ADD926200907501 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */; };
 		E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C06E2ADD927B00907501 /* TempSave.swift */; };
 		E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */; };
-		E366F1732B01F72C003CCA88 /* API_KEY.plist in Resources */ = {isa = PBXBuildFile; fileRef = E366F1722B01F72C003CCA88 /* API_KEY.plist */; };
-		E366F1752B01F790003CCA88 /* Bundle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E366F1742B01F790003CCA88 /* Bundle+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -213,8 +211,7 @@
 		E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		E2D5C06E2ADD927B00907501 /* TempSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempSave.swift; sourceTree = "<group>"; };
 		E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = findCurrentTravel.swift; sourceTree = "<group>"; };
-		E366F1722B01F72C003CCA88 /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = API_KEY.plist; sourceTree = "<group>"; };
-		E366F1742B01F790003CCA88 /* Bundle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extension.swift"; sourceTree = "<group>"; };
+		E366F1762B02014B003CCA88 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,7 +229,6 @@
 		571A425D2ACE857500FA3D2B = {
 			isa = PBXGroup;
 			children = (
-				E366F1722B01F72C003CCA88 /* API_KEY.plist */,
 				571A42682ACE857500FA3D2B /* UMM */,
 				571A42672ACE857500FA3D2B /* Products */,
 			);
@@ -326,7 +322,6 @@
 				5785070D2AE5131B001C4FA1 /* View+Extension.swift */,
 				E23357A52AE273E700E17CFF /* NSObject+Extension.swift */,
 				C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */,
-				E366F1742B01F790003CCA88 /* Bundle+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -403,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				E2D5C05B2ADD921400907501 /* MainView.swift */,
+				E366F1762B02014B003CCA88 /* Config.xcconfig */,
 				57EA421D2ADE1127006CA587 /* Expense */,
 				57EA421C2ADE1122006CA587 /* Record */,
 				57EA421B2ADE1107006CA587 /* Travel */,
@@ -563,7 +559,6 @@
 				C17966052ADD66F90036E866 /* Pretendard-Thin.otf in Resources */,
 				E237338C2AF7E95B008C2613 /* CurrencyList.csv in Resources */,
 				C17966062ADD66F90036E866 /* Pretendard-Black.otf in Resources */,
-				E366F1732B01F72C003CCA88 /* API_KEY.plist in Resources */,
 				C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */,
 				C17966022ADD66F90036E866 /* Pretendard-ExtraBold.otf in Resources */,
 				C17966012ADD66F90036E866 /* Pretendard-ExtraLight.otf in Resources */,
@@ -645,7 +640,6 @@
 				57C41DFC2AD4F1EB00345253 /* Persistence.swift in Sources */,
 				57B2AA422AEFD3980042E55C /* EmtpyFile.swift in Sources */,
 				C157600C2AEACADC0089FFE5 /* TravelDetailViewModel.swift in Sources */,
-				E366F1752B01F790003CCA88 /* Bundle+Extension.swift in Sources */,
 				C18168022AFDE07000130F79 /* SplashView.swift in Sources */,
 				E2D4247E2AEF580E00A9ADC9 /* ExchangeRateHandler.swift in Sources */,
 				C17550542AD54FC900A61BE5 /* AddTravelView.swift in Sources */,
@@ -698,6 +692,7 @@
 /* Begin XCBuildConfiguration section */
 		571A42722ACE857600FA3D2B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E366F1762B02014B003CCA88 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -762,6 +757,7 @@
 		};
 		571A42732ACE857600FA3D2B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E366F1762B02014B003CCA88 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -831,6 +827,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -870,6 +867,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

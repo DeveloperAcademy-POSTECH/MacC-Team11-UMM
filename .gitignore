@@ -91,3 +91,4 @@ iOSInjectionProject/
 
 # API_KEY
 API_KEY.plist
+*.xcconfig
