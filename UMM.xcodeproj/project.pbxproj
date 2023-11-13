@@ -80,6 +80,7 @@
 		C1B2D2AC2AFCF51700E5C2B2 /* SortingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B2D2AB2AFCF51700E5C2B2 /* SortingHandler.swift */; };
 		C1CDAE552B027FC900270DD2 /* TravelItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CDAE542B027FC900270DD2 /* TravelItemView.swift */; };
 		C1CDAE572B02845F00270DD2 /* TravelItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CDAE562B02845F00270DD2 /* TravelItemViewModel.swift */; };
+		C1CDAE592B028A3800270DD2 /* TravelButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CDAE582B028A3800270DD2 /* TravelButtonView.swift */; };
 		C1DC9A472AF3428C00CB6298 /* CountryInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A462AF3428C00CB6298 /* CountryInfoModel.swift */; };
 		C1DC9A492AF3859B00CB6298 /* Gesture+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */; };
 		C1DC9A4B2AF3EFAD00CB6298 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */; };
@@ -186,6 +187,7 @@
 		C1B2D2AB2AFCF51700E5C2B2 /* SortingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingHandler.swift; sourceTree = "<group>"; };
 		C1CDAE542B027FC900270DD2 /* TravelItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelItemView.swift; sourceTree = "<group>"; };
 		C1CDAE562B02845F00270DD2 /* TravelItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelItemViewModel.swift; sourceTree = "<group>"; };
+		C1CDAE582B028A3800270DD2 /* TravelButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelButtonView.swift; sourceTree = "<group>"; };
 		C1DC9A462AF3428C00CB6298 /* CountryInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInfoModel.swift; sourceTree = "<group>"; };
 		C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gesture+Extension.swift"; sourceTree = "<group>"; };
 		C1DC9A4A2AF3EFAD00CB6298 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
@@ -354,6 +356,7 @@
 				C19AFAF12AE117430037A5F5 /* UpcomingTravelView.swift */,
 				C19ACF7B2AEA341400D950C9 /* TravelDetailView.swift */,
 				C1CDAE542B027FC900270DD2 /* TravelItemView.swift */,
+				C1CDAE582B028A3800270DD2 /* TravelButtonView.swift */,
 			);
 			path = Travel;
 			sourceTree = "<group>";
@@ -675,6 +678,7 @@
 				57A65D102AD7D52700131266 /* String+Extension.swift in Sources */,
 				5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */,
 				E23357A82AE2B42300E17CFF /* dateFormatter.swift in Sources */,
+				C1CDAE592B028A3800270DD2 /* TravelButtonView.swift in Sources */,
 				57A65D0C2AD7D4FF00131266 /* Array<String>+Extension.swift in Sources */,
 				C179660C2ADD68BC0036E866 /* FontsManager.swift in Sources */,
 				C1CDAE552B027FC900270DD2 /* TravelItemView.swift in Sources */,
