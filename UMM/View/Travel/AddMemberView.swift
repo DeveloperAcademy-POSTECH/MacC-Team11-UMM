@@ -46,34 +46,12 @@ struct AddMemberView: View {
             isBackButton = false
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
-        .onDisappear {
+        .navigationDestination(isPresented: $isDisappear) {
             
-            if !isBackButton {
-                if participantArr.count > 0 {
-                    participantCnt -= 1
-                    let updateArr = Array(participantArr.dropLast())
-                    viewModel.participantArr = updateArr
-                } else {
-                    viewModel.participantArr = participantArr
-                }
-                viewModel.startDate = startDate?.local000().convertBeforeSaving()
-                viewModel.endDate = endDate?.local235959().convertBeforeSaving()
-                
-                // 여행 이름
-                if let arr = viewModel.participantArr {
-                    if arr.count == 1 {
-                        viewModel.travelName = "\(participantArr[0])와의 여행"
-                    } else if arr.count < 1 {
-                        viewModel.travelName = "나의 여행"
-                    } else {
-                        viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
-                    }
-                }
-                viewModel.travelID = travelID
-                viewModel.addTravel()
-                viewModel.saveTravel()
-                isDisappear = true
-            }
+            CompleteAddTravelView(addViewModel: addViewModel,
+                                  memberViewModel: viewModel,
+                                  travelID: $travelID,
+                                  travelNM: travelName ?? "")
         }
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -312,16 +290,35 @@ struct AddMemberView: View {
                 .disabled(true)
                   
             } else {
-                NavigationLink(destination: CompleteAddTravelView(addViewModel: addViewModel, 
-                                                                  memberViewModel: viewModel,
-                                                                  travelID: $travelID,
-                                                                  travelNM: travelName ?? "",
-                                                                  isDisappear: $isDisappear)) {
-                    DoneButtonActive(title: "완료", action: {
-                        isBackButton = false
-                    })
-                    .disabled(true)
-                }
+                DoneButtonActive(title: "완료", action: {
+                    isBackButton = false
+                    if !isBackButton {
+                        if participantArr.count > 0 {
+                            participantCnt -= 1
+                            let updateArr = Array(participantArr.dropLast())
+                            viewModel.participantArr = updateArr
+                        } else {
+                            viewModel.participantArr = participantArr
+                        }
+                        viewModel.startDate = startDate?.local000().convertBeforeSaving()
+                        viewModel.endDate = endDate?.local235959().convertBeforeSaving()
+                        
+                        // 여행 이름
+                        if let arr = viewModel.participantArr {
+                            if arr.count == 1 {
+                                viewModel.travelName = "\(participantArr[0])와의 여행"
+                            } else if arr.count < 1 {
+                                viewModel.travelName = "나의 여행"
+                            } else {
+                                viewModel.travelName = "\(participantArr[0]) 외 \(participantCnt+1)명의 여행"
+                            }
+                        }
+                        viewModel.travelID = travelID
+                        viewModel.addTravel()
+                        viewModel.saveTravel()
+                    }
+                    isDisappear = true
+                })
             }
         }
     }

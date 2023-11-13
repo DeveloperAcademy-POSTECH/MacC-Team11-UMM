@@ -15,7 +15,7 @@ struct AddTravelView: View {
     @State private var showStartModal = false
     @State private var showEndModal = false
     @State private var isButtonOn = false
-    
+   
     var body: some View {
         NavigationStack {
             VStack {
@@ -48,13 +48,10 @@ struct AddTravelView: View {
                     Spacer()
                     
                     if viewModel.startDate != nil {
-                        NavigationLink(destination: AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)) {
-                            NextButtonActive(title: "다음", action: {
-                                
-                            })
-                            .disabled(true)
-                            .ignoresSafeArea()
-                        }
+                        NextButtonActive(title: "다음", action: {
+                            isButtonOn = true
+                        })
+                        .ignoresSafeArea()
                     } else {
                         NextButtonUnactive(title: "다음", action: {
                             
@@ -65,6 +62,9 @@ struct AddTravelView: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
+        }
+        .navigationDestination(isPresented: $isButtonOn) {
+            AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationTitle("새로운 여행 생성")
@@ -85,8 +85,6 @@ struct AddTravelView: View {
                     Spacer()
                 }
                 .padding(.bottom, 10)
-                
-//                Spacer()
                 
                 HStack {
                     Text("여행의 시작일과 종료일을 설정해주세요.")
