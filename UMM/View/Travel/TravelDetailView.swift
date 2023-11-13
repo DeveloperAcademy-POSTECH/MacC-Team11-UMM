@@ -191,10 +191,10 @@ struct TravelDetailView: View {
             
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 64, height: 0.5)
                 .background(.white)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
     }
     
     private var dateBox: some View {
@@ -252,14 +252,14 @@ struct TravelDetailView: View {
                 Spacer()
             }
             .padding(.vertical, 22)
-            .frame(width: UIScreen.main.bounds.width - 40)
+            .frame(width: UIScreen.main.bounds.width - 64)
             
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: UIScreen.main.bounds.width - 40, height: 0.5)
+                .frame(width: UIScreen.main.bounds.width - 64, height: 0.5)
                 .background(.white)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
     }
     
     private var participantGroup: some View {
@@ -354,7 +354,7 @@ struct TravelDetailView: View {
             Spacer()
             
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
     }
 }
 
