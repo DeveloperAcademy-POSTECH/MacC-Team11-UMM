@@ -67,7 +67,7 @@ struct ManualRecordInExpenseView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
-        .navigationTitle("기록 완료")
+        .navigationTitle("상세 내역")
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
