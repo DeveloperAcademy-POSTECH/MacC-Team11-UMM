@@ -100,12 +100,12 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                 
             }
 
-            var tempPayAmount = Double(visiblePayAmount) ?? -1 // 음수 걸러내기
+            var tempPayAmount = Double(tempVisiblePayAmount) ?? -1 // 음수 걸러내기
             if tempPayAmount < 0 {
                 visiblePayAmount = "" // didSet is called again
                 return
             } else if tempPayAmount > 1_000_000_000.99 { // 10억.99 초과 걸러내기; 소숫점 이하 2자리 정보 보존
-                tempPayAmount = 1_000_000_000.0 + Double((Int(tempPayAmount * 100) - Int(tempPayAmount) * 100)) * 0.01
+                tempPayAmount = 1_000_000_000.0 + (tempPayAmount * 100.0 - floor(tempPayAmount * 100.0)) * 0.01
                 if abs(tempPayAmount - Double(Int(tempPayAmount))) < 0.0000001 {
                     visiblePayAmount = String(format: "%.0f", tempPayAmount) // didSet is called again
                 } else {

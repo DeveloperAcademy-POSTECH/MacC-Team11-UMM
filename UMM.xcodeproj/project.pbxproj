@@ -211,6 +211,7 @@
 		E2D5C06B2ADD926200907501 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		E2D5C06E2ADD927B00907501 /* TempSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempSave.swift; sourceTree = "<group>"; };
 		E2D5C0712ADD928C00907501 /* findCurrentTravel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = findCurrentTravel.swift; sourceTree = "<group>"; };
+		E366F1762B02014B003CCA88 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				E2D5C05B2ADD921400907501 /* MainView.swift */,
+				E366F1762B02014B003CCA88 /* Config.xcconfig */,
 				57EA421D2ADE1127006CA587 /* Expense */,
 				57EA421C2ADE1122006CA587 /* Record */,
 				57EA421B2ADE1107006CA587 /* Travel */,
@@ -690,6 +692,7 @@
 /* Begin XCBuildConfiguration section */
 		571A42722ACE857600FA3D2B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E366F1762B02014B003CCA88 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -754,6 +757,7 @@
 		};
 		571A42732ACE857600FA3D2B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E366F1762B02014B003CCA88 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -817,12 +821,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -856,12 +861,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = NM2S86642U;
+				DEVELOPMENT_TEAM = 8H4K6TKQBU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
