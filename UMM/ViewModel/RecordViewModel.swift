@@ -46,10 +46,46 @@ final class RecordViewModel: ObservableObject {
                     let hapticEngine = UIImpactFeedbackGenerator(style: .medium)
                     hapticEngine.impactOccurred()
                 }
+                
+                guard info != "" else {
+                    info = nil // didSet is called again
+                    return
+                }
+                
+                var weightedLength: Double = 0
+                var tempVisibleInfo: String = ""
+                
+                for letter in info! {
+                    tempVisibleInfo.append(String(letter))
+                    if let safeScalar = Unicode.Scalar(String(letter)) {
+                        let n = Int(safeScalar.value)
+                        if (48 <= n && n <= 57) || (65 <= n && n <= 90) || (97 <= n && n <= 122) || (n == 32) || (n == 46) { // 0 ~ 9, A ~ Z, a ~ z, 공백, 마침표
+                            weightedLength += 0.75
+                        } else {
+                            weightedLength += 1
+                        }
+                        if weightedLength <= 15 {
+                            continue
+                        } else {
+                            tempVisibleInfo.removeLast()
+                            break
+                        }
+                    }
+                }
+                if info! != tempVisibleInfo {
+                    info! = tempVisibleInfo.reduce("") { $0 + String($1)} // didSet is called again
+                    return
+                }
             }
         }
     }
-    @Published var payAmount: Double = -1
+    @Published var payAmount: Double = -1 {
+        didSet {
+            if payAmount > 1_000_000_000.99 {
+                payAmount = 1_000_000_000.0 + Double((Int(payAmount * 100) - Int(payAmount) * 100)) * 0.01
+            }
+        }
+    }
     @Published var paymentMethod: PaymentMethod = .unknown {
         didSet {
             if oldValue == .unknown && paymentMethod != .unknown {

@@ -87,21 +87,37 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     }
     @Published var visiblePayAmount: String = "" {
         didSet {
+            guard visiblePayAmount != "" else {
+                payAmount = -1
+                return
+            }
+            
             var tempVisiblePayAmount = visiblePayAmount.filter { [.arabicNumeric, .arabicDot].contains($0.getCharacterForm()) }
             if let dotIndex = tempVisiblePayAmount.firstIndex(of: ".") {
                 if let twoMovesIndex = tempVisiblePayAmount.index(dotIndex, offsetBy: 3, limitedBy: tempVisiblePayAmount.endIndex) {
                     tempVisiblePayAmount = String(tempVisiblePayAmount[..<twoMovesIndex])
                 }
+                
             }
+
+            var tempPayAmount = Double(tempVisiblePayAmount) ?? -1 // 음수 걸러내기
+            if tempPayAmount < 0 {
+                visiblePayAmount = "" // didSet is called again
+                return
+            } else if tempPayAmount > 1_000_000_000.99 { // 10억.99 초과 걸러내기; 소숫점 이하 2자리 정보 보존
+                tempPayAmount = 1_000_000_000.0 + (tempPayAmount * 100.0 - floor(tempPayAmount * 100.0)) * 0.01
+                if abs(tempPayAmount - Double(Int(tempPayAmount))) < 0.0000001 {
+                    visiblePayAmount = String(format: "%.0f", tempPayAmount) // didSet is called again
+                } else {
+                    visiblePayAmount = String(payAmount) // didSet is called again
+                }
+                return
+            }
+            
             if visiblePayAmount != tempVisiblePayAmount {
                 visiblePayAmount = tempVisiblePayAmount
             }
-            
-            if visiblePayAmount == "" {
-                payAmount = -1
-            } else {
-                payAmount = Double(visiblePayAmount) ?? -100
-            }
+            payAmount = tempPayAmount
         }
     }
     @Published var payAmountInWon: Double = -1 // passive
@@ -109,11 +125,37 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     var info: String? // passive
     @Published var visibleInfo: String = "" {
         didSet {
-            if visibleInfo == "" {
+            guard visibleInfo != "" else {
                 info = nil
-            } else {
-                info = visibleInfo
+                return
             }
+            
+            var weightedLength: Double = 0
+            var tempVisibleInfo: String = ""
+            
+            for letter in visibleInfo {
+                tempVisibleInfo.append(String(letter))
+                if let safeScalar = Unicode.Scalar(String(letter)) {
+                    let n = Int(safeScalar.value)
+                    if (48 <= n && n <= 57) || (65 <= n && n <= 90) || (97 <= n && n <= 122) || (n == 32) || (n == 46) { // 0 ~ 9, A ~ Z, a ~ z, 공백, 마침표
+                        weightedLength += 0.75
+                    } else {
+                        weightedLength += 1
+                    }
+                    if weightedLength <= 15 {
+                        continue
+                    } else {
+                        tempVisibleInfo.removeLast()
+                        break
+                    }
+                }
+            }
+            if visibleInfo != tempVisibleInfo {
+                visibleInfo = tempVisibleInfo.reduce("") { $0 + String($1)} // didSet is called again
+                return
+            }
+            
+            info = visibleInfo
         }
     }
     

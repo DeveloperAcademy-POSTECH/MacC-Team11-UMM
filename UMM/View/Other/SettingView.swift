@@ -11,8 +11,7 @@ import CoreData
 struct SettingView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) var managedObjectContext
-    let appID = "나중에 입력할 것" // ^^^
-    let appleID = "나중에 입력할 것" // ^^^
+    let appID = 6470182505
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     @State private var isLatestVersion = false
 
@@ -69,8 +68,8 @@ struct SettingView: View {
     
     private var essentialSetting: some View {
         Section {
-            listButton(title: "약관 및 정책", target: "")
-            listButton(title: "개인정보취급방침", target: "")
+            listButton(title: "약관 및 정책", target: "https://yejinms.notion.site/d5bef16aac0840d0ac56a6ef0e0580b8")
+            listButton(title: "개인정보취급방침", target: "https://yejinms.notion.site/c27893465d774aca9230b7e7e6b9379c")
         } header: {
             Text("필수 설정")
                 .font(.caption2)
@@ -151,7 +150,7 @@ struct SettingView: View {
     
     // 추후 확인 필요
     private func latestVersion(completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "http://itunes.apple.com/lookup?id=\(appleID)") else { return }
+        guard let url = URL(string: "http://itunes.apple.com/lookup?id=\(appID)") else { return }
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
