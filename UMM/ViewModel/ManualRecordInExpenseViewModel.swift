@@ -221,7 +221,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - not-in-string property
-    
     @Published var travelArray: [Travel] = []
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] {
         didSet {
@@ -390,11 +389,28 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         // MainViewModel의 chosenTravelInManualRecord가 변화할 때 자동으로 이루어질 일을 sink로 처리
         travelStream = travelPublisher.sink { chosenTravel in
             if let chosenTravel {
+                
+                var expense: Expense?
+                do {
+                    expense = try self.viewContext.fetch(Expense.fetchRequest()).filter { expense in
+                        return expense.id == self.expenseId
+                    }.first
+                } catch let error {
+                    print("\(error.localizedDescription)")
+                }
+                guard let expense = expense else { return }
+                
                 if let participantArrayInChosenTravel = chosenTravel.participantArray {
-                    self.participantTupleArray = [("나", true)] + participantArrayInChosenTravel.map { ($0, true) }
+                    var updatedParticipantArray = participantArrayInChosenTravel
+                    updatedParticipantArray.insert("나", at: 0)
+                    self.participantTupleArray = updatedParticipantArray.map { participant in
+                        let isSelected = expense.participantArray?.contains(participant) ?? false
+                        return (name: participant, isOn: isSelected)
+                    }
                 } else {
                     self.participantTupleArray = [("나", true)]
                 }
+                
                 var expenseArray: [Expense] = []
                 do {
                     try expenseArray = self.viewContext.fetch(Expense.fetchRequest()).filter { expense in
@@ -438,6 +454,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         expense.info = info
         expense.location = locationExpression
         expense.participantArray = participantTupleArray.filter { $0.1 == true }.map { $0.0 }
+        print("ManualRecordInExpenseView | expense.participantArray: \(String(describing: expense.participantArray))")
         expense.payAmount = payAmount
         expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)
