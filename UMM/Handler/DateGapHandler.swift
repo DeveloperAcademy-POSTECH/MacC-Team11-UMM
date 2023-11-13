@@ -38,8 +38,8 @@ final class DateGapHandler {
     
     private init() {
         timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-            print("DateGapHandler | location: \(self.currentLocation?.description ?? "nil")")
-            print("DateGapHandler | timeDifference: \(self.timeDifferenceInterval.description)")
+//            print("DateGapHandler | location: \(self.currentLocation?.description ?? "nil")")
+//            print("DateGapHandler | timeDifference: \(self.timeDifferenceInterval.description)")
         }
     }
     
