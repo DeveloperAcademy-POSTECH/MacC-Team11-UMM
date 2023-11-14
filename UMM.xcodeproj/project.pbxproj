@@ -358,7 +358,6 @@
 			children = (
 				57A65D172AD7DDA700131266 /* RecordView.swift */,
 				5760066C2ADD42FA006CD8DF /* ManualRecordView.swift */,
-				E26DBB2E2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift */,
 				5760066A2ADD42D3006CD8DF /* CompleteRecordView.swift */,
 				C1EAD6A12AF6717C00EB3B89 /* InterimRecordView.swift */,
 				C1EAD6AF2AF8210D00EB3B89 /* InterimProceedingView.swift */,
@@ -378,6 +377,7 @@
 				E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */,
 				E2D5C0672ADD924800907501 /* AllExpenseDetailView.swift */,
 				E23357A32AE2724700E17CFF /* CustomDatePicker.swift */,
+				E26DBB2E2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift */,
 			);
 			path = Expense;
 			sourceTree = "<group>";

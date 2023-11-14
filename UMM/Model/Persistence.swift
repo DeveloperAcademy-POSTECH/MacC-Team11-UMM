@@ -63,18 +63,6 @@ struct PersistenceController {
         try? self.container.viewContext.save()
     }
     
-//    func deleteExpenseFromTravel(travel: Travel?, expenseId: ObjectIdentifier) {
-//        guard let travel = travel else { return }
-//        let filteredExpenses = travel.expenseArray?.filter { expense in
-//            if let expense = expense as? Expense, expense.id == expenseId {
-//                return false
-//            }
-//            return true
-//        }
-//        travel.expenseArray = NSSet(array: filteredExpenses ?? [])
-//        try? self.container.viewContext.save()
-//    }
-    
     func deleteExpenseFromTravel(travel: Travel?, expenseId: ObjectIdentifier) {
         guard let travel = travel,
               let expenses = travel.expenseArray as? Set<Expense>,
@@ -84,6 +72,7 @@ struct PersistenceController {
             let object = try self.container.viewContext.existingObject(with: expenseToDelete.objectID)
             self.container.viewContext.delete(object)
             try self.container.viewContext.save()
+            
         } catch {
             let nsError = error as NSError
             print("error while deleteExpenseFromTravel: \(nsError.localizedDescription)")
