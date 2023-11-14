@@ -183,7 +183,8 @@ struct TodayExpenseDetailView: View {
                         given_payDate: expense.payDate,
                         given_country: Int(expense.country),
                         given_location: expense.location,
-                        given_id: expense.id
+                        given_id: expense.id,
+                        given_travel: expense.travel
                     )
                         .environmentObject(mainVM) // ^^^
                 } label: {
