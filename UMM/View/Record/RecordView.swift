@@ -100,6 +100,13 @@ struct RecordView: View {
                     }
                 }
                 
+                viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+                    if !isDetectingPress {
+                        viewModel.stopSTT()
+                        viewModel.stopRecording()
+                    }
+                }
+                
                 // MARK: - NumberFormatter
                 
                 fraction0NumberFormatter.numberStyle = .decimal
