@@ -111,6 +111,9 @@ struct RecordView: View {
                 fraction2NumberFormatter.numberStyle = .decimal
                 fraction2NumberFormatter.maximumFractionDigits = 2
             }
+            .onDisappear {
+                viewModel.recordButtonResetTimer?.invalidate()
+            }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 if viewModel.travelChoiceModalIsShown {
                     TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
