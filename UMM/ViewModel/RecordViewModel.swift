@@ -134,6 +134,7 @@ final class RecordViewModel: ObservableObject {
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var wantToActivateAutoSaveTimer = true
+    var AreThereOtherTravels = true
     
     // STT
     private let audioEngine = AVAudioEngine()

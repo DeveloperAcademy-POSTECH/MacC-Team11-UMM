@@ -110,6 +110,15 @@ struct RecordView: View {
                 fraction1NumberFormatter.maximumFractionDigits = 1
                 fraction2NumberFormatter.numberStyle = .decimal
                 fraction2NumberFormatter.maximumFractionDigits = 2
+                
+                // MARK: - decide record button action
+                
+                let sampleTravel = findInitialTravelInExpense()
+                if let sampleTravel, let name = sampleTravel.name {
+                    if name == tempTravelName { // 임시 기록 여행 외에는 아무 여행도 없는 상태
+                        viewModel.AreThereOtherTravels = false
+                    }
+                }
             }
             .onDisappear {
                 viewModel.recordButtonResetTimer?.invalidate()
@@ -182,7 +191,7 @@ struct RecordView: View {
                 .padding(.vertical, 36)
                 .hidden()
             
-            if !isDetectingPress {
+            if !isDetectingPress || !viewModel.AreThereOtherTravels {
                 VStack {
                     Text("지출 내역을 말해주세요")
                         .foregroundStyle(.gray300)
@@ -432,7 +441,7 @@ struct RecordView: View {
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
         }
-        .opacity(isDetectingPress ? 0.000001 : 1)
+        .opacity(!isDetectingPress || !viewModel.AreThereOtherTravels ? 1 : 0.0000001)
         .disabled(isDetectingPress)
     }
     
@@ -457,28 +466,33 @@ struct RecordView: View {
                 // 녹음 시작 (지점 1: 녹음 끝과 순서 뒤집히는 오류 발생 가능)
             } else if oldValue && !newValue {
                 // 녹음 끝
-                viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
-                isDetectingPress_letButtonBigger = false
-                viewModel.stopSTT()
-                viewModel.stopRecording()
-                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
-                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
-                    DispatchQueue.main.async {
-                        viewModel.alertView_shortIsShown = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        viewModel.resetInStringProperties()
-                    }
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        if viewModel.info == nil && viewModel.payAmount == -1 {
-                            viewModel.resetTranscribedString()
-                            viewModel.alertView_emptyIsShown = true
+                
+                if viewModel.AreThereOtherTravels {
+                    viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
+                    isDetectingPress_letButtonBigger = false
+                    viewModel.stopSTT()
+                    viewModel.stopRecording()
+                    print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                    if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
+                        DispatchQueue.main.async {
+                            viewModel.alertView_shortIsShown = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             viewModel.resetInStringProperties()
-                        } else {
-                            viewModel.manualRecordViewIsShown = true
+                        }
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            if viewModel.info == nil && viewModel.payAmount == -1 {
+                                viewModel.resetTranscribedString()
+                                viewModel.alertView_emptyIsShown = true
+                                viewModel.resetInStringProperties()
+                            } else {
+                                viewModel.manualRecordViewIsShown = true
+                            }
                         }
                     }
+                } else {
+                    _ = 0
                 }
             }
         }
@@ -492,24 +506,31 @@ struct RecordView: View {
                 case .second(true, nil):
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
-                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-                    Task {
-                        await viewModel.startRecording()
-                    }
-                    DispatchQueue.main.async {
-                        do {
-                            try viewModel.startSTT()
-                        } catch {
-                            print("error starting record: \(error.localizedDescription)")
-                        }
-                    }
                     
-                    DispatchQueue.main.async {
-                        isDetectingPress_showOnButton = true
-                        viewModel.alertView_emptyIsShown = false
-                        viewModel.alertView_shortIsShown = false
-                        viewModel.recordButtonIsFocused = true
-                        viewModel.wantToActivateAutoSaveTimer = true
+                    if viewModel.AreThereOtherTravels {
+                        viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+                        Task {
+                            await viewModel.startRecording()
+                        }
+                        DispatchQueue.main.async {
+                            do {
+                                try viewModel.startSTT()
+                            } catch {
+                                print("error starting record: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        DispatchQueue.main.async {
+                            isDetectingPress_showOnButton = true
+                            viewModel.alertView_emptyIsShown = false
+                            viewModel.alertView_shortIsShown = false
+                            viewModel.recordButtonIsFocused = true
+                            viewModel.wantToActivateAutoSaveTimer = true
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            viewModel.addTravelRequestModalIsShown = true
+                        }
                     }
                     
                 default:
