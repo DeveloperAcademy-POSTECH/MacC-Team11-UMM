@@ -168,7 +168,6 @@ struct ManualRecordView: View {
             viewModel.autoSaveTimer?.invalidate()
             viewModel.secondCounter = nil
             viewModel.backButtonAlertIsShown = true
-            print("back button tapped")
         } label: {
             Image(systemName: "chevron.left")
                 .imageScale(.large)
@@ -312,7 +311,6 @@ struct ManualRecordView: View {
                 .foregroundStyle(.gray200)
                 .frame(width: 54, height: 54)
                 .onTapGesture {
-                    print("소리 재생 버튼")
                     viewModel.autoSaveTimer?.invalidate()
                     viewModel.secondCounter = nil
                     
@@ -413,7 +411,6 @@ struct ManualRecordView: View {
                             .frame(width: 16, height: 16)
                     }
                     .onTapGesture {
-                        print("카테고리 수정 버튼")
                         viewModel.autoSaveTimer?.invalidate()
                         viewModel.secondCounter = nil
                         viewModel.categoryChoiceModalIsShown = true
@@ -458,7 +455,6 @@ struct ManualRecordView: View {
                         }
                     }
                     .onTapGesture {
-                        print("현금 선택 버튼")
                         viewModel.autoSaveTimer?.invalidate()
                         viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .cash {
@@ -499,7 +495,6 @@ struct ManualRecordView: View {
                         }
                     }
                     .onTapGesture {
-                        print("카드 선택 버튼")
                         viewModel.autoSaveTimer?.invalidate()
                         viewModel.secondCounter = nil
                         if viewModel.paymentMethod == .card {
@@ -554,7 +549,6 @@ struct ManualRecordView: View {
                             .frame(width: 16, height: 16)
                     }
                     .onTapGesture {
-                        print("여행 선택 버튼")
                         viewModel.autoSaveTimer?.invalidate()
                         viewModel.secondCounter = nil
                         viewModel.travelChoiceModalIsShown = true
@@ -610,7 +604,6 @@ struct ManualRecordView: View {
                             .frame(width: 16, height: 16)
                     }
                     .onTapGesture {
-                        print("지출 일시 수정 버튼")
                         viewModel.autoSaveTimer?.invalidate()
                         viewModel.secondCounter = nil
                         viewModel.dateChoiceModalIsShown = true
@@ -670,7 +663,6 @@ struct ManualRecordView: View {
                                 .frame(width: 16, height: 16)
                         }
                         .onTapGesture {
-                            print("지출 위치 수정 버튼")
                             viewModel.autoSaveTimer?.invalidate()
                             viewModel.secondCounter = nil
                             viewModel.countryChoiceModalIsShown = true
@@ -869,7 +861,6 @@ struct ParticipantToggleView: View {
                 .padding(.horizontal, 12)
             }
             .onTapGesture {
-                print("참여 인원(\(tuple.name)) 참여 여부 설정 버튼")
                 autoSaveTimer?.invalidate()
                 secondCounter = nil
                 participantTupleArray[index].isOn.toggle()

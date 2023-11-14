@@ -134,11 +134,7 @@ final class RecordViewModel: ObservableObject {
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var wantToActivateAutoSaveTimer = true
-    var AreThereOtherTravels = true {
-        didSet {
-            print("AreThereOtherTravels: \(AreThereOtherTravels)")
-        }
-    }
+    var AreThereOtherTravels = true
     var isExplicitTempRecord = false
     
     // STT
