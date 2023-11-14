@@ -66,6 +66,7 @@ struct TravelListView: View {
                     
                 TravelTabView()
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
             .onAppear {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
@@ -98,6 +99,7 @@ struct TravelListView: View {
                 }
             }
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     private var titleHeader: some View {

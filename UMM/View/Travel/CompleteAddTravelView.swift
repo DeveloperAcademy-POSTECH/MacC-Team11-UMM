@@ -54,7 +54,7 @@ struct CompleteAddTravelView: View {
                 })
             }
         }
-        .ignoresSafeArea(edges: .bottom)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .onAppear {
             viewModel.fetchTravel()
             self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
@@ -116,10 +116,24 @@ struct CompleteAddTravelView: View {
                     .modifier(ClearTextFieldButton(text: $travelNM))
                     .foregroundStyle(Color.black)
                     .textFieldStyle(CustomTextFieldStyle())
+                    .onChange(of: travelNM) { _, newValue in
+                        let maxLengthInKorean = 18
+                        let maxLengthInEnglish = 28
+                        
+                        let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                        let isEnglish = newValue.rangeOfCharacter(from: characterSet.inverted) == nil
+                        
+                        let maxLength = isEnglish ? maxLengthInEnglish : maxLengthInKorean
+                        
+                        if newValue.count > maxLength {
+                            travelNM = String(newValue.prefix(maxLength))
+                        }
+                    }
                     .layoutPriority(-1)
                 
                 Spacer()
             }
+            .padding(.top, 20)
             .frame(width: 243)
         }
     }
