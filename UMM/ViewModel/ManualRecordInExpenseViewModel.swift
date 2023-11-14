@@ -132,7 +132,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 if abs(tempPayAmount - floor(tempPayAmount)) < 0.0000001 {
                     visiblePayAmount = String(format: "%.0f", tempPayAmount) // didSet is called again
                 } else {
-                    visiblePayAmount = String(payAmount) // didSet is called again
+                    visiblePayAmount = String(tempPayAmount) // didSet is called again
                 }
                 return
             }

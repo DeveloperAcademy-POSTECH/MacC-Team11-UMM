@@ -101,53 +101,20 @@ struct ManualRecordView: View {
         .onAppear {
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
-            viewModel.payAmount = given_payAmount
-            if viewModel.payAmount == -1 {
-                viewModel.visiblePayAmount = ""
-            } else {
-                if abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001 {
-                    viewModel.visiblePayAmount = String(format: "%.0f", viewModel.payAmount)
-                } else {
-                    viewModel.visiblePayAmount = String(viewModel.payAmount)
-                }
+            if given_wantToActivateAutoSaveTimer { // 녹음 버튼으로 진입한 경우
+                
+                viewModel.visiblePayAmount = given_payAmount == -1 ? "" : String(given_payAmount)
+                
+                viewModel.visibleInfo = given_info == nil ? "" : given_info!
+                viewModel.category = given_infoCategory
+                viewModel.paymentMethod = given_paymentMethod
+                
+                viewModel.soundRecordFileName = given_soundRecordFileName
             }
-            viewModel.info = given_info
-            viewModel.visibleInfo = viewModel.info == nil ? "" : viewModel.info!
-            viewModel.category = given_infoCategory
-            viewModel.paymentMethod = given_paymentMethod
-
+            
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = MainViewModel.shared.selectedTravel
             }
-
-            do {
-                viewModel.travelArray = try viewContext.fetch(Travel.fetchRequest())
-            } catch {
-                print("error fetching travelArray: \(error.localizedDescription)")
-            }
-
-            if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
-                viewModel.participantTupleArray = [("나", true)] + participantArray.map { ($0, true) }
-            } else {
-                viewModel.participantTupleArray = [("나", true)]
-            }
-            var expenseArray: [Expense] = []
-            if let chosenTravel = MainViewModel.shared.chosenTravelInManualRecord {
-                do {
-                    try expenseArray = viewContext.fetch(Expense.fetchRequest()).filter { expense in
-                        if let belongTravel = expense.travel {
-                            return belongTravel.id == chosenTravel.id
-                        } else {
-                            return false
-                        }
-                    }
-                } catch {
-                    print("error fetching expenses: \(error.localizedDescription)")
-                }
-            }
-            viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
-
-            viewModel.soundRecordFileName = given_soundRecordFileName
             
             // MARK: - NumberFormatter
             
@@ -217,19 +184,19 @@ struct ManualRecordView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         ZStack {
-                            Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount)
+                            Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount + "  ")
                                 .lineLimit(1)
                                 .font(.display4)
                                 .hidden()
                             
                             TextField("금액 입력", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                                 .foregroundStyle(.black)
                                 .font(.display4)
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
-                                .minimumScaleFactor(0.5)
                                 .onTapGesture {
                                     viewModel.autoSaveTimer?.invalidate()
                                     viewModel.secondCounter = nil

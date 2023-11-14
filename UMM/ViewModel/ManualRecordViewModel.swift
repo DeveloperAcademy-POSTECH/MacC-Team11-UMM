@@ -89,7 +89,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                 if abs(tempPayAmount - floor(tempPayAmount)) < 0.0000001 {
                     visiblePayAmount = String(format: "%.0f", tempPayAmount) // didSet is called again
                 } else {
-                    visiblePayAmount = String(payAmount) // didSet is called again
+                    visiblePayAmount = String(tempPayAmount) // didSet is called again
                 }
                 return
             }
@@ -153,7 +153,6 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
 
     @Published var country: Int = -1 {
         didSet {
-            print("country: \(country)")
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
 
             if country == 3 { // 미국
@@ -247,11 +246,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     override init() {
         super.init()
-        
         print("ManualRecordViewModel | init")
-//        locationManager = CLLocationManager()
-//        locationManager?.delegate = locationManagerDelegate
-//        locationManagerDelegate.parent = self
         
         // MainViewModel의 chosenTravelInManualRecord가 변화할 때 자동으로 이루어질 일을 sink로 처리
         travelStream = travelPublisher.sink { chosenTravel in
@@ -262,16 +257,8 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                     self.participantTupleArray = [("나", true)]
                 }
                 var expenseArray: [Expense] = []
-                do {
-                    try expenseArray = self.viewContext.fetch(Expense.fetchRequest()).filter { expense in
-                        if let belongTravel = expense.travel {
-                            return belongTravel.id == chosenTravel.id
-                        } else {
-                            return false
-                        }
-                    }
-                } catch {
-                    print("error fetching expenses: \(error.localizedDescription)")
+                if let expenseArrayOfChosenTravel = chosenTravel.expenseArray {
+                    expenseArray = expenseArrayOfChosenTravel.allObjects as? [Expense] ?? []
                 }
                 self.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
             } else {

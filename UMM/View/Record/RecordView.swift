@@ -94,7 +94,6 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.wantToActivateAutoSaveTimer = true
-                
                 viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
                     if !isDetectingPress {
                         viewModel.stopSTT()
@@ -115,8 +114,10 @@ struct RecordView: View {
                 
                 let sampleTravel = findInitialTravelInExpense()
                 if let sampleTravel, let name = sampleTravel.name {
-                    if name == tempTravelName { // 임시 기록 여행 외에는 아무 여행도 없는 상태
+                    if name == tempTravelName {
                         viewModel.AreThereOtherTravels = false
+                    } else {
+                        viewModel.AreThereOtherTravels = true
                     }
                 }
             }
@@ -188,7 +189,7 @@ struct RecordView: View {
                 .padding(.vertical, 36)
                 .hidden()
             
-            if !isDetectingPress || !viewModel.AreThereOtherTravels {
+            if !isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
                 VStack {
                     Text("지출 내역을 말해주세요")
                         .foregroundStyle(.gray300)
@@ -293,8 +294,8 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    let isClean0 = abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001
-                    let isClean1 = abs(viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0))) < 0.0000001
+                    let isClean0 = abs(viewModel.payAmount - floor(viewModel.payAmount)) < 0.0000001
+                    let isClean1 = abs(viewModel.payAmount * 10.0 - floor(viewModel.payAmount * 10.0)) < 0.0000001
                     Group {
                         if isClean0 {
                             if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
@@ -438,7 +439,7 @@ struct RecordView: View {
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
         }
-        .opacity(!isDetectingPress || !viewModel.AreThereOtherTravels ? 1 : 0.0000001)
+        .opacity(!isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) ? 1 : 0.0000001)
         .disabled(isDetectingPress)
     }
     
@@ -464,7 +465,7 @@ struct RecordView: View {
             } else if oldValue && !newValue {
                 // 녹음 끝
                 
-                if viewModel.AreThereOtherTravels {
+                if viewModel.AreThereOtherTravels || viewModel.isExplicitTempRecord {
                     viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
                     isDetectingPress_letButtonBigger = false
                     viewModel.stopSTT()
@@ -504,7 +505,7 @@ struct RecordView: View {
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
                     
-                    if viewModel.AreThereOtherTravels {
+                    if viewModel.AreThereOtherTravels || viewModel.isExplicitTempRecord {
                         viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
                         Task {
                             await viewModel.startRecording()

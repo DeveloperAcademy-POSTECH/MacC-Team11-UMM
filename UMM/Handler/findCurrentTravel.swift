@@ -72,15 +72,15 @@ func findInitialTravelInExpense() -> Travel? {
     
     do {
         allTravels = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: travelModalSortRule)
-        allTravelsExceptDefaultTravel = allTravels.filter { travel in
-            if let name = travel.name {
-                return name != tempTravelName
-            } else {
-                return true
-            }
-        }
     } catch {
         print("error fetching all travels: \(error.localizedDescription)")
+    }
+    allTravelsExceptDefaultTravel = allTravels.filter { travel in
+        if let name = travel.name {
+            return name != tempTravelName
+        } else {
+            return true
+        }
     }
     
     let todayDate = Date()
