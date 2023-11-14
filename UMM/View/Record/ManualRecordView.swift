@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ManualRecordView: View {
-    @ObservedObject var viewModel = ManualRecordViewModel()
+    @StateObject var viewModel = ManualRecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
@@ -147,90 +147,7 @@ struct ManualRecordView: View {
             }
             viewModel.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
 
-            if viewModel.currentCountry == 3 {
-                viewModel.currencyCandidateArray = [4, 0]
-            } else {
-                let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
-                viewModel.currencyCandidateArray = []
-                for stringCurrency in stringCurrencyArray {
-                    for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                        if tuple.value.isoCodeNm == stringCurrency {
-                            viewModel.currencyCandidateArray.append(tuple.key)
-                            break
-                        }
-                    }
-                }
-                
-                if !viewModel.currencyCandidateArray.contains(4) {
-                    viewModel.currencyCandidateArray.append(4)
-                }
-                if !viewModel.currencyCandidateArray.contains(0) {
-                    viewModel.currencyCandidateArray.append(0)
-                }
-            }
-
-            if viewModel.payAmount == -1 || viewModel.currency == -1 {
-                viewModel.payAmountInWon = -1
-            } else {
-                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
-                    viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
-                } else {
-                    viewModel.payAmountInWon = -1
-                }
-            }
             viewModel.soundRecordFileName = given_soundRecordFileName
-
-            viewModel.getLocation()
-            viewModel.country = viewModel.currentCountry
-            viewModel.countryExpression = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.koreanNm ?? "알 수 없음"
-            viewModel.locationExpression = viewModel.currentLocation
-            
-            if !viewModel.otherCountryCandidateArray.contains(viewModel.country) {
-                viewModel.otherCountryCandidateArray.append(viewModel.country)
-            }
-            
-            let stringCurrency = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray.first ?? "Unknown"
-            
-            viewModel.currency =  4 // 미국 달러
-            
-            for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                if tuple.value.isoCodeNm == stringCurrency {
-                    viewModel.currency = tuple.key
-                    break
-                }
-            }
-            
-            if viewModel.currentCountry == 3 { // 미국
-                viewModel.currencyCandidateArray = [4, 0]
-            } else {
-                let stringCurrencyArray = CountryInfoModel.shared.countryResult[viewModel.currentCountry]?.relatedCurrencyArray ?? []
-                viewModel.currencyCandidateArray = []
-                for stringCurrency in stringCurrencyArray {
-                    for tuple in CurrencyInfoModel.shared.currencyResult where tuple.key != -1 {
-                        if tuple.value.isoCodeNm == stringCurrency {
-                            viewModel.currencyCandidateArray.append(tuple.key)
-                            break
-                        }
-                    }
-                }
-                
-                if !viewModel.currencyCandidateArray.contains(4) { // 미국 달러
-                    viewModel.currencyCandidateArray.append(4) // 미국 달러
-                }
-                if !viewModel.currencyCandidateArray.contains(0) { // 한국 원
-                    viewModel.currencyCandidateArray.append(0) // 한국 원
-                }
-            }
-            
-            if viewModel.payAmount == -1 || viewModel.currency == -1 {
-                viewModel.payAmountInWon = -1
-            } else {
-                if let exchangeRate = exchangeHandler.getExchangeRateFromKRW(currencyCode: CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.isoCodeNm ?? "") {
-                    viewModel.payAmountInWon = viewModel.payAmount * exchangeRate
-                } else {
-                    viewModel.payAmountInWon = -1
-                }
-            }
             
             // MARK: - NumberFormatter
             
@@ -238,6 +155,7 @@ struct ManualRecordView: View {
             fraction0NumberFormatter.maximumFractionDigits = 0
             
             // MARK: - timer
+            
             if viewModel.wantToActivateAutoSaveTimer && (viewModel.payAmount != -1 || viewModel.info != nil) {
                 viewModel.secondCounter = 8
                 viewModel.autoSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
@@ -266,6 +184,10 @@ struct ManualRecordView: View {
                     }
                 }
             }
+            
+            // MARK: - get location
+            
+            viewModel.getLocation()
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
@@ -495,37 +417,39 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     }
-                    ZStack {
-                        // 높이 설정용 히든 뷰
+                    Group {
                         ZStack {
-                            Text("금")
-                                .foregroundStyle(.black)
-                                .font(.subhead2_1)
-                                .padding(.vertical, 6)
+                            // 높이 설정용 히든 뷰
+                            ZStack {
+                                Text("금")
+                                    .foregroundStyle(.black)
+                                    .font(.subhead2_1)
+                                    .padding(.vertical, 6)
+                            }
+                            .hidden()
+                            
+                            HStack(spacing: 8) {
+                                Image(viewModel.category.manualRecordImageString)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 24, height: 24)
+                                Text(viewModel.category.visibleDescription)
+                                    .foregroundStyle(.black)
+                                    .font(.body3)
+                            }
                         }
-                        .hidden()
-                        
-                        HStack(spacing: 8) {
-                            Image(viewModel.category.manualRecordImageString)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                            Text(viewModel.category.visibleDescription)
-                                .foregroundStyle(.black)
-                                .font(.body3)
-                        }
+                        Spacer()
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
                     }
-                    Spacer()
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("카테고리 수정 버튼")
-                            viewModel.autoSaveTimer?.invalidate()
-                            viewModel.secondCounter = nil
-                            viewModel.categoryChoiceModalIsShown = true
-                        }
+                    .onTapGesture {
+                        print("카테고리 수정 버튼")
+                        viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
+                        viewModel.categoryChoiceModalIsShown = true
+                    }
                     
                 }
                 
@@ -638,33 +562,35 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     }
-                    ZStack {
-                        // 높이 설정용 히든 뷰
+                    Group {
                         ZStack {
-                            Text("금")
-                                .foregroundStyle(.black)
+                            // 높이 설정용 히든 뷰
+                            ZStack {
+                                Text("금")
+                                    .foregroundStyle(.black)
+                                    .font(.subhead2_1)
+                                    .padding(.vertical, 6)
+                            }
+                            .hidden()
+                            
+                            Text(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
+                                .lineLimit(nil)
+                                .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? .black : .gray400)
                                 .font(.subhead2_1)
-                                .padding(.vertical, 6)
                         }
-                        .hidden()
+                        Spacer()
                         
-                        Text(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
-                            .lineLimit(nil)
-                            .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? .black : .gray400)
-                            .font(.subhead2_1)
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
                     }
-                    Spacer()
-
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("여행 선택 버튼")
-                            viewModel.autoSaveTimer?.invalidate()
-                            viewModel.secondCounter = nil
-                            viewModel.travelChoiceModalIsShown = true
-                        }
+                    .onTapGesture {
+                        print("여행 선택 버튼")
+                        viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
+                        viewModel.travelChoiceModalIsShown = true
+                    }
                     
                 }
                 HStack(spacing: 0) {
@@ -695,30 +621,32 @@ struct ManualRecordView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     }
-                    ZStack {
-                        // 높이 설정용 히든 뷰
-                        Text("금")
-                            .lineLimit(1)
-                            .font(.subhead2_2)
-                            .padding(.vertical, 6)
-                            .hidden()
-                        
-                        Text(viewModel.payDate.toString(dateFormat: "yy.MM.dd(E) HH:mm"))
-                            .foregroundStyle(.black)
-                            .font(.subhead2_2)
-                    }
-                    Spacer()
-                    
-                    Image("manualRecordDownChevron")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .onTapGesture {
-                            print("지출 일시 수정 버튼")
-                            viewModel.autoSaveTimer?.invalidate()
-                            viewModel.secondCounter = nil
-                            viewModel.dateChoiceModalIsShown = true
+                    Group {
+                        ZStack {
+                            // 높이 설정용 히든 뷰
+                            Text("금")
+                                .lineLimit(1)
+                                .font(.subhead2_2)
+                                .padding(.vertical, 6)
+                                .hidden()
+                            
+                            Text(viewModel.payDate.toString(dateFormat: "yy.MM.dd(E) HH:mm"))
+                                .foregroundStyle(.black)
+                                .font(.subhead2_2)
                         }
+                        Spacer()
+                        
+                        Image("manualRecordDownChevron")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                    .onTapGesture {
+                        print("지출 일시 수정 버튼")
+                        viewModel.autoSaveTimer?.invalidate()
+                        viewModel.secondCounter = nil
+                        viewModel.dateChoiceModalIsShown = true
+                    }
                 }
                 VStack(spacing: 10) {
                     HStack(spacing: 0) {
@@ -729,50 +657,56 @@ struct ManualRecordView: View {
                                 .foregroundStyle(.gray300)
                                 .font(.caption2)
                         }
-                        ZStack {
-                            // 높이 설정용 히든 뷰
-                            Text("금")
-                                .lineLimit(1)
-                                .font(.subhead2_2)
-                                .padding(.vertical, 6)
-                                .hidden()
-                            
-                            HStack(spacing: 8) {
-                                ZStack {
-                                    Image(CountryInfoModel.shared.countryResult[viewModel.country]?.flagString ?? "DefaultFlag")
-                                        .resizable()
-                                        .scaledToFit()
+                        Group {
+                            ZStack {
+                                // 높이 설정용 히든 뷰
+                                Text("금")
+                                    .lineLimit(1)
+                                    .font(.subhead2_2)
+                                    .padding(.vertical, 6)
+                                    .hidden()
+                                
+                                HStack(spacing: 8) {
+                                    ZStack {
+                                        if viewModel.country != -1 {
+                                            Image(CountryInfoModel.shared.countryResult[viewModel.country]?.flagString ?? "DefaultFlag")
+                                                .resizable()
+                                                .scaledToFit()
+                                        } else {
+                                            Image("DefaultFlag")
+                                                .resizable()
+                                                .scaledToFit()
+                                        }
+                                        
+                                        Circle()
+                                            .strokeBorder(.gray200, lineWidth: 1.0)
+                                    }
+                                    .frame(width: 24, height: 24)
                                     
-                                    Circle()
-                                        .strokeBorder(.gray200, lineWidth: 1.0)
+                                    if !viewModel.countryIsModified {
+                                        Text(viewModel.countryExpression + " " + viewModel.locationExpression)
+                                            .foregroundStyle(.black)
+                                            .font(.subhead2_2)
+                                    } else {
+                                        Text(viewModel.countryExpression)
+                                            .foregroundStyle(.black)
+                                            .font(.subhead2_2)
+                                    }
+                                    
                                 }
-                                .frame(width: 24, height: 24)
-                                
-                                if !viewModel.countryIsModified {
-                                    Text(viewModel.countryExpression + " " + viewModel.locationExpression)
-                                        .foregroundStyle(.black)
-                                        .font(.subhead2_2)
-                                } else {
-                                    Text(viewModel.countryExpression)
-                                        .foregroundStyle(.black)
-                                        .font(.subhead2_2)
-                                }
-                                
                             }
+                            Spacer()
+                            Image("manualRecordDownChevron")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
                         }
-                        
-                        Spacer()
-                        
-                        Image("manualRecordDownChevron")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                            .onTapGesture {
-                                print("지출 위치 수정 버튼")
-                                viewModel.autoSaveTimer?.invalidate()
-                                viewModel.secondCounter = nil
-                                viewModel.countryChoiceModalIsShown = true
-                            }
+                        .onTapGesture {
+                            print("지출 위치 수정 버튼")
+                            viewModel.autoSaveTimer?.invalidate()
+                            viewModel.secondCounter = nil
+                            viewModel.countryChoiceModalIsShown = true
+                        }
                     }
                     
                     if viewModel.countryIsModified {

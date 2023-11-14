@@ -9,54 +9,34 @@ import AVFoundation
 import Combine
 import CoreLocation
 
-class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
-    var parent: ManualRecordViewModel?
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        parent?.location = locations.first
-        CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
-            if let placemark = placemarks?.first {
-                self.parent?.placemark = placemark
-                let code = placemark.isoCountryCode ?? ""
-                let countryKey = CountryInfoModel.shared.countryResult.filter { tuple in
-                    let pairCode = tuple.value.locationNm.components(separatedBy: "-")
-                    if pairCode.count == 2 {
-                        return pairCode[1] == code
-                    } else {
-                        return false
-                    }
-                }.first?.key ?? -1
-                self.parent?.currentCountry = countryKey
-                self.parent?.currentLocation = "\(placemark.locality ?? "")"
-            } else {
-                print("ERROR: \(String(describing: error?.localizedDescription))")
-            }
-        }
-    }
-}
-
 final class ManualRecordViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
     
     // MARK: - 위치 정보
-    private var locationManager: CLLocationManager?
-    private var locationManagerDelegate = LocationManagerDelegate()
+    
     var location: CLLocation?
-    var placemark: CLPlacemark?
     
     func getLocation() {
-        let locationManager = CLLocationManager()
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
+        location = DateGapHandler.shared.currentLocation
+        if let location {
+            CLGeocoder().reverseGeocodeLocation(location) { placemarks, _  in
+                if let newPlacemark = placemarks?.first {
+                    let code = newPlacemark.isoCountryCode ?? ""
+                    let countryKey = CountryInfoModel.shared.countryResult.filter { tuple in
+                        let pairCode = tuple.value.locationNm.components(separatedBy: "-")
+                        if pairCode.count == 2 {
+                            return pairCode[1] == code
+                        } else {
+                            return false
+                        }
+                    }.first?.key ?? -1
+                    self.currentCountry = countryKey
+                    self.currentLocation = "\(newPlacemark.locality ?? "")"
+                }
 
-        locationManager.delegate = locationManagerDelegate
-        locationManagerDelegate.parent = self
-
-        // locationManager(_:didUpdateLocations:) 메서드가 호출될 때까지 기다림.
-        while location == nil || placemark == nil {
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+            }
         }
     }
     
@@ -173,8 +153,8 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
 
     @Published var country: Int = -1 {
         didSet {
+            print("country: \(country)")
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
-            locationExpression = ""
 
             if country == 3 { // 미국
                 currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
@@ -206,8 +186,21 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     }
     @Published var countryExpression: String = "" // passive
     @Published var locationExpression: String = ""
-    var currentCountry: Int = -1
-    var currentLocation: String = ""
+
+    var currentCountry: Int = -1 {
+        didSet {
+            country = currentCountry
+            
+            if !otherCountryCandidateArray.contains(currentCountry) {
+                otherCountryCandidateArray.append(currentCountry)
+            }
+        }
+    }
+    var currentLocation: String = "" {
+        didSet {
+            locationExpression = currentLocation
+        }
+    }
     var otherCountryCandidateArray: [Int] = [] // passive
     
     @Published var currency: Int = 4 {
@@ -236,7 +229,13 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     @Published var dateChoiceModalIsShown = false
     @Published var backButtonAlertIsShown = false
     @Published var addingParticipant = false
-    @Published var countryIsModified = false
+    @Published var countryIsModified = false {
+        didSet {
+            if countryIsModified {
+                locationExpression = ""
+            }
+        }
+    }
     @Published var playingRecordSound = false
     @Published var savingIsDone = false
     
@@ -248,10 +247,11 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     override init() {
         super.init()
+        
         print("ManualRecordViewModel | init")
-        locationManager = CLLocationManager()
-        locationManager?.delegate = locationManagerDelegate
-        locationManagerDelegate.parent = self
+//        locationManager = CLLocationManager()
+//        locationManager?.delegate = locationManagerDelegate
+//        locationManagerDelegate.parent = self
         
         // MainViewModel의 chosenTravelInManualRecord가 변화할 때 자동으로 이루어질 일을 sink로 처리
         travelStream = travelPublisher.sink { chosenTravel in

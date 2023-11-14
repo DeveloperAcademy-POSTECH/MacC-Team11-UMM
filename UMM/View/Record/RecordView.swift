@@ -136,19 +136,15 @@ struct RecordView: View {
                     .presentationDetents([.height(247 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
-                if viewModel.manualRecordViewIsShown {
-                    ManualRecordView(
-                        given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
-                        given_payAmount: viewModel.payAmount,
-                        given_info: viewModel.info,
-                        given_infoCategory: viewModel.infoCategory,
-                        given_paymentMethod: viewModel.paymentMethod,
-                        given_soundRecordFileName: viewModel.soundRecordFileName
-                    )
-                        .environmentObject(mainVM)
-                } else {
-                    EmptyView()
-                }
+                ManualRecordView(
+                    given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
+                    given_payAmount: viewModel.payAmount,
+                    given_info: viewModel.info,
+                    given_infoCategory: viewModel.infoCategory,
+                    given_paymentMethod: viewModel.paymentMethod,
+                    given_soundRecordFileName: viewModel.soundRecordFileName
+                )
+                .environmentObject(mainVM)
             }
         }
     }
@@ -168,6 +164,7 @@ struct RecordView: View {
                 
                 HStack(spacing: 12) {
                     Text(mainVM.selectedTravel?.name != tempTravelName ? mainVM.selectedTravel?.name ?? "-" : "임시 기록")
+                        .lineLimit(1)
                         .font(.subhead2_2)
                         .foregroundStyle(mainVM.selectedTravel?.name != tempTravelName ? .black : .gray400)
                     Image("recordTravelChoiceDownChevron")
