@@ -15,6 +15,7 @@
 		572BE1EA2AE4BB3A005933E7 /* CategoryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */; };
 		572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */; };
 		573889672AF6AFB300FAEF50 /* DateGapHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573889662AF6AFB300FAEF50 /* DateGapHandler.swift */; };
+		5744185F2B033C420057A2B5 /* travelModalSortRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744185E2B033C420057A2B5 /* travelModalSortRule.swift */; };
 		5754FAB62AD3F94900A3FCE8 /* UMM.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5754FAB42AD3F94900A3FCE8 /* UMM.xcdatamodeld */; };
 		57597A8A2AF096C2000D46A9 /* CountryChoiceModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */; };
 		575F287F2AF38C0300F9484E /* AddTravelRequestModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */; };
@@ -122,6 +123,7 @@
 		572BE1E92AE4BB3A005933E7 /* CategoryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChoiceModal.swift; sourceTree = "<group>"; };
 		572DBD482AE2D7F100FC88B6 /* ManualRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordViewModel.swift; sourceTree = "<group>"; };
 		573889662AF6AFB300FAEF50 /* DateGapHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateGapHandler.swift; sourceTree = "<group>"; };
+		5744185E2B033C420057A2B5 /* travelModalSortRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = travelModalSortRule.swift; sourceTree = "<group>"; };
 		5754FAB52AD3F94900A3FCE8 /* UMM.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UMM.xcdatamodel; sourceTree = "<group>"; };
 		57597A892AF096C2000D46A9 /* CountryChoiceModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryChoiceModal.swift; sourceTree = "<group>"; };
 		575F287E2AF38C0300F9484E /* AddTravelRequestModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTravelRequestModal.swift; sourceTree = "<group>"; };
@@ -491,6 +493,7 @@
 				E23357A72AE2B42300E17CFF /* dateFormatter.swift */,
 				573889662AF6AFB300FAEF50 /* DateGapHandler.swift */,
 				C1B2D2AB2AFCF51700E5C2B2 /* SortingHandler.swift */,
+				5744185E2B033C420057A2B5 /* travelModalSortRule.swift */,
 			);
 			path = Handler;
 			sourceTree = "<group>";
@@ -623,6 +626,7 @@
 				E2D5C06F2ADD927B00907501 /* TempSave.swift in Sources */,
 				E2D5C0602ADD922700907501 /* ExpenseView.swift in Sources */,
 				E237338E2AF7EB8B008C2613 /* CurrencyInfo.swift in Sources */,
+				5744185F2B033C420057A2B5 /* travelModalSortRule.swift in Sources */,
 				C19AFAE32ADFB5AE0037A5F5 /* Font+Extension.swift in Sources */,
 				E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */,
 				E26DBB2F2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift in Sources */,

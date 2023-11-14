@@ -15,7 +15,7 @@ struct RecordView: View {
     
     let recordButtonAnimationLength = 0.25
     
-    @ObservedObject var viewModel = RecordViewModel()
+    @StateObject var viewModel = RecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     
     @GestureState private var isDetectingPress = false
@@ -95,9 +95,7 @@ struct RecordView: View {
                 viewModel.resetInStringProperties()
                 viewModel.wantToActivateAutoSaveTimer = true
                 if let foundTravelName = findCurrentTravel()?.name {
-                    if foundTravelName == tempTravelName {
-                        viewModel.addTravelRequestModalIsShown = true
-                    }
+                    viewModel.addTravelRequestModalIsShown = true
                 }
                 
                 viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
