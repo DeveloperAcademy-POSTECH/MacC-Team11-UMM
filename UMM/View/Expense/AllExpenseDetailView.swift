@@ -210,7 +210,7 @@ struct AllExpenseDetailView: View {
                                         .font(.subhead2_1)
                                         .foregroundStyle(.black)
                                         .lineLimit(1)
-                                    HStack(alignment: .center, spacing: 0) {
+                                    HStack(alignment: .center, spacing: 3) {
                                         // 소비 기록을 한 시각을 보여주는 부분
                                         // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
                                         if let payDate = expense.payDate {
@@ -226,7 +226,6 @@ struct AllExpenseDetailView: View {
                                         Text("|")
                                             .font(.caption2)
                                             .foregroundStyle(.gray300)
-                                            .padding(.horizontal, 2) // 디자이너 몰래 수정 ^^^
                                         
                                         Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                             .font(.caption2)
