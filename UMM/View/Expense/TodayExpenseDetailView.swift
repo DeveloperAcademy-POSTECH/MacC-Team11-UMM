@@ -153,7 +153,7 @@ struct TodayExpenseDetailView: View {
     private var dayField: some View {
         let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: selectedDate)
         return HStack(alignment: .center, spacing: 0) {
-            Text("Day \(calculatedDay)")
+            Text("Day \(calculatedDay + 1)")
                 .font(.subhead1)
                 .foregroundStyle(.gray400)
             // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
