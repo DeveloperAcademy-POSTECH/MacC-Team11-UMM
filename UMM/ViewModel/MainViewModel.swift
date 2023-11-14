@@ -40,7 +40,9 @@ class MainViewModel: ObservableObject {
     private init() {
         print("mainViewModel init")
         selectedTravel = findCurrentTravel()
-        selectedTravelInExpense = findCurrentTravel()
+        if selectedTravel?.name ?? "" == tempTravelName {
+            
+        }
     }
     
     func navigationToRecordView() {
