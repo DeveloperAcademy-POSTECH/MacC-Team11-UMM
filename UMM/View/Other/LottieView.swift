@@ -8,7 +8,6 @@
 import SwiftUI
 import Lottie
 
-
 struct LottieView: UIViewRepresentable {
     let name: String
     let loopMode: LottieLoopMode

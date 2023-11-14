@@ -94,11 +94,8 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.wantToActivateAutoSaveTimer = true
-                if let foundTravelName = findCurrentTravel()?.name {
-                    viewModel.addTravelRequestModalIsShown = true
-                }
                 
-                viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+                viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
                     if !isDetectingPress {
                         viewModel.stopSTT()
                         viewModel.stopRecording()

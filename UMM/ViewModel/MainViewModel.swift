@@ -11,11 +11,7 @@ import SwiftUI
 class MainViewModel: ObservableObject {
     
     static let shared = MainViewModel()
-//    var timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
-//        print("MainViewModel | selectedTravel: \(shared.selectedTravel?.name ?? "nilName")")
-//        print("MainViewModel | selectedTravelInExpense: \(shared.selectedTravelInExpense?.name ?? "nilName")")
-//    }
-    
+
     // didSet으로 selection == 2일 때, default
     @Published var selection: Int = 1
     @Published var selectedTravel: Travel? {

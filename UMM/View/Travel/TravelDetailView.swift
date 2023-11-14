@@ -89,11 +89,6 @@ struct TravelDetailView: View {
                 self.selectedTravel = viewModel.filterByID(selectedTravelID: travelID)
                 
             }
-            .onDisappear {
-                mainVM.selectedTravel = self.selectedTravel?.first
-                travelID = mainVM.selectedTravel?.id ?? UUID()
-                
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
@@ -116,7 +111,16 @@ struct TravelDetailView: View {
             }
             .alert(isPresented: $isWarningOn) {
                 Alert(title: Text("여행 삭제하기"), message: Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
+                    let idToBeDeleted = self.selectedTravel?.first?.id
                     PersistenceController().deleteItems(object: self.selectedTravel?.first)
+                    if let idToBeDeleted {
+                        if let selectedId = mainVM.selectedTravel?.id, let selectedInExpenseId = mainVM.selectedTravelInExpense?.id {
+                            if idToBeDeleted == selectedId || idToBeDeleted == selectedInExpenseId {
+                                mainVM.selectedTravelInExpense = findInitialTravelInExpense()
+                                mainVM.selectedTravel = findCurrentTravel() // defaultTravel이면 selectedTravelInExpense를 업데이트하지 않는다.
+                            }
+                        }
+                    }
                     NavigationUtil.popToRootView()
                 }), secondaryButton: .cancel(Text("취소")))
             }
