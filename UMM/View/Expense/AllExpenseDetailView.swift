@@ -37,7 +37,6 @@ struct AllExpenseDetailView: View {
                     drawExpensesDetail
                 }
             }
-            .padding(.horizontal, 20)
         }
 
         .frame(maxWidth: .infinity)
@@ -180,6 +179,7 @@ struct AllExpenseDetailView: View {
                             .foregroundStyle(.gray300)
                             .padding(.leading, 10)
                     }
+                    .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
                     
@@ -222,8 +222,11 @@ struct AllExpenseDetailView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(.gray300)
                                         }
-                                        Divider()
-                                            .padding(.horizontal, 3 )
+                                        
+                                        Text("|")
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray300)
+                                            .padding(.horizontal, 2) // 디자이너 몰래 수정 ^^^
                                         
                                         Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                             .font(.caption2)
@@ -256,13 +259,27 @@ struct AllExpenseDetailView: View {
                                         .padding(.top, 4 )
                                 }
                             }
+                            .padding(0)
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
                     }
+                    customDividerByDay
                 }
-                Divider()
             }
-            .padding(.bottom, 24)
         }
+    }
+    
+    private var customDividerByDay: some View {
+            Rectangle()
+                .fill(Color.gray100)
+                .frame(height: 8)
+    }
+    
+    private var customDividerByPayDateAndPayAmount: some View {
+        Rectangle()
+            .fill(.gray300)
+            .font(.system(.caption2))
     }
     
     private func getFilteredAllExpenses(selectedTravel: Travel, selectedPaymentMethod: Int64, selectedCategory: Int64, selectedCountry: Int64) -> [Expense] {
@@ -284,6 +301,7 @@ struct AllExpenseDetailView: View {
     }
 }
 
-//  #Preview {
-//      AllExpenesDetailView()
-//  }
+
+// #Preview {
+//     AllExpenseDetailView()
+// }
