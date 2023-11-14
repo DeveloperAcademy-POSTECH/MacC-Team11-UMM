@@ -20,16 +20,17 @@ struct CompleteAddTravelView: View {
     @State var selectedTravel: [Travel]?
     
     var body: some View {
-        VStack {
-            Spacer()
+        VStack(spacing: 0) {
+            
+            Spacer(minLength: 90)
             
             Text("여행 생성 완료 !")
                 .font(.display2)
-                .padding(.bottom, 10)
+                .padding(.bottom, 21)
             
             travelSquareView
             
-            Spacer()
+            Spacer(minLength: 263)
             
             HStack {
                 MediumButtonStroke(title: "여행 확인하기", action: {
@@ -59,45 +60,101 @@ struct CompleteAddTravelView: View {
             self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
             self.travelNM = memberViewModel.travelName ?? "제목 미정"
             self.participantArr = memberViewModel.participantArr ?? ["me"]
-        }        .navigationTitle("새로운 여행 생성")
+        }  
+        .onAppear(perform: UIApplication.shared.hideKeyboard)
+        .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
     }
     
     private var travelSquareView: some View {
-        VStack {
+        VStack(spacing: 0) {
             ZStack {
                 Rectangle()
                     .foregroundColor(.clear)
-                    .frame(width: 141, height: 141)
+                    .frame(width: 243, height: 176)
                     .background(
                         Image("DefaultImage")
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 141, height: 141) // 원하는 크기로 조정
+                            .frame(width: 243, height: 176) // 원하는 크기로 조정
                             .cornerRadius(15.16129)
                             .overlay(
                                 Color.black.opacity(0.2)
                                     .cornerRadius(15.16129)
-                                )
+                            )
                     )
-                    
-                Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
-                    .font(.custom(FontsManager.Pretendard.medium, size: 20))
-                    .padding(.top, 90)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.white.opacity(0.75))
                 
+                VStack {
+                    Spacer()
+                    
+                    HStack {
+                        VStack(alignment: .leading) {
+                            
+                            Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
+                            
+                            Text(viewModel.endDateToString(in: selectedTravel?.first?.endDate))
+                            
+                        }
+                        .font(.custom(FontsManager.Pretendard.medium, size: 20))
+                        .padding(.top, 90)
+                        .padding(.leading, 16)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.white.opacity(0.75))
+                        
+                        Spacer()
+                    }
+                    .frame(width: 243, height: 176)
+                    .padding(16)
+                }
             }
+            .frame(width: 243, height: 176)
             
             HStack {
-                Spacer(minLength: 125)
+                Spacer()
                 
                 TextField(String(viewModel.travelName ?? ""), text: $travelNM)
+                    .modifier(ClearTextFieldButton(text: $travelNM))
+                    .foregroundStyle(Color.black)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .layoutPriority(-1)
                 
-                Image(systemName: "pencil")
-                
-                Spacer(minLength: 125)
+                Spacer()
             }
+            .frame(width: 243)
+        }
+    }
+    
+    struct ClearTextFieldButton: ViewModifier {
+        
+        @Binding var text: String
+        
+        public func body(content: Content) -> some View {
+            ZStack(alignment: .trailing) {
+                content
+                
+                if !text.isEmpty || text.isEmpty {
+                    Button {
+                        self.text = ""
+                    } label: {
+                        Image("xmark_circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .padding(.trailing, 8)
+                    }
+                }
+            }
+        }
+    }
+    
+    struct CustomTextFieldStyle: TextFieldStyle {
+        func _body(configuration: TextField<Self._Label>) -> some View {
+            configuration
+                .padding(10)
+                .foregroundColor(.black)
+                .frame(height: 28)
+                .background(Color.gray100)
+                .cornerRadius(6)
         }
     }
 }

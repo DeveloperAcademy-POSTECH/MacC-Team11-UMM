@@ -202,10 +202,10 @@ struct AddMemberView: View {
                 HStack {
                     ForEach(0..<participantArr.count, id: \.self) { index in
                         ZStack {
-                            Text(participantArr[index] + "이름입력")
+                            Text(participantArr[index] + "이름입력이름입력")
                                 .hidden()
                             
-                            TextField("", text: $participantArr[index])
+                            TextField("이름입력", text: $participantArr[index])
                                 .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr, index: index))
                                 .font(.custom(FontsManager.Pretendard.medium, size: 16))
                                 .foregroundStyle(Color.black)
