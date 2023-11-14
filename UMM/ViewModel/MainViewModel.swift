@@ -11,10 +11,10 @@ import SwiftUI
 class MainViewModel: ObservableObject {
     
     static let shared = MainViewModel()
-    var timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
-        print("MainViewModel | selectedTravel: \(shared.selectedTravel?.name ?? "nilName")")
-        print("MainViewModel | selectedTravelInExpense: \(shared.selectedTravelInExpense?.name ?? "nilName")")
-    }
+//    var timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
+//        print("MainViewModel | selectedTravel: \(shared.selectedTravel?.name ?? "nilName")")
+//        print("MainViewModel | selectedTravelInExpense: \(shared.selectedTravelInExpense?.name ?? "nilName")")
+//    }
     
     // didSet으로 selection == 2일 때, default
     @Published var selection: Int = 1
@@ -39,10 +39,8 @@ class MainViewModel: ObservableObject {
     
     private init() {
         print("mainViewModel init")
-        selectedTravel = findCurrentTravel()
-        if selectedTravel?.name ?? "" == tempTravelName {
-            
-        }
+        selectedTravelInExpense = findInitialTravelInExpense()
+        selectedTravel = findCurrentTravel() // defaultTravel이면 selectedTravelInExpense를 업데이트하지 않는다.
     }
     
     func navigationToRecordView() {
