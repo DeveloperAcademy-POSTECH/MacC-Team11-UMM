@@ -229,6 +229,7 @@ struct ManualRecordView: View {
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
+                                .minimumScaleFactor(0.5)
                                 .onTapGesture {
                                     viewModel.autoSaveTimer?.invalidate()
                                     viewModel.secondCounter = nil
