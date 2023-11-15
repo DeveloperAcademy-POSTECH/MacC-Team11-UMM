@@ -62,7 +62,6 @@ struct AddMemberView: View {
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var headerView: some View {
@@ -202,10 +201,11 @@ struct AddMemberView: View {
             HStack {
                 ForEach(0..<participantArr.count, id: \.self) { index in
                     ZStack {
-                        Text(participantArr[index] + "이름입력이름입력")
+                        Text(participantArr[index] == "" ? "이름 입력아아아" : participantArr[index] + "아아아")
+                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
                             .hidden()
                         
-                        TextField("이름입력", text: $participantArr[index])
+                        TextField("이름 입력", text: $participantArr[index])
                             .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr, index: index))
                             .font(.custom(FontsManager.Pretendard.medium, size: 16))
                             .foregroundStyle(Color.black)
@@ -249,7 +249,7 @@ struct AddMemberView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 10, height: 10)
-                            .padding(.trailing, 15)
+                            .padding(.trailing, 8)
                     }
                 }
             }
@@ -263,7 +263,7 @@ struct AddMemberView: View {
                 .foregroundColor(.black)
                 .frame(height: 30)
                 .background(Color.gray100)
-                .cornerRadius(6)
+                .cornerRadius(8)
         }
     }
     

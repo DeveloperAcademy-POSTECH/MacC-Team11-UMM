@@ -63,6 +63,7 @@ struct AddTravelView: View {
             }
             .ignoresSafeArea(edges: .bottom)
         }
+        .ignoresSafeArea(edges: .bottom)
         .navigationDestination(isPresented: $isButtonOn) {
             AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)
         }
@@ -70,7 +71,6 @@ struct AddTravelView: View {
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var headerView: some View {

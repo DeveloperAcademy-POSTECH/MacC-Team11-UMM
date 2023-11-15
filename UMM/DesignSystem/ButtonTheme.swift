@@ -174,7 +174,7 @@ struct NextButtonActive: View {
                     .padding(.leading, 28)
                     .padding(.vertical, 14.5)
                 Image("icon")
-                    .padding(.trailing, 24)
+                    .padding(.trailing, 20)
                     .padding(.vertical, 13)
             }
             .font(.system(size: 18, weight: .medium))
@@ -199,7 +199,7 @@ struct NextButtonUnactive: View {
                     .padding(.leading, 28)
                     .padding(.vertical, 14.5)
                 Image("icon")
-                    .padding(.trailing, 24)
+                    .padding(.trailing, 20)
                     .padding(.vertical, 13)
             }
                 .font(.system(size: 18, weight: .medium))

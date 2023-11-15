@@ -66,7 +66,7 @@ struct TravelListView: View {
                     
                 TravelTabView()
             }
-            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .ignoresSafeArea(edges: .bottom)
             .onAppear {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
@@ -81,7 +81,6 @@ struct TravelListView: View {
                     handler.fetchAndSaveExchangeRates()
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
@@ -100,7 +99,7 @@ struct TravelListView: View {
                 }
             }
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .ignoresSafeArea(edges: .bottom)
     }
     
     private var titleHeader: some View {
@@ -141,7 +140,7 @@ struct TravelListView: View {
                             defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
                             koreanNM: self.countryName
                         ), label: {
-                            ZStack(alignment: .top) {
+                            ZStack(alignment: .top) { 
                                 
                                 Rectangle()
                                     .foregroundColor(.clear)

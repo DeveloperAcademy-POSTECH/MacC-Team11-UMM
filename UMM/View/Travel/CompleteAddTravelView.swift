@@ -22,15 +22,16 @@ struct CompleteAddTravelView: View {
     var body: some View {
         VStack(spacing: 0) {
             
-            Spacer(minLength: 90)
+            Spacer()
             
             Text("여행 생성 완료 !")
                 .font(.display2)
                 .padding(.bottom, 21)
             
             travelSquareView
+                .padding(.bottom, 100)
             
-            Spacer(minLength: 263)
+            Spacer()
             
             HStack {
                 MediumButtonStroke(title: "여행 확인하기", action: {
@@ -64,7 +65,6 @@ struct CompleteAddTravelView: View {
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var travelSquareView: some View {
