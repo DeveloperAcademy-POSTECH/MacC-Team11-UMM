@@ -47,7 +47,7 @@ func findCurrentTravel() -> Travel? {
     var currentTravels: [Travel] = []
     // 여행 중인 경우 여기에 해당하는 코드를 구현
     for travel in allTravels {
-        if let startDate = travel.startDate, let endDate = travel.endDate {
+        if let startDate = travel.startDate?.convertBeforeShowing(), let endDate = travel.endDate?.convertBeforeShowing() { // 현지 타임존으로 수정하고 비교
             if (startDate <= todayDate) && (todayDate <= endDate) {
                 currentTravels.append(travel)
             }
@@ -62,7 +62,38 @@ func findCurrentTravel() -> Travel? {
         }
     }
     // 여행 중이 아님
-//    let defaultTravel = Travel(context: PersistenceController.shared.container.viewContext)
     let defaultTravel = allTravels.first(where: { $0.name == tempTravelName })
     return defaultTravel
+}
+
+func findInitialTravelInExpense() -> Travel? {
+    var allTravels: [Travel] = []
+    var allTravelsExceptDefaultTravel: [Travel] = []
+    
+    do {
+        allTravels = try PersistenceController.shared.container.viewContext.fetch(Travel.fetchRequest()).sorted(by: travelModalSortRule)
+    } catch {
+        print("error fetching all travels: \(error.localizedDescription)")
+    }
+    allTravelsExceptDefaultTravel = allTravels.filter { travel in
+        if let name = travel.name {
+            return name != tempTravelName
+        } else {
+            return true
+        }
+    }
+    
+    let todayDate = Date()
+    
+    let travelFromFindCurrentTravelFunction = findCurrentTravel()
+    
+    if travelFromFindCurrentTravelFunction?.name ?? "" == tempTravelName { // 진행 중인 여행이 없는 경우
+        if allTravelsExceptDefaultTravel.count == 0 { // 임시 기록 여행 외에는 다른 여행이 없는 경우
+            return travelFromFindCurrentTravelFunction // 임시 기록 여행을 반환한다.
+        } else { // 임시 기록 여행 외의 다른 여행이 있는 경우
+            return allTravelsExceptDefaultTravel.first // 임시 기록 여행이 아닌 여행 중 1순위를 반환한다.
+        }
+    } else { // 진행 중인 여행이 있는 경우
+       return travelFromFindCurrentTravelFunction // 임시 기록 여행이 아닌 currentTravel을 반환한다.
+    }
 }

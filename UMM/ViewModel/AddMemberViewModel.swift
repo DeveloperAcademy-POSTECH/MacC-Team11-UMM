@@ -36,4 +36,21 @@ class AddMemberViewModel: ObservableObject {
             print("Error while SaveTravel: \(error.localizedDescription)")
         }
     }
+    
+    func updateSelectedTravels() {
+        var newTravel: Travel?
+        do {
+            newTravel = try viewContext.fetch(Travel.fetchRequest()).filter { travel in
+                if let id = travel.id {
+                    return id == travelID
+                } else {
+                    return false
+                }
+            }.first
+        } catch {
+            print("error fetching travel: \(error.localizedDescription)")
+        }
+        
+        MainViewModel.shared.selectedTravel = newTravel
+    }
 }

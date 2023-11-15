@@ -92,3 +92,6 @@ iOSInjectionProject/
 # API_KEY
 API_KEY.plist
 *.xcconfig
+
+
+.DS_Store

@@ -134,6 +134,8 @@ final class RecordViewModel: ObservableObject {
     @Published var addTravelRequestModalIsShown = false
     @Published var recordButtonIsFocused = false
     var wantToActivateAutoSaveTimer = true
+    var AreThereOtherTravels = true
+    var isExplicitTempRecord = false
     
     // STT
     private let audioEngine = AVAudioEngine()
@@ -154,6 +156,9 @@ final class RecordViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     private var hapticCounter = 0
+    
+    // MARK: - timer
+    var recordButtonResetTimer: Timer?
     
     init() {
         print("RecordViewModel | init")
@@ -672,17 +677,19 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopSTT() {
-        audioEngine.stop()
-        recognitionRequest?.endAudio()
-        audioEngine.inputNode.removeTap(onBus: 0)
-        recognitionRequest = nil
-        recognitionTask = nil
-        
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-        } catch {
-            print("Error deactivating audio session: \(error)")
+        if recognitionTask != nil { // startSTT() 동작이 끝난 경우에 stopSTT() 동작
+            audioEngine.stop()
+            recognitionRequest?.endAudio()
+            audioEngine.inputNode.removeTap(onBus: 0)
+            recognitionRequest = nil
+            recognitionTask = nil
+            
+            let audioSession = AVAudioSession.sharedInstance()
+            do {
+                try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            } catch {
+                print("Error deactivating audio session: \(error)")
+            }
         }
     }
     
@@ -731,7 +738,9 @@ final class RecordViewModel: ObservableObject {
     }
     
     func stopRecording() {
-        audioRecorder?.stop()
+        if self.audioRecorder?.isRecording ?? false {
+            self.audioRecorder?.stop()
+        }
     }
     
     // MARK: - 프로퍼티 관리

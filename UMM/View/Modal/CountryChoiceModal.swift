@@ -102,6 +102,7 @@ struct CountryChoiceModal: View {
                                 
                                 Spacer()
                             }
+                            .padding(.horizontal, 13)
                         }
                         .onTapGesture {
                             chosenCountry = currentCountry
