@@ -328,6 +328,6 @@ struct CheckStickerView: View {
     }
 }
 
-//#Preview {
-//    TravelChoiceInRecordModal(chosenTravel: .constant(Travel()))
-//}
+//    #Preview {
+//        TravelChoiceInRecordModal(chosenTravel: .constant(Travel()))
+//    }

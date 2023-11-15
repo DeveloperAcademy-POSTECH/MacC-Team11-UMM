@@ -43,6 +43,8 @@
 		57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C722ADE4CAE00EDAD11 /* Currency.swift */; };
 		57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */; };
 		57EA42202ADE38EE006CA587 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EA421F2ADE38EE006CA587 /* Country.swift */; };
+		57F72CEF2B04C85800464B06 /* NumberFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F72CEE2B04C85800464B06 /* NumberFormatter.swift */; };
+		57F72CF12B04CAE900464B06 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F72CF02B04CAE900464B06 /* Double+Extension.swift */; };
 		C157600C2AEACADC0089FFE5 /* TravelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */; };
 		C15760182AEE782C0089FFE5 /* CountryList.csv in Resources */ = {isa = PBXBuildFile; fileRef = C15760172AEE782C0089FFE5 /* CountryList.csv */; };
 		C157601E2AF1DD830089FFE5 /* CountryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C157601D2AF1DD830089FFE5 /* CountryInfo.swift */; };
@@ -151,6 +153,8 @@
 		57CE9C722ADE4CAE00EDAD11 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		57CE9C742ADE97A600EDAD11 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		57EA421F2ADE38EE006CA587 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
+		57F72CEE2B04C85800464B06 /* NumberFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatter.swift; sourceTree = "<group>"; };
+		57F72CF02B04CAE900464B06 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		C157600B2AEACADC0089FFE5 /* TravelDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelDetailViewModel.swift; sourceTree = "<group>"; };
 		C15760172AEE782C0089FFE5 /* CountryList.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CountryList.csv; sourceTree = "<group>"; };
 		C157601D2AF1DD830089FFE5 /* CountryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInfo.swift; sourceTree = "<group>"; };
@@ -330,6 +334,7 @@
 				5785070D2AE5131B001C4FA1 /* View+Extension.swift */,
 				E23357A52AE273E700E17CFF /* NSObject+Extension.swift */,
 				C1DC9A482AF3859B00CB6298 /* Gesture+Extension.swift */,
+				57F72CF02B04CAE900464B06 /* Double+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -494,6 +499,7 @@
 				573889662AF6AFB300FAEF50 /* DateGapHandler.swift */,
 				C1B2D2AB2AFCF51700E5C2B2 /* SortingHandler.swift */,
 				5744185E2B033C420057A2B5 /* travelModalSortRule.swift */,
+				57F72CEE2B04C85800464B06 /* NumberFormatter.swift */,
 			);
 			path = Handler;
 			sourceTree = "<group>";
@@ -618,6 +624,7 @@
 				572DBD492AE2D7F100FC88B6 /* ManualRecordViewModel.swift in Sources */,
 				C1EAD6B42AF821BF00EB3B89 /* InterimOncomingView.swift in Sources */,
 				C1DC9A492AF3859B00CB6298 /* Gesture+Extension.swift in Sources */,
+				57F72CEF2B04C85800464B06 /* NumberFormatter.swift in Sources */,
 				E23357A62AE273E700E17CFF /* NSObject+Extension.swift in Sources */,
 				57CE9C752ADE97A600EDAD11 /* Date+Extension.swift in Sources */,
 				E2D5C05C2ADD921400907501 /* MainView.swift in Sources */,
@@ -640,6 +647,7 @@
 				57CE9C732ADE4CAE00EDAD11 /* Currency.swift in Sources */,
 				E2D5C0722ADD928C00907501 /* findCurrentTravel.swift in Sources */,
 				C19AFADF2ADEAEC80037A5F5 /* CompleteAddTravelView.swift in Sources */,
+				57F72CF12B04CAE900464B06 /* Double+Extension.swift in Sources */,
 				57A65D082AD7D4D100131266 /* CharacterForm.swift in Sources */,
 				C19AFAF82AE16C600037A5F5 /* UpcomingTravelViewModel.swift in Sources */,
 				E2D5C0662ADD924100907501 /* AllExpenseView.swift in Sources */,
@@ -837,7 +845,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = 8H4K6TKQBU;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -877,7 +885,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UMM/Preview Content\"";
-				DEVELOPMENT_TEAM = 8H4K6TKQBU;
+				DEVELOPMENT_TEAM = NM2S86642U;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;

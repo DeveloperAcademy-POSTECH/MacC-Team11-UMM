@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 let travelListSortRule: (Travel, Travel) -> Bool = {
     if let s0 = $0.startDate, let s1 = $1.startDate {
         s0 < s1
