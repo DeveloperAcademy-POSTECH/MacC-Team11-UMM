@@ -33,7 +33,15 @@ class ExpenseViewModel: ObservableObject {
     @Published var travelChoiceHalfModalIsShown = false
     @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
     let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
-    private var travelStream: Set<AnyCancellable> = []
+    
+    private var travelPublisher: AnyPublisher<Travel?, Never> {
+        MainViewModel.shared.$selectedTravelInExpense
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+    
+    private var travelStream: AnyCancellable?
     private var prevSelectedDate: Date?
     private var prevSelectedCountry: Int64?
     
@@ -206,11 +214,13 @@ class ExpenseViewModel: ObservableObject {
     }
     
     func setupSelectedTravel() {
-        MainViewModel.shared.$selectedTravelInExpense
-            .removeDuplicates()
+        travelStream = travelPublisher
             .sink { [weak self] travel in
+                print("setupSelectedTravel")
                 guard let self = self else { return }
+                print("before | savedExpenses: \(savedExpenses.count)")
                 self.fetchExpense()
+                print("after | savedExpenses: \(savedExpenses.count)")
                 self.filteredTodayExpenses = self.getFilteredTodayExpenses()
                 self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
                 self.filteredAllExpenses = self.getFilteredAllExpenses()
@@ -218,7 +228,6 @@ class ExpenseViewModel: ObservableObject {
                 self.groupedAllExpenses = Dictionary(grouping: self.filteredAllExpensesByCountry, by: { $0.category })
                 self.indexedSumArrayInPayAmountOrder = getPayAmountOrderedIndicesOfCategory(categoryArray: categoryArray, expenseArray: filteredAllExpenses)
             }
-            .store(in: &travelStream)
     }
     
     func getFilteredTodayExpenses() -> [Expense] {

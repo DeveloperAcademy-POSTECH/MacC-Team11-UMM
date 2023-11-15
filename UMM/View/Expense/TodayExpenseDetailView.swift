@@ -46,6 +46,7 @@ struct TodayExpenseDetailView: View {
             expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
             print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
+            expenseViewModel.setupSelectedTravel()
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TodayExpenseView: View {
     @EnvironmentObject var mainVM: MainViewModel
-    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @StateObject var expenseViewModel = ExpenseViewModel()
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
