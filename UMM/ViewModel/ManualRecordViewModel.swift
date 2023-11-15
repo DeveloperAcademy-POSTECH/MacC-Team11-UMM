@@ -59,7 +59,6 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         currency = tempCurrencyCandidateArray.first ?? 4
     }
     
-    
     // MARK: - combine
     
     var travelPublisher: AnyPublisher<Travel?, Never> {

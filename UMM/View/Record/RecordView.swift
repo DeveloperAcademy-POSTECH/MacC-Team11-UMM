@@ -38,10 +38,6 @@ struct RecordView: View {
         }
     }
     
-    let fraction0NumberFormatter = NumberFormatter()
-    let fraction1NumberFormatter = NumberFormatter()
-    let fraction2NumberFormatter = NumberFormatter()
-    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -100,15 +96,6 @@ struct RecordView: View {
                         viewModel.stopRecording()
                     }
                 }
-                
-                // MARK: - NumberFormatter
-                
-                fraction0NumberFormatter.numberStyle = .decimal
-                fraction0NumberFormatter.maximumFractionDigits = 0
-                fraction1NumberFormatter.numberStyle = .decimal
-                fraction1NumberFormatter.maximumFractionDigits = 1
-                fraction2NumberFormatter.numberStyle = .decimal
-                fraction2NumberFormatter.maximumFractionDigits = 2
                 
                 // MARK: - decide record button action
                 
@@ -294,27 +281,11 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    let isClean0 = abs(viewModel.payAmount - floor(viewModel.payAmount)) < 0.0000001
-                    let isClean1 = abs(viewModel.payAmount * 10.0 - floor(viewModel.payAmount * 10.0)) < 0.0000001
                     Group {
-                        if isClean0 {
-                            if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
-                                Text(formattedString)
-                            } else {
-                                Text(" ")
-                            }
-                        } else if isClean1 {
-                            if let formattedString = fraction1NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
-                                Text(formattedString)
-                            } else {
-                                Text(" ")
-                            }
+                        if let formattedString = viewModel.payAmount.getStringFraction0To2() {
+                            Text(formattedString)
                         } else {
-                            if let formattedString = fraction2NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
-                                Text(formattedString)
-                            } else {
-                                Text(" ")
-                            }
+                            Text(" ")
                         }
                     }
                     .foregroundStyle(.black)

@@ -14,7 +14,6 @@ struct ManualRecordInExpenseView: View {
     @Environment(\.dismiss) var dismiss
     let viewContext = PersistenceController.shared.container.viewContext
     let exchangeHandler = ExchangeRateHandler.shared
-    let fraction0NumberFormatter = NumberFormatter()
     let dateGapHandler = DateGapHandler.shared
     
     let given_wantToActivateAutoSaveTimer: Bool
@@ -168,11 +167,6 @@ struct ManualRecordInExpenseView: View {
             
             viewModel.firstChosenTravelInManualRecord = MainViewModel.shared.chosenTravelInManualRecord
             
-            // MARK: - NumberFormatter
-            
-            fraction0NumberFormatter.numberStyle = .decimal
-            fraction0NumberFormatter.maximumFractionDigits = 0
-
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onAppear {
@@ -257,7 +251,7 @@ struct ManualRecordInExpenseView: View {
                             .foregroundStyle(.gray300)
                             .font(.caption2)
                     } else {
-                        if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmountInWon)) {
+                        if let formattedString = viewModel.payAmountInWon.getStringFraction0() {
                             Text("(" + formattedString + "원" + ")")
                                 .foregroundStyle(.gray300)
                                 .font(.caption2)
