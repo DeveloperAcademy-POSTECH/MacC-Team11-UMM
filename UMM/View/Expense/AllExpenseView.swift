@@ -19,7 +19,7 @@ struct AllExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if expenseViewModel.filteredAllExpenses.count == 0 {
+            if expenseViewModel.filteredAllExpenses.count == 0  || mainVM.selectedTravelInExpense?.name ?? "" == tempTravelName {
                 noDataView
                     .padding(.horizontal, 20)
             } else {

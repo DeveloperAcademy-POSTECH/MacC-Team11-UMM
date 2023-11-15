@@ -20,7 +20,7 @@ struct TodayExpenseView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if expenseViewModel.filteredTodayExpenses.count == 0 {
+            if expenseViewModel.filteredTodayExpenses.count == 0 || MainViewModel.shared.selectedTravelInExpense?.name ?? "" == tempTravelName {
                 HStack {
                     datePicker
                         .padding(.horizontal, 20)
@@ -43,9 +43,7 @@ struct TodayExpenseView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
-//            expenseViewModel.fetchExpense()
-//            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
-//            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
+            print("MainViewModel.shared.selectedTravelInExpense: \(String(describing: MainViewModel.shared.selectedTravelInExpense))")
             expenseViewModel.fetchExpense()
             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
