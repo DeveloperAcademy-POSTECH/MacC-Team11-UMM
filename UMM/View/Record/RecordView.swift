@@ -126,7 +126,7 @@ struct RecordView: View {
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 if viewModel.travelChoiceModalIsShown {
-                    TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel)
+                    TravelChoiceInRecordModal(chosenTravel: $mainVM.selectedTravel, updateIsSameDataStateClosure: { return true }, isSameData: .constant(true))
                         .presentationDetents([.height(289 - 34)])
                 } else {
                     EmptyView()

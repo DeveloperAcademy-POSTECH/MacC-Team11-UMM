@@ -18,7 +18,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     var location: CLLocation?
     
-    func getLocation() {
+    func getLocation(completion: @escaping () -> Void) {
         location = DateGapHandler.shared.currentLocation
         if let location {
             CLGeocoder().reverseGeocodeLocation(location) { placemarks, _  in
@@ -35,10 +35,30 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                     self.currentCountry = countryKey
                     self.currentLocation = "\(newPlacemark.locality ?? "")"
                 }
-
+                completion()
             }
         }
     }
+    
+    // MARK: - 화폐
+    
+    func setInitialCurrency() {
+        let stringCurrencyArray = CountryInfoModel.shared.countryResult[country]?.relatedCurrencyArray ?? []
+        var tempCurrencyCandidateArray: [Int] = []
+        for t in CurrencyInfoModel.shared.currencyResult where stringCurrencyArray.contains(t.value.isoCodeNm) {
+            tempCurrencyCandidateArray.append(t.key)
+        }
+        
+        if !tempCurrencyCandidateArray.contains(4) { // 미국 달러
+            tempCurrencyCandidateArray.append(4)
+        }
+        if !tempCurrencyCandidateArray.contains(0) { // 한국 원
+            tempCurrencyCandidateArray.append(0)
+        }
+        
+        currency = tempCurrencyCandidateArray.first ?? 4
+    }
+    
     
     // MARK: - combine
     
@@ -174,13 +194,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
                 currencyCandidateArray = tempCurrencyCandidateArray
             }
             
-            if currency == 4 && country != 3 { // 미국 달러, !미국
-                return
-            } else if currency == 0 && country != 0 { // 한국 원, !한국
-                return
-            } else {
-                currency = currencyCandidateArray.first ?? 4
-            }
+            currency = currencyCandidateArray.first ?? 4
         }
     }
     @Published var countryExpression: String = "" // passive

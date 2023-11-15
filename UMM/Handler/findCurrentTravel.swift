@@ -82,9 +82,7 @@ func findInitialTravelInExpense() -> Travel? {
             return true
         }
     }
-    
-    let todayDate = Date()
-    
+        
     let travelFromFindCurrentTravelFunction = findCurrentTravel()
     
     if travelFromFindCurrentTravelFunction?.name ?? "" == tempTravelName { // 진행 중인 여행이 없는 경우

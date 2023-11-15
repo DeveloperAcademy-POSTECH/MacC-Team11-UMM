@@ -25,6 +25,7 @@ class MainViewModel: ObservableObject {
     }
     @Published var selectedTravelInExpense: Travel? {
         didSet {
+            print("selectedTravelInExpense 변경됨 !!!")
             if selectedTravelInExpense == nil {
                 selectedTravelInExpense = findCurrentTravel()
             }
@@ -34,7 +35,6 @@ class MainViewModel: ObservableObject {
         }
     }
     @Published var chosenTravelInManualRecord: Travel?
-    var firstChosenTravelInManualRecord: Travel?
     
     private init() {
         print("mainViewModel init")
@@ -48,10 +48,6 @@ class MainViewModel: ObservableObject {
     
     func navigationToExpenseView() {
         self.selection = 2
-    }
-    
-    func isSameFirstAndNowChosenTravel() -> Bool {
-        return self.firstChosenTravelInManualRecord == self.chosenTravelInManualRecord
     }
     
     private func updateSelectedTravelInExpense() {
