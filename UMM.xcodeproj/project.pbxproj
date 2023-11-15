@@ -843,7 +843,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "노마드월렛은 실시간 위치 정보를 활용하는 여행 가계부 앱으로, 원활한 작동을 위해 권한이 반드시 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -883,7 +883,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UMM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "노마드월렛";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치 기반 정보를 제공하기 위해 권한이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "노마드월렛은 실시간 위치 정보를 활용하는 여행 가계부 앱으로, 원활한 작동을 위해 권한이 반드시 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "음성 기록을 위해 마이크 사용 권한이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 정보를 텍스트로 변환하려면 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
