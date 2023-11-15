@@ -452,7 +452,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             } catch {
                 print("error fetching travelArray: \(error.localizedDescription)")
             }
-            fetchedTravel?.lastUpdate = Date()
             fetchedTravel?.addToExpenseArray(expense)
         }
         do {

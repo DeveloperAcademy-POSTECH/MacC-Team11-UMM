@@ -758,17 +758,6 @@ struct ManualRecordInExpenseView: View {
         ZStack {
             LargeButtonActive(title: "저장하기") {
                 viewModel.save()
-                var defaultTravel = Travel()
-                do {
-                    defaultTravel = try viewContext.fetch(Travel.fetchRequest()).filter { $0.name == tempTravelName }.first ?? Travel()
-                } catch {
-                    print("error fetching default travel: \(error.localizedDescription)")
-                }
-                if mainVM.chosenTravelInManualRecord != nil {
-                    mainVM.selectedTravel = mainVM.chosenTravelInManualRecord
-                } else {
-                    mainVM.selectedTravel = defaultTravel
-                }
                 viewModel.deleteUselessAudioFiles()
                 dismiss()
             }
