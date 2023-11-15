@@ -145,7 +145,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     @Published var payAmountInWon: Double = -1 // passive
     
-    var info: String? // passive
+    var info: String? //
     @Published var visibleInfo: String = "" {
         didSet {
             if let firstVisibleInfo = firstVisibleInfo {

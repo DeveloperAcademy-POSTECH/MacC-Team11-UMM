@@ -343,12 +343,12 @@ struct ManualRecordInExpenseView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         ZStack {
-                            Text(viewModel.visiblePayAmount == "" ? "  -  " : viewModel.visiblePayAmount)
+                            Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .font(.display4)
                                 .hidden()
                             
-                            TextField(" - ", text: $viewModel.visiblePayAmount)
+                            TextField("금액 입력", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .foregroundStyle(.black)
                                 .font(.display4)
@@ -523,7 +523,7 @@ struct ManualRecordInExpenseView: View {
                             .foregroundStyle(.gray100)
                             .layoutPriority(-1)
                         
-                        TextField("-", text: $viewModel.visibleInfo)
+                        TextField("소비 내역을 입력해 주세요", text: $viewModel.visibleInfo)
                             .lineLimit(nil)
                             .foregroundStyle(.black)
                             .font(.body3)
@@ -850,7 +850,7 @@ struct ManualRecordInExpenseView: View {
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
                                 
-                                TextField("상세 위치를 입력해주세요", text: $viewModel.locationExpression)
+                                TextField("상세 위치를 입력해 주세요", text: $viewModel.locationExpression)
                                     .lineLimit(nil)
                                     .foregroundStyle(.black)
                                     .font(.body3)
