@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TodayExpenseView: View {
     @EnvironmentObject var mainVM: MainViewModel
-    @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @StateObject var expenseViewModel = ExpenseViewModel()
     @Binding var selectedTab: Int
     let namespace: Namespace.ID
     var pickerId: String { "picker" }
@@ -46,6 +46,9 @@ struct TodayExpenseView: View {
 //            expenseViewModel.fetchExpense()
 //            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
 //            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
+            expenseViewModel.fetchExpense()
+            expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
+            expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
         }
     }
     

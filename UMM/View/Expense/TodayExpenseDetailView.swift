@@ -43,10 +43,9 @@ struct TodayExpenseDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
+            expenseViewModel.fetchExpense()
             expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
-            
-            print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
@@ -126,7 +125,13 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: sumPaymentMethod, to: 0))원")
+            let totalSum = currencyAndSums.reduce(0) {
+                let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int($1.currency)]?.isoCodeNm ?? "Unknown")
+                let sum = $1.sum == -1 ? 0 : $1.sum
+                return $0 + sum * (exchangeRate ?? -100)
+            }
+            let formattedSum = expenseViewModel.formatSum(from: totalSum, to: 0)
+            Text("\(formattedSum)원")
                 .font(.display4)
                 .padding(.top, 6)
             
@@ -153,7 +158,7 @@ struct TodayExpenseDetailView: View {
     private var dayField: some View {
         let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: selectedDate)
         return HStack(alignment: .center, spacing: 0) {
-            Text("Day \(calculatedDay)")
+            Text("Day \(calculatedDay + 1)")
                 .font(.subhead1)
                 .foregroundStyle(.gray400)
             // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
@@ -183,7 +188,8 @@ struct TodayExpenseDetailView: View {
                         given_payDate: expense.payDate,
                         given_country: Int(expense.country),
                         given_location: expense.location,
-                        given_id: expense.id
+                        given_id: expense.id,
+                        given_travel: expense.travel
                     )
                         .environmentObject(mainVM) // ^^^
                 } label: {
@@ -195,6 +201,7 @@ struct TodayExpenseDetailView: View {
                             Text("\(expense.info ?? "알 수 없는 내역")")
                                 .font(.subhead2_1)
                                 .foregroundStyle(.black)
+                                .lineLimit(1)
                             HStack(alignment: .center, spacing: 0) {
                                 // 소비 기록을 한 시각을 보여주는 부분
                                 // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.

@@ -37,11 +37,11 @@ struct AllExpenseDetailView: View {
                     drawExpensesDetail
                 }
             }
-            .padding(.horizontal, 20)
         }
 
         .frame(maxWidth: .infinity)
         .onAppear {
+            expenseViewModel.fetchExpense()
             expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
         }
@@ -171,7 +171,7 @@ struct AllExpenseDetailView: View {
                     let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date)
                     
                     HStack(alignment: .center, spacing: 0) {
-                        Text("Day \(calculatedDay)")
+                        Text("Day \(calculatedDay + 1)")
                             .font(.subhead1)
                             .foregroundStyle(.gray400)
                         // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
@@ -180,6 +180,7 @@ struct AllExpenseDetailView: View {
                             .foregroundStyle(.gray300)
                             .padding(.leading, 10)
                     }
+                    .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
                     
@@ -197,7 +198,8 @@ struct AllExpenseDetailView: View {
                                 given_payDate: expense.payDate,
                                 given_country: Int(expense.country),
                                 given_location: expense.location,
-                                given_id: expense.id
+                                given_id: expense.id,
+                                given_travel: expense.travel
                             )
                             .environmentObject(mainVM) // ^^^
                         } label : {
@@ -209,7 +211,8 @@ struct AllExpenseDetailView: View {
                                     Text("\(expense.info ?? "알 수 없는 내역")")
                                         .font(.subhead2_1)
                                         .foregroundStyle(.black)
-                                    HStack(alignment: .center, spacing: 0) {
+                                        .lineLimit(1)
+                                    HStack(alignment: .center, spacing: 3) {
                                         // 소비 기록을 한 시각을 보여주는 부분
                                         // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
                                         if let payDate = expense.payDate {
@@ -221,8 +224,10 @@ struct AllExpenseDetailView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(.gray300)
                                         }
-                                        Divider()
-                                            .padding(.horizontal, 3 )
+                                        
+                                        Text("|")
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray300)
                                         
                                         Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                             .font(.caption2)
@@ -255,13 +260,27 @@ struct AllExpenseDetailView: View {
                                         .padding(.top, 4 )
                                 }
                             }
+                            .padding(0)
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
                     }
+                    customDividerByDay
                 }
-                Divider()
             }
-            .padding(.bottom, 24)
         }
+    }
+    
+    private var customDividerByDay: some View {
+            Rectangle()
+                .fill(Color.gray100)
+                .frame(height: 8)
+    }
+    
+    private var customDividerByPayDateAndPayAmount: some View {
+        Rectangle()
+            .fill(.gray300)
+            .font(.system(.caption2))
     }
     
     private func getFilteredAllExpenses(selectedTravel: Travel, selectedPaymentMethod: Int64, selectedCategory: Int64, selectedCountry: Int64) -> [Expense] {
@@ -283,6 +302,7 @@ struct AllExpenseDetailView: View {
     }
 }
 
-//  #Preview {
-//      AllExpenesDetailView()
-//  }
+
+// #Preview {
+//     AllExpenseDetailView()
+// }

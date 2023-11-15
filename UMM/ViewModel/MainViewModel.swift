@@ -25,6 +25,9 @@ class MainViewModel: ObservableObject {
     }
     @Published var selectedTravelInExpense: Travel? {
         didSet {
+            if selectedTravelInExpense == nil {
+                selectedTravelInExpense = findCurrentTravel()
+            }
             if selectedTravelInExpense != selectedTravel {
                 updateSelectedTravel()
             }

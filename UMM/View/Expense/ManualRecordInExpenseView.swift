@@ -29,6 +29,9 @@ struct ManualRecordInExpenseView: View {
     let given_country: Int
     let given_location: String?
     let given_id: ObjectIdentifier
+    let given_travel: Travel?
+    
+    @State private var isWarningOn = false
     
     var body: some View {
         ZStack {
@@ -59,17 +62,32 @@ struct ManualRecordInExpenseView: View {
                     .frame(height: 16)
                 if !viewModel.isSameData {
                     saveButtonView
-//                    Spacer()
-//                        .frame(height: 45)
                 }
             }
             .ignoresSafeArea()
         }
+        .navigationTitle("상세 내역")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                backButtonView
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack {
+                    Button {
+                        isWarningOn = true
+                    } label: {
+                        Image("trashCanGray")
+                            .padding(.trailing, 10)
+                    }
+                }
+            }
+        }
+        //        .navigationBarItems(leading: backButtonView)
+        .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
-        .navigationTitle("상세 내역")
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
             TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord)
                 .presentationDetents([.height(289 - 34)])
@@ -85,6 +103,12 @@ struct ManualRecordInExpenseView: View {
         .sheet(isPresented: $viewModel.dateChoiceModalIsShown) {
             DateChoiceModal(date: $viewModel.payDate, startDate: mainVM.chosenTravelInManualRecord?.startDate ?? Date.distantPast, endDate: mainVM.chosenTravelInManualRecord?.endDate ?? Date.distantFuture)
                 .presentationDetents([.height(289 - 34)])
+        }
+        .alert(isPresented: $isWarningOn) {
+            Alert(title: Text("여행 삭제하기"), message: Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
+                PersistenceController().deleteExpenseFromTravel(travel: given_travel, expenseId: given_id)
+                dismiss()
+            }), secondaryButton: .cancel(Text("취소")))
         }
         .alert(Text("저장하지 않고 나가기"), isPresented: $viewModel.showAlert) {
             Button {

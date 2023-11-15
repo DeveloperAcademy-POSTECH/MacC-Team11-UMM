@@ -62,4 +62,20 @@ struct PersistenceController {
 
         try? self.container.viewContext.save()
     }
+    
+    func deleteExpenseFromTravel(travel: Travel?, expenseId: ObjectIdentifier) {
+        guard let travel = travel,
+              let expenses = travel.expenseArray as? Set<Expense>,
+              let expenseToDelete = expenses.first(where: { $0.id == expenseId }) else { return }
+
+        do {
+            let object = try self.container.viewContext.existingObject(with: expenseToDelete.objectID)
+            self.container.viewContext.delete(object)
+            try self.container.viewContext.save()
+            
+        } catch {
+            let nsError = error as NSError
+            print("error while deleteExpenseFromTravel: \(nsError.localizedDescription)")
+        }
+    }
 }
