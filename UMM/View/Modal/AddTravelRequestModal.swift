@@ -34,7 +34,7 @@ struct AddTravelRequestModal: View {
     
     private var twoButtonsView: some View {
         HStack {
-            MediumButtonUnactive(title: "임시 기록하기") {
+            MediumButtonStroke(title: "임시 기록하기") {
                 viewModel.isExplicitTempRecord = true
                 viewModel.addTravelRequestModalIsShown = false
             }
