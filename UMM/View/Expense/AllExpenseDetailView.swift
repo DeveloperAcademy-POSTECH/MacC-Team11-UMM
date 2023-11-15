@@ -23,6 +23,7 @@ struct AllExpenseDetailView: View {
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let dateGapHandler = DateGapHandler.shared
     let viewContext = PersistenceController.shared.container.viewContext
+    let countryInfoModel = CountryInfoModel.shared.countryResult
 
     var body: some View {
         
@@ -55,9 +56,22 @@ struct AllExpenseDetailView: View {
         Button {
             presentationMode.wrappedValue.dismiss()
         } label: {
-            Image(systemName: "chevron.left")
-                .imageScale(.large)
-                .foregroundColor(Color.black)
+            HStack(spacing: 8) {
+                Image(systemName: "chevron.left")
+                    .imageScale(.large)
+                    .foregroundColor(Color.black)
+                    .padding(.trailing, 8)
+                if selectedCountry != -2 {
+                    Image(countryInfoModel[Int(selectedCountry)]?.flagString ?? "")
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                        .shadow(color: .gray200, radius: 2)
+                        .padding(.leading, 8)
+                }
+                Text("\(countryInfoModel[Int(selectedCountry)]?.koreanNm ?? "모든 국가")")
+                    .font(.subhead2_1)
+                    .foregroundStyle(.black)
+            }
         }
     }
     
