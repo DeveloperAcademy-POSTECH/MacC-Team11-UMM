@@ -216,11 +216,8 @@ class ExpenseViewModel: ObservableObject {
     func setupSelectedTravel() {
         travelStream = travelPublisher
             .sink { [weak self] travel in
-                print("setupSelectedTravel")
                 guard let self = self else { return }
-                print("before | savedExpenses: \(savedExpenses.count)")
                 self.fetchExpense()
-                print("after | savedExpenses: \(savedExpenses.count)")
                 self.filteredTodayExpenses = self.getFilteredTodayExpenses()
                 self.groupedTodayExpenses = Dictionary(grouping: self.filteredTodayExpenses, by: { $0.country })
                 self.filteredAllExpenses = self.getFilteredAllExpenses()

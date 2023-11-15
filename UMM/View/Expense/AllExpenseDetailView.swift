@@ -41,6 +41,7 @@ struct AllExpenseDetailView: View {
 
         .frame(maxWidth: .infinity)
         .onAppear {
+            expenseViewModel.fetchExpense()
             expenseViewModel.filteredAllExpensesForDetail = self.getFilteredAllExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedPaymentMethod: selectedPaymentMethod, selectedCategory: selectedCategory, selectedCountry: selectedCountry)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredAllExpensesForDetail)
         }

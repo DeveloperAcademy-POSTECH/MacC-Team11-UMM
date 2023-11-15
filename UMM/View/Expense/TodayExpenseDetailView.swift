@@ -43,10 +43,9 @@ struct TodayExpenseDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear {
+            expenseViewModel.fetchExpense()
             expenseViewModel.filteredTodayExpensesForDetail = self.getFilteredTodayExpenses(selectedTravel: selectedTravel ?? Travel(context: viewContext), selectedDate: selectedDate, selctedCountry: selectedCountry, selectedPaymentMethod: selectedPaymentMethod)
             currencyAndSums = expenseViewModel.calculateCurrencySums(from: expenseViewModel.filteredTodayExpensesForDetail)
-            print("TEDV | selectedPaymentMethod: \(selectedPaymentMethod)")
-            expenseViewModel.setupSelectedTravel()
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
@@ -126,7 +125,13 @@ struct TodayExpenseDetailView: View {
             }
             
             // 총 합계
-            Text("\(expenseViewModel.formatSum(from: sumPaymentMethod, to: 0))원")
+            let totalSum = currencyAndSums.reduce(0) {
+                let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyInfoModel[Int($1.currency)]?.isoCodeNm ?? "Unknown")
+                let sum = $1.sum == -1 ? 0 : $1.sum
+                return $0 + sum * (exchangeRate ?? -100)
+            }
+            let formattedSum = expenseViewModel.formatSum(from: totalSum, to: 0)
+            Text("\(formattedSum)원")
                 .font(.display4)
                 .padding(.top, 6)
             
