@@ -89,7 +89,7 @@ struct ManualRecordInExpenseView: View {
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.white, for: .navigationBar)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-            TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord)
+            TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord, updateIsSameDataStateClosure: viewModel.updateIsSameDataState, isSameData: $viewModel.isSameData)
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.categoryChoiceModalIsShown) {
@@ -166,6 +166,8 @@ struct ManualRecordInExpenseView: View {
 
             viewModel.getLocation()
             
+            viewModel.firstChosenTravelInManualRecord = MainViewModel.shared.chosenTravelInManualRecord
+            
             // MARK: - NumberFormatter
             
             fraction0NumberFormatter.numberStyle = .decimal
@@ -175,7 +177,6 @@ struct ManualRecordInExpenseView: View {
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onAppear {
             viewModel.checkFirstAppear()
-            MainViewModel.shared.firstChosenTravelInManualRecord = MainViewModel.shared.chosenTravelInManualRecord
         }
         .onDisappear {
             viewModel.autoSaveTimer?.invalidate()

@@ -12,6 +12,8 @@ struct TravelChoiceInRecordModal: View {
     @State private var travelArray = [Travel]()
     @State private var flagNameArrayDict: [UUID: [String]] = [:]
     @State private var defaultImageStringDict: [UUID: String] = [:]
+    var updateIsSameDataStateClosure: () -> Bool
+    @Binding var isSameData: Bool
     
     var body: some View {
         ZStack {
@@ -57,6 +59,7 @@ struct TravelChoiceInRecordModal: View {
                         TravelBlockView(travel: travel, chosenTravel: chosenTravel, flagNameArray: flagNameArrayDict[travel.id ?? UUID()] ?? [], defaultImageString: defaultImageStringDict[travel.id ?? UUID()] ?? "DefaultImage")
                             .onTapGesture {
                                 chosenTravel = travel
+                                isSameData = updateIsSameDataStateClosure()
                             }
                         Spacer()
                             .frame(width: 10)
@@ -325,6 +328,6 @@ struct CheckStickerView: View {
     }
 }
 
-#Preview {
-    TravelChoiceInRecordModal(chosenTravel: .constant(Travel()))
-}
+//#Preview {
+//    TravelChoiceInRecordModal(chosenTravel: .constant(Travel()))
+//}

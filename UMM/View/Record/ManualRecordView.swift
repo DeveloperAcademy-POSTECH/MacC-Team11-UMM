@@ -68,7 +68,7 @@ struct ManualRecordView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButtonView)
         .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
-            TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord)
+            TravelChoiceInRecordModal(chosenTravel: $mainVM.chosenTravelInManualRecord, updateIsSameDataStateClosure: { return true }, isSameData: .constant(true))
                 .presentationDetents([.height(289 - 34)])
         }
         .sheet(isPresented: $viewModel.categoryChoiceModalIsShown) {

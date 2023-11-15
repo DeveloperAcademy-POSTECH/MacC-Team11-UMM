@@ -51,6 +51,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     var firstVisiblePayAmount: String?
     var firstCategory: ExpenseInfoCategory?
     var firstVisibleInfo: String?
+    var firstChosenTravelInManualRecord: Travel?
     
     // MARK: - combine
     
@@ -569,6 +570,7 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             let isSameLocationExpression = firstLocationExpression == locationExpression
             let isSameVisiblePayAmount = firstVisiblePayAmount == visiblePayAmount
             let isSameParticipantTupleArray = zip(firstParticipantTupleArray, participantTupleArray).allSatisfy { $0 == $1 }
+            let isSameChosenTravelInManualRecord = firstChosenTravelInManualRecord == MainViewModel.shared.chosenTravelInManualRecord
             
             if !isSameCountry {
                 print("firstCountry is different")
@@ -599,6 +601,9 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
             if !isSameParticipantTupleArray {
                 print("participantTupleArray is different")
+            }            
+            if !isSameChosenTravelInManualRecord {
+                print("chosenTravelInManualRecord is different")
             }
             
             return isSameCountry &&
@@ -610,7 +615,8 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 isSameCountryExpression &&
                 isSameLocationExpression &&
                 isSameVisiblePayAmount &&
-                isSameParticipantTupleArray
+                isSameParticipantTupleArray &&
+                isSameChosenTravelInManualRecord
         } else {
             // 변수 할당이 실패한 경우
             if self.firstCountry == nil {
@@ -642,6 +648,9 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
             }
             if self.firstParticipantTupleArray == nil {
                 print("firstParticipantTupleArray is nil")
+            }
+            if self.firstChosenTravelInManualRecord == nil {
+                print("firstChosenTravelInManualRecord is nil")
             }
             
             return false
