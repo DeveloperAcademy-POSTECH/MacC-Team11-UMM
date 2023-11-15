@@ -81,6 +81,7 @@ struct TravelListView: View {
                     handler.fetchAndSaveExchangeRates()
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {

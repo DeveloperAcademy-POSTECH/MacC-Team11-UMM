@@ -70,6 +70,7 @@ struct AddTravelView: View {
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var headerView: some View {
@@ -79,7 +80,7 @@ struct AddTravelView: View {
                 Spacer()
                 
                 HStack {
-                    Text("기간을 입력해주세요")
+                    Text("기간을 선택해주세요")
                         .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
                     
                     Spacer()

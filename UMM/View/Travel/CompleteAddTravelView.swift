@@ -54,7 +54,7 @@ struct CompleteAddTravelView: View {
                 })
             }
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .ignoresSafeArea(edges: .bottom)
         .onAppear {
             viewModel.fetchTravel()
             self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
@@ -64,6 +64,7 @@ struct CompleteAddTravelView: View {
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var travelSquareView: some View {
@@ -114,7 +115,7 @@ struct CompleteAddTravelView: View {
                 
                 TextField(String(viewModel.travelName ?? ""), text: $travelNM)
                     .modifier(ClearTextFieldButton(text: $travelNM))
-                    .foregroundStyle(Color.black)
+                    .font(.display1)
                     .textFieldStyle(CustomTextFieldStyle())
                     .onChange(of: travelNM) { _, newValue in
                         let maxLengthInKorean = 18
@@ -166,7 +167,7 @@ struct CompleteAddTravelView: View {
             configuration
                 .padding(10)
                 .foregroundColor(.black)
-                .frame(height: 28)
+                .frame(height: 32)
                 .background(Color.gray100)
                 .cornerRadius(6)
         }
