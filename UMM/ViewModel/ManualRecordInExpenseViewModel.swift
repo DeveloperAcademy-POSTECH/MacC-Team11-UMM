@@ -9,32 +9,6 @@ import AVFoundation
 import Combine
 import CoreLocation
 
-class LocationManagerDelegateForExpense: NSObject, CLLocationManagerDelegate {
-    var parent: ManualRecordInExpenseViewModel?
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        parent?.location = locations.first
-        CLGeocoder().reverseGeocodeLocation(locations.first!) { placemarks, error in
-            if let placemark = placemarks?.first {
-                self.parent?.placemark = placemark
-                let code = placemark.isoCountryCode ?? ""
-                let countryKey = CountryInfoModel.shared.countryResult.filter { tuple in
-                    let pairCode = tuple.value.locationNm.components(separatedBy: "-")
-                    if pairCode.count == 2 {
-                        return pairCode[1] == code
-                    } else {
-                        return false
-                    }
-                }.first?.key ?? -1
-                self.parent?.currentCountry = countryKey
-                self.parent?.currentLocation = "\(placemark.locality ?? "")"
-            } else {
-                print("ERROR: \(String(describing: error?.localizedDescription))")
-            }
-        }
-    }
-}
-
 final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     
     let viewContext = PersistenceController.shared.container.viewContext
@@ -42,22 +16,27 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     var expenseId = ObjectIdentifier(NSObject())
     
     // MARK: - 위치 정보
-    private var locationManager: CLLocationManager?
-    private var locationManagerDelegate = LocationManagerDelegateForExpense()
     var location: CLLocation?
-    var placemark: CLPlacemark?
     
     func getLocation() {
-        let locationManager = CLLocationManager()
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-        
-        locationManager.delegate = locationManagerDelegate
-        locationManagerDelegate.parent = self
-        
-        // locationManager(_:didUpdateLocations:) 메서드가 호출될 때까지 기다림.
-        while location == nil || placemark == nil {
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        location = DateGapHandler.shared.currentLocation
+        if let location {
+            CLGeocoder().reverseGeocodeLocation(location) { placemarks, _  in
+                if let newPlacemark = placemarks?.first {
+                    let code = newPlacemark.isoCountryCode ?? ""
+                    let countryKey = CountryInfoModel.shared.countryResult.filter { tuple in
+                        let pairCode = tuple.value.locationNm.components(separatedBy: "-")
+                        if pairCode.count == 2 {
+                            return pairCode[1] == code
+                        } else {
+                            return false
+                        }
+                    }.first?.key ?? -1
+                    self.currentCountry = countryKey
+                    self.currentLocation = "\(newPlacemark.locality ?? "")"
+                }
+
+            }
         }
     }
     
@@ -221,7 +200,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - not-in-string property
-    @Published var travelArray: [Travel] = []
     @Published var participantTupleArray: [(name: String, isOn: Bool)] = [("나", true)] {
         didSet {
             if let firstParticipantTupleArray = firstParticipantTupleArray {
@@ -316,7 +294,15 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
         }
     }
     
-    var currentCountry: Int = -1
+    var currentCountry: Int = -1 {
+        didSet {
+            if currentCountry != -1 {
+                if !otherCountryCandidateArray.contains(currentCountry) {
+                    otherCountryCandidateArray.append(currentCountry)
+                }
+            }
+        }
+    }
     var currentLocation: String = ""
     var otherCountryCandidateArray: [Int] = [] // passive
     
@@ -382,9 +368,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     override init() {
         super.init()
         print("ManualRecordInExpenseViewModel | init")
-        locationManager = CLLocationManager()
-        locationManager?.delegate = locationManagerDelegate
-        locationManagerDelegate.parent = self
         
         // MainViewModel의 chosenTravelInManualRecord가 변화할 때 자동으로 이루어질 일을 sink로 처리
         travelStream = travelPublisher.sink { chosenTravel in
