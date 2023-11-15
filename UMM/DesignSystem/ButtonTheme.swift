@@ -46,7 +46,7 @@ struct LargeButtonUnactive: View {
                 .frame(maxWidth: .infinity)
             
         }
-        .background(Color.gray)
+        .background(Color.gray200)
         .cornerRadius(12)
         .padding(.horizontal, 16)
         .padding(.top, 4)
@@ -155,7 +155,7 @@ struct MediumButtonUnactive: View {
                 .padding(.vertical, 14.5)
                 .frame(maxWidth: .infinity)
         }
-        .background(Color.gray)
+        .background(Color.gray200)
         .cornerRadius(12)
         .padding(.leading, 16)
         .padding(.bottom, 45)
@@ -169,12 +169,12 @@ struct NextButtonActive: View {
     
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 12) {
                 Text(title)
                     .padding(.leading, 28)
                     .padding(.vertical, 14.5)
                 Image("icon")
-                    .padding(.trailing, 24)
+                    .padding(.trailing, 20)
                     .padding(.vertical, 13)
             }
             .font(.system(size: 18, weight: .medium))
@@ -199,14 +199,14 @@ struct NextButtonUnactive: View {
                     .padding(.leading, 28)
                     .padding(.vertical, 14.5)
                 Image("icon")
-                    .padding(.trailing, 24)
+                    .padding(.trailing, 20)
                     .padding(.vertical, 13)
             }
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.white)
         
         }
-        .background(Color.gray)
+        .background(Color.gray200)
         .cornerRadius(12)
         .padding(.trailing, 16)
         .padding(.bottom, 45)
@@ -248,7 +248,7 @@ struct DoneButtonUnactive: View {
                 .padding(.vertical, 14.5)
                 .padding(.horizontal, 42)
         }
-        .background(Color.gray)
+        .background(Color.gray200)
         .cornerRadius(12)
         .padding(.trailing, 16)
         .padding(.bottom, 45)        

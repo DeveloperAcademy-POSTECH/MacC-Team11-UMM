@@ -63,6 +63,7 @@ struct AddTravelView: View {
             }
             .ignoresSafeArea(edges: .bottom)
         }
+        .ignoresSafeArea(edges: .bottom)
         .navigationDestination(isPresented: $isButtonOn) {
             AddMemberView(addViewModel: viewModel, participantArr: [""], startDate: $viewModel.startDate, endDate: $viewModel.endDate)
         }
@@ -79,7 +80,7 @@ struct AddTravelView: View {
                 Spacer()
                 
                 HStack {
-                    Text("기간을 입력해주세요")
+                    Text("기간을 선택해주세요")
                         .font(.custom(FontsManager.Pretendard.semiBold, size: 24))
                     
                     Spacer()
