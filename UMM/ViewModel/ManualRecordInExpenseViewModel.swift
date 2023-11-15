@@ -256,10 +256,8 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 currencyCandidateArray = tempCurrencyCandidateArray
             }
             
-            if currency == 4 && country != 3 { // 미국 달러, !미국
-                return
-            } else if currency == 0 && country != 0 { // 한국 원, !한국
-                return
+            if currencyCandidateArray.contains(currency) || currency == 0 || currency == 4 {
+                _ = 0
             } else {
                 currency = currencyCandidateArray.first ?? 4
             }

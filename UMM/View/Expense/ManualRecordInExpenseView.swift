@@ -132,15 +132,23 @@ struct ManualRecordInExpenseView: View {
             viewModel.category = given_infoCategory
             viewModel.paymentMethod = given_paymentMethod
             viewModel.soundRecordData = given_soundRecordData
+            viewModel.country = given_country
             viewModel.currency = given_currency
             viewModel.payDate = given_payDate ?? Date()
-            viewModel.country = given_country
             viewModel.locationExpression = given_location ?? ""
             viewModel.expenseId = given_id
             
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
-            viewModel.visiblePayAmount = given_payAmount == -1 ? "" : String(given_payAmount)
+            if given_payAmount == -1 {
+                viewModel.visiblePayAmount = ""
+            } else {
+                if abs((given_payAmount - floor(given_payAmount))) < 0.0000001 {
+                    viewModel.visiblePayAmount = String(format: "%.0f", given_payAmount)
+                } else {
+                    viewModel.visiblePayAmount = String(given_payAmount)
+                }
+            }
 
             DispatchQueue.main.async {
                 MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel

@@ -102,8 +102,16 @@ struct ManualRecordView: View {
             viewModel.wantToActivateAutoSaveTimer = given_wantToActivateAutoSaveTimer
             
             if given_wantToActivateAutoSaveTimer { // 녹음 버튼으로 진입한 경우
-                
-                viewModel.visiblePayAmount = given_payAmount == -1 ? "" : String(given_payAmount)
+                                
+                if given_payAmount == -1 {
+                    viewModel.visiblePayAmount = ""
+                } else {
+                    if abs((given_payAmount - floor(given_payAmount))) < 0.0000001 {
+                        viewModel.visiblePayAmount = String(format: "%.0f", given_payAmount)
+                    } else {
+                        viewModel.visiblePayAmount = String(given_payAmount)
+                    }
+                }
                 
                 viewModel.visibleInfo = given_info == nil ? "" : given_info!
                 viewModel.category = given_infoCategory
@@ -154,7 +162,9 @@ struct ManualRecordView: View {
             
             // MARK: - get location
             
-            viewModel.getLocation()
+            viewModel.getLocation {
+                viewModel.setInitialCurrency()
+            }
         }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .onDisappear {
