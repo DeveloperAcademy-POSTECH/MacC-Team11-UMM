@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct UMMApp: App {
     let tempSave = TempSave.shared
+    let numberFormatterHandler = NumberFormatterHandler.shared
     
     var body: some Scene {
         WindowGroup {
