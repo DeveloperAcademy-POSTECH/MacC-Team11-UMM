@@ -165,7 +165,8 @@ struct AllExpenseDetailView: View {
             let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
             let groupedByDate = Dictionary(grouping: sortedExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) }) // 날짜별로 그룹화
             
-            ForEach(groupedByDate.keys.sorted(by: >), id: \.self) { date in
+            let dateKeys = groupedByDate.keys.sorted(by: >) // 날짜 키 배열 생성
+            ForEach(Array(dateKeys.enumerated()), id: \.element) { index, date in
                 if let expensesForDate = groupedByDate[date] {
                     
                     let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date)
@@ -265,7 +266,9 @@ struct AllExpenseDetailView: View {
                         .padding(.horizontal, 20)
                         .padding(.bottom, 20)
                     }
-                    customDividerByDay
+                    if index != dateKeys.count - 1 {
+                        customDividerByDay
+                    }
                 }
             }
         }
