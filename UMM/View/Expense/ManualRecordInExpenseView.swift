@@ -389,7 +389,7 @@ struct ManualRecordInExpenseView: View {
                             .foregroundStyle(.gray100)
                             .layoutPriority(-1)
                         
-                        TextField("소비 내역을 입력해 주세요", text: $viewModel.visibleInfo)
+                        TextField("소비 내역을 입력해주세요", text: $viewModel.visibleInfo)
                             .lineLimit(nil)
                             .foregroundStyle(.black)
                             .font(.body3)
@@ -716,7 +716,7 @@ struct ManualRecordInExpenseView: View {
                                     .foregroundStyle(.gray100)
                                     .layoutPriority(-1)
                                 
-                                TextField("상세 위치를 입력해 주세요", text: $viewModel.locationExpression)
+                                TextField("상세 위치를 입력해주세요", text: $viewModel.locationExpression)
                                     .lineLimit(nil)
                                     .foregroundStyle(.black)
                                     .font(.body3)

@@ -94,9 +94,10 @@ struct TravelItemView: View {
                                         .font(.caption2)
                                         .foregroundStyle(Color.white.opacity(0.75))
                                 } else {
-                                    Text("")
+                                    Text("미정")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.white.opacity(0.75))
                                 }
-                                
                             }
                             .padding(.horizontal, 8)
                             .padding(.bottom, 8)

@@ -66,6 +66,7 @@ struct TravelListView: View {
                     
                 TravelTabView()
             }
+            .ignoresSafeArea(edges: .bottom)
             .onAppear {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
@@ -98,6 +99,7 @@ struct TravelListView: View {
                 }
             }
         }
+        .ignoresSafeArea(edges: .bottom)
     }
     
     private var titleHeader: some View {
@@ -138,7 +140,7 @@ struct TravelListView: View {
                             defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
                             koreanNM: self.countryName
                         ), label: {
-                            ZStack(alignment: .top) {
+                            ZStack(alignment: .top) { 
                                 
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -222,7 +224,7 @@ struct TravelListView: View {
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 .padding(.leading, 16)
                                             
-                                            Text(" ~ ")
+                                            Text("~ ")
                                                 .font(.subhead2_2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                             
@@ -231,7 +233,9 @@ struct TravelListView: View {
                                                     .font(.subhead2_2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                             } else {
-                                                Text("")
+                                                Text("미정")
+                                                    .font(.subhead2_2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
                                             }
                                         }
                                         

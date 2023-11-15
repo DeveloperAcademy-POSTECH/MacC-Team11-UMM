@@ -37,7 +37,7 @@ struct AddMemberView: View {
                 .padding(.bottom, 45)
             
             selectBoxView
-                .padding(.bottom, 26)
+                .padding(.bottom, 12)
             
             isTogetherView
             
@@ -147,50 +147,50 @@ struct AddMemberView: View {
     private var isTogetherView: some View {
         
         VStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                if self.isSelectedTogether == true {
-                    HStack {
+            if self.isSelectedTogether == true {
+                
+                HStack {
+                    Button {
+                        participantArr.append("")
+                    } label: {
                         ZStack {
                             Rectangle()
-                                .foregroundColor(.clear)
-                                .frame(width: 57, height: 28)
-                                .background(Color.gray100)
-                                .cornerRadius(6)
-                            
-                            Text("me")
-                                .font(.subhead2_1)
-                                .foregroundStyle(Color.gray300)
-                            +
-                            Text(" 나")
-                                .font(.subhead2_2)
                                 .foregroundStyle(Color.black)
+                                .frame(width: 32, height: 28)
+                                .cornerRadius(8)
+                            
+                            Image("plus_white")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 13, height: 13)
                         }
-                        
+                    }
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 57, height: 28)
+                                    .background(Color.gray100)
+                                    .cornerRadius(6)
+                                
+                                Text("me")
+                                    .font(.subhead2_1)
+                                    .foregroundStyle(Color.gray300)
+                                +
+                                Text(" 나")
+                                    .font(.subhead2_2)
+                                    .foregroundStyle(Color.black)
+                            }
+                            
                             participantListView
                             
-                            Button {
-                                participantArr.append("")
-                            } label: {
-                                ZStack {
-                                    Rectangle()
-                                        .foregroundStyle(Color.gray200)
-                                        .frame(width: 32, height: 28)
-                                        .cornerRadius(6)
-                                    
-                                    Image("plus_gray")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 13, height: 13)
-                                }
-                                
-                            }
                         }
                     }
                 }
-                Spacer()
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 32)
             
             Spacer()
         }
@@ -198,40 +198,35 @@ struct AddMemberView: View {
     
     private var participantListView: some View {
         HStack {
-//            if participantArr.count != 0 {
-                HStack {
-                    ForEach(0..<participantArr.count, id: \.self) { index in
-                        ZStack {
-                            Text(participantArr[index] + "이름입력")
-                                .hidden()
-                            
-                            TextField("", text: $participantArr[index])
-                                .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr, index: index))
-                                .font(.custom(FontsManager.Pretendard.medium, size: 16))
-                                .foregroundStyle(Color.black)
-                                .textFieldStyle(CustomTextFieldStyle())
-                                .onChange(of: participantArr[index]) { _, newValue in
-                                    let maxLengthInKorean = 5
-                                    let maxLengthInEnglish = 8
-                                    
-                                    let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-                                    let isEnglish = newValue.rangeOfCharacter(from: characterSet.inverted) == nil
-                                    
-                                    let maxLength = isEnglish ? maxLengthInEnglish : maxLengthInKorean
-                                    
-                                    if newValue.count > maxLength {
-                                        participantArr[index] = String(newValue.prefix(maxLength))
-                                    }
+            HStack {
+                ForEach(0..<participantArr.count, id: \.self) { index in
+                    ZStack {
+                        Text(participantArr[index] == "" ? "이름 입력아아아" : participantArr[index] + "아아아")
+                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                            .hidden()
+                        
+                        TextField("이름 입력", text: $participantArr[index])
+                            .modifier(ClearTextFieldButton(text: $participantArr[index], participantArr: $participantArr, index: index))
+                            .font(.custom(FontsManager.Pretendard.medium, size: 16))
+                            .foregroundStyle(Color.black)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .onChange(of: participantArr[index]) { _, newValue in
+                                let maxLengthInKorean = 5
+                                let maxLengthInEnglish = 8
+                                
+                                let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                                let isEnglish = newValue.rangeOfCharacter(from: characterSet.inverted) == nil
+                                
+                                let maxLength = isEnglish ? maxLengthInEnglish : maxLengthInKorean
+                                
+                                if newValue.count > maxLength {
+                                    participantArr[index] = String(newValue.prefix(maxLength))
                                 }
-                                .layoutPriority(-1)
-                        }
-                        .padding(.horizontal, 5)
+                            }
+                            .layoutPriority(-1)
                     }
                 }
-                
-//            } else {
-//                Text(" ")
-//            }
+            }
         }
     }
     
@@ -253,7 +248,7 @@ struct AddMemberView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 10, height: 10)
-                            .padding(.trailing, 15)
+                            .padding(.trailing, 8)
                     }
                 }
             }
@@ -267,7 +262,7 @@ struct AddMemberView: View {
                 .foregroundColor(.black)
                 .frame(height: 30)
                 .background(Color.gray100)
-                .cornerRadius(6)
+                .cornerRadius(8)
         }
     }
     

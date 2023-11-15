@@ -247,9 +247,15 @@ struct TravelDetailView: View {
                                 .foregroundStyle(Color.white)
                         }
                     } else {
-                        Text("00.00.00 (수)")
-                            .font(.body4)
-                            .hidden()
+                        ZStack(alignment: .leading) {
+                            Text("00.00.00 (수)")
+                                .font(.body4)
+                                .hidden()
+                            
+                            Text("미정")
+                                .font(.body4)
+                                .foregroundStyle(Color.white)
+                        }
                     }
                 }
                 
