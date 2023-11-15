@@ -25,7 +25,7 @@ struct AddTravelRequestModal: View {
     }
     
     private var descriptionView: some View {
-        Text("현재 진행 중인 여행이 없어요.\n여행을 생성할까요?")
+        Text("현재 생성된 여행이 없어요.\n여행을 생성할까요?")
             .foregroundStyle(.black)
             .font(.display1)
             .multilineTextAlignment(.center)
@@ -35,6 +35,7 @@ struct AddTravelRequestModal: View {
     private var twoButtonsView: some View {
         HStack {
             MediumButtonUnactive(title: "임시 기록하기") {
+                viewModel.isExplicitTempRecord = true
                 viewModel.addTravelRequestModalIsShown = false
             }
             MediumButtonActive(title: "여행 생성하기") {

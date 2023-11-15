@@ -11,18 +11,14 @@ import SwiftUI
 class MainViewModel: ObservableObject {
     
     static let shared = MainViewModel()
-    
+
     // didSet으로 selection == 2일 때, default
     @Published var selection: Int = 1
     @Published var selectedTravel: Travel? {
         didSet {
             if selectedTravel?.name != tempTravelName {
                 if selectedTravel != selectedTravelInExpense {
-                    if let selectedTravel = selectedTravel, selectedTravel.name == tempTravelName {
-                        self.selectedTravelInExpense = findCurrentTravel()
-                    } else {
-                        updateSelectedTravelInExpense()
-                    }
+                    updateSelectedTravelInExpense()
                 }
             }
         }
@@ -39,8 +35,8 @@ class MainViewModel: ObservableObject {
     
     private init() {
         print("mainViewModel init")
-        selectedTravel = findCurrentTravel()
-        selectedTravelInExpense = findCurrentTravel()
+        selectedTravelInExpense = findInitialTravelInExpense()
+        selectedTravel = findCurrentTravel() // defaultTravel이면 selectedTravelInExpense를 업데이트하지 않는다.
     }
     
     func navigationToRecordView() {

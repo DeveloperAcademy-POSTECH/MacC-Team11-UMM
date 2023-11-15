@@ -15,7 +15,7 @@ struct RecordView: View {
     
     let recordButtonAnimationLength = 0.25
     
-    @ObservedObject var viewModel = RecordViewModel()
+    @StateObject var viewModel = RecordViewModel()
     @EnvironmentObject var mainVM: MainViewModel
     
     @GestureState private var isDetectingPress = false
@@ -94,9 +94,10 @@ struct RecordView: View {
             .onAppear {
                 viewModel.resetInStringProperties()
                 viewModel.wantToActivateAutoSaveTimer = true
-                if let foundTravelName = findCurrentTravel()?.name {
-                    if foundTravelName == tempTravelName {
-                        viewModel.addTravelRequestModalIsShown = true
+                viewModel.recordButtonResetTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                    if !isDetectingPress {
+                        viewModel.stopSTT()
+                        viewModel.stopRecording()
                     }
                 }
                 
@@ -108,6 +109,20 @@ struct RecordView: View {
                 fraction1NumberFormatter.maximumFractionDigits = 1
                 fraction2NumberFormatter.numberStyle = .decimal
                 fraction2NumberFormatter.maximumFractionDigits = 2
+                
+                // MARK: - decide record button action
+                
+                let sampleTravel = findInitialTravelInExpense()
+                if let sampleTravel, let name = sampleTravel.name {
+                    if name == tempTravelName {
+                        viewModel.AreThereOtherTravels = false
+                    } else {
+                        viewModel.AreThereOtherTravels = true
+                    }
+                }
+            }
+            .onDisappear {
+                viewModel.recordButtonResetTimer?.invalidate()
             }
             .sheet(isPresented: $viewModel.travelChoiceModalIsShown) {
                 if viewModel.travelChoiceModalIsShown {
@@ -122,19 +137,15 @@ struct RecordView: View {
                     .presentationDetents([.height(247 - 34)])
             }
             .navigationDestination(isPresented: $viewModel.manualRecordViewIsShown) {
-                if viewModel.manualRecordViewIsShown {
-                    ManualRecordView(
-                        given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
-                        given_payAmount: viewModel.payAmount,
-                        given_info: viewModel.info,
-                        given_infoCategory: viewModel.infoCategory,
-                        given_paymentMethod: viewModel.paymentMethod,
-                        given_soundRecordFileName: viewModel.soundRecordFileName
-                    )
-                        .environmentObject(mainVM)
-                } else {
-                    EmptyView()
-                }
+                ManualRecordView(
+                    given_wantToActivateAutoSaveTimer: viewModel.wantToActivateAutoSaveTimer,
+                    given_payAmount: viewModel.payAmount,
+                    given_info: viewModel.info,
+                    given_infoCategory: viewModel.infoCategory,
+                    given_paymentMethod: viewModel.paymentMethod,
+                    given_soundRecordFileName: viewModel.soundRecordFileName
+                )
+                .environmentObject(mainVM)
             }
         }
     }
@@ -154,6 +165,7 @@ struct RecordView: View {
                 
                 HStack(spacing: 12) {
                     Text(mainVM.selectedTravel?.name != tempTravelName ? mainVM.selectedTravel?.name ?? "-" : "임시 기록")
+                        .lineLimit(1)
                         .font(.subhead2_2)
                         .foregroundStyle(mainVM.selectedTravel?.name != tempTravelName ? .black : .gray400)
                     Image("recordTravelChoiceDownChevron")
@@ -177,7 +189,7 @@ struct RecordView: View {
                 .padding(.vertical, 36)
                 .hidden()
             
-            if !isDetectingPress {
+            if !isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
                 VStack {
                     Text("지출 내역을 말해주세요")
                         .foregroundStyle(.gray300)
@@ -282,8 +294,8 @@ struct RecordView: View {
                         .frame(width: 24, height: 24)
                     Spacer()
                         .frame(width: 12)
-                    let isClean0 = abs(viewModel.payAmount - Double(Int(viewModel.payAmount))) < 0.0000001
-                    let isClean1 = abs(viewModel.payAmount * 10.0 - Double(Int(viewModel.payAmount * 10.0))) < 0.0000001
+                    let isClean0 = abs(viewModel.payAmount - floor(viewModel.payAmount)) < 0.0000001
+                    let isClean1 = abs(viewModel.payAmount * 10.0 - floor(viewModel.payAmount * 10.0)) < 0.0000001
                     Group {
                         if isClean0 {
                             if let formattedString = fraction0NumberFormatter.string(from: NSNumber(value: viewModel.payAmount)) {
@@ -427,7 +439,7 @@ struct RecordView: View {
                 .padding(.vertical, 9.5)
                 .padding(.horizontal, 16)
         }
-        .opacity(isDetectingPress ? 0.000001 : 1)
+        .opacity(!isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) ? 1 : 0.0000001)
         .disabled(isDetectingPress)
     }
     
@@ -452,28 +464,33 @@ struct RecordView: View {
                 // 녹음 시작 (지점 1: 녹음 끝과 순서 뒤집히는 오류 발생 가능)
             } else if oldValue && !newValue {
                 // 녹음 끝
-                viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
-                isDetectingPress_letButtonBigger = false
-                viewModel.stopSTT()
-                viewModel.stopRecording()
-                print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
-                if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
-                    DispatchQueue.main.async {
-                        viewModel.alertView_shortIsShown = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        viewModel.resetInStringProperties()
-                    }
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        if viewModel.info == nil && viewModel.payAmount == -1 {
-                            viewModel.resetTranscribedString()
-                            viewModel.alertView_emptyIsShown = true
+                
+                if viewModel.AreThereOtherTravels || viewModel.isExplicitTempRecord {
+                    viewModel.endRecordTime = CFAbsoluteTimeGetCurrent()
+                    isDetectingPress_letButtonBigger = false
+                    viewModel.stopSTT()
+                    viewModel.stopRecording()
+                    print("time diff: \(viewModel.endRecordTime - viewModel.startRecordTime)")
+                    if Double(viewModel.endRecordTime - viewModel.startRecordTime) < 1.5 {
+                        DispatchQueue.main.async {
+                            viewModel.alertView_shortIsShown = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             viewModel.resetInStringProperties()
-                        } else {
-                            viewModel.manualRecordViewIsShown = true
+                        }
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            if viewModel.info == nil && viewModel.payAmount == -1 {
+                                viewModel.resetTranscribedString()
+                                viewModel.alertView_emptyIsShown = true
+                                viewModel.resetInStringProperties()
+                            } else {
+                                viewModel.manualRecordViewIsShown = true
+                            }
                         }
                     }
+                } else {
+                    _ = 0
                 }
             }
         }
@@ -487,24 +504,31 @@ struct RecordView: View {
                 case .second(true, nil):
                     // 녹음 시작 (지점 2: Publishing changes from within view updates 오류 발생 가능)
                     state = true
-                    viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
-                    Task {
-                        await viewModel.startRecording()
-                    }
-                    DispatchQueue.main.async {
-                        do {
-                            try viewModel.startSTT()
-                        } catch {
-                            print("error starting record: \(error.localizedDescription)")
-                        }
-                    }
                     
-                    DispatchQueue.main.async {
-                        isDetectingPress_showOnButton = true
-                        viewModel.alertView_emptyIsShown = false
-                        viewModel.alertView_shortIsShown = false
-                        viewModel.recordButtonIsFocused = true
-                        viewModel.wantToActivateAutoSaveTimer = true
+                    if viewModel.AreThereOtherTravels || viewModel.isExplicitTempRecord {
+                        viewModel.startRecordTime = CFAbsoluteTimeGetCurrent()
+                        Task {
+                            await viewModel.startRecording()
+                        }
+                        DispatchQueue.main.async {
+                            do {
+                                try viewModel.startSTT()
+                            } catch {
+                                print("error starting record: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        DispatchQueue.main.async {
+                            isDetectingPress_showOnButton = true
+                            viewModel.alertView_emptyIsShown = false
+                            viewModel.alertView_shortIsShown = false
+                            viewModel.recordButtonIsFocused = true
+                            viewModel.wantToActivateAutoSaveTimer = true
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            viewModel.addTravelRequestModalIsShown = true
+                        }
                     }
                     
                 default:

@@ -305,6 +305,7 @@ struct AddMemberView: View {
                         viewModel.travelID = travelID
                         viewModel.addTravel()
                         viewModel.saveTravel()
+                        viewModel.updateSelectedTravels()
                     }
                     isDisappear = true
                 })

@@ -15,7 +15,7 @@ struct DateChoiceModal: View {
     var body: some View {
         VStack(spacing: 0) {
             titleView
-            DatePicker("", selection: $date, in: startDate...endDate, displayedComponents: [.date, .hourAndMinute])
+            DatePicker("", selection: $date, displayedComponents: [.date, .hourAndMinute])
                     .labelsHidden()
                     .datePickerStyle(WheelDatePickerStyle())
         }
