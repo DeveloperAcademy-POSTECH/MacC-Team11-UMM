@@ -233,7 +233,9 @@ struct TravelListView: View {
                                                     .font(.subhead2_2)
                                                     .foregroundStyle(Color.white.opacity(0.75))
                                             } else {
-                                                Text("")
+                                                Text("미정")
+                                                    .font(.subhead2_2)
+                                                    .foregroundStyle(Color.white.opacity(0.75))
                                             }
                                         }
                                         
