@@ -99,6 +99,7 @@ struct ExpenseView: View {
                         
                         HStack(spacing: 12) {
                             Text(mainVM.selectedTravelInExpense?.name != tempTravelName ? mainVM.selectedTravelInExpense?.name ?? "-" : "-")
+                                .lineLimit(1)
                                 .font(.subhead2_2)
                                 .foregroundStyle(.black)
                             Image("recordTravelChoiceDownChevron")

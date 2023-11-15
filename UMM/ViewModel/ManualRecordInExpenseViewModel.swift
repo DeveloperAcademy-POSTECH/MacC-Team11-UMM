@@ -236,7 +236,6 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 firstCountry = country
             }
             countryExpression = "\(CountryInfoModel.shared.countryResult[country]?.koreanNm ?? CountryInfoModel.shared.countryResult[-1]!.koreanNm)"
-            locationExpression = ""
             
             if country == 3 { // 미국
                 currencyCandidateArray = [4, 0] // 미국 달러, 한국 원
@@ -342,7 +341,13 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
     @Published var dateChoiceModalIsShown = false
     @Published var backButtonAlertIsShown = false
     @Published var addingParticipant = false
-    @Published var countryIsModified = false
+    @Published var countryIsModified = false {
+        didSet {
+            if countryIsModified {
+                locationExpression = ""
+            }
+        }
+    }
     @Published var playingRecordSound = false
     @Published var isSameData = true {
         didSet {
@@ -395,16 +400,8 @@ final class ManualRecordInExpenseViewModel: NSObject, ObservableObject {
                 }
                 
                 var expenseArray: [Expense] = []
-                do {
-                    try expenseArray = self.viewContext.fetch(Expense.fetchRequest()).filter { expense in
-                        if let belongTravel = expense.travel {
-                            return belongTravel.id == chosenTravel.id
-                        } else {
-                            return false
-                        }
-                    }
-                } catch {
-                    print("error fetching expenses: \(error.localizedDescription)")
+                if let expenseArrayOfChosenTravel = chosenTravel.expenseArray {
+                    expenseArray = expenseArrayOfChosenTravel.allObjects as? [Expense] ?? []
                 }
                 self.otherCountryCandidateArray = Array(Set(expenseArray.map { Int($0.country) })).sorted()
             } else {
