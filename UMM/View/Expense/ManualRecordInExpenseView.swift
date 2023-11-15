@@ -150,18 +150,16 @@ struct ManualRecordInExpenseView: View {
                 }
             }
 
-            DispatchQueue.main.async {
-                MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
-                
-                if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
-                    viewModel.participantTupleArray = participantArray.map { participant in
-                        let isSelected = given_expense.participantArray?.contains(participant) ?? false
-                        return (name: participant, isOn: isSelected)
-                    }
-                } else {
-                    print("ManualRecordInExpenseView | else")
-                    viewModel.participantTupleArray = [(name: "나", isOn: true)]
+            MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
+            
+            if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
+                viewModel.participantTupleArray = participantArray.map { participant in
+                    let isSelected = given_expense.participantArray?.contains(participant) ?? false
+                    return (name: participant, isOn: isSelected)
                 }
+            } else {
+                print("ManualRecordInExpenseView | else")
+                viewModel.participantTupleArray = [(name: "나", isOn: true)]
             }
 
             viewModel.soundRecordData = given_soundRecordData
