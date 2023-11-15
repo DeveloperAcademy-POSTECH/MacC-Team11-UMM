@@ -16,8 +16,8 @@ struct CompleteAddTravelView: View {
     @ObservedObject var memberViewModel: AddMemberViewModel
     @Binding var travelID: UUID
     @State var travelNM: String
+    @State var participantArr: [String]
     @State var selectedTravel: [Travel]?
-    @Binding var isDisappear: Bool
     
     var body: some View {
         VStack {
@@ -35,6 +35,7 @@ struct CompleteAddTravelView: View {
                 MediumButtonStroke(title: "여행 확인하기", action: {
                     // 선택값 초기화
                     selectedTravel?.first?.name = travelNM
+                    selectedTravel?.first?.participantArray = participantArr
                     mainVM.selectedTravel = self.selectedTravel?.first
                     viewModel.saveTravel()
                     NavigationUtil.popToRootView()
@@ -44,30 +45,21 @@ struct CompleteAddTravelView: View {
                 
                 MediumButtonActive(title: "지출 기록하기", action: {
                     selectedTravel?.first?.name = travelNM
+                    selectedTravel?.first?.participantArray = participantArr
                     mainVM.selectedTravel = self.selectedTravel?.first
                     viewModel.saveTravel()
                     NavigationUtil.popToRootView()
                     mainVM.navigationToRecordView()
-                    DispatchQueue.main.async {
-                        mainVM.selectedTravel = self.selectedTravel?.first
-                    }
                 })
             }
         }
         .ignoresSafeArea(edges: .bottom)
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                viewModel.fetchTravel()
-                self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
-                self.travelNM = memberViewModel.travelName ?? "제목 미정"
-            }
-        }
-//        .onDisappear {
-//            selectedTravel?.first?.name = travelNM
-//            mainVM.selectedTravel = self.selectedTravel?.first
-//            viewModel.saveTravel()
-//        }
-        .navigationTitle("새로운 여행 생성")
+            viewModel.fetchTravel()
+            self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
+            self.travelNM = memberViewModel.travelName ?? "제목 미정"
+            self.participantArr = memberViewModel.participantArr ?? ["me"]
+        }        .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
     }
     

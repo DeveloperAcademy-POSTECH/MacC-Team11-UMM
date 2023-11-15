@@ -61,20 +61,23 @@ struct TravelListView: View {
                 }
                 
                 tempTravelView
+                    .padding(.top, 12)
                     .offset(y: -18)
-                
+                    
                 TravelTabView()
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    viewModel.fetchTravel()
-                    viewModel.fetchExpense()
-                    viewModel.fetchDefaultTravel()
-                    self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
-                    self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
-                    self.travelCount = Int(nowTravel?.count ?? 0)
-                    self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
-                    self.defaultTravel = viewModel.findTravelNameDefault()
+                viewModel.fetchTravel()
+                viewModel.fetchExpense()
+                viewModel.fetchDefaultTravel()
+                self.nowTravel = viewModel.filterTravelByDate(todayDate: Date())
+                self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
+                self.travelCount = Int(nowTravel?.count ?? 0)
+                self.defaultTravelCnt = Int(defaultExpense?.count ?? 0)
+                self.defaultTravel = viewModel.findTravelNameDefault()
+                let loadedData = handler.loadExchangeRatesFromUserDefaults()
+                if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
+                    handler.fetchAndSaveExchangeRates()
                 }
             }
             .toolbar {
@@ -263,47 +266,44 @@ struct TravelListView: View {
                                 
                             }
                             .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                    
-                                    self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravelWithDummy?[index].id ?? UUID())
-                                    self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
-                                    
-                                    if let savedExpenses = savedExpenses {
-                                        let countryValues: [Int64] = savedExpenses.map { expense in
-                                            return viewModel.getCountryForExpense(expense)
-                                        }
-                                        let uniqueCountryValues = Array(Set(countryValues))
-                                        
-                                        var flagImageNames: [String] = []
-                                        var defaultImage: [String] = []
-                                        var koreanName: [String] = []
-                                        
-                                        for countryValue in uniqueCountryValues {
-                                            
-                                            if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
-                                                flagImageNames.append(flagString)
-                                            } else {
-                                                flagImageNames.append("DefaultFlag")
-                                            }
-                                            
-                                            if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
-                                                defaultImage.append(defaultString)
-                                            } else {
-                                                defaultImage.append("DefaultImage")
-                                            }
-                                            
-                                            if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
-                                                koreanName.append(koreanString)
-                                            } else {
-                                                koreanName.append("")
-                                            }
-                                        }
-                                        
-                                        self.flagImageName = flagImageNames
-                                        self.defaultImageName = defaultImage
-                                        self.countryName = koreanName
-                                        print("defaultImageName :", defaultImageName)
+                                self.savedExpenses = viewModel.filterExpensesByTravel(selectedTravelID: nowTravelWithDummy?[index].id ?? UUID())
+                                self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
+                                
+                                if let savedExpenses = savedExpenses {
+                                    let countryValues: [Int64] = savedExpenses.map { expense in
+                                        return viewModel.getCountryForExpense(expense)
                                     }
+                                    let uniqueCountryValues = Array(Set(countryValues))
+                                    
+                                    var flagImageNames: [String] = []
+                                    var defaultImage: [String] = []
+                                    var koreanName: [String] = []
+                                    
+                                    for countryValue in uniqueCountryValues {
+                                        
+                                        if let flagString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.flagString {
+                                            flagImageNames.append(flagString)
+                                        } else {
+                                            flagImageNames.append("DefaultFlag")
+                                        }
+                                        
+                                        if let defaultString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.defaultImageString {
+                                            defaultImage.append(defaultString)
+                                        } else {
+                                            defaultImage.append("DefaultImage")
+                                        }
+                                        
+                                        if let koreanString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.koreanNm {
+                                            koreanName.append(koreanString)
+                                        } else {
+                                            koreanName.append("")
+                                        }
+                                    }
+                                    
+                                    self.flagImageName = flagImageNames
+                                    self.defaultImageName = defaultImage
+                                    self.countryName = koreanName
+                                    print("defaultImageName :", defaultImageName)
                                 }
                             }
                         })

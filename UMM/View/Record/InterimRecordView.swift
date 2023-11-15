@@ -19,6 +19,7 @@ struct InterimRecordView: View {
     @State var selectedTravelIndex = 0
     
     @State var isSelectedTravel = false
+    
     @Binding var defaultTravelCnt: Int
     
     @ObservedObject private var viewModel = InterimRecordViewModel()
@@ -42,6 +43,7 @@ struct InterimRecordView: View {
             } else {
                 LargeButtonActive(title: "확인", action: {
                     viewModel.chosenExpense = defaultExpense?[selectedTravelIndex]
+                    viewModel.update()
                     NavigationUtil.popToRootView()
                 })
             }
@@ -51,19 +53,19 @@ struct InterimRecordView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: backButton)
         .onAppear {
-            DispatchQueue.main.async {
+//            DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
                 self.defaultExpense = viewModel.filterDefaultExpense(selectedTravelName: tempTravelName)
                 self.defaultExpense = sortExpenseByDate(expenseArr: defaultExpense)
-            }
+//            }
         }
-        .onDisappear {
-            // ViewModel의 Save함수가 실행됨
-            DispatchQueue.main.async {
-                viewModel.update()
-            }
-        }
+//        .onDisappear {
+//            // ViewModel의 Save함수가 실행됨
+//            DispatchQueue.main.async {
+//                viewModel.update()
+//            }
+//        }
     }
     
     private var titleHeader: some View {

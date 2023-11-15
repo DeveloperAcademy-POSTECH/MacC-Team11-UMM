@@ -296,6 +296,7 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
         expense.info = info
         expense.location = locationExpression
         expense.participantArray = participantTupleArray.filter { $0.1 == true }.map { $0.0 }
+        print("ManualRecordView | expense.participantArray: \(String(describing: expense.participantArray))")
         expense.payAmount = payAmount
         expense.payDate = DateGapHandler.shared.convertBeforeSaving(date: payDate)
         expense.paymentMethod = Int64(paymentMethod.rawValue)

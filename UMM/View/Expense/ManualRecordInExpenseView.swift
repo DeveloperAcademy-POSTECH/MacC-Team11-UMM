@@ -161,11 +161,15 @@ struct ManualRecordInExpenseView: View {
             }
 
             if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
-                viewModel.participantTupleArray = [("나", true)] + participantArray.map { ($0, true) }
+                viewModel.participantTupleArray = participantArray.map { participant in
+                    let isSelected = given_expense.participantArray?.contains(participant) ?? false
+                    return (name: participant, isOn: isSelected)
+                }
             } else {
-                viewModel.participantTupleArray = [("나", true)]
+                print("ManualRecordInExpenseView | else")
+                viewModel.participantTupleArray = [(name: "나", isOn: true)]
             }
-            
+
             // 초기값
             MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
             
