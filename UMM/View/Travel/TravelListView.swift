@@ -224,7 +224,7 @@ struct TravelListView: View {
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                                 .padding(.leading, 16)
                                             
-                                            Text(" ~ ")
+                                            Text("~ ")
                                                 .font(.subhead2_2)
                                                 .foregroundStyle(Color.white.opacity(0.75))
                                             
