@@ -152,7 +152,7 @@ struct ManualRecordInExpenseView: View {
             MainViewModel.shared.chosenTravelInManualRecord = given_expense.travel
             
             if let participantArray = MainViewModel.shared.chosenTravelInManualRecord?.participantArray {
-                viewModel.participantTupleArray = participantArray.map { participant in
+                viewModel.participantTupleArray = (["나"] + participantArray).map { participant in
                     let isSelected = given_expense.participantArray?.contains(participant) ?? false
                     return (name: participant, isOn: isSelected)
                 }
