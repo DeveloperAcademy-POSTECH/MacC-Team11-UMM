@@ -14,15 +14,16 @@ struct SettingView: View {
     let appID = 6470182505
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     @State private var isLatestVersion = false
-
+    
     var body: some View {
         List {
             defaultSetting
             feedbackAndQuestion
             essentialSetting
             appVersionCheck
-//            deleteAll
+            //            deleteAll
         }
+        .toolbar(.hidden, for: .tabBar)
         .navigationTitle("설정")
         .navigationBarBackButtonHidden(true)
         .listStyle(.insetGrouped)
@@ -119,7 +120,7 @@ struct SettingView: View {
             }
         })
     }
-
+    
     private func appUpdateButton(title: String, target: String) -> some View {
         return Button(action: {
             if let url = URL(string: target) {
