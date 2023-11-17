@@ -27,7 +27,6 @@ struct TravelButtonView: View {
 //    private func onTravelSelected() {
 //        isSelected.toggle()
 //        
-//        // 여행이 선택되었을 때 추가로 수행해야 할 로직이 있다면 여기에 추가
 //        viewModel.chosenTravel = isSelected ? travel : nil
 //        if chosenTravel == travel {
 //            chosenTravel = nil

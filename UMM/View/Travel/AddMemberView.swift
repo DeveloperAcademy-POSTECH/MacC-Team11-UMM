@@ -285,13 +285,18 @@ struct AddMemberView: View {
                         viewModel.endDate = endDate?.local235959().convertBeforeSaving()
                         
                         // 여행 이름
+                        participantArr = viewModel.filterEmptyStrings(participantArr)
+                    
                         if participantArr.count == 1 && self.isSelectedTogether == true {
                             viewModel.travelName = "\(participantArr[0])님과의 여행"
                             viewModel.participantArr = participantArr
-                        } else if participantArr.count == 1 && self.isSelectedAlone == true {
-                            let updateArr = Array(participantArr.dropLast())
-                            viewModel.participantArr = updateArr
+                        } else if participantArr.count == 0 && self.isSelectedAlone == true {
+//                            let updateArr = Array(participantArr.dropLast())
+                            viewModel.participantArr = participantArr
                             viewModel.travelName = "나의 여행"
+                        } else if participantArr.count == 0 {
+                            viewModel.travelName = "나의 여행l"
+                            viewModel.participantArr = participantArr
                         } else {
                             viewModel.travelName = "\(participantArr[0]) 외 \(participantArr.count)명의 여행"
                             viewModel.participantArr = participantArr

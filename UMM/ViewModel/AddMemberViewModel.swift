@@ -53,4 +53,8 @@ class AddMemberViewModel: ObservableObject {
         
         MainViewModel.shared.selectedTravel = newTravel
     }
+    
+    func filterEmptyStrings(_ array: [String]) -> [String] {
+        return array.filter { !$0.isEmpty }
+    }
 }
