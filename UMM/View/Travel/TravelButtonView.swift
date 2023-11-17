@@ -23,11 +23,29 @@ struct TravelButtonView: View {
     
     let dateGapHandler = DateGapHandler.shared
     
+//    @State private var isSelected: Bool = false
+//    private func onTravelSelected() {
+//        isSelected.toggle()
+//        
+//        // 여행이 선택되었을 때 추가로 수행해야 할 로직이 있다면 여기에 추가
+//        viewModel.chosenTravel = isSelected ? travel : nil
+//        if chosenTravel == travel {
+//            chosenTravel = nil
+//        } else {
+//            chosenTravel = travel
+//        }
+//        isSelectedTravel = (chosenTravel != nil)
+//    }
+    
     var body: some View {
         VStack {
             Button {
-                chosenTravel = travel
-                isSelectedTravel = true
+                if chosenTravel == travel {
+                    chosenTravel = nil
+                } else {
+                    chosenTravel = travel
+                }
+                isSelectedTravel = (chosenTravel != nil)
                 viewModel.chosenTravel = chosenTravel
             } label: {
                 ZStack {
@@ -55,7 +73,7 @@ struct TravelButtonView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             Button {
-                                chosenTravel = travel
+                                
                             } label: {
                                 if chosenTravel != travel {
                                     Circle()
@@ -176,6 +194,11 @@ struct TravelButtonView: View {
                 .font(.subhead1)
                 .lineLimit(1)
         }
+//        .onChange(of: chosenTravel) { _, newChosenTravel in
+//            if newChosenTravel != travel {
+//                chosenTravel = nil
+//            }
+//        }
     }
 }
 
