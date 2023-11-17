@@ -295,7 +295,7 @@ struct AddMemberView: View {
                             viewModel.participantArr = participantArr
                             viewModel.travelName = "나의 여행"
                         } else if participantArr.count == 0 {
-                            viewModel.travelName = "나의 여행l"
+                            viewModel.travelName = "나의 여행"
                             viewModel.participantArr = participantArr
                         } else {
                             viewModel.travelName = "\(participantArr[0]) 외 \(participantArr.count)명의 여행"

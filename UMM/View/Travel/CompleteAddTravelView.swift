@@ -98,7 +98,7 @@ struct CompleteAddTravelView: View {
                             if let endDate = selectedTravel?.first?.endDate {
                                 Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
                             } else {
-                                Text("")
+                                Text("미정")
                             }
                         }
                         .font(.custom(FontsManager.Pretendard.medium, size: 20))
