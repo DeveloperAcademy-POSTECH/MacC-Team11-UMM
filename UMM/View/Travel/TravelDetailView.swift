@@ -171,27 +171,39 @@ struct TravelDetailView: View {
                 .font(.subhead1)
                 .foregroundStyle(Color.white)
             
-            HStack {
-                
-                ForEach(0..<koreanNM.count, id: \.self) { index in
+            if koreanNM.count > 0 {
+                HStack {
                     
-                    HStack {
-                        Image(flagImageArr[index])
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                    ForEach(0..<koreanNM.count, id: \.self) { index in
                         
-                        Text(koreanNM[index])
-                            .font(.body2)
-                            .foregroundStyle(Color.white)
+                        HStack {
+                            Image(flagImageArr[index])
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                            
+                            Text(koreanNM[index])
+                                .font(.body2)
+                                .foregroundStyle(Color.white)
+                        }
+                        
+                        .padding(.trailing, 18)
+                        
                     }
                     
-                    .padding(.trailing, 18)
-                    
+                    Spacer()
                 }
-                
-                Spacer()
+                .padding(.vertical, 20)
+            } else {
+                HStack {
+                    Text("지출 기록 시 자동으로 국가가 등록됩니다.")
+                        .font(.body2)
+                        .foregroundStyle(Color.white)
+                        .frame(height: 24)
+                    
+                    Spacer()
+                }
+                .padding(.vertical, 20)
             }
-            .padding(.vertical, 20)
             
             Rectangle()
                 .foregroundColor(.clear)
