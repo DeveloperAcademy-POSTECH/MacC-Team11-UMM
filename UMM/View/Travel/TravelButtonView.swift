@@ -46,6 +46,7 @@ struct TravelButtonView: View {
                 }
                 isSelectedTravel = (chosenTravel != nil)
                 viewModel.chosenTravel = chosenTravel
+                print("iiii \(viewModel.chosenTravel)")
             } label: {
                 ZStack {
                     if let imageString = {
@@ -74,7 +75,7 @@ struct TravelButtonView: View {
                             Button {
                                 
                             } label: {
-                                if chosenTravel != travel {
+                                if viewModel.chosenTravel != travel {
                                     Circle()
                                         .fill(.black)
                                         .opacity(0.25)
@@ -148,7 +149,7 @@ struct TravelButtonView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 110, height: 80)
                         .foregroundStyle(.gray100)
-                        .opacity(chosenTravel == travel ? 0.0 : 0.4)
+                        .opacity(viewModel.chosenTravel == travel ? 0.0 : 0.4)
                 }
                 .frame(width: 110, height: 80)
                 .onAppear {
