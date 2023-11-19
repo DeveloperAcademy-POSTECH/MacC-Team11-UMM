@@ -270,7 +270,7 @@ struct AddMemberView: View {
         HStack {
             Spacer()
             
-            if isSelectedTogether == true && participantArr.count == 0 {
+            if isSelectedTogether == true && participantArr.count == 1 && participantArr[0] == "" {
                 DoneButtonUnactive(title: "완료", action: {
                     
                 })
@@ -291,7 +291,6 @@ struct AddMemberView: View {
                             viewModel.travelName = "\(participantArr[0])님과의 여행"
                             viewModel.participantArr = participantArr
                         } else if participantArr.count == 0 && self.isSelectedAlone == true {
-//                            let updateArr = Array(participantArr.dropLast())
                             viewModel.participantArr = participantArr
                             viewModel.travelName = "나의 여행"
                         } else if participantArr.count == 0 {
