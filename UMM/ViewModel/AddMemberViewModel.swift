@@ -57,4 +57,12 @@ class AddMemberViewModel: ObservableObject {
     func filterEmptyStrings(_ array: [String]) -> [String] {
         return array.filter { !$0.isEmpty }
     }
+    
+    func filterMeFromStrings(_ array: [String]) -> [String] {
+        return array.filter { $0 != "나" }
+    }
+    
+    func filterDuplicates(_ array: [String]) -> [String] {
+        return Array(Set(array))
+    }
 }

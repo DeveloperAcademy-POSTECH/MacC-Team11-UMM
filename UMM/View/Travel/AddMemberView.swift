@@ -16,11 +16,8 @@ struct AddMemberView: View {
     @ObservedObject private var viewModel = AddMemberViewModel()
     @ObservedObject var addViewModel: AddTravelViewModel
     
-    @State var participantArr: [String] {
-        didSet {
-            print("participantArr.count: \(participantArr.count)")
-        }
-    }
+    @State var participantArr: [String]
+    
     @State var travelName: String?
     @State var travelID = UUID()
     @Binding var startDate: Date?
@@ -284,9 +281,13 @@ struct AddMemberView: View {
                         viewModel.startDate = startDate?.local000().convertBeforeSaving()
                         viewModel.endDate = endDate?.local235959().convertBeforeSaving()
                         
-                        // 여행 이름
+                        // 1. 빈칸 제거
                         participantArr = viewModel.filterEmptyStrings(participantArr)
-                    
+                        // 2. '나' 제거
+                        participantArr = viewModel.filterMeFromStrings(participantArr)
+                        // 3. 중복 제거
+                        participantArr = viewModel.filterDuplicates(participantArr)
+                        
                         if participantArr.count == 1 && self.isSelectedTogether == true {
                             viewModel.travelName = "\(participantArr[0])님과의 여행"
                             viewModel.participantArr = participantArr
