@@ -52,7 +52,7 @@ class UpcomingTravelViewModel: ObservableObject {
     
     func filterUpcomingTravel(todayDate: Date) -> [Travel] {
         return upcomingTravel.filter { travel in
-            if let startDate = travel.startDate {
+            if let startDate = travel.startDate?.convertBeforeShowing() {
                 print("filterUpcomingTravel travel.id \(String(describing: travel.id))")
                 return startDate > todayDate
             } else {

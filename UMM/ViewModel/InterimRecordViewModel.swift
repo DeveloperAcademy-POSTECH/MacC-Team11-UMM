@@ -117,7 +117,7 @@ class InterimRecordViewModel: ObservableObject {
     // MARK: 각각의 여행들이 몇갠지 찾기위한 함수들
     func filterPreviousTravel(todayDate: Date) -> [Travel] {
         return previousTravel.filter { travel in
-            if let endDate = travel.endDate {
+            if let endDate = travel.endDate?.convertBeforeShowing() {
                 print("filterPreviousTravel | travel.id \(String(describing: travel.id))")
                 return endDate < todayDate
             } else {
@@ -129,7 +129,7 @@ class InterimRecordViewModel: ObservableObject {
     
     func filterUpcomingTravel(todayDate: Date) -> [Travel] {
         return upcomingTravel.filter { travel in
-            if let startDate = travel.startDate {
+            if let startDate = travel.startDate?.convertBeforeShowing() {
                 print("filterUpcomingTravel travel.id \(String(describing: travel.id))")
                 return startDate > todayDate
             } else {
@@ -141,8 +141,8 @@ class InterimRecordViewModel: ObservableObject {
     
     func filterTravelByDate(todayDate: Date) -> [Travel] {
         return nowTravel.filter { travel in
-            if let startDate = travel.startDate {
-                let endDate = travel.endDate ?? Date.distantFuture
+            if let startDate = travel.startDate?.convertBeforeShowing() {
+                let endDate = travel.endDate?.convertBeforeShowing() ?? Date.distantFuture
                 print("filterTravelByDate | travel.id: \(String(describing: travel.id))")
                 return todayDate >= startDate && todayDate < endDate
             } else {
