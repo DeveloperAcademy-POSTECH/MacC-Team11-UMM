@@ -28,7 +28,9 @@ struct TravelListView: View {
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
     @State private var countryName: [String] = []
-
+    
+    @State private var travelTabViewRedrawer = true
+    
     let dateGapHandler = DateGapHandler.shared
     let handler = ExchangeRateHandler.shared
     
@@ -64,7 +66,12 @@ struct TravelListView: View {
                     .padding(.top, 12)
                     .offset(y: -18)
                     
-                TravelTabView()
+                if travelTabViewRedrawer {
+                    TravelTabView()
+                } else {
+                    EmptyView()
+                }
+                
             }
             .ignoresSafeArea(edges: .bottom)
             .onAppear {
@@ -79,6 +86,10 @@ struct TravelListView: View {
                 let loadedData = handler.loadExchangeRatesFromUserDefaults()
                 if loadedData == nil || !handler.isSameDate(loadedData?.time_last_update_unix) {
                     handler.fetchAndSaveExchangeRates()
+                }
+                travelTabViewRedrawer = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    travelTabViewRedrawer = true
                 }
             }
             .toolbar {

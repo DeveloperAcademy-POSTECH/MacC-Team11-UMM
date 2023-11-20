@@ -79,7 +79,7 @@ struct UpcomingTravelView: View {
             DispatchQueue.main.async {
                 viewModel.fetchTravel()
                 viewModel.fetchExpense()
-                self.upcomingTravel = viewModel.filterUpcomingTravel(todayDate: Date())
+                self.upcomingTravel = viewModel.filterUpcomingTravel(todayDate: Date()).filter { $0.name != tempTravelName }
             }
         }
     }

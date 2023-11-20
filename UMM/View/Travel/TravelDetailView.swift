@@ -195,9 +195,9 @@ struct TravelDetailView: View {
                 .padding(.vertical, 20)
             } else {
                 HStack {
-                    Text("지출 기록 시 자동으로 국가가 등록됩니다.")
+                    Text("소비 기록을 남기면 자동으로 채워져요.")
                         .font(.body2)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Color.gray200)
                         .frame(height: 24)
                     
                     Spacer()
