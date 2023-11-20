@@ -734,6 +734,7 @@ struct ManualRecordView: View {
                 EmptyView()
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
         .background {
             Color(.white)
@@ -757,6 +758,7 @@ struct ManualRecordView: View {
                 EmptyView()
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
         .background {
             Color(.white)
