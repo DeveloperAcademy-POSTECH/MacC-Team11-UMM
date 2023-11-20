@@ -19,6 +19,8 @@ struct CompleteAddTravelView: View {
     @State var participantArr: [String]
     @State var selectedTravel: [Travel]?
     
+    let dateGapHandler = DateGapHandler.shared
+    
     var body: some View {
         VStack(spacing: 0) {
             
@@ -61,7 +63,7 @@ struct CompleteAddTravelView: View {
             self.selectedTravel = viewModel.filterTravelByID(selectedTravelID: travelID)
             self.travelNM = memberViewModel.travelName ?? "제목 미정"
             self.participantArr = memberViewModel.participantArr ?? ["me"]
-        }  
+        }
         .onAppear(perform: UIApplication.shared.hideKeyboard)
         .navigationTitle("새로운 여행 생성")
         .navigationBarBackButtonHidden(true)
@@ -91,10 +93,13 @@ struct CompleteAddTravelView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             
-                            Text(viewModel.dateToString(in: selectedTravel?.first?.startDate) + " ~")
+                            Text(viewModel.dateToString(in: dateGapHandler.convertBeforeShowing(date: selectedTravel?.first?.startDate ?? Date())) + " ~")
                             
-                            Text(viewModel.endDateToString(in: selectedTravel?.first?.endDate))
-                            
+                            if let endDate = selectedTravel?.first?.endDate {
+                                Text(dateGapHandler.convertBeforeShowing(date: endDate), formatter: PreviousTravelViewModel.dateFormatter)
+                            } else {
+                                Text("미정")
+                            }
                         }
                         .font(.custom(FontsManager.Pretendard.medium, size: 20))
                         .padding(.top, 90)

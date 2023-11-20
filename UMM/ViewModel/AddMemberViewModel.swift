@@ -53,4 +53,16 @@ class AddMemberViewModel: ObservableObject {
         
         MainViewModel.shared.selectedTravel = newTravel
     }
+    
+    func filterEmptyStrings(_ array: [String]) -> [String] {
+        return array.filter { !$0.isEmpty }
+    }
+    
+    func filterMeFromStrings(_ array: [String]) -> [String] {
+        return array.filter { $0 != "나" }
+    }
+    
+    func filterDuplicates(_ array: [String]) -> [String] {
+        return Array(Set(array))
+    }
 }

@@ -23,12 +23,30 @@ struct TravelButtonView: View {
     
     let dateGapHandler = DateGapHandler.shared
     
+//    @State private var isSelected: Bool = false
+//    private func onTravelSelected() {
+//        isSelected.toggle()
+//        
+//        viewModel.chosenTravel = isSelected ? travel : nil
+//        if chosenTravel == travel {
+//            chosenTravel = nil
+//        } else {
+//            chosenTravel = travel
+//        }
+//        isSelectedTravel = (chosenTravel != nil)
+//    }
+    
     var body: some View {
         VStack {
             Button {
-                chosenTravel = travel
-                isSelectedTravel = true
+                if chosenTravel == travel {
+                    chosenTravel = nil
+                } else {
+                    chosenTravel = travel
+                }
+                isSelectedTravel = (chosenTravel != nil)
                 viewModel.chosenTravel = chosenTravel
+                print("iiii \(viewModel.chosenTravel)")
             } label: {
                 ZStack {
                     if let imageString = {
@@ -55,9 +73,9 @@ struct TravelButtonView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             Button {
-                                chosenTravel = travel
+                                
                             } label: {
-                                if chosenTravel != travel {
+                                if viewModel.chosenTravel != travel {
                                     Circle()
                                         .fill(.black)
                                         .opacity(0.25)
@@ -131,7 +149,7 @@ struct TravelButtonView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 110, height: 80)
                         .foregroundStyle(.gray100)
-                        .opacity(chosenTravel == travel ? 0.0 : 0.4)
+                        .opacity(viewModel.chosenTravel == travel ? 0.0 : 0.4)
                 }
                 .frame(width: 110, height: 80)
                 .onAppear {
@@ -176,6 +194,11 @@ struct TravelButtonView: View {
                 .font(.subhead1)
                 .lineLimit(1)
         }
+//        .onChange(of: chosenTravel) { _, newChosenTravel in
+//            if newChosenTravel != travel {
+//                chosenTravel = nil
+//            }
+//        }
     }
 }
 
