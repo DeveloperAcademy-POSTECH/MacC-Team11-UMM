@@ -18,50 +18,52 @@ struct AddTravelView: View {
    
     var body: some View {
         NavigationStack {
-            VStack {
-                
-                Spacer()
-                
-                headerView
-                
-                Spacer()
-                
+            ScrollView {
                 VStack {
                     
-                    calendarHeader
-                    calendarGridView
-                    
-                    Spacer()
-                }
-                .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
-                .padding(20)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 16)
-                        .inset(by: 0.5)
-                        .stroke(Color.gray200, lineWidth: 1)
-                        .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
-                }
-                
-                Spacer()
-                
-                HStack {
                     Spacer()
                     
-                    if viewModel.startDate != nil {
-                        NextButtonActive(title: "다음", action: {
-                            isButtonOn = true
-                        })
-                        .ignoresSafeArea()
-                    } else {
-                        NextButtonUnactive(title: "다음", action: {
-                            
-                        })
-                        .disabled(true)
-                        .ignoresSafeArea(edges: .bottom)
+                    headerView
+                    
+                    Spacer()
+                    
+                    VStack {
+                        
+                        calendarHeader
+                        calendarGridView
+                        
+                        Spacer()
+                    }
+                    .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
+                    .padding(20)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16)
+                            .inset(by: 0.5)
+                            .stroke(Color.gray200, lineWidth: 1)
+                            .frame(width: UIScreen.main.bounds.size.width-40, height: 423)
+                    }
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        
+                        if viewModel.startDate != nil {
+                            NextButtonActive(title: "다음", action: {
+                                isButtonOn = true
+                            })
+                            .ignoresSafeArea()
+                        } else {
+                            NextButtonUnactive(title: "다음", action: {
+                                
+                            })
+                            .disabled(true)
+                            .ignoresSafeArea(edges: .bottom)
+                        }
                     }
                 }
+                .ignoresSafeArea(edges: .bottom)
             }
-            .ignoresSafeArea(edges: .bottom)
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationDestination(isPresented: $isButtonOn) {
