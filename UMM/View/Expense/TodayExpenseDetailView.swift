@@ -139,7 +139,7 @@ struct TodayExpenseDetailView: View {
             HStack(spacing: 0) {
                 ForEach(currencyAndSums.indices, id: \.self) { idx in
                     let currencyAndSum = currencyAndSums[idx]
-                    Text((Currency(rawValue: Int(currencyAndSum.currency))?.officialSymbol ?? "?") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
+                    Text((CurrencyInfoModel.shared.currencyResult[Int(currencyAndSum.currency)]?.symbol ?? "-") + "\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencyAndSums.count - 1 {
@@ -228,7 +228,7 @@ struct TodayExpenseDetailView: View {
                         
                         VStack(alignment: .trailing, spacing: 0) {
                             HStack(alignment: .center, spacing: 0) {
-                                Text(Currency(rawValue: Int(expense.currency))?.officialSymbol ?? "?")
+                                Text(CurrencyInfoModel.shared.currencyResult[Int(expense.currency)]?.symbol ?? "-")
                                     .font(.subhead2_1)
                                     .foregroundStyle(.black)
                                 Text("\(expenseViewModel.formatSum(from: expense.payAmount >= 0 ? expense.payAmount : Double.nan, to: 2))")
