@@ -62,6 +62,7 @@ struct MainView: View {
         
         .onAppear {
             UITabBar.appearance().backgroundColor = .white
+            UITabBar.appearance().barTintColor = .white
             let loadedData = exchangeRateHandler.loadExchangeRatesFromUserDefaults()
             if loadedData == nil || !exchangeRateHandler.isSameDate(loadedData?.time_last_update_unix) {
                 print("exchangeRate API 실행 !!")
