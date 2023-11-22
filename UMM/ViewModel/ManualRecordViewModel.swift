@@ -20,6 +20,13 @@ final class ManualRecordViewModel: NSObject, ObservableObject {
     
     func getLocation(completion: @escaping () -> Void) {
         location = DateGapHandler.shared.currentLocation
+        if location == nil {
+            let latitude = UserDefaults.standard.object(forKey: "currentLocationLatitude") as? CLLocationDegrees
+            let longitude = UserDefaults.standard.object(forKey: "currentLocationLongitude") as? CLLocationDegrees
+            if let latitude, let longitude {
+                location = CLLocation(latitude: latitude, longitude: longitude)
+            }
+        }
         if let location {
             CLGeocoder().reverseGeocodeLocation(location) { placemarks, _  in
                 if let newPlacemark = placemarks?.first {
