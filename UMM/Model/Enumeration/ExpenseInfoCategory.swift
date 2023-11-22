@@ -15,6 +15,7 @@ enum ExpenseInfoCategory: Int {
     case food
     case tour
     case shopping
+    case gift
     
     var description: String {
         switch self {
@@ -30,6 +31,8 @@ enum ExpenseInfoCategory: Int {
             return "관광"
         case .shopping:
             return "쇼핑"
+        case .gift:
+            return "선물"
         case .unknown:
             return "기타"
         }
@@ -49,6 +52,8 @@ enum ExpenseInfoCategory: Int {
             return Color("graphRed")
         case .shopping:
             return Color("graphPurple")
+        case .gift:
+            return Color("graphGreen")
         case .unknown:
             return Color("gray200")
         }
@@ -68,6 +73,8 @@ enum ExpenseInfoCategory: Int {
             return "관광"
         case .shopping:
             return "쇼핑"
+        case .gift:
+            return "선물"
         default:
             return "기타"
         }
@@ -87,6 +94,8 @@ enum ExpenseInfoCategory: Int {
             return "manualRecordCategoryFun"
         case .shopping:
             return "manualRecordCategoryShopping"
+        case .gift:
+            return "manualRecordCategoryGift"
         default:
             return "manualRecordCategoryUnknown"
         }
@@ -106,6 +115,8 @@ enum ExpenseInfoCategory: Int {
             return "modalCategoryFun"
         case .shopping:
             return "modalCategoryShopping"
+        case .gift:
+            return "modalCategoryGift"
         default:
             return "modalCategoryUnknown"
         }

@@ -597,6 +597,8 @@ final class RecordViewModel: ObservableObject {
             return .tour
         case "shopping":
             return .shopping
+        case "gift":
+            return .gift
         default:
             return .unknown
         }

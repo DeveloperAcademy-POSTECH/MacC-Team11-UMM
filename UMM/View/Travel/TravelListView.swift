@@ -388,7 +388,7 @@ struct TravelListView: View {
                                 +
                                 Text(" ")
                                 +
-                                Text(CountryInfoModel.shared.countryResult[Int(defaultExpense?.last?.currency ?? -1)]?.relatedCurrencyArray[0] ?? "-")
+                                Text(CurrencyInfoModel.shared.currencyResult[Int(defaultExpense?.last?.currency ?? -1)]?.koreanNm ?? "-")
                             }
                                 .font(.caption2)
                                 .foregroundColor(Color.gray300)

@@ -38,52 +38,117 @@ struct RecordView: View {
         }
     }
     
+    let isSE3 = abs(UIScreen.main.bounds.width - 375.0) < 2.0 && abs(UIScreen.main.bounds.height - 667.0) < 2.0
+    
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.white)
-                
-                VStack(spacing: 0) {
-                    travelChoiceView
-                    rawSentenceView
-                    livePropertyView
-                    Spacer()
-                        .frame(height: 40) // figma: 64
-                    manualRecordButtonView
-                    Spacer()
-                }
-                
-                ZStack {
-                    Color(.white)
-                        .opacity(0.0000001)
-                    
-                    VStack(spacing: 0) {
-                        Spacer()
-                        ZStack(alignment: .bottom) {
-                            speakWhilePressingView
-                            alertView_empty
-                            alertView_short
-//                            alertView_saved
+            Group {
+                if isSE3 {
+                    ZStack {
+                        Color(.white)
+                        
+                        VStack(spacing: 0) {
+                            Spacer()
+                                .frame(height: 35)
+                            travelChoiceView
+                            Spacer()
+                                .frame(height: 36)
+                            rawSentenceView
+                            Spacer()
+                                .frame(height: 36)
+                            livePropertyView
+                            Spacer()
+                                .frame(height: 20)
+                            manualRecordButtonView
+                            Spacer()
                         }
-                        Spacer()
-                            .frame(height: 16)
-                        recordButtonView
-                            .hidden()
-                        Spacer()
-                            .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                        
+                        ZStack {
+                            Color(.white)
+                                .opacity(0.0000001)
+                            
+                            VStack(spacing: 0) {
+                                Spacer()
+                                ZStack(alignment: .bottom) {
+                                    speakWhilePressingView
+                                    alertView_empty
+                                    alertView_short
+        //                            alertView_saved
+                                }
+                                Spacer()
+                                    .frame(height: 16)
+                                recordButtonView
+                                    .hidden()
+                                Spacer()
+                                    .frame(height: 18 + 43) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                            }
+                        }
+                        .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown)
+                        .onTapGesture {
+                            viewModel.alertView_emptyIsShown = false
+                            viewModel.alertView_shortIsShown = false
+                        }
+                        
+                        VStack(spacing: 0) {
+                            Spacer()
+                            recordButtonView
+                            Spacer()
+                                .frame(height: 18 + 43) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                        }
                     }
-                }
-                .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown)
-                .onTapGesture {
-                    viewModel.alertView_emptyIsShown = false
-                    viewModel.alertView_shortIsShown = false
-                }
-                
-                VStack(spacing: 0) {
-                    Spacer()
-                    recordButtonView
-                    Spacer()
-                        .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                } else {
+                    ZStack {
+                        Color(.white)
+                        
+                        VStack(spacing: 0) {
+                            Spacer()
+                                .frame(height: 80)
+                            travelChoiceView
+                            Spacer()
+                                .frame(height: 36)
+                            rawSentenceView
+                            Spacer()
+                                .frame(height: 36)
+                            livePropertyView
+                            Spacer()
+                                .frame(height: 40) // figma: 64
+                            manualRecordButtonView
+                            Spacer()
+                        }
+                        
+                        ZStack {
+                            Color(.white)
+                                .opacity(0.0000001)
+                            
+                            VStack(spacing: 0) {
+                                Spacer()
+                                ZStack(alignment: .bottom) {
+                                    speakWhilePressingView
+                                    alertView_empty
+                                    alertView_short
+                                    //                            alertView_saved
+                                }
+                                Spacer()
+                                    .frame(height: 16)
+                                recordButtonView
+                                    .hidden()
+                                Spacer()
+                                    .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                            }
+                        }
+                        .allowsHitTesting(viewModel.alertView_emptyIsShown || viewModel.alertView_shortIsShown)
+                        .onTapGesture {
+                            viewModel.alertView_emptyIsShown = false
+                            viewModel.alertView_shortIsShown = false
+                        }
+                        
+                        VStack(spacing: 0) {
+                            Spacer()
+                            recordButtonView
+                            Spacer()
+                                .frame(height: 18 + 83) // 탭바의 높이를 코드로 구할 수 있으면 83을 대체하기
+                        }
+                    }
                 }
             }
             .ignoresSafeArea()
@@ -165,7 +230,6 @@ struct RecordView: View {
                 .padding(.trailing, 12)
             }
         }
-        .padding(.top, 80)
     }
     
     private var rawSentenceView: some View {
@@ -173,40 +237,39 @@ struct RecordView: View {
             Text("0000\n0000\n0000\n0000")
                 .foregroundStyle(.gray300)
                 .font(.display3)
-                .padding(.vertical, 36)
                 .hidden()
             
-            if !isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
-                VStack {
-                    Text("지출 내역을 말해주세요")
-                        .foregroundStyle(.gray300)
-                        .font(.display3)
-                    Text("(ex. 빵집, 520엔, 현금으로)")
-                        .foregroundStyle(.gray300)
-                        .font(.display1)
-                }
-                .padding(.horizontal, 48)
-
-            } else {
-                ZStack {
-                    ThreeDotsView()
-                        .offset(y: -74.5)
-                    
-                    if viewModel.voiceSentence == "" {
-                        Text("듣고 있어요")
-                            .foregroundStyle(.gray200)
+            Group {
+                if (!isDetectingPress && viewModel.voiceSentence == "") || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
+                    VStack {
+                        Text("지출 내역을 말해주세요")
+                            .foregroundStyle(.gray300)
                             .font(.display3)
-                            .padding(.horizontal, 48)
-                    } else {
-                        Text(viewModel.voiceSentence)
-                            .foregroundStyle(.black)
-                            .font(.display3)
-                            .padding(.horizontal, 48)
-                            .lineLimit(4)
+                        Text("(ex. 빵집, 520엔, 현금으로)")
+                            .foregroundStyle(.gray300)
+                            .font(.display1)
                     }
+                    
+                } else {
+                    ZStack {
+                        ThreeDotsView()
+                            .offset(y: -74.5)
+                        
+                        if viewModel.voiceSentence == "" {
+                            Text("듣고 있어요")
+                                .foregroundStyle(.gray200)
+                                .font(.display3)
+                        } else {
+                            Text(viewModel.voiceSentence)
+                                .foregroundStyle(.black)
+                                .font(.display3)
+                                .lineLimit(4)
+                        }
+                    }
+                    
                 }
-                
             }
+            .padding(.horizontal, 48)
         }
     }
     
