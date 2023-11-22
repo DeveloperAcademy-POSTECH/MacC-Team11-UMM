@@ -17,6 +17,7 @@ struct TravelItemView: View {
     @State private var flagImageDict: [UUID: [String]] = [:]
     @State private var defaultImg: [UUID: [String]] = [:]
     @State private var countryName: [UUID: [String]] = [:]
+    @State private var blurImg: [UUID: [String]] = [:]
     
     let dateGapHandler = DateGapHandler.shared
     
@@ -32,6 +33,7 @@ struct TravelItemView: View {
                 participantArr: travel.participantArray ?? [],
                 flagImageArr: flagImageDict[travel.id ?? UUID()] ?? [],
                 defaultImageString: defaultImg[travel.id ?? UUID()]?.first ?? "DefaultImage",
+                blurImageString: blurImg[travel.id ?? UUID()]?.first ?? "BlurredDefaultImage",
                 koreanNM: countryName[travel.id ?? UUID()] ?? []), label: {
                     ZStack {
                         if let imageString = {
@@ -120,6 +122,7 @@ struct TravelItemView: View {
                             
                             var flagImageNames: [String] = []
                             var countryDefaultImg: [String] = []
+                            var blurImg: [String] = []
                             var koreanName: [String] = []
                             
                             for countryValue in uniqueCountryValues {
@@ -141,9 +144,16 @@ struct TravelItemView: View {
                                 } else {
                                     koreanName.append("")
                                 }
+                                
+                                if let blurString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.blurImageString {
+                                    blurImg.append(blurString)
+                                } else {
+                                    blurImg.append("BlurredDefaultImage")
+                                }
                             }
                             self.flagImageDict[travel.id ?? UUID()] = flagImageNames
                             self.defaultImg[travel.id ?? UUID()] = countryDefaultImg
+                            self.blurImg[travel.id ?? UUID()] = blurImg
                             self.countryName[travel.id ?? UUID()] = koreanName
                         }
                     }

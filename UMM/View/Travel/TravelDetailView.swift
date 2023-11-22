@@ -24,6 +24,7 @@ struct TravelDetailView: View {
     @State var participantArr: [String]
     @State var flagImageArr: [String] = []
     @State var defaultImageString: String
+    @State var blurImageString: String
     @State var koreanNM: [String]
     
     @State var isWarningOn = false
@@ -70,7 +71,7 @@ struct TravelDetailView: View {
             }
             .ignoresSafeArea(edges: .bottom)
             .background(
-                Image(defaultImageString)
+                Image(blurImageString)
                     .resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
@@ -84,7 +85,6 @@ struct TravelDetailView: View {
                             endPoint: UnitPoint(x: 0.5, y: 1)
                         )
                     )
-                    .blur(radius: 10)
             )
             .onAppear {
                 print("participantCnt \(participantArr.count)")
