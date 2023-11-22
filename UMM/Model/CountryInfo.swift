@@ -14,4 +14,5 @@ struct CountryInfo {
     let flagString: String
     let defaultImageString: String
     let relatedCurrencyArray: [String]
+    let blurImageString: String
 }
