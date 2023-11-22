@@ -203,13 +203,14 @@ struct ManualRecordInExpenseView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         ZStack {
-                            Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount)
+                            Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount + "  ")
                                 .lineLimit(1)
                                 .font(.display4)
                                 .hidden()
                             
                             TextField("금액 입력", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                                 .foregroundStyle(.black)
                                 .font(.display4)
                                 .keyboardType(.decimalPad)
