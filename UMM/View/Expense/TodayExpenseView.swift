@@ -66,7 +66,14 @@ struct TodayExpenseView: View {
     
     // 국가별 + 결제수단별 지출액 표시
     var drawExpensesByCountry: some View {
-        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
+//        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
+        
+        var countryDict = [Int64: Date]()
+        for (country, expenses) in expenseViewModel.groupedTodayExpenses {
+            let latestDate = expenses.max(by: { $0.payDate ?? Date.distantPast <= $1.payDate ?? Date.distantPast })?.payDate
+            countryDict[country] = latestDate
+        }
+        let countryArray = countryDict.sorted { $0.value > $1.value }.map { $0.key }
 
         return ForEach(countryArray, id: \.self) { country in
             let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
