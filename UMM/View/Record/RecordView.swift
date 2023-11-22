@@ -239,37 +239,37 @@ struct RecordView: View {
                 .font(.display3)
                 .hidden()
             
-            if !isDetectingPress || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
-                VStack {
-                    Text("지출 내역을 말해주세요")
-                        .foregroundStyle(.gray300)
-                        .font(.display3)
-                    Text("(ex. 빵집, 520엔, 현금으로)")
-                        .foregroundStyle(.gray300)
-                        .font(.display1)
-                }
-                .padding(.horizontal, 48)
-
-            } else {
-                ZStack {
-                    ThreeDotsView()
-                        .offset(y: -74.5)
-                    
-                    if viewModel.voiceSentence == "" {
-                        Text("듣고 있어요")
-                            .foregroundStyle(.gray200)
+            Group {
+                if (!isDetectingPress && viewModel.voiceSentence == "") || (!viewModel.AreThereOtherTravels && !viewModel.isExplicitTempRecord) {
+                    VStack {
+                        Text("지출 내역을 말해주세요")
+                            .foregroundStyle(.gray300)
                             .font(.display3)
-                            .padding(.horizontal, 48)
-                    } else {
-                        Text(viewModel.voiceSentence)
-                            .foregroundStyle(.black)
-                            .font(.display3)
-                            .padding(.horizontal, 48)
-                            .lineLimit(4)
+                        Text("(ex. 빵집, 520엔, 현금으로)")
+                            .foregroundStyle(.gray300)
+                            .font(.display1)
                     }
+                    
+                } else {
+                    ZStack {
+                        ThreeDotsView()
+                            .offset(y: -74.5)
+                        
+                        if viewModel.voiceSentence == "" {
+                            Text("듣고 있어요")
+                                .foregroundStyle(.gray200)
+                                .font(.display3)
+                        } else {
+                            Text(viewModel.voiceSentence)
+                                .foregroundStyle(.black)
+                                .font(.display3)
+                                .lineLimit(4)
+                        }
+                    }
+                    
                 }
-                
             }
+            .padding(.horizontal, 48)
         }
     }
     
