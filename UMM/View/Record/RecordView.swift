@@ -153,7 +153,7 @@ struct RecordView: View {
                 HStack(spacing: 12) {
                     Text(mainVM.selectedTravel?.name != tempTravelName ? mainVM.selectedTravel?.name ?? "-" : "임시 기록")
                         .lineLimit(1)
-                        .font(.subhead2_2)
+                        .font(.subhead2_2_fixed)
                         .foregroundStyle(mainVM.selectedTravel?.name != tempTravelName ? .black : .gray400)
                     Image("recordTravelChoiceDownChevron")
                         .resizable()

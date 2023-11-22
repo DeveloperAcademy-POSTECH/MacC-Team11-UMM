@@ -93,7 +93,7 @@ struct AllExpenseView: View {
                         return total + amount
                     }
                     
-                    Text("\(Currency.getSymbol(of: Int(currency)))\(expenseViewModel.formatSum(from: sum, to: 2))")
+                    Text("\(CurrencyInfoModel.shared.currencyResult[Int(currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: sum, to: 2))")
                         .font(.caption2)
                         .foregroundStyle(.gray300)
                     if idx != currencies.count - 1 {

@@ -156,7 +156,7 @@ struct AllExpenseDetailView: View {
                 HStack(spacing: 0) {
                     ForEach(currencyAndSums.indices, id: \.self) { idx in
                         let currencyAndSum = currencyAndSums[idx]
-                        Text("\(Currency.getSymbol(of: Int(currencyAndSum.currency)))\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
+                        Text("\(CurrencyInfoModel.shared.currencyResult[Int(currencyAndSum.currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
                             .font(.caption2)
                             .foregroundStyle(.gray300)
                         if idx != currencyAndSums.count - 1 {
@@ -256,7 +256,7 @@ struct AllExpenseDetailView: View {
                                 
                                 VStack(alignment: .trailing, spacing: 0) {
                                     HStack(alignment: .center, spacing: 0) {
-                                        Text("\(Currency.getSymbol(of: Int(expense.currency)))")
+                                        Text("\(currencyInfoModel[Int(expense.currency)]?.symbol ?? "-")")
                                             .font(.subhead2_1)
                                             .foregroundStyle(.black)
                                         
@@ -265,7 +265,7 @@ struct AllExpenseDetailView: View {
                                             .foregroundStyle(.black)
                                             .padding(.leading, 3 )
                                     }
-                                    let currencyCodeName = Currency.getCurrencyCodeName(of: Int(expense.currency))
+                                    let currencyCodeName = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
                                     let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
                                     let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
                                     let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
