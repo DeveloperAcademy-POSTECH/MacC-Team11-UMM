@@ -216,7 +216,7 @@ struct AddTravelView: View {
     
     private var endDatePickerModalView: some View {
         VStack {
-            DatePicker("", selection: $modalDate, displayedComponents: .date)
+            DatePicker("", selection: $modalDate, in: dateRange, displayedComponents: .date)
                 .datePickerStyle(WheelDatePickerStyle()).labelsHidden()
            
             LargeButtonActive(title: "확인", action: {
@@ -227,6 +227,13 @@ struct AddTravelView: View {
         .onAppear {
             modalDate = viewModel.endDate ?? Date()
         }
+    }
+    
+    private var dateRange: ClosedRange<Date> {
+        let min = viewModel.startDate ?? Date.distantPast
+        let max = Date.distantFuture
+        
+        return min...max
     }
 
     private var calendarHeader: some View {
