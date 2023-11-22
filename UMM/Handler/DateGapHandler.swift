@@ -16,6 +16,10 @@ final class LocationManagerDelegateForDateGapHandler: NSObject, CLLocationManage
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !updateActivityIsDone {
             parent?.currentLocation = locations.first
+            if let loc = parent?.currentLocation {
+                UserDefaults.standard.set(loc.coordinate.latitude, forKey: "currentLocationLatitude")
+                UserDefaults.standard.set(loc.coordinate.longitude, forKey: "currentLocationLongitude")
+            }
             parent?.getTimeDifference()
             updateActivityIsDone = true
         }
