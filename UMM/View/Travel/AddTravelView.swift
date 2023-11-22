@@ -251,15 +251,15 @@ struct AddTravelView: View {
                 Spacer()
                 
                 Text(viewModel.year, formatter: AddTravelViewModel.dateYearFormatter)
-                    .font(.calendar1)
+                    .font(.calendar1_fixed)
                     .foregroundStyle(Color(0x333333))
                 +
                 Text(".")
-                    .font(.calendar1)
+                    .font(.calendar1_fixed)
                     .foregroundStyle(Color(0x333333))
                 +
                 Text(viewModel.month, formatter: AddTravelViewModel.dateFormatter)
-                    .font(.calendar1)
+                    .font(.calendar1_fixed)
                     .foregroundStyle(Color(0x333333))
                 
                 Spacer()
