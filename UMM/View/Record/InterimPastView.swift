@@ -70,7 +70,7 @@ struct InterimPastView: View {
                                 .frame(width: 5, height: 5)
                         }
                     }
-                    .offset(y: 135)
+                    .offset(y: 95)
                 }
             }
         }
