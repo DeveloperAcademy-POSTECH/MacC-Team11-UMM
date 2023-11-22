@@ -15,38 +15,80 @@ struct ExpenseView: View {
     let exchangeRateHandler = ExchangeRateHandler.shared
     @EnvironmentObject var mainVM: MainViewModel
     private var travelStream: Set<AnyCancellable> = []
+    let isSE3 = abs(UIScreen.main.bounds.width - 375.0) < 2.0 && abs(UIScreen.main.bounds.height - 667.0) < 2.0
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 0) {
-                
-//                 settingViewButton
-//                    .padding(.horizontal, 20)
-                
-                travelChoiceView
-                    .padding(.horizontal, 20)
-                
-//                 todayExpenseHeader
-//                    .padding(.horizontal, 20)
-                
-                tabViewButton
-                
-                Spacer()
-                
-                TabView(selection: $selectedTab) {
-                    TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
-                        .tag(0)
-                        .contentShape(Rectangle())
-                        .gesture(DragGesture().onChanged({_ in}))
-                        .simultaneousGesture(TapGesture())
-
-                    AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
-                        .tag(1)
-                        .contentShape(Rectangle())
-                        .gesture(DragGesture().onChanged({_ in}))
-                        .simultaneousGesture(TapGesture())
+            Group {
+                if isSE3 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        Spacer()
+                            .frame(height: 35)
+                        
+                        travelChoiceView
+                            .padding(.horizontal, 20)
+                        
+                        Spacer()
+                            .frame(height: 36)
+                        
+                        tabViewButton
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
+                        TabView(selection: $selectedTab) {
+                            TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(0)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                            
+                            AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(1)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        
+                        Spacer()
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        Spacer()
+                            .frame(height: 80)
+                        
+                        travelChoiceView
+                            .padding(.horizontal, 20)
+                        
+                        Spacer()
+                            .frame(height: 36)
+                        
+                        tabViewButton
+                        
+                        Spacer()
+                            .frame(height: 40)
+                        
+                        TabView(selection: $selectedTab) {
+                            TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(0)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                            
+                            AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(1)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        
+                        Spacer()
+                    }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .ignoresSafeArea()
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
@@ -87,7 +129,7 @@ struct ExpenseView: View {
             Button {
                 expenseViewModel.travelChoiceHalfModalIsShown = true
             } label: {
-                HStack(spacing: 0) {
+                VStack(spacing: 0) {
                     ZStack {
                         Capsule()
                             .foregroundStyle(.white)
@@ -118,8 +160,6 @@ struct ExpenseView: View {
                 .foregroundStyle(.black)
             Spacer()
         }
-        .padding(.top, 80)
-        .padding(.bottom, 30)
     }
     
     private var tabViewButton: some View {
