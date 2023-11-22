@@ -124,8 +124,15 @@ struct ExpenseView: View {
     
     private var tabViewButton: some View {
         HStack(spacing: 0) {
-            ForEach((TabbedItems.allCases), id: \.self) { item in
-                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
+            ForEach((TabbedItems.allCases.indices), id: \.self) { index in
+                ZStack {
+                    ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: TabbedItems.allCases[index].title, tab: TabbedItems.allCases[index].rawValue)
+                        .padding(.leading, index == 0 ? 39 : 20)
+                        .padding(.trailing, index == 0 ? 20 : 39)
+                    Divider()
+                        .frame(height: 2)
+                        .padding(.top, 33) // figma: ???
+                }
             }
         }
         .padding(.top, 8)
@@ -148,22 +155,17 @@ struct ExpenseTabBarItem: View {
                 Text(title)
                     .font(.subhead3_1)
                     .foregroundStyle(selectedTab == tab ? .black : .gray300)
-
+                    .frame(minWidth: 0, maxWidth: .infinity) // 이 부분 추가
                 ZStack {
-                    Divider()
-                        .frame(height: 2)
-                        .padding(.top, 11)
                     if selectedTab == tab {
                         Color.black
                             .matchedGeometryEffect(id: "underline", in: namespace.self)
                             .frame(height: 2)
                             .padding(.top, 11)
-                            .padding(.horizontal)
                     } else {
                         Color.clear
                             .frame(height: 2)
                             .padding(.top, 11)
-                            .padding(.horizontal)
                     }
                 }
             }

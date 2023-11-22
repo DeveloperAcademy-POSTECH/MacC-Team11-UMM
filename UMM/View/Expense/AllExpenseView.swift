@@ -80,7 +80,7 @@ struct AllExpenseView: View {
                         HStack(spacing: 4) {
                             Image(countryInfoModel[Int(country)]?.flagString ?? "")
                                 .resizable()
-                                .frame(width: 16, height: 16)
+                                .frame(width: 18, height: 18)
                                 .shadow(color: .gray200, radius: 2)
                                 .padding(.leading, 8)
                             Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
