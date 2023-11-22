@@ -52,69 +52,6 @@ struct AllExpenseView: View {
     
     // MARK: - 뷰
     
-    var allExpenseSummaryTotal: some View {
-        let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
-            let isoCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
-            let rate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: isoCode)
-            let amount = (expense.payAmount != -1) ? expense.payAmount : 0
-            return total + amount * (rate ?? -100)
-        }
-        return NavigationLink {
-            AllExpenseDetailView(
-                selectedTravel: mainVM.selectedTravelInExpense,
-                selectedCategory: -2,
-                selectedCountry: expenseViewModel.selectedCountry,
-                selectedPaymentMethod: -2,
-                sumPaymentMethod: totalSum
-            )
-            .environmentObject(mainVM)
-        } label: {
-            HStack(spacing: 0) {
-                Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                    .font(.display4)
-                    .foregroundStyle(.black)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 24))
-                    .foregroundStyle(.gray200)
-                    .padding(.leading, 16)
-            }
-            .padding(.top, 16)
-        }
-    }
-    
-    var allExpenseSummaryByCurrency: some View {
-        let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 0) {
-                ForEach(currencies.indices, id: \.self) { idx in
-                    let currency = currencies[idx]
-                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { total, expense in
-                        let amount = (expense.payAmount != -1) ? expense.payAmount : 0
-                        return total + amount
-                    }
-                    
-                    Text("\(CurrencyInfoModel.shared.currencyResult[Int(currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: sum, to: 2))")
-                        .font(.caption2)
-                        .foregroundStyle(.gray300)
-                    if idx != currencies.count - 1 {
-                        Circle()
-                            .frame(width: 3, height: 3)
-                            .foregroundStyle(.gray300)
-                            .padding(.horizontal, 3)
-                    }
-                }
-            }
-            .padding(.top, 10)
-        }
-    }
-    
-    var allExpenseBarGraph: some View {
-        let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
-        return BarGraph(data: indexedSumArrayInPayAmountOrder)
-            .padding(.top, 22)
-            .padding(.bottom, 20)
-    }
-    
     private var countryPicker: some View {
         let allExpensesInSelectedTravel = expenseViewModel.filteredAllExpenses
         let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
@@ -147,18 +84,81 @@ struct AllExpenseView: View {
                                 .shadow(color: .gray200, radius: 2)
                                 .padding(.leading, 8)
                             Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
+                                .padding(.vertical, 7)
                                 .padding(.trailing, 8)
                                 .font(.caption2)
                                 .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
                         }
-                        .padding(.vertical, 7)
                         .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     })
                 }
             }
-            .padding(.vertical, 16)
+            .padding(.top, 8) // figma: 16
         }
+    }
+    
+    var allExpenseSummaryTotal: some View {
+        let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
+            let isoCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
+            let rate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: isoCode)
+            let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+            return total + amount * (rate ?? -100)
+        }
+        return NavigationLink {
+            AllExpenseDetailView(
+                selectedTravel: mainVM.selectedTravelInExpense,
+                selectedCategory: -2,
+                selectedCountry: expenseViewModel.selectedCountry,
+                selectedPaymentMethod: -2,
+                sumPaymentMethod: totalSum
+            )
+            .environmentObject(mainVM)
+        } label: {
+            HStack(spacing: 0) {
+                Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
+                    .font(.display4)
+                    .foregroundStyle(.black)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 24))
+                    .foregroundStyle(.gray200)
+                    .padding(.leading, 16)
+            }
+            .padding(.top, 24) // figma: 32
+        }
+    }
+    
+    var allExpenseSummaryByCurrency: some View {
+        let currencies = Array(Set(expenseViewModel.filteredAllExpensesByCountry.map { $0.currency })).sorted { $0 < $1 }
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 0) {
+                ForEach(currencies.indices, id: \.self) { idx in
+                    let currency = currencies[idx]
+                    let sum = expenseViewModel.filteredAllExpenses.filter({ $0.currency == currency }).reduce(0) { total, expense in
+                        let amount = (expense.payAmount != -1) ? expense.payAmount : 0
+                        return total + amount
+                    }
+                    
+                    Text("\(CurrencyInfoModel.shared.currencyResult[Int(currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: sum, to: 2))")
+                        .font(.caption2)
+                        .foregroundStyle(.gray300)
+                    if idx != currencies.count - 1 {
+                        Circle()
+                            .frame(width: 3, height: 3)
+                            .foregroundStyle(.gray300)
+                            .padding(.horizontal, 3)
+                    }
+                }
+            }
+            .padding(.top, 6) // figma: 10
+        }
+    }
+    
+    private var allExpenseBarGraph: some View {
+        let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
+        return BarGraph(data: indexedSumArrayInPayAmountOrder)
+            .padding(.top, 22)
+            .padding(.bottom, 20)
     }
     
     private func getExpenseArray(for country: Int64) -> [Expense] {

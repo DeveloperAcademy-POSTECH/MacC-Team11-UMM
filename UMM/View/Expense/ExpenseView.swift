@@ -119,17 +119,16 @@ struct ExpenseView: View {
             Spacer()
         }
         .padding(.top, 80)
-        .padding(.bottom, 20)
+        .padding(.bottom, 30)
     }
     
     private var tabViewButton: some View {
         HStack(spacing: 0) {
             ForEach((TabbedItems.allCases), id: \.self) { item in
                 ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                    .padding(.top, 8)
             }
         }
-        .padding(.top, 32)
+        .padding(.top, 8)
         .padding(.bottom, 0)
     }
 }
