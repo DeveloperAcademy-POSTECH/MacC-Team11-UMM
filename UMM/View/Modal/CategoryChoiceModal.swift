@@ -45,7 +45,7 @@ struct CategoryChoiceModal: View {
                 .frame(width: 20)
             // 식비 관광 교통 쇼핑 항공 숙소 기타
             let array0: [ExpenseInfoCategory] = [.food, .tour, .transportation, .shopping]
-            let array1: [ExpenseInfoCategory] = [.plane, .room, .unknown]
+            let array1: [ExpenseInfoCategory] = [.plane, .room, .gift, .unknown]
             VStack(spacing: 0) {
                 HStack {
                     ForEach(array0, id: \.self) { category in
@@ -98,10 +98,6 @@ struct CategoryChoiceModal: View {
                             chosenCategory = category
                         }
                     }
-                    Rectangle()
-                        .foregroundStyle(.red)
-                        .opacity(0.0000001)
-                        .frame(height: 1)
                 }
                 Spacer()
             }

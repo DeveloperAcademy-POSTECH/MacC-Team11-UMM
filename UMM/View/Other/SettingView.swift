@@ -33,7 +33,7 @@ struct SettingView: View {
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.primary)
+//                        .foregroundColor(.primary)
                 })
             }
         }
