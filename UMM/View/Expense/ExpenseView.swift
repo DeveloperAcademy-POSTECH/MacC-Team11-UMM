@@ -30,12 +30,12 @@ struct ExpenseView: View {
                             .padding(.horizontal, 20)
                         
                         Spacer()
-                            .frame(height: 36)
+                            .frame(height: 24)
                         
                         tabViewButton
                         
                         Spacer()
-                            .frame(height: 20)
+                            .frame(height: 10)
                         
                         TabView(selection: $selectedTab) {
                             TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
@@ -69,7 +69,7 @@ struct ExpenseView: View {
                         tabViewButton
                         
                         Spacer()
-                            .frame(height: 40)
+                            .frame(height: 8)
                         
                         TabView(selection: $selectedTab) {
                             TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
