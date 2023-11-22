@@ -75,7 +75,7 @@ struct ExpenseView: View {
     private var todayExpenseHeader: some View {
         HStack(spacing: 0) {
             Text("가계부")
-                .font(.display2)
+                .font(.display2_fixed)
             Spacer()
         }
         .padding(.top, 10)
@@ -100,7 +100,7 @@ struct ExpenseView: View {
                         HStack(spacing: 12) {
                             Text(mainVM.selectedTravelInExpense?.name != tempTravelName ? mainVM.selectedTravelInExpense?.name ?? "-" : "-")
                                 .lineLimit(1)
-                                .font(.subhead2_2)
+                                .font(.subhead2_2_fixed)
                                 .foregroundStyle(.black)
                             Image("recordTravelChoiceDownChevron")
                                 .resizable()
@@ -114,7 +114,7 @@ struct ExpenseView: View {
                 }
             }
             Text("가계부")
-                .font(.display1)
+                .font(.display1_fixed)
                 .foregroundStyle(.black)
             Spacer()
         }
@@ -131,7 +131,7 @@ struct ExpenseView: View {
                         .padding(.trailing, index == 0 ? 20 : 39)
                     Divider()
                         .frame(height: 2)
-                        .padding(.top, 33) // figma: ???
+                        .padding(.top, 31) // figma: ???
                 }
             }
         }
@@ -153,7 +153,7 @@ struct ExpenseTabBarItem: View {
         } label: {
             VStack(spacing: 0) {
                 Text(title)
-                    .font(.subhead3_1)
+                    .font(.subhead3_1_fixed)
                     .foregroundStyle(selectedTab == tab ? .black : .gray300)
                     .frame(minWidth: 0, maxWidth: .infinity) // 이 부분 추가
                 ZStack {

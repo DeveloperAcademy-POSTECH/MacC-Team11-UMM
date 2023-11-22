@@ -66,7 +66,7 @@ struct AllExpenseView: View {
                     Text("전체")
                         .padding(.vertical, 7)
                         .frame(width: 61)
-                        .font(.caption2)
+                        .font(.caption2_fixed)
                         .foregroundColor(expenseViewModel.selectedCountry == -2 ? Color.white: Color.gray300)
                         .background(expenseViewModel.selectedCountry == -2 ? Color.black: Color.gray100)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -86,7 +86,7 @@ struct AllExpenseView: View {
                             Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
                                 .padding(.vertical, 7)
                                 .padding(.trailing, 8)
-                                .font(.caption2)
+                                .font(.caption2_fixed)
                                 .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
                         }
                         .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
@@ -117,7 +117,7 @@ struct AllExpenseView: View {
         } label: {
             HStack(spacing: 0) {
                 Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                    .font(.display4)
+                    .font(.display4_fixed)
                     .foregroundStyle(.black)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 24))
@@ -140,7 +140,7 @@ struct AllExpenseView: View {
                     }
                     
                     Text("\(CurrencyInfoModel.shared.currencyResult[Int(currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: sum, to: 2))")
-                        .font(.caption2)
+                        .font(.caption2_fixed)
                         .foregroundStyle(.gray300)
                     if idx != currencies.count - 1 {
                         Circle()
@@ -201,11 +201,11 @@ struct AllExpenseView: View {
                             
                             VStack(alignment: .leading, spacing: 0) {
                                 Text("\(ExpenseInfoCategory.descriptionFor(rawValue: Int(categoryName)))")
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .foregroundStyle(.black)
                                 HStack(alignment: .center, spacing: 0) {
                                     Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum / totalSum * 100, to: 1))%")
-                                        .font(.caption2)
+                                        .font(.caption2_fixed)
                                         .foregroundStyle(.gray300)
                                 }
                                 .padding(.top, 4)
@@ -216,7 +216,7 @@ struct AllExpenseView: View {
                             
                             HStack(alignment: .center, spacing: 0) {
                                 Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum, to: 0))원")
-                                    .font(.subhead3_1)
+                                    .font(.subhead3_1_fixed)
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)
                                     .padding(.trailing, 12)
@@ -237,7 +237,7 @@ struct AllExpenseView: View {
     private var noDataView: some View {
         VStack(spacing: 0) {
             Text("아직 지출 기록이 없어요")
-                .font(.subhead3_2)
+                .font(.subhead3_2_fixed)
                 .foregroundStyle(.gray300)
                 .padding(.top, 130)
             Spacer()

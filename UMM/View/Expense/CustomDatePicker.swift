@@ -63,6 +63,7 @@ struct CustomDatePicker: View {
                 DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
                     .labelsHidden()
                     .blendMode(.lighten)
+                    .dynamicTypeSize(.xSmall)
                     .onReceive(expenseViewModel.$selectedDate) { _ in
                         DispatchQueue.main.async {
                             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
@@ -72,7 +73,8 @@ struct CustomDatePicker: View {
 
                 Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
                     .foregroundStyle(.black)
-                .allowsHitTesting(false)
+                    .font(.subhead2_2_fixed)
+                    .allowsHitTesting(false)
             }
             
             Button(action: {

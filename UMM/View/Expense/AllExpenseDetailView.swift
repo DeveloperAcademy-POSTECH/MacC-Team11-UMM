@@ -69,7 +69,7 @@ struct AllExpenseDetailView: View {
                         .padding(.leading, 8)
                 }
                 Text("\(countryInfoModel[Int(selectedCountry)]?.koreanNm ?? "모든 국가")")
-                    .font(.subhead2_1)
+                    .font(.subhead2_1_fixed)
                     .foregroundStyle(.black)
             }
         }
@@ -81,7 +81,7 @@ struct AllExpenseDetailView: View {
         }, label: {
             HStack(spacing: 0) {
                 Text("\(PaymentMethod.titleFor(rawValue: Int(selectedPaymentMethod)))")
-                    .font(.subhead2_2)
+                    .font(.subhead2_2_fixed)
                     .foregroundStyle(.gray400)
                     .padding(.vertical, 28)
                 Image("recordTravelChoiceDownChevron")
@@ -92,7 +92,7 @@ struct AllExpenseDetailView: View {
         .sheet(isPresented: $isPaymentModalPresented) {
             VStack(alignment: .leading, spacing: 0) {
                 Text("내역 선택")
-                    .font(.display1)
+                    .font(.display1_fixed)
                 ForEach([-2, 0, 1, -1], id: \.self) { idx in
                     Button(action: {
                         selectedPaymentMethod = Int64(idx)
@@ -103,14 +103,14 @@ struct AllExpenseDetailView: View {
                         if selectedPaymentMethod == Int64(idx) {
                             HStack {
                                 Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))
-                                    .font(.subhead3_1)
+                                    .font(.subhead3_1_fixed)
                                     .foregroundStyle(.black)
                                 Spacer()
                                 Image("check")
                             }
                         } else {
                             Text("\(PaymentMethod.titleFor(rawValue: idx))").tag(Int64(idx))
-                                .font(.subhead3_1)
+                                .font(.subhead3_1_fixed)
                                 .foregroundStyle(.gray400)
                         }
                     })
@@ -130,13 +130,13 @@ struct AllExpenseDetailView: View {
                     Image(ExpenseInfoCategory(rawValue: Int(selectedCategory))?.modalImageString ?? "nil")
                         .font(.system(size: 24))
                     Text("\(ExpenseInfoCategory.descriptionFor(rawValue: Int(selectedCategory)))")
-                        .font(.display1)
+                        .font(.display1_fixed)
                         .padding(.leading, 8)
                 }
             } else {
                 HStack(alignment: .center, spacing: 0) {
                     Text("총 지출")
-                        .font(.display1)
+                        .font(.display1_fixed)
                 }
             }
             
@@ -148,7 +148,7 @@ struct AllExpenseDetailView: View {
             }
             let formattedSum = expenseViewModel.formatSum(from: totalSum, to: 0)
             Text("\(formattedSum)원")
-                .font(.display4)
+                .font(.display4_fixed)
                 .padding(.top, 6)
             
             // 화폐별 합계
@@ -157,7 +157,7 @@ struct AllExpenseDetailView: View {
                     ForEach(currencyAndSums.indices, id: \.self) { idx in
                         let currencyAndSum = currencyAndSums[idx]
                         Text("\(CurrencyInfoModel.shared.currencyResult[Int(currencyAndSum.currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                             .foregroundStyle(.gray300)
                         if idx != currencyAndSums.count - 1 {
                             Circle()
@@ -187,11 +187,11 @@ struct AllExpenseDetailView: View {
                     
                     HStack(alignment: .center, spacing: 0) {
                         Text("Day \(calculatedDay + 1)")
-                            .font(.subhead1)
+                            .font(.subhead1_fixed)
                             .foregroundStyle(.gray400)
                         // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
                         Text("\(dateGapHandler.convertBeforeShowing(date: date), formatter: dateFormatterWithDay)")
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                             .foregroundStyle(.gray300)
                             .padding(.leading, 10)
                     }
@@ -224,7 +224,7 @@ struct AllExpenseDetailView: View {
                                 
                                 VStack(alignment: .leading, spacing: 0) {
                                     Text("\(expense.info ?? "알 수 없는 내역")")
-                                        .font(.subhead2_1)
+                                        .font(.subhead2_1_fixed)
                                         .foregroundStyle(.black)
                                         .lineLimit(1)
                                     HStack(alignment: .center, spacing: 3) {
@@ -232,20 +232,20 @@ struct AllExpenseDetailView: View {
                                         // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
                                         if let payDate = expense.payDate {
                                             Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                                .font(.caption2)
+                                                .font(.caption2_fixed)
                                                 .foregroundStyle(.gray300)
                                         } else {
                                             Text("-")
-                                                .font(.caption2)
+                                                .font(.caption2_fixed)
                                                 .foregroundStyle(.gray300)
                                         }
                                         
                                         Text("|")
-                                            .font(.caption2)
+                                            .font(.caption2_fixed)
                                             .foregroundStyle(.gray300)
                                         
                                         Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
-                                            .font(.caption2)
+                                            .font(.caption2_fixed)
                                             .foregroundStyle(.gray300)
                                     }
                                     .padding(.top, 4)
@@ -257,11 +257,11 @@ struct AllExpenseDetailView: View {
                                 VStack(alignment: .trailing, spacing: 0) {
                                     HStack(alignment: .center, spacing: 0) {
                                         Text("\(currencyInfoModel[Int(expense.currency)]?.symbol ?? "-")")
-                                            .font(.subhead2_1)
+                                            .font(.subhead2_1_fixed)
                                             .foregroundStyle(.black)
                                         
                                         Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
-                                            .font(.subhead2_1)
+                                            .font(.subhead2_1_fixed)
                                             .foregroundStyle(.black)
                                             .padding(.leading, 3 )
                                     }
@@ -270,7 +270,7 @@ struct AllExpenseDetailView: View {
                                     let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
                                     let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
                                     Text("(\(formattedPayAmount)원)")
-                                        .font(.caption2)
+                                        .font(.caption2_fixed)
                                         .foregroundStyle(.gray200)
                                         .padding(.top, 4 )
                                 }

@@ -205,14 +205,14 @@ struct ManualRecordInExpenseView: View {
                         ZStack {
                             Text(viewModel.visiblePayAmount == "" ? "금액 입력" : viewModel.visiblePayAmount + "  ")
                                 .lineLimit(1)
-                                .font(.display4)
+                                .font(.display4_fixed)
                                 .hidden()
                             
                             TextField("금액 입력", text: $viewModel.visiblePayAmount)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
                                 .foregroundStyle(.black)
-                                .font(.display4)
+                                .font(.display4_fixed)
                                 .keyboardType(.decimalPad)
                                 .layoutPriority(-1)
                                 .tint(.mainPink)
@@ -239,7 +239,7 @@ struct ManualRecordInExpenseView: View {
                                     .layoutPriority(-1)
                                 Text((CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.koreanNm ?? "알 수 없음") + " " + (CurrencyInfoModel.shared.currencyResult[viewModel.currency]?.symbol ?? "-"))
                                     .foregroundStyle(.gray400)
-                                    .font(.display2)
+                                    .font(.display2_fixed)
                                     .padding(.vertical, 4)
                                     .padding(.horizontal, 8)
                             }
@@ -250,16 +250,16 @@ struct ManualRecordInExpenseView: View {
                     if viewModel.payAmount == -1 {
                         Text("( - 원)")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     } else {
                         if let formattedString = viewModel.payAmountInWon.getStringFraction0() {
                             Text("(" + formattedString + "원" + ")")
                                 .foregroundStyle(.gray300)
-                                .font(.caption2)
+                                .font(.caption2_fixed)
                         } else {
                             Text("( - 원)")
                                 .foregroundStyle(.gray300)
-                                .font(.caption2)
+                                .font(.caption2_fixed)
                         }
                     }
                 }
@@ -367,14 +367,14 @@ struct ManualRecordInExpenseView: View {
                         
                         Text("소비 내역")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     ZStack(alignment: .leading) {
 //                        높이 설정용 히든 뷰
                         ZStack {
                             Text("금")
                                 .foregroundStyle(.black)
-                                .font(.subhead2_1)
+                                .font(.subhead2_1_fixed)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 6)
                         }
@@ -387,7 +387,7 @@ struct ManualRecordInExpenseView: View {
                         TextField("소비 내역을 입력해주세요", text: $viewModel.visibleInfo)
                             .lineLimit(nil)
                             .foregroundStyle(.black)
-                            .font(.body3)
+                            .font(.body3_fixed)
                             .tint(.mainPink)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
@@ -404,14 +404,14 @@ struct ManualRecordInExpenseView: View {
                             .frame(width: 116, height: 1)
                         Text("카테고리")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     ZStack {
                         // 높이 설정용 히든 뷰
                         ZStack {
                             Text("금")
                                 .foregroundStyle(.black)
-                                .font(.subhead2_1)
+                                .font(.subhead2_1_fixed)
                                 .padding(.vertical, 6)
                         }
                         .hidden()
@@ -423,7 +423,7 @@ struct ManualRecordInExpenseView: View {
                                 .frame(width: 24, height: 24)
                             Text(viewModel.category.visibleDescription)
                                 .foregroundStyle(.black)
-                                .font(.body3)
+                                .font(.body3_fixed)
                         }
                     }
                     Spacer()
@@ -446,7 +446,7 @@ struct ManualRecordInExpenseView: View {
                             .frame(width: 116, height: 1)
                         Text("결제 수단")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     
                     Group {
@@ -458,7 +458,7 @@ struct ManualRecordInExpenseView: View {
                                 
                                 Text("현금")
                                     .foregroundStyle(.black)
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
@@ -470,7 +470,7 @@ struct ManualRecordInExpenseView: View {
                                 
                                 Text("현금")
                                     .foregroundStyle(Color(0xbfbfbf)) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
@@ -499,7 +499,7 @@ struct ManualRecordInExpenseView: View {
                                 
                                 Text("카드")
                                     .foregroundStyle(.black)
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
@@ -511,7 +511,7 @@ struct ManualRecordInExpenseView: View {
                                 
                                 Text("카드")
                                     .foregroundStyle(Color(0xbfbfbf)) // 색상 디자인 시스템 형식으로 고치기 ^^^
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
@@ -547,14 +547,14 @@ struct ManualRecordInExpenseView: View {
                             .frame(width: 116, height: 1)
                         Text("여행 제목")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     ZStack {
                         // 높이 설정용 히든 뷰
                         ZStack {
                             Text("금")
                                 .foregroundStyle(.black)
-                                .font(.subhead2_1)
+                                .font(.subhead2_1_fixed)
                                 .padding(.vertical, 6)
                         }
                         .hidden()
@@ -562,7 +562,7 @@ struct ManualRecordInExpenseView: View {
                         Text(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? mainVM.chosenTravelInManualRecord?.name ?? "-" : "임시 기록")
                             .lineLimit(nil)
                             .foregroundStyle(mainVM.chosenTravelInManualRecord?.name != tempTravelName ? .black : .gray400)
-                            .font(.subhead2_1)
+                            .font(.subhead2_1_fixed)
                     }
                     Spacer()
 
@@ -584,7 +584,7 @@ struct ManualRecordInExpenseView: View {
                             .frame(width: 116, height: 1)
                         Text("결제 인원")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     ScrollView(.horizontal) {
                         HStack(spacing: 6) {
@@ -596,6 +596,7 @@ struct ManualRecordInExpenseView: View {
                         }
                     }
                     .scrollIndicators(.never)
+                    .dynamicTypeSize(.medium)
 
                 }
                 HStack(spacing: 0) {
@@ -604,19 +605,19 @@ struct ManualRecordInExpenseView: View {
                             .frame(width: 116, height: 1)
                         Text("지출 일시")
                             .foregroundStyle(.gray300)
-                            .font(.caption2)
+                            .font(.caption2_fixed)
                     }
                     ZStack {
                         // 높이 설정용 히든 뷰
                         Text("금")
                             .lineLimit(1)
-                            .font(.subhead2_2)
+                            .font(.subhead2_2_fixed)
                             .padding(.vertical, 6)
                             .hidden()
                         
                         Text(viewModel.payDate.toString(dateFormat: "yy.MM.dd(E) HH:mm"))
                             .foregroundStyle(.black)
-                            .font(.subhead2_2)
+                            .font(.subhead2_2_fixed)
                     }
                     Spacer()
                     
@@ -638,13 +639,13 @@ struct ManualRecordInExpenseView: View {
                                 .frame(width: 116, height: 1)
                             Text("지출 위치")
                                 .foregroundStyle(.gray300)
-                                .font(.caption2)
+                                .font(.caption2_fixed)
                         }
                         ZStack {
                             // 높이 설정용 히든 뷰
                             Text("금")
                                 .lineLimit(1)
-                                .font(.subhead2_2)
+                                .font(.subhead2_2_fixed)
                                 .padding(.vertical, 6)
                                 .hidden()
                             
@@ -662,11 +663,11 @@ struct ManualRecordInExpenseView: View {
                                 if !viewModel.countryIsModified {
                                     Text(viewModel.countryExpression + " " + viewModel.locationExpression)
                                         .foregroundStyle(.black)
-                                        .font(.subhead2_2)
+                                        .font(.subhead2_2_fixed)
                                 } else {
                                     Text(viewModel.countryExpression)
                                         .foregroundStyle(.black)
-                                        .font(.subhead2_2)
+                                        .font(.subhead2_2_fixed)
                                 }
                                 
                             }
@@ -694,14 +695,14 @@ struct ManualRecordInExpenseView: View {
                                 
                                 Text(" ")
                                     .foregroundStyle(.gray300)
-                                    .font(.caption2)
+                                    .font(.caption2_fixed)
                             }
                             ZStack(alignment: .leading) {
                                 //                        높이 설정용 히든 뷰
                                 ZStack {
                                     Text("금")
                                         .foregroundStyle(.black)
-                                        .font(.subhead2_1)
+                                        .font(.subhead2_1_fixed)
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 6)
                                 }
@@ -714,7 +715,7 @@ struct ManualRecordInExpenseView: View {
                                 TextField("상세 위치를 입력해주세요", text: $viewModel.locationExpression)
                                     .lineLimit(nil)
                                     .foregroundStyle(.black)
-                                    .font(.body3)
+                                    .font(.body3_fixed)
                                     .tint(.mainPink)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
@@ -739,7 +740,7 @@ struct ManualRecordInExpenseView: View {
                 if secondCounter > 0 && secondCounter <= 3 {
                     Text("\(secondCounter)초 후 자동 저장")
                         .foregroundStyle(.gray300)
-                        .font(.body2)
+                        .font(.body2_fixed)
                 } else {
                     EmptyView()
                 }
