@@ -172,122 +172,155 @@ struct AllExpenseDetailView: View {
             .padding(.bottom, 20)
         }
     }
-
-    // 국가별로 비용 항목을 분류하여 표시하는 함수입니다.
+    
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
             let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
-            let groupedByDate = Dictionary(grouping: sortedExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) }) // 날짜별로 그룹화
             
-            let dateKeys = groupedByDate.keys.sorted(by: >) // 날짜 키 배열 생성
-            ForEach(Array(dateKeys.enumerated()), id: \.element) { index, date in
-                if let expensesForDate = groupedByDate[date] {
-                    
-                    let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date)
-                    
-                    HStack(alignment: .center, spacing: 0) {
-                        Text("Day \(calculatedDay + 1)")
-                            .font(.subhead1_fixed)
-                            .foregroundStyle(.gray400)
-                        // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.
-                        Text("\(dateGapHandler.convertBeforeShowing(date: date), formatter: dateFormatterWithDay)")
-                            .font(.caption2_fixed)
-                            .foregroundStyle(.gray300)
-                            .padding(.leading, 10)
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
-                    .padding(.bottom, 16)
-                    
-                    ForEach(expensesForDate, id: \.id) { expense in
-                        NavigationLink {
-                            ManualRecordInExpenseView(
-                                given_wantToActivateAutoSaveTimer: false,
-                                given_payAmount: expense.payAmount,
-                                given_currency: Int(expense.currency),
-                                given_info: expense.info,
-                                given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
-                                given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
-                                given_soundRecordData: expense.voiceRecordFile,
-                                given_expense: expense,
-                                given_payDate: expense.payDate,
-                                given_country: Int(expense.country),
-                                given_location: expense.location,
-                                given_id: expense.id,
-                                given_travel: expense.travel
-                            )
-                            .environmentObject(mainVM) // ^^^
-                        } label : {
-                            HStack(alignment: .center, spacing: 0) {
-                                Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
-                                    .font(.system(size: 36))
-                                
-                                VStack(alignment: .leading, spacing: 0) {
-                                    Text("\(expense.info ?? "알 수 없는 내역")")
-                                        .font(.subhead2_1_fixed)
-                                        .foregroundStyle(.black)
-                                        .lineLimit(1)
-                                    HStack(alignment: .center, spacing: 3) {
-                                        // 소비 기록을 한 시각을 보여주는 부분
-                                        // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
-                                        if let payDate = expense.payDate {
-                                            Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                                .font(.caption2_fixed)
-                                                .foregroundStyle(.gray300)
-                                        } else {
-                                            Text("-")
-                                                .font(.caption2_fixed)
-                                                .foregroundStyle(.gray300)
-                                        }
-                                        
-                                        Text("|")
-                                            .font(.caption2_fixed)
-                                            .foregroundStyle(.gray300)
-                                        
-                                        Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
-                                            .font(.caption2_fixed)
-                                            .foregroundStyle(.gray300)
-                                    }
-                                    .padding(.top, 4)
-                                }
-                                .padding(.leading, 10)
-                                
-                                Spacer()
-                                
-                                VStack(alignment: .trailing, spacing: 0) {
-                                    HStack(alignment: .center, spacing: 0) {
-                                        Text("\(currencyInfoModel[Int(expense.currency)]?.symbol ?? "-")")
-                                            .font(.subhead2_1_fixed)
-                                            .foregroundStyle(.black)
-                                        
-                                        Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
-                                            .font(.subhead2_1_fixed)
-                                            .foregroundStyle(.black)
-                                            .padding(.leading, 3 )
-                                    }
-                                    let currencyCodeName = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
-                                    let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
-                                    let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
-                                    let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
-                                    Text("(\(formattedPayAmount)원)")
-                                        .font(.caption2_fixed)
-                                        .foregroundStyle(.gray200)
-                                        .padding(.top, 4 )
-                                }
-                            }
-                            .padding(0)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
-                    }
-                    if index != dateKeys.count - 1 {
+            let startDate = selectedTravel?.startDate ?? Date.distantFuture
+            let endDate = selectedTravel?.endDate ?? Date.distantPast
+            
+            let beforeTravelExpenses = sortedExpenses.filter { Calendar.current.startOfDay(for: $0.payDate ?? Date()) < startDate }
+            let duringTravelExpenses = sortedExpenses.filter { Calendar.current.startOfDay(for: $0.payDate ?? Date()) >= startDate && Calendar.current.startOfDay(for: $0.payDate ?? Date()) <= endDate }
+            let afterTravelExpenses = sortedExpenses.filter { Calendar.current.startOfDay(for: $0.payDate ?? Date()) > endDate }
+            
+            let duringTravelGroupedByDate = Dictionary(grouping: duringTravelExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) })
+            let duringTravelDateKeys = duringTravelGroupedByDate.keys.sorted(by: >)
+            
+            if afterTravelExpenses.count > 0 {
+                drawExpenseGroup(expenses: afterTravelExpenses, title: "여행 후", backgroundColor: .white)
+                customDividerByDay
+            }
+            
+            ForEach(Array(duringTravelDateKeys.enumerated()), id: \.element) { index, date in
+                if let expensesForDate = duringTravelGroupedByDate[date] {
+                    drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
+                    if index != duringTravelDateKeys.count - 1 {
+                        customDividerByDay
+                    } else if beforeTravelExpenses.count > 0 {
                         customDividerByDay
                     }
                 }
             }
+            
+            if beforeTravelExpenses.count > 0 {
+                drawExpenseGroup(expenses: beforeTravelExpenses, title: "여행 전", backgroundColor: .white)
+            }
         }
     }
-    
+
+    private func drawExpenseGroup(expenses: [Expense], title: String, backgroundColor: Color) -> some View {
+        VStack (alignment: .leading, spacing: 0) {
+            HStack(alignment: .center, spacing: 0) {
+                Text(title)
+                    .font(.subhead1_fixed)
+                    .foregroundStyle(.gray400)
+                if title == "여행 전" || title == "여행 후" {
+                    Text("")
+                } else {
+                    Text("\(dateGapHandler.convertBeforeShowing(date: expenses.first?.payDate ?? Date()), formatter: dateFormatterWithDay)")
+                        .font(.caption2_fixed)
+                        .foregroundStyle(.gray300)
+                        .padding(.leading, 10)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
+            .padding(.bottom, 16)
+            
+            ForEach(expenses, id: \.id) { expense in
+                NavigationLink {
+                    ManualRecordInExpenseView(
+                        given_wantToActivateAutoSaveTimer: false,
+                        given_payAmount: expense.payAmount,
+                        given_currency: Int(expense.currency),
+                        given_info: expense.info,
+                        given_infoCategory: ExpenseInfoCategory(rawValue: Int(expense.category)) ?? .unknown,
+                        given_paymentMethod: PaymentMethod(rawValue: Int(expense.paymentMethod)) ?? .unknown,
+                        given_soundRecordData: expense.voiceRecordFile,
+                        given_expense: expense,
+                        given_payDate: expense.payDate,
+                        given_country: Int(expense.country),
+                        given_location: expense.location,
+                        given_id: expense.id,
+                        given_travel: expense.travel
+                    )
+                    .environmentObject(mainVM)
+                } label : {
+                    HStack(alignment: .center, spacing: 0) {
+                        Image(ExpenseInfoCategory(rawValue: Int(expense.category))?.modalImageString ?? "nil")
+                            .font(.system(size: 36))
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("\(expense.info ?? "알 수 없는 내역")")
+                                .font(.subhead2_1_fixed)
+                                .foregroundStyle(.black)
+                                .lineLimit(1)
+                            HStack(alignment: .center, spacing: 3) {
+                                // 소비 기록을 한 시각을 보여주는 부분
+                                // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                if title == "여행 전" || title == "여행 후" {
+                                    Text("\(dateGapHandler.convertBeforeShowing(date: expenses.first?.payDate ?? Date()), formatter: dateFormatterWithDay)")
+                                        .font(.caption2_fixed)
+                                        .foregroundStyle(.gray300)
+                                    Text("|")
+                                        .font(.caption2_fixed)
+                                        .foregroundStyle(.gray300)
+                                }
+                                if let payDate = expense.payDate {
+                                    Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                        .font(.caption2_fixed)
+                                        .foregroundStyle(.gray300)
+                                } else {
+                                    Text("-")
+                                        .font(.caption2_fixed)
+                                        .foregroundStyle(.gray300)
+                                }
+                                
+                                Text("|")
+                                    .font(.caption2_fixed)
+                                    .foregroundStyle(.gray300)
+                                
+                                Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
+                                    .font(.caption2_fixed)
+                                    .foregroundStyle(.gray300)
+                            }
+                            .padding(.top, 4)
+                        }
+                        .background(backgroundColor)
+                        .padding(.leading, 10)
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 0) {
+                            HStack(alignment: .center, spacing: 0) {
+                                Text("\(currencyInfoModel[Int(expense.currency)]?.symbol ?? "-")")
+                                    .font(.subhead2_1_fixed)
+                                    .foregroundStyle(.black)
+                                
+                                Text("\(expenseViewModel.formatSum(from: expense.payAmount == -1 ? Double.nan : expense.payAmount, to: 2))")
+                                    .font(.subhead2_1_fixed)
+                                    .foregroundStyle(.black)
+                                    .padding(.leading, 3 )
+                            }
+                            let currencyCodeName = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
+                            let exchangeRate = exchangeRatehandler.getExchangeRateFromKRW(currencyCode: currencyCodeName) ?? -100
+                            let payAmount = expense.payAmount == -1 ? Double.nan : expense.payAmount * exchangeRate
+                            let formattedPayAmount = expenseViewModel.formatSum(from: payAmount, to: 0)
+                            Text("(\(formattedPayAmount)원)")
+                                .font(.caption2_fixed)
+                                .foregroundStyle(.gray200)
+                                .padding(.top, 4 )
+                        }
+                    }
+                    .padding(0)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+            }
+        }
+    }
+
     private var customDividerByDay: some View {
             Rectangle()
                 .fill(Color.gray100)
