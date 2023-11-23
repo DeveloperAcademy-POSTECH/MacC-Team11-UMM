@@ -183,8 +183,8 @@ struct AllExpenseDetailView: View {
             isReverse.toggle()
         }) {
             Image("arrowUpDown")
-                .foregroundStyle(.gray300)
-                .frame(width: 24, height: 24)
+                .resizable()
+                .frame(width: 18, height: 18)
         }
     }
     
