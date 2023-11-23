@@ -24,6 +24,7 @@ struct AllExpenseDetailView: View {
     let dateGapHandler = DateGapHandler.shared
     let viewContext = PersistenceController.shared.container.viewContext
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    @State private var isReverse = false
 
     var body: some View {
         
@@ -152,31 +153,45 @@ struct AllExpenseDetailView: View {
                 .padding(.top, 6)
             
             // 화폐별 합계
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
-                    ForEach(currencyAndSums.indices, id: \.self) { idx in
-                        let currencyAndSum = currencyAndSums[idx]
-                        Text("\(CurrencyInfoModel.shared.currencyResult[Int(currencyAndSum.currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
-                            .font(.caption2_fixed)
-                            .foregroundStyle(.gray300)
-                        if idx != currencyAndSums.count - 1 {
-                            Circle()
-                                .frame(width: 3, height: 3)
+            HStack (spacing: 0) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 0) {
+                        ForEach(currencyAndSums.indices, id: \.self) { idx in
+                            let currencyAndSum = currencyAndSums[idx]
+                            Text("\(CurrencyInfoModel.shared.currencyResult[Int(currencyAndSum.currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: currencyAndSum.sum, to: 2))")
+                                .font(.caption2_fixed)
                                 .foregroundStyle(.gray300)
-                                .padding(.horizontal, 3)
+                            if idx != currencyAndSums.count - 1 {
+                                Circle()
+                                    .frame(width: 3, height: 3)
+                                    .foregroundStyle(.gray300)
+                                    .padding(.horizontal, 3)
+                            }
                         }
                     }
                 }
+                Spacer()
+                reverseButton
             }
             .padding(.top, 8)
-            .padding(.bottom, 20)
+            .padding(.bottom, 16)
+        }
+    }
+    
+    private var reverseButton: some View {
+        Button(action: {
+            isReverse.toggle()
+        }) {
+            Image("arrowUpDown")
+                .foregroundStyle(.gray300)
+                .frame(width: 24, height: 24)
         }
     }
     
     private var drawExpensesDetail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { $0.payDate ?? Date() > $1.payDate ?? Date() }) // 날짜 순으로 정렬된 배열
-            
+            let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { (isReverse ? $0.payDate ?? Date() < $1.payDate ?? Date() : $0.payDate ?? Date() > $1.payDate ?? Date()) })
+
             let startDate = selectedTravel?.startDate ?? Date.distantFuture
             let endDate = selectedTravel?.endDate ?? Date.distantPast
             
@@ -187,24 +202,42 @@ struct AllExpenseDetailView: View {
             let duringTravelGroupedByDate = Dictionary(grouping: duringTravelExpenses, by: { Calendar.current.startOfDay(for: $0.payDate ?? Date()) })
             let duringTravelDateKeys = duringTravelGroupedByDate.keys.sorted(by: >)
             
-            if afterTravelExpenses.count > 0 {
-                drawExpenseGroup(expenses: afterTravelExpenses, title: "여행 후", backgroundColor: .white)
-                customDividerByDay
-            }
-            
-            ForEach(Array(duringTravelDateKeys.enumerated()), id: \.element) { index, date in
-                if let expensesForDate = duringTravelGroupedByDate[date] {
-                    drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
-                    if index != duringTravelDateKeys.count - 1 {
-                        customDividerByDay
-                    } else if beforeTravelExpenses.count > 0 {
-                        customDividerByDay
+            if isReverse {
+                if beforeTravelExpenses.count > 0 {
+                    drawExpenseGroup(expenses: beforeTravelExpenses, title: "여행 전", backgroundColor: .white)
+                    customDividerByDay
+                }
+                ForEach(Array(duringTravelDateKeys.enumerated().reversed()), id: \.element) { index, date in
+                    if let expensesForDate = duringTravelGroupedByDate[date] {
+                        drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
+                        if index != duringTravelDateKeys.count - 1 {
+                            customDividerByDay
+                        } else if afterTravelExpenses.count > 0 {
+                            customDividerByDay
+                        }
                     }
                 }
-            }
-            
-            if beforeTravelExpenses.count > 0 {
-                drawExpenseGroup(expenses: beforeTravelExpenses, title: "여행 전", backgroundColor: .white)
+                if afterTravelExpenses.count > 0 {
+                    drawExpenseGroup(expenses: afterTravelExpenses, title: "여행 후", backgroundColor: .white)
+                }
+            } else {
+                if afterTravelExpenses.count > 0 {
+                    drawExpenseGroup(expenses: afterTravelExpenses, title: "여행 후", backgroundColor: .white)
+                    customDividerByDay
+                }
+                ForEach(Array(duringTravelDateKeys.enumerated()), id: \.element) { index, date in
+                    if let expensesForDate = duringTravelGroupedByDate[date] {
+                        drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
+                        if index != duringTravelDateKeys.count - 1 {
+                            customDividerByDay
+                        } else if beforeTravelExpenses.count > 0 {
+                            customDividerByDay
+                        }
+                    }
+                }
+                if beforeTravelExpenses.count > 0 {
+                    drawExpenseGroup(expenses: beforeTravelExpenses, title: "여행 전", backgroundColor: .white)
+                }
             }
         }
     }
@@ -259,28 +292,23 @@ struct AllExpenseDetailView: View {
                             HStack(alignment: .center, spacing: 3) {
                                 // 소비 기록을 한 시각을 보여주는 부분
                                 // 저장된 expense.payDate를 현지 시각으로 변환해서 보여준다.
+                                
                                 if title == "여행 전" || title == "여행 후" {
-                                    Text("\(dateGapHandler.convertBeforeShowing(date: expenses.first?.payDate ?? Date()), formatter: dateFormatterWithDay)")
-                                        .font(.caption2_fixed)
-                                        .foregroundStyle(.gray300)
+                                    Text("")
+                                } else {
+                                    if let payDate = expense.payDate {
+                                        Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
+                                            .font(.caption2_fixed)
+                                            .foregroundStyle(.gray300)
+                                    } else {
+                                        Text("-")
+                                            .font(.caption2_fixed)
+                                            .foregroundStyle(.gray300)
+                                    }
                                     Text("|")
                                         .font(.caption2_fixed)
                                         .foregroundStyle(.gray300)
                                 }
-                                if let payDate = expense.payDate {
-                                    Text("\(dateFormatterWithHourMiniute(date: dateGapHandler.convertBeforeShowing(date: payDate)))")
-                                        .font(.caption2_fixed)
-                                        .foregroundStyle(.gray300)
-                                } else {
-                                    Text("-")
-                                        .font(.caption2_fixed)
-                                        .foregroundStyle(.gray300)
-                                }
-                                
-                                Text("|")
-                                    .font(.caption2_fixed)
-                                    .foregroundStyle(.gray300)
-                                
                                 Text("\(PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod)))")
                                     .font(.caption2_fixed)
                                     .foregroundStyle(.gray300)

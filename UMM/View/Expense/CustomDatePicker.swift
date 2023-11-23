@@ -63,7 +63,7 @@ struct CustomDatePicker: View {
                 DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
                     .labelsHidden()
                     .blendMode(.lighten)
-                    .dynamicTypeSize(.xSmall)
+                    .dynamicTypeSize(.medium)
                     .onReceive(expenseViewModel.$selectedDate) { _ in
                         DispatchQueue.main.async {
                             expenseViewModel.filteredTodayExpenses = expenseViewModel.getFilteredTodayExpenses()
