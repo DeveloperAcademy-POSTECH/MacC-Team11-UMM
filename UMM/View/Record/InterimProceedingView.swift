@@ -31,7 +31,7 @@ struct InterimProceedingView: View {
                     .font(.custom(FontsManager.Pretendard.medium, size: 16))
                     .foregroundStyle(Color(0xA6A6A6))
                 
-            } else if proceedingCnt <= 6 {
+            } else if proceedingCnt <= Constants.travelCnt {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0..<proceedingCnt, id: \.self) { index in
@@ -47,10 +47,10 @@ struct InterimProceedingView: View {
                 ZStack {
                       ScrollView(.init()) {
                           TabView(selection: $currentPage) {
-                              ForEach(0 ..< (proceedingCnt+5)/6, id: \.self) { page in
+                              ForEach(0 ..< (proceedingCnt+Constants.travelCnt-1)/Constants.travelCnt, id: \.self) { page in
                                   VStack {
                                       LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                          ForEach((page * 6) ..< min((page+1) * 6, proceedingCnt), id: \.self) { index in
+                                          ForEach((page * Constants.travelCnt) ..< min((page+1) * Constants.travelCnt, proceedingCnt), id: \.self) { index in
                                               TravelButtonView(viewModel: viewModel, travel: nowTravel?[index] ?? Travel(), travelCnt: proceedingCnt, isSelectedTravel: $isSelectedTravel)
                                           }
                                       }
@@ -64,13 +64,13 @@ struct InterimProceedingView: View {
                       }
                       
                       HStack(spacing: 6) {
-                          ForEach(0..<(proceedingCnt+5)/6, id: \.self) { index in
+                          ForEach(0..<(proceedingCnt+Constants.travelCnt-1)/Constants.travelCnt, id: \.self) { index in
                               Capsule()
                                   .fill(currentPage == index ? Color.black : Color.gray200)
                                   .frame(width: 5, height: 5)
                           }
                       }
-                      .offset(y: 95)
+                      .offset(y: Constants.interimOffset)
                   }
             }
         }
