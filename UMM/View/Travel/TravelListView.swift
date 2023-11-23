@@ -28,6 +28,7 @@ struct TravelListView: View {
     @State private var flagImageName: [String] = []
     @State private var defaultImageName: [String] = []
     @State private var countryName: [String] = []
+    @State private var blurImageName: [String] = []
     
     @State private var travelTabViewRedrawer = true
     
@@ -149,6 +150,7 @@ struct TravelListView: View {
                             participantArr: nowTravelWithDummy?[index].participantArray ?? [],
                             flagImageArr: self.flagImageName,
                             defaultImageString: String(defaultImageName.first ?? "DefaultImage"),
+                            blurImageString: String(blurImageName.first ?? "BlurredDefaultImage"),
                             koreanNM: self.countryName
                         ), label: {
                             ZStack(alignment: .top) { 
@@ -293,6 +295,7 @@ struct TravelListView: View {
                                     var flagImageNames: [String] = []
                                     var defaultImage: [String] = []
                                     var koreanName: [String] = []
+                                    var blurImage: [String] = []
                                     
                                     for countryValue in uniqueCountryValues {
                                         
@@ -313,12 +316,18 @@ struct TravelListView: View {
                                         } else {
                                             koreanName.append("")
                                         }
+                                        
+                                        if let blurString = CountryInfoModel.shared.countryResult[Int(countryValue)]?.blurImageString {
+                                            blurImage.append(blurString)
+                                        } else {
+                                            blurImage.append("BlurredDefaultImage")
+                                        }
                                     }
                                     
                                     self.flagImageName = flagImageNames
                                     self.defaultImageName = defaultImage
                                     self.countryName = koreanName
-                                    print("defaultImageName :", defaultImageName)
+                                    self.blurImageName = blurImage
                                 }
                             }
                         })

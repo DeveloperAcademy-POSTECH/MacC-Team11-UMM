@@ -49,6 +49,7 @@ class CountryInfoModel {
             let flagImageName = columns[4].trimmingCharacters(in: .whitespacesAndNewlines)
             let defaultImageName = columns[5].trimmingCharacters(in: .whitespacesAndNewlines)
             let relatedCurrencyString = columns[6].trimmingCharacters(in: .whitespacesAndNewlines)
+            let blurImageName = columns[7].trimmingCharacters(in: .whitespacesAndNewlines)
              let relatedCurrencyArray = relatedCurrencyString
                  .trimmingCharacters(in: CharacterSet(charactersIn: "[]"))
                  .components(separatedBy: ", ")
@@ -59,7 +60,7 @@ class CountryInfoModel {
                                           locationNm: locationName,
                                           flagString: flagImageName,
                                           defaultImageString: defaultImageName,
-                                          relatedCurrencyArray: relatedCurrencyArray
+                                          relatedCurrencyArray: relatedCurrencyArray, blurImageString: blurImageName
             )
             
             countryInfoDict[index] = countryInfo
