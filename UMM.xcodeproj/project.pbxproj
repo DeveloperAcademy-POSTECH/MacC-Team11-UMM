@@ -98,7 +98,6 @@
 		E237338C2AF7E95B008C2613 /* CurrencyList.csv in Resources */ = {isa = PBXBuildFile; fileRef = E237338B2AF7E95B008C2613 /* CurrencyList.csv */; };
 		E237338E2AF7EB8B008C2613 /* CurrencyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237338D2AF7EB8B008C2613 /* CurrencyInfo.swift */; };
 		E23733902AF7EC1E008C2613 /* CurrencyInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237338F2AF7EC1E008C2613 /* CurrencyInfoModel.swift */; };
-		E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */; };
 		E26DBB2F2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26DBB2E2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift */; };
 		E26DBB312AFAC0AD00AC76E3 /* ManualRecordInExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26DBB302AFAC0AD00AC76E3 /* ManualRecordInExpenseViewModel.swift */; };
 		E2D4247E2AEF580E00A9ADC9 /* ExchangeRateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */; };
@@ -208,7 +207,6 @@
 		E237338B2AF7E95B008C2613 /* CurrencyList.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = CurrencyList.csv; sourceTree = "<group>"; };
 		E237338D2AF7EB8B008C2613 /* CurrencyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyInfo.swift; sourceTree = "<group>"; };
 		E237338F2AF7EC1E008C2613 /* CurrencyInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyInfoModel.swift; sourceTree = "<group>"; };
-		E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBarGraph.swift; sourceTree = "<group>"; };
 		E26DBB2E2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordInExpenseView.swift; sourceTree = "<group>"; };
 		E26DBB302AFAC0AD00AC76E3 /* ManualRecordInExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualRecordInExpenseViewModel.swift; sourceTree = "<group>"; };
 		E2D4247D2AEF580E00A9ADC9 /* ExchangeRateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateHandler.swift; sourceTree = "<group>"; };
@@ -389,7 +387,6 @@
 				E2D5C0612ADD923000907501 /* TodayExpenseView.swift */,
 				E2D5C0632ADD923800907501 /* TodayExpenseDetailView.swift */,
 				E2D5C0652ADD924100907501 /* AllExpenseView.swift */,
-				E25358952AE3FB3B00F50EF2 /* CustomBarGraph.swift */,
 				E2D5C0672ADD924800907501 /* AllExpenseDetailView.swift */,
 				E23357A32AE2724700E17CFF /* CustomDatePicker.swift */,
 				E26DBB2E2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift */,
@@ -636,7 +633,6 @@
 				E237338E2AF7EB8B008C2613 /* CurrencyInfo.swift in Sources */,
 				5744185F2B033C420057A2B5 /* travelModalSortRule.swift in Sources */,
 				C19AFAE32ADFB5AE0037A5F5 /* Font+Extension.swift in Sources */,
-				E25358962AE3FB3B00F50EF2 /* CustomBarGraph.swift in Sources */,
 				E26DBB2F2AFAC08C00AC76E3 /* ManualRecordInExpenseView.swift in Sources */,
 				571A426C2ACE857500FA3D2B /* ContentView.swift in Sources */,
 				57A65D122AD7D5D500131266 /* RecordViewModel.swift in Sources */,
@@ -869,7 +865,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.UMM.nomadwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.2023umm.nomadwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ummprovisioning;
@@ -914,7 +910,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.UMM.nomadwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.2023umm.nomadwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ummprovisioning;

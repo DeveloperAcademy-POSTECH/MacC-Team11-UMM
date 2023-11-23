@@ -52,6 +52,52 @@ struct AllExpenseView: View {
     
     // MARK: - 뷰
     
+    private var countryPicker: some View {
+        let allExpensesInSelectedTravel = expenseViewModel.filteredAllExpenses
+        let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
+        
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 4) {
+                
+                Button(action: {
+                        expenseViewModel.selectedCountry = Int64(-2)
+                        expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
+                }, label: {
+                    Text("전체")
+                        .padding(.vertical, 7)
+                        .frame(width: 61)
+                        .font(.caption2_fixed)
+                        .foregroundColor(expenseViewModel.selectedCountry == -2 ? Color.white: Color.gray300)
+                        .background(expenseViewModel.selectedCountry == -2 ? Color.black: Color.gray100)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                })
+                
+                ForEach(countries, id: \.self) { country in
+                    Button(action: {
+                            expenseViewModel.selectedCountry = Int64(country)
+                            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
+                    }, label: {
+                        HStack(spacing: 4) {
+                            Image(countryInfoModel[Int(country)]?.flagString ?? "")
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                                .shadow(color: .gray200, radius: 2)
+                                .padding(.leading, 8)
+                            Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
+                                .padding(.vertical, 7)
+                                .padding(.trailing, 8)
+                                .font(.caption2_fixed)
+                                .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
+                        }
+                        .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    })
+                }
+            }
+            .padding(.top, 8) // figma: 16
+        }
+    }
+    
     var allExpenseSummaryTotal: some View {
         let totalSum = expenseViewModel.filteredAllExpensesByCountry.reduce(0) { total, expense in
             let isoCode = currencyInfoModel[Int(expense.currency)]?.isoCodeNm ?? "Unknown"
@@ -71,14 +117,14 @@ struct AllExpenseView: View {
         } label: {
             HStack(spacing: 0) {
                 Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                    .font(.display4)
+                    .font(.display4_fixed)
                     .foregroundStyle(.black)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 24))
                     .foregroundStyle(.gray200)
                     .padding(.leading, 16)
             }
-            .padding(.top, 16)
+            .padding(.top, 24) // figma: 32
         }
     }
     
@@ -94,7 +140,7 @@ struct AllExpenseView: View {
                     }
                     
                     Text("\(CurrencyInfoModel.shared.currencyResult[Int(currency)]?.symbol ?? "-")\(expenseViewModel.formatSum(from: sum, to: 2))")
-                        .font(.caption2)
+                        .font(.caption2_fixed)
                         .foregroundStyle(.gray300)
                     if idx != currencies.count - 1 {
                         Circle()
@@ -104,61 +150,15 @@ struct AllExpenseView: View {
                     }
                 }
             }
-            .padding(.top, 10)
+            .padding(.top, 6) // figma: 10
         }
     }
     
-    var allExpenseBarGraph: some View {
+    private var allExpenseBarGraph: some View {
         let indexedSumArrayInPayAmountOrder = expenseViewModel.getPayAmountOrderedIndicesOfCategory(categoryArray: expenseViewModel.categoryArray, expenseArray: expenseViewModel.filteredAllExpensesByCountry)
         return BarGraph(data: indexedSumArrayInPayAmountOrder)
             .padding(.top, 22)
             .padding(.bottom, 20)
-    }
-    
-    private var countryPicker: some View {
-        let allExpensesInSelectedTravel = expenseViewModel.filteredAllExpenses
-        let countries = Array(Set(allExpensesInSelectedTravel.compactMap { $0.country })).sorted { $0 < $1 } // 중복 제거
-        
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 4) {
-                
-                Button(action: {
-                        expenseViewModel.selectedCountry = Int64(-2)
-                        expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
-                }, label: {
-                    Text("전체")
-                        .padding(.vertical, 7)
-                        .frame(width: 61)
-                        .font(.caption2)
-                        .foregroundColor(expenseViewModel.selectedCountry == -2 ? Color.white: Color.gray300)
-                        .background(expenseViewModel.selectedCountry == -2 ? Color.black: Color.gray100)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                })
-                
-                ForEach(countries, id: \.self) { country in
-                    Button(action: {
-                            expenseViewModel.selectedCountry = Int64(country)
-                            expenseViewModel.fetchCountryForAllExpense(country: expenseViewModel.selectedCountry)
-                    }, label: {
-                        HStack(spacing: 4) {
-                            Image(countryInfoModel[Int(country)]?.flagString ?? "")
-                                .resizable()
-                                .frame(width: 16, height: 16)
-                                .shadow(color: .gray200, radius: 2)
-                                .padding(.leading, 8)
-                            Text("\(countryInfoModel[Int(country)]?.koreanNm ?? "")")
-                                .padding(.trailing, 8)
-                                .font(.caption2)
-                                .foregroundColor(expenseViewModel.selectedCountry == country ? Color.white: Color.gray300)
-                        }
-                        .padding(.vertical, 7)
-                        .background(expenseViewModel.selectedCountry == country ? Color.black: Color.gray100)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    })
-                }
-            }
-            .padding(.vertical, 16)
-        }
     }
     
     private func getExpenseArray(for country: Int64) -> [Expense] {
@@ -201,11 +201,11 @@ struct AllExpenseView: View {
                             
                             VStack(alignment: .leading, spacing: 0) {
                                 Text("\(ExpenseInfoCategory.descriptionFor(rawValue: Int(categoryName)))")
-                                    .font(.subhead2_1)
+                                    .font(.subhead2_1_fixed)
                                     .foregroundStyle(.black)
                                 HStack(alignment: .center, spacing: 0) {
                                     Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum / totalSum * 100, to: 1))%")
-                                        .font(.caption2)
+                                        .font(.caption2_fixed)
                                         .foregroundStyle(.gray300)
                                 }
                                 .padding(.top, 4)
@@ -216,7 +216,7 @@ struct AllExpenseView: View {
                             
                             HStack(alignment: .center, spacing: 0) {
                                 Text("\(expenseViewModel.formatSum(from: categorySum <= -1 ? 0 : categorySum, to: 0))원")
-                                    .font(.subhead3_1)
+                                    .font(.subhead3_1_fixed)
                                     .foregroundStyle(.black)
                                     .padding(.leading, 3)
                                     .padding(.trailing, 12)
@@ -237,7 +237,7 @@ struct AllExpenseView: View {
     private var noDataView: some View {
         VStack(spacing: 0) {
             Text("아직 지출 기록이 없어요")
-                .font(.subhead3_2)
+                .font(.subhead3_2_fixed)
                 .foregroundStyle(.gray300)
                 .padding(.top, 130)
             Spacer()

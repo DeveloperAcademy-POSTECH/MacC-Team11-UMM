@@ -32,7 +32,7 @@ class ExpenseViewModel: ObservableObject {
     @Published var selectedCategory: Int64 = 0
     @Published var travelChoiceHalfModalIsShown = false
     @Published var indexedSumArrayInPayAmountOrder = [(Int64, Double)]()
-    let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5])
+    let categoryArray = [Int64]([-1, 0, 1, 2, 3, 4, 5, 6])
     
     private var travelPublisher: AnyPublisher<Travel?, Never> {
         MainViewModel.shared.$selectedTravelInExpense
@@ -199,7 +199,8 @@ class ExpenseViewModel: ObservableObject {
             (categoryArray[3], sumArray[3]),
             (categoryArray[4], sumArray[4]),
             (categoryArray[5], sumArray[5]),
-            (categoryArray[6], sumArray[6])
+            (categoryArray[6], sumArray[6]),
+            (categoryArray[7], sumArray[7]),
         ].sorted {
             $0.1 >= $1.1
         }

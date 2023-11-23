@@ -15,38 +15,80 @@ struct ExpenseView: View {
     let exchangeRateHandler = ExchangeRateHandler.shared
     @EnvironmentObject var mainVM: MainViewModel
     private var travelStream: Set<AnyCancellable> = []
+    let isSE3 = abs(UIScreen.main.bounds.width - 375.0) < 2.0 && abs(UIScreen.main.bounds.height - 667.0) < 2.0
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 0) {
-                
-//                 settingViewButton
-//                    .padding(.horizontal, 20)
-                
-                travelChoiceView
-                    .padding(.horizontal, 20)
-                
-//                 todayExpenseHeader
-//                    .padding(.horizontal, 20)
-                
-                tabViewButton
-                
-                Spacer()
-                
-                TabView(selection: $selectedTab) {
-                    TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
-                        .tag(0)
-                        .contentShape(Rectangle())
-                        .gesture(DragGesture().onChanged({_ in}))
-                        .simultaneousGesture(TapGesture())
-
-                    AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
-                        .tag(1)
-                        .contentShape(Rectangle())
-                        .gesture(DragGesture().onChanged({_ in}))
-                        .simultaneousGesture(TapGesture())
+            Group {
+                if isSE3 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        Spacer()
+                            .frame(height: 35)
+                        
+                        travelChoiceView
+                            .padding(.horizontal, 20)
+                        
+                        Spacer()
+                            .frame(height: 24)
+                        
+                        tabViewButton
+                        
+                        Spacer()
+                            .frame(height: 10)
+                        
+                        TabView(selection: $selectedTab) {
+                            TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(0)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                            
+                            AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(1)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        
+                        Spacer()
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        Spacer()
+                            .frame(height: 80)
+                        
+                        travelChoiceView
+                            .padding(.horizontal, 20)
+                        
+                        Spacer()
+                            .frame(height: 36)
+                        
+                        tabViewButton
+                        
+                        Spacer()
+                            .frame(height: 8)
+                        
+                        TabView(selection: $selectedTab) {
+                            TodayExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(0)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                            
+                            AllExpenseView(selectedTab: $selectedTab, namespace: namespace)
+                                .tag(1)
+                                .contentShape(Rectangle())
+                                .gesture(DragGesture().onChanged({_ in}))
+                                .simultaneousGesture(TapGesture())
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        
+                        Spacer()
+                    }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .ignoresSafeArea()
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
@@ -75,7 +117,7 @@ struct ExpenseView: View {
     private var todayExpenseHeader: some View {
         HStack(spacing: 0) {
             Text("가계부")
-                .font(.display2)
+                .font(.display2_fixed)
             Spacer()
         }
         .padding(.top, 10)
@@ -87,7 +129,7 @@ struct ExpenseView: View {
             Button {
                 expenseViewModel.travelChoiceHalfModalIsShown = true
             } label: {
-                HStack(spacing: 0) {
+                VStack(spacing: 0) {
                     ZStack {
                         Capsule()
                             .foregroundStyle(.white)
@@ -100,7 +142,7 @@ struct ExpenseView: View {
                         HStack(spacing: 12) {
                             Text(mainVM.selectedTravelInExpense?.name != tempTravelName ? mainVM.selectedTravelInExpense?.name ?? "-" : "-")
                                 .lineLimit(1)
-                                .font(.subhead2_2)
+                                .font(.subhead2_2_fixed)
                                 .foregroundStyle(.black)
                             Image("recordTravelChoiceDownChevron")
                                 .resizable()
@@ -114,22 +156,26 @@ struct ExpenseView: View {
                 }
             }
             Text("가계부")
-                .font(.display1)
+                .font(.display1_fixed)
                 .foregroundStyle(.black)
             Spacer()
         }
-        .padding(.top, 80)
-        .padding(.bottom, 20)
     }
     
     private var tabViewButton: some View {
         HStack(spacing: 0) {
-            ForEach((TabbedItems.allCases), id: \.self) { item in
-                ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: item.title, tab: item.rawValue)
-                    .padding(.top, 8)
+            ForEach((TabbedItems.allCases.indices), id: \.self) { index in
+                ZStack {
+                    ExpenseTabBarItem(selectedTab: $selectedTab, namespace: namespace, title: TabbedItems.allCases[index].title, tab: TabbedItems.allCases[index].rawValue)
+                        .padding(.leading, index == 0 ? 39 : 20)
+                        .padding(.trailing, index == 0 ? 20 : 39)
+                    Divider()
+                        .frame(height: 2)
+                        .padding(.top, 31) // figma: ???
+                }
             }
         }
-        .padding(.top, 32)
+        .padding(.top, 8)
         .padding(.bottom, 0)
     }
 }
@@ -147,24 +193,19 @@ struct ExpenseTabBarItem: View {
         } label: {
             VStack(spacing: 0) {
                 Text(title)
-                    .font(.subhead3_1)
+                    .font(.subhead3_1_fixed)
                     .foregroundStyle(selectedTab == tab ? .black : .gray300)
-
+                    .frame(minWidth: 0, maxWidth: .infinity) // 이 부분 추가
                 ZStack {
-                    Divider()
-                        .frame(height: 2)
-                        .padding(.top, 11)
                     if selectedTab == tab {
                         Color.black
                             .matchedGeometryEffect(id: "underline", in: namespace.self)
                             .frame(height: 2)
                             .padding(.top, 11)
-                            .padding(.horizontal)
                     } else {
                         Color.clear
                             .frame(height: 2)
                             .padding(.top, 11)
-                            .padding(.horizontal)
                     }
                 }
             }

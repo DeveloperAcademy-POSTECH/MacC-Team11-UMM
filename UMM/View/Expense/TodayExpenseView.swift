@@ -66,7 +66,14 @@ struct TodayExpenseView: View {
     
     // 국가별 + 결제수단별 지출액 표시
     var drawExpensesByCountry: some View {
-        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
+//        let countryArray = [Int64](Set<Int64>(expenseViewModel.groupedTodayExpenses.keys)).sorted { $0 < $1 }
+        
+        var countryDict = [Int64: Date]()
+        for (country, expenses) in expenseViewModel.groupedTodayExpenses {
+            let latestDate = expenses.max(by: { $0.payDate ?? Date.distantPast <= $1.payDate ?? Date.distantPast })?.payDate
+            countryDict[country] = latestDate
+        }
+        let countryArray = countryDict.sorted { $0.value > $1.value }.map { $0.key }
 
         return ForEach(countryArray, id: \.self) { country in
             let paymentMethodArray = Array(Set((expenseViewModel.groupedTodayExpenses[country] ?? []).map { $0.paymentMethod })).sorted { $0 < $1 }
@@ -90,7 +97,7 @@ struct TodayExpenseView: View {
                             .padding(.leading, 2)
                         Text(countryInfoModel[Int(country)]?.koreanNm ?? "")
                             .foregroundStyle(.black)
-                            .font(.subhead3_1)
+                            .font(.subhead3_1_fixed)
                     }
 
                     // 결제 수단: 전체: 합계
@@ -106,7 +113,7 @@ struct TodayExpenseView: View {
                     } label: {
                         HStack(spacing: 0) {
                             Text("\(expenseViewModel.formatSum(from: totalSum, to: 0))원")
-                                .font(.display3)
+                                .font(.display3_fixed)
                                 .foregroundStyle(.black)
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 24))
@@ -143,7 +150,7 @@ struct TodayExpenseView: View {
                             VStack(alignment: .leading, spacing: 0) {
                                 HStack(spacing: 0) {
                                     Text(PaymentMethod(rawValue: Int(paymentMethod))?.title ?? "-")
-                                        .font(.subhead2_1)
+                                        .font(.subhead2_1_fixed)
                                         .foregroundStyle(.gray300)
                                 }
                                 // 결제 수단: 개별, 화폐: 개별: 합계
@@ -154,12 +161,12 @@ struct TodayExpenseView: View {
                                         let symbol = currencyInfoModel[Int(currency)]?.symbol ?? "-"
                                         let formattedSum = expenseViewModel.formatSum(from: sum, to: 2)
                                         Text("\(symbol) \(formattedSum)")
-                                            .font(.subhead3_1)
+                                            .font(.subhead3_1_fixed)
                                             .foregroundStyle(.black)
 
                                         if index != currencies.count - 1 {
                                             Divider()
-                                                .font(.subhead2_1)
+                                                .font(.subhead2_1_fixed)
                                                 .foregroundStyle(.gray200)
                                                 .padding(.horizontal, 5)
                                         }
@@ -191,7 +198,7 @@ struct TodayExpenseView: View {
             Spacer()
             VStack(spacing: 0) {
                 Text("아직 지출 기록이 없어요")
-                    .font(.subhead3_2)
+                    .font(.subhead3_2_fixed)
                     .foregroundStyle(.gray300)
                     .padding(.top, 130)
                 Spacer()
