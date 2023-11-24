@@ -100,8 +100,8 @@ extension PersistenceController {
             let paymentMethod = PaymentMethod.titleFor(rawValue: Int(expense.paymentMethod))
             let category = ExpenseInfoCategory.descriptionFor(rawValue: Int(expense.category))
             let participantString = "\"\(expense.participantArray?.joined(separator: ", ") ?? "")\""
-            let countryAndLocatoinExpression = CountryInfoModel.shared.countryResult[Int(expense.country)]?.koreanNm ?? "" + (expense.location ?? "-")
-            
+            let countryAndLocatoinExpression = (CountryInfoModel.shared.countryResult[Int(expense.country)]?.koreanNm ?? "") + " " + (expense.location ?? "")
+
             let row = "\(info),\(payAmountInWonString),\(payAmountWithCurrency),\(exchangeRateString),\(paymentMethod),\(category),\(participantString),\(countryAndLocatoinExpression),\(payDate)\n"
             csvPage1.append(row)
         }
@@ -111,7 +111,11 @@ extension PersistenceController {
             let participantsWithMe = ["나"] + participants
             let totalSum = participantsWithMe.reduce(0.0) { sum, participant in
                 let expenses = sortedExpenses?.filter { $0.participantArray?.contains(participant) ?? false }
-                let totalExpense = expenses?.reduce(0, { $0 + ($1.payAmount * $1.exchangeRate) }) ?? 0
+                let totalExpense = expenses?.reduce(0, { (currentSum, expense) -> Double in
+                    let participantCount = Double(expense.participantArray?.count ?? 1)
+                    let dividedExpense = (expense.payAmount * expense.exchangeRate) / participantCount
+                    return currentSum + dividedExpense
+                }) ?? 0
                 let totalExpenseString = String(format: "%.0f", totalExpense)
 
                 let participantArray = expenses?.first?.participantArray ?? []
