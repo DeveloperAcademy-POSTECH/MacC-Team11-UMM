@@ -64,8 +64,6 @@ struct ExpenseView: View {
                         travelChoiceView
                             .padding(.horizontal, 20)
                         
-                        exportButtonView
-                        
                         Spacer()
                             .frame(height: 36)
                         
@@ -97,6 +95,22 @@ struct ExpenseView: View {
             .sheet(isPresented: $expenseViewModel.travelChoiceHalfModalIsShown) {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravelInExpense, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: {
+                            PersistenceController().exportDataToCSV(travel: mainVM.selectedTravelInExpense ?? Travel(context: viewContext))
+                        }) {
+                            Text("csv로 내보내기")
+                                .dynamicTypeSize(.medium)
+                                .fixedSize()
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .foregroundStyle(.gray300)
+                    }
+                }
             }
         }
     }
@@ -186,7 +200,9 @@ struct ExpenseView: View {
         Button {
             PersistenceController().exportDataToCSV(travel: mainVM.selectedTravelInExpense ?? Travel(context: viewContext))
         } label: {
-            Image(systemName: "heart")
+            Image(systemName: "ellipsis.circle")
+                .foregroundStyle(.gray300)
+                .frame(width: 12, height: 12)
         }
     }
 }
