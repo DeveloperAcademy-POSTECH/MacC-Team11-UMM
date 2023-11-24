@@ -31,7 +31,7 @@ struct InterimPastView: View {
                     .font(.custom(FontsManager.Pretendard.medium, size: 16))
                     .foregroundStyle(Color(0xA6A6A6))
                 
-            } else if pastCnt <= 6 {
+            } else if pastCnt <= Constants.travelCnt {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0..<pastCnt, id: \.self) { index in
@@ -47,10 +47,10 @@ struct InterimPastView: View {
                 ZStack {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0 ..< (pastCnt+5)/6, id: \.self) { page in
+                            ForEach(0 ..< (pastCnt+Constants.travelCnt-1)/Constants.travelCnt, id: \.self) { page in
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                        ForEach((page * 6) ..< min((page+1) * 6, pastCnt), id: \.self) { index in
+                                        ForEach((page * Constants.travelCnt) ..< min((page+1) * Constants.travelCnt, pastCnt), id: \.self) { index in
                                             TravelButtonView(viewModel: viewModel, travel: previousTravel?[index] ?? Travel(), travelCnt: pastCnt, isSelectedTravel: $isSelectedTravel)
                                         }
                                     }
@@ -70,7 +70,7 @@ struct InterimPastView: View {
                                 .frame(width: 5, height: 5)
                         }
                     }
-                    .offset(y: 95)
+                    .offset(y: Constants.interimOffset)
                 }
             }
         }

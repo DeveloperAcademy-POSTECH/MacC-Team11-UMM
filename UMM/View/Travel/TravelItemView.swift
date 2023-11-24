@@ -42,7 +42,7 @@ struct TravelItemView: View {
                             Image(imageString)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 110, height: 80)
+                                .frame(width: Constants.frameWidth, height: Constants.frameHeight)
                                 .cornerRadius(10)
                                 .overlay(
                                     LinearGradient(
@@ -104,7 +104,7 @@ struct TravelItemView: View {
                             .padding(.horizontal, 8)
                             .padding(.bottom, 8)
                         }
-                        .frame(width: 110, height: 80)
+                        .frame(width: Constants.frameWidth, height: Constants.frameHeight)
                     }
                     .onAppear {
                         
