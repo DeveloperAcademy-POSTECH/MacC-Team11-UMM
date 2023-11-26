@@ -11,9 +11,11 @@ import CoreTransferable
 
 struct CSVArchive {
     var csvData: Data
+    var fileName: String
 
-    init(csvData: Data) {
+    init(csvData: Data, fileName: String) {
         self.csvData = csvData
+        self.fileName = fileName
     }
     
     func convertToCSV() throws -> Data {
@@ -27,7 +29,10 @@ extension CSVArchive: Transferable {
         DataRepresentation(contentType: .customCSV) { archive in
             try archive.convertToCSV()
         } importing: { data in
-            CSVArchive(csvData: data)
+            CSVArchive(csvData: data, fileName: "test")
+        }
+        .suggestedFileName { document in
+            document.fileName
         }
     }
 }
@@ -93,19 +98,17 @@ extension CSVArchive {
         
         let titleText = "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다."
         
-        let headerPage1 = "여행 전/Day N/여행 후,지출 일시,지출 위치,카테고리,소비 내역,현지 결제 금액,원화 환산 금액,결제 수단,결제 인원," + titleText + "\n"
-        let headerPage2 = "이름,금액 합계," + titleText + "\n"
+        let headerPage1 = "여행 전/Day N/여행 후,지출 일시,지출 위치,카테고리,소비 내역,현지 결제 금액,원화 환산 금액,결제 수단,결제 인원,"
+        let headerPage2 = "이름,금액 합계,"
         
         csvPage1 = headerPage1 + csvPage1
         csvPage2 = headerPage2 + csvPage2
         
-        let csvDataPage1 = csvPage1.data(using: .utf8)
-        let csvDataPage2 = csvPage2.data(using: .utf8)
-        
-        if let csvDataPage1 = csvDataPage1 {
-            return csvDataPage1
-        } else {
-            return Data()
+        let combinedCSV = titleText + "\n" + csvPage1 + "\n" + csvPage2
+        guard let csvData = combinedCSV.data(using: .utf8) else {
+            return Data() // Return empty data if conversion fails
         }
+        
+        return csvData
     }
 }

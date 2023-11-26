@@ -368,7 +368,8 @@ struct AllExpenseDetailView: View {
         return ZStack {
             if let selectedTravel = selectedTravel {
                 let csvData = CSVArchive.exportDataToCSV(travel: selectedTravel)
-                let csvItem = CSVArchive(csvData: csvData)
+                let fileName = "\(selectedTravel.name ?? "-")_\(Date().toString(dateFormat: "yy.MM.dd"))"
+                let csvItem = CSVArchive(csvData: csvData, fileName: fileName)
                 
                 ShareLink (
                     item: csvItem,
