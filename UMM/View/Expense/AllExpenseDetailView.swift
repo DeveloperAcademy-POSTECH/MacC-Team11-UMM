@@ -31,6 +31,9 @@ struct AllExpenseDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             paymentModal
                 .padding(.horizontal, 20)
+            
+            shareButton
+            
             allExpenseSummary
                 .padding(.horizontal, 20)
             Divider()
@@ -361,6 +364,23 @@ struct AllExpenseDetailView: View {
             .font(.system(.caption2))
     }
     
+    private var shareButton: some View {
+        return ZStack {
+            if let selectedTravel = selectedTravel {
+                let csvData = CSVArchive.exportDataToCSV(travel: selectedTravel)
+                let csvItem = CSVArchive(csvData: csvData)
+                
+                ShareLink (
+                    item: csvItem,
+                    preview: SharePreview(
+                        "",
+                        image: Image(systemName: "square.and.arrow.up")
+                    )
+                )
+            }
+        }
+    }
+    
     private func getFilteredAllExpenses(selectedTravel: Travel, selectedPaymentMethod: Int64, selectedCategory: Int64, selectedCountry: Int64) -> [Expense] {
         var filteredExpenses = expenseViewModel.filterExpensesByTravel(expenses: expenseViewModel.savedExpenses, selectedTravelID: selectedTravel.id ?? UUID())
         
@@ -379,7 +399,6 @@ struct AllExpenseDetailView: View {
         return filteredExpenses
     }
 }
-
 
 // #Preview {
 //     AllExpenseDetailView()

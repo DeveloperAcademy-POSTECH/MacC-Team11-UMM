@@ -96,22 +96,6 @@ struct ExpenseView: View {
                 TravelChoiceInExpenseModal(selectedTravel: $mainVM.selectedTravelInExpense, selectedCountry: $expenseViewModel.selectedCountry)
                     .presentationDetents([.height(289 - 34)])
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: {
-                            PersistenceController().exportDataToCSV(travel: mainVM.selectedTravelInExpense ?? Travel(context: viewContext))
-                        }) {
-                            Text("csv로 내보내기")
-                                .dynamicTypeSize(.medium)
-                                .fixedSize()
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .foregroundStyle(.gray300)
-                    }
-                }
-            }
         }
     }
     
@@ -194,16 +178,6 @@ struct ExpenseView: View {
         }
         .padding(.top, 8)
         .padding(.bottom, 0)
-    }
-    
-    private var exportButtonView: some View {
-        Button {
-            PersistenceController().exportDataToCSV(travel: mainVM.selectedTravelInExpense ?? Travel(context: viewContext))
-        } label: {
-            Image(systemName: "ellipsis.circle")
-                .foregroundStyle(.gray300)
-                .frame(width: 12, height: 12)
-        }
     }
 }
 
