@@ -42,7 +42,7 @@ extension UTType {
 }
 
 extension CSVArchive {
-    static func exportDataToCSV(travel: Travel) -> Data {
+    static func exportDataToCSV(travel: Travel) -> [Data] {
         let expenses = travel.expenseArray as? Set<Expense>
         let sortedExpenses = expenses?.sorted(by: { $0.payDate ?? Date.distantFuture < $1.payDate ?? Date.distantPast })
         
@@ -96,19 +96,15 @@ extension CSVArchive {
             csvPage2.append("총합,\(totalSumString),\n")
         }
         
-        let titleText = "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다."
+//        let titleText = "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다."
+//        let separator = "\n\n------------\n\n"
         
-        let headerPage1 = "여행 전/Day N/여행 후,지출 일시,지출 위치,카테고리,소비 내역,현지 결제 금액,원화 환산 금액,결제 수단,결제 인원,"
-        let headerPage2 = "이름,금액 합계,"
+        let csvPageData1 = csvPage1.data(using: .utf8)
+        let csvPageData2 = csvPage2.data(using: .utf8)
         
-        csvPage1 = headerPage1 + csvPage1
-        csvPage2 = headerPage2 + csvPage2
+//        let combinedCSV = "\(titleText)\n\n\(csvPage1)\(separator)\(csvPage2)\n"
         
-        let combinedCSV = titleText + "\n" + csvPage1 + "\n" + csvPage2
-        guard let csvData = combinedCSV.data(using: .utf8) else {
-            return Data() // Return empty data if conversion fails
-        }
-        
-        return csvData
+        guard let csvPageData1 = csvPageData1, let csvPageData2 = csvPageData2  else { return [] }
+        return [csvPageData1, csvPageData2]
     }
 }
