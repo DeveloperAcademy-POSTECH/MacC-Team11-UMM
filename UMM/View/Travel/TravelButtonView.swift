@@ -46,7 +46,6 @@ struct TravelButtonView: View {
                 }
                 isSelectedTravel = (chosenTravel != nil)
                 viewModel.chosenTravel = chosenTravel
-                print("iiii \(viewModel.chosenTravel)")
             } label: {
                 ZStack {
                     if let imageString = {
@@ -55,7 +54,7 @@ struct TravelButtonView: View {
                         Image(imageString)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 110, height: 80)
+                            .frame(width: Constants.frameWidth, height: Constants.frameHeight)
                             .cornerRadius(10)
                             .overlay(
                                 LinearGradient(
@@ -147,11 +146,11 @@ struct TravelButtonView: View {
                     }
                     
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 110, height: 80)
+                        .frame(width: Constants.frameWidth, height: Constants.frameHeight)
                         .foregroundStyle(.gray100)
                         .opacity(viewModel.chosenTravel == travel ? 0.0 : 0.4)
                 }
-                .frame(width: 110, height: 80)
+                .frame(width: Constants.frameWidth, height: Constants.frameHeight)
                 .onAppear {
                     
                     viewModel.fetchTravel()
@@ -194,11 +193,6 @@ struct TravelButtonView: View {
                 .font(.subhead1)
                 .lineLimit(1)
         }
-//        .onChange(of: chosenTravel) { _, newChosenTravel in
-//            if newChosenTravel != travel {
-//                chosenTravel = nil
-//            }
-//        }
     }
 }
 

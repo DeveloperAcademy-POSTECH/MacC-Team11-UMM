@@ -27,7 +27,7 @@ struct PreviousTravelView: View {
             if travelCnt == 0 {
                 Text("지난 여행 내역이 없어요")
                     .foregroundStyle(Color(0xA6A6A6))
-            } else if travelCnt <= 6 {
+            } else if travelCnt <= Constants.travelCnt {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
                         ForEach(0 ..< travelCnt, id: \.self) { index in
@@ -44,10 +44,10 @@ struct PreviousTravelView: View {
               ZStack {
                     ScrollView(.init()) {
                         TabView(selection: $currentPage) {
-                            ForEach(0 ..< (travelCnt+5)/6, id: \.self) { page in
+                            ForEach(0 ..< (travelCnt+Constants.travelCnt-1)/Constants.travelCnt, id: \.self) { page in
                                 VStack {
                                     LazyVGrid(columns: Array(repeating: GridItem(), count: 3)) {
-                                        ForEach((page * 6) ..< min((page+1) * 6, travelCnt), id: \.self) { index in
+                                        ForEach((page * Constants.travelCnt) ..< min((page+1) * Constants.travelCnt, travelCnt), id: \.self) { index in
                                             TravelItemView(travel: previousTravel?[index] ?? Travel(), travelCnt: travelCnt)
                                         }
                                     }
@@ -61,14 +61,14 @@ struct PreviousTravelView: View {
                     }
                     
                     HStack(spacing: 6) {
-                        ForEach(0..<(travelCnt+5)/6, id: \.self) { index in
+                        ForEach(0..<(travelCnt+Constants.travelCnt-1)/Constants.travelCnt, id: \.self) { index in
                             Capsule()
                                 .fill(currentPage == index ? Color.black : Color.gray200)
                                 .frame(width: 5, height: 5)
                         }
                     }
                     // TempView 가 있을 땐 125 없을 땐 85
-                    .offset(y: 125)
+                    .offset(y: Constants.indicatorOffset)
                 }
             }
         }
