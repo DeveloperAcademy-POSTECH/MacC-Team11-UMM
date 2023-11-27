@@ -94,7 +94,7 @@ extension CSVArchive {
             }
             
             let totalSumString = String(format: "%.0f", totalSum)
-            csvPage2.append("총합,\(totalSumString),\n")
+            csvPage2.append("총합,\(totalSumString)\n")
         }
         
 //        let titleText = "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다."
