@@ -17,6 +17,7 @@ struct AllExpenseView: View {
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     @State private var isShareModalPresented = false
+    @State private var isConfirmationDialoguePresented = false
     @State private var shareItem: CSVArchive? = nil
     
     var body: some View {
@@ -29,6 +30,7 @@ struct AllExpenseView: View {
                     countryPicker
                         .padding(.horizontal, 20)
                     Spacer()
+                    dialogueButton
                     shareButton
                         .padding(.horizontal, 20)
                     if let itemToShare = shareItem {
@@ -255,26 +257,54 @@ struct AllExpenseView: View {
     }
     
     private var shareButton: some View {
-            Button(action: {
-                isShareModalPresented = true
-            }, label: {
-                Image(systemName: "square.and.arrow.up")
-            })
-            .confirmationDialog("Share Options", isPresented: $isShareModalPresented) {
-                if let selectedTravel = mainVM.selectedTravelInExpense {
-                    let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel)
-                    Button("Share Full Consumption History") {
-                        shareItem = CSVArchive(csvData: csvDataArray[0], fileName: "Total Consumption History")
-                        if let shareItem = shareItem {
-                            ShareLink(Text("123"), item: shareItem, preview: SharePreview(""))
-                        }
-                    }
-                    Button("Share Settlement Details") {
-                        shareItem = CSVArchive(csvData: csvDataArray[1], fileName: "Settlement Details")
-                    }
+        Button(action: {
+            isShareModalPresented = true
+        }, label: {
+            Image(systemName: "square.and.arrow.up")
+        })
+        .sheet(isPresented: $isShareModalPresented) {
+            let selectedTravel = mainVM.selectedTravelInExpense
+            let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel ?? Travel(context: PersistenceController.shared.container.viewContext))
+            let shareItem1 = CSVArchive(csvData: csvDataArray[0], fileName: "지출 내역")
+            let shareItem2 = CSVArchive(csvData: csvDataArray[1], fileName: "지출 내역")
+            
+            VStack {
+                Text("본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다.")
+                ShareLink(item: shareItem1, preview: SharePreview("모든 지출 내역")) {
+                    Text("모든 지출 내역")
+                }
+                ShareLink(item: shareItem2, preview: SharePreview("정산 내역")) {
+                    Text("정산 내역")
+                }
+                Button {
+                    isShareModalPresented = false
+                } label: {
+                    Text("취소하기")
                 }
             }
+            .presentationDetents([.height(289 - 34)])
         }
+    }
+    
+    private var dialogueButton: some View {
+        Button {
+            isConfirmationDialoguePresented = true
+        } label: {
+            Text("Dialogue")
+        }
+        .confirmationDialog("confirmDialog", isPresented: $isConfirmationDialoguePresented) {
+            Button {
+                print("모든 지출 내역")
+            } label: {
+                Text("모든 지출 내역")
+            }
+            Button {
+                print("정산 내역")
+            } label: {
+                Text("정산 내역")
+            }
+        }
+    }
 }
 
 struct CurrencyForChart: Identifiable, Hashable {
