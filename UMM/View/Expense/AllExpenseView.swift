@@ -258,8 +258,8 @@ struct AllExpenseView: View {
     private var dialogueButton: some View {
         let selectedTravel = mainVM.selectedTravelInExpense
         let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel ?? Travel(context: PersistenceController.shared.container.viewContext))
-        let shareItemEveryRecord = CSVArchive(csvData: csvDataArray[0], fileName: "\(selectedTravel?.name ?? "")_전체 소비 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
-        let shareItemReceipt = CSVArchive(csvData: csvDataArray[1], fileName: "\(selectedTravel?.name ?? "")_지출 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
+        let shareItemEveryRecord = CSVArchive(csvData: csvDataArray[0], fileName: "\(selectedTravel?.name ?? "")_모든 지출 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
+        let shareItemReceipt = CSVArchive(csvData: csvDataArray[1], fileName: "\(selectedTravel?.name ?? "")_정산 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
         
         return Button {
             isConfirmationDialoguePresented = true

@@ -193,8 +193,8 @@ struct AllExpenseDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             let sortedExpenses = expenseViewModel.filteredAllExpensesForDetail.sorted(by: { (isReverse ? $0.payDate ?? Date() < $1.payDate ?? Date() : $0.payDate ?? Date() > $1.payDate ?? Date()) })
 
-            let startDate = selectedTravel?.startDate ?? Date.distantFuture
-            let endDate = selectedTravel?.endDate ?? Date.distantPast
+            let startDate = selectedTravel?.startDate ?? Date.distantPast
+            let endDate = selectedTravel?.endDate ?? Date.distantFuture
             
             let beforeTravelExpenses = sortedExpenses.filter { Calendar.current.startOfDay(for: $0.payDate ?? Date()) < startDate }
             let duringTravelExpenses = sortedExpenses.filter { Calendar.current.startOfDay(for: $0.payDate ?? Date()) >= startDate && Calendar.current.startOfDay(for: $0.payDate ?? Date()) <= endDate }
@@ -206,15 +206,17 @@ struct AllExpenseDetailView: View {
             if isReverse {
                 if beforeTravelExpenses.count > 0 {
                     drawExpenseGroup(expenses: beforeTravelExpenses, title: "여행 전", backgroundColor: .white)
-                    customDividerByDay
+                    if duringTravelExpenses.count > 0 || afterTravelExpenses.count > 0 {
+                        customDividerByDay
+                    }
                 }
                 ForEach(Array(duringTravelDateKeys.enumerated().reversed()), id: \.element) { index, date in
                     if let expensesForDate = duringTravelGroupedByDate[date] {
                         drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
-                        if index != duringTravelDateKeys.count - 1 {
-                            customDividerByDay
-                        } else if afterTravelExpenses.count > 0 {
-                            customDividerByDay
+                        if index == 0 {
+                            if afterTravelExpenses.count > 0 {
+                                customDividerByDay
+                            }
                         }
                     }
                 }
@@ -224,15 +226,17 @@ struct AllExpenseDetailView: View {
             } else {
                 if afterTravelExpenses.count > 0 {
                     drawExpenseGroup(expenses: afterTravelExpenses, title: "여행 후", backgroundColor: .white)
-                    customDividerByDay
+                    if duringTravelExpenses.count > 0 || beforeTravelExpenses.count > 0 {
+                        customDividerByDay
+                    }
                 }
                 ForEach(Array(duringTravelDateKeys.enumerated()), id: \.element) { index, date in
                     if let expensesForDate = duringTravelGroupedByDate[date] {
                         drawExpenseGroup(expenses: expensesForDate, title: "Day \(expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: date) + 1)", backgroundColor: .white)
-                        if index != duringTravelDateKeys.count - 1 {
-                            customDividerByDay
-                        } else if beforeTravelExpenses.count > 0 {
-                            customDividerByDay
+                        if index == duringTravelDateKeys.count - 1 {
+                            if beforeTravelExpenses.count > 0 {
+                                customDividerByDay
+                            }
                         }
                     }
                 }
