@@ -267,6 +267,7 @@ struct AllExpenseView: View {
             Image(systemName: "square.and.arrow.up")
                 .foregroundStyle(.gray400)
                 .frame(width: 18, height: 18)
+                .padding(.top, 10) // 디자이너에게 컨펌 받지 않음 ^^^
         }
         .confirmationDialog(
             "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다.",
