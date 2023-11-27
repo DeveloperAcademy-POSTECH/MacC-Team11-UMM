@@ -9,7 +9,8 @@ import Foundation
 import UniformTypeIdentifiers
 import CoreTransferable
 
-struct CSVArchive {
+struct CSVArchive: Identifiable {
+    let id = UUID()
     var csvData: Data
     var fileName: String
 

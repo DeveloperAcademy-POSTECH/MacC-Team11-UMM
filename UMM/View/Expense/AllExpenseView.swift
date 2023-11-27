@@ -17,6 +17,7 @@ struct AllExpenseView: View {
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
     @State private var isShareModalPresented = false
+    @State private var shareItem: CSVArchive? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -30,6 +31,9 @@ struct AllExpenseView: View {
                     Spacer()
                     shareButton
                         .padding(.horizontal, 20)
+                    if let itemToShare = shareItem {
+                        ShareLink(Text("123"), item: itemToShare, preview: SharePreview(""))
+                    }
                 }
                 allExpenseSummaryTotal
                     .padding(.horizontal, 20)
@@ -251,47 +255,26 @@ struct AllExpenseView: View {
     }
     
     private var shareButton: some View {
-        Button(action: {
-            isShareModalPresented = true
-        }, label: {
-            Image(systemName: "square.and.arrow.up")
-                .frame(width: 18, height: 18)
-        })
-        .sheet(isPresented: $isShareModalPresented) {
-            if let selectedTravel = mainVM.selectedTravel {
-                let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel)
-                VStack(alignment: .center) {
-                    Text("본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어\n실제 금액과 차이가 있을 수 있습니다.")
-                        .font(.subhead3_2)
-                        .padding()
-                    VStack(alignment: .center, spacing: 8) {
-                        ForEach(0..<csvDataArray.count, id: \.self) { index in
-                            let csvData = csvDataArray[index]
-                            let fileName = "\(index == 0 ? "전체 소비 내역" : "정산 내역")"
-                            let fileNameWithDate = "\(selectedTravel.name ?? "-")_\(index == 0 ? "전체 소비 내역" : "정산 내역")_\(Date().toString(dateFormat: "yy.MM.dd"))"
-                            let csvItem = CSVArchive(csvData: csvData, fileName: fileNameWithDate)
-                            ShareLink(
-                                item: csvItem,
-                                preview: SharePreview(Text("\(fileName)"))
-                            ) {
-                                Text("\(fileName)")
-                                    .font(.subhead2_2)
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .padding(.horizontal, 12)
-                                    .background(.gray400)
-                                    .cornerRadius(8)
-                            }
+            Button(action: {
+                isShareModalPresented = true
+            }, label: {
+                Image(systemName: "square.and.arrow.up")
+            })
+            .confirmationDialog("Share Options", isPresented: $isShareModalPresented) {
+                if let selectedTravel = mainVM.selectedTravelInExpense {
+                    let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel)
+                    Button("Share Full Consumption History") {
+                        shareItem = CSVArchive(csvData: csvDataArray[0], fileName: "Total Consumption History")
+                        if let shareItem = shareItem {
+                            ShareLink(Text("123"), item: shareItem, preview: SharePreview(""))
                         }
                     }
-                    .padding()
+                    Button("Share Settlement Details") {
+                        shareItem = CSVArchive(csvData: csvDataArray[1], fileName: "Settlement Details")
+                    }
                 }
-                .presentationDetents([.height(289 - 34)])
             }
         }
-    }
-
 }
 
 struct CurrencyForChart: Identifiable, Hashable {
