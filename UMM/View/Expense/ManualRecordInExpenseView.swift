@@ -104,7 +104,7 @@ struct ManualRecordInExpenseView: View {
                 .presentationDetents([.height(289 - 34)])
         }
         .alert(isPresented: $isWarningOn) {
-            Alert(title: Text("여행 삭제하기"), message: Text("현재 선택한 여행방에 저장된 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
+            Alert(title: Text("지출 삭제하기"), message: Text("현재 선택한 지출 기록 및 관련 데이터를 모두 삭제할까요?"), primaryButton: .destructive(Text("삭제하기"), action: {
                 PersistenceController().deleteExpenseFromTravel(travel: given_travel, expenseId: given_id)
                 dismiss()
             }), secondaryButton: .cancel(Text("취소")))

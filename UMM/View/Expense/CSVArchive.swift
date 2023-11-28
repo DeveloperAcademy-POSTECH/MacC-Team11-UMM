@@ -50,13 +50,13 @@ extension CSVArchive {
         var csvPage1: String = "여행 전/Day N/여행 후,지출 일시,지출 위치,카테고리,소비 내역,현지 결제 금액,원화 환산 금액,결제 수단,결제 인원\n"
         for expense in sortedExpenses ?? [] {
             
-            let startDate = travel.startDate ?? Date.distantFuture
-            let endDate = travel.endDate ?? Date.distantPast
+            let startDate = travel.startDate ?? Date.distantPast
+            let endDate = travel.endDate ?? Date.distantFuture
             let payDateForJudgement = expense.payDate ?? Date.distantPast
             
             let travelState = payDateForJudgement < startDate ? "여행 전" : (payDateForJudgement <= endDate ? "Day \((Calendar.current.dateComponents([.day], from: startDate, to: payDateForJudgement).day ?? 0) + 1) " : "여행 후")
             
-            let info = expense.info ?? "-"
+            let info = "\"" + (expense.info ?? "-") + "\""
             let payAmountWithCurrency = String(format: "%.0f", expense.payAmount) + (CurrencyInfoModel.shared.currencyResult[Int(expense.currency)]?.symbol ?? "-")
             
             let exchangeRate = expense.exchangeRate

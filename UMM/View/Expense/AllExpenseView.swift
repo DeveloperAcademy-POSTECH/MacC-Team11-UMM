@@ -276,10 +276,10 @@ struct AllExpenseView: View {
         ) {
             VStack {
                 ShareLink(item: shareItemEveryRecord, preview: SharePreview("모든 지출 내역")) {
-                    Text("모든 지출 내역")
+                    Text("전체 지출 내보내기")
                 }
                 ShareLink(item: shareItemReceipt, preview: SharePreview("정산 내역")) {
-                    Text("정산 내역")
+                    Text("정산 내역 내보내기")
                 }
             }
         }
