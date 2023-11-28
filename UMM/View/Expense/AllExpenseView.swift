@@ -258,7 +258,7 @@ struct AllExpenseView: View {
     private var dialogueButton: some View {
         let selectedTravel = mainVM.selectedTravelInExpense
         let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel ?? Travel(context: PersistenceController.shared.container.viewContext))
-        let shareItemEveryRecord = CSVArchive(csvData: csvDataArray[0], fileName: "\(selectedTravel?.name ?? "")_모든 지출 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
+        let shareItemEveryRecord = CSVArchive(csvData: csvDataArray[0], fileName: "\(selectedTravel?.name ?? "")_전체 지출_\(Date().toString(dateFormat: "yy.MM.dd"))")
         let shareItemReceipt = CSVArchive(csvData: csvDataArray[1], fileName: "\(selectedTravel?.name ?? "")_정산 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
         
         return Button {
@@ -275,7 +275,7 @@ struct AllExpenseView: View {
             titleVisibility: .visible
         ) {
             VStack {
-                ShareLink(item: shareItemEveryRecord, preview: SharePreview("모든 지출 내역")) {
+                ShareLink(item: shareItemEveryRecord, preview: SharePreview("전체 지출")) {
                     Text("전체 지출 내보내기")
                 }
                 ShareLink(item: shareItemReceipt, preview: SharePreview("정산 내역")) {
