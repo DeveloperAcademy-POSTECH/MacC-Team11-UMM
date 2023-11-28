@@ -157,8 +157,11 @@ struct TodayExpenseDetailView: View {
     
     private var dayField: some View {
         let calculatedDay = expenseViewModel.daysBetweenTravelDates(selectedTravel: selectedTravel ?? Travel(context: expenseViewModel.viewContext), selectedDate: selectedDate)
+
+        let endDate = selectedTravel?.endDate ?? Date.distantFuture
+        
         return HStack(alignment: .center, spacing: 0) {
-            Text("Day \(calculatedDay + 1)")
+            Text("\(calculatedDay < 0 ? "여행 전" : selectedDate > endDate ? "여행 후" : "Day " + String(calculatedDay + 1))")
                 .font(.subhead1_fixed)
                 .foregroundStyle(.gray400)
             // 선택한 날짜를 보여주는 부분. 현지 시각으로 변환해서 보여준다.

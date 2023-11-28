@@ -60,6 +60,11 @@ struct CustomDatePicker: View {
             
             // MARK: - 기본 datePicker
             ZStack {
+                Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
+                    .foregroundStyle(.black)
+                    .font(.subhead2_2_fixed)
+                    .allowsHitTesting(false)
+                
                 DatePicker("", selection: $expenseViewModel.selectedDate, displayedComponents: [.date])
                     .labelsHidden()
                     .blendMode(.lighten)
@@ -70,11 +75,6 @@ struct CustomDatePicker: View {
                             expenseViewModel.groupedTodayExpenses = Dictionary(grouping: expenseViewModel.filteredTodayExpenses, by: { $0.country })
                         }
                     }
-
-                Text("\(expenseViewModel.selectedDate, formatter: dateFormatterWithDay)")
-                    .foregroundStyle(.black)
-                    .font(.subhead2_2_fixed)
-                    .allowsHitTesting(false)
             }
             
             Button(action: {

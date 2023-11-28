@@ -16,6 +16,9 @@ struct AllExpenseView: View {
     let exchangeRatehandler = ExchangeRateHandler.shared
     let currencyInfoModel = CurrencyInfoModel.shared.currencyResult
     let countryInfoModel = CountryInfoModel.shared.countryResult
+    @State private var isShareModalPresented = false
+    @State private var isConfirmationDialoguePresented = false
+    @State private var shareItem: CSVArchive? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -23,8 +26,16 @@ struct AllExpenseView: View {
                 noDataView
                     .padding(.horizontal, 20)
             } else {
-                countryPicker
-                    .padding(.horizontal, 20)
+                HStack {
+                    countryPicker
+                        .padding(.horizontal, 20)
+                    Spacer()
+                    dialogueButton
+                        .padding(.horizontal, 20)
+                    if let itemToShare = shareItem {
+                        ShareLink(Text("123"), item: itemToShare, preview: SharePreview(""))
+                    }
+                }
                 allExpenseSummaryTotal
                     .padding(.horizontal, 20)
                 allExpenseSummaryByCurrency
@@ -241,6 +252,36 @@ struct AllExpenseView: View {
                 .foregroundStyle(.gray300)
                 .padding(.top, 130)
             Spacer()
+        }
+    }
+    
+    private var dialogueButton: some View {
+        let selectedTravel = mainVM.selectedTravelInExpense
+        let csvDataArray = CSVArchive.exportDataToCSV(travel: selectedTravel ?? Travel(context: PersistenceController.shared.container.viewContext))
+        let shareItemEveryRecord = CSVArchive(csvData: csvDataArray[0], fileName: "\(selectedTravel?.name ?? "")_전체 지출_\(Date().toString(dateFormat: "yy.MM.dd"))")
+        let shareItemReceipt = CSVArchive(csvData: csvDataArray[1], fileName: "\(selectedTravel?.name ?? "")_정산 내역_\(Date().toString(dateFormat: "yy.MM.dd"))")
+        
+        return Button {
+            isConfirmationDialoguePresented = true
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .foregroundStyle(.gray400)
+                .frame(width: 18, height: 18)
+                .padding(.top, 10) // 디자이너에게 컨펌 받지 않음 ^^^
+        }
+        .confirmationDialog(
+            "본 문서의 한화 환산 금액은 지출 기록 시점의 환율을 기준으로 계산되어 실제 금액과 차이가 있을 수 있습니다.",
+            isPresented: $isConfirmationDialoguePresented,
+            titleVisibility: .visible
+        ) {
+            VStack {
+                ShareLink(item: shareItemEveryRecord, preview: SharePreview("전체 지출")) {
+                    Text("전체 지출 내보내기")
+                }
+                ShareLink(item: shareItemReceipt, preview: SharePreview("정산 내역")) {
+                    Text("정산 내역 내보내기")
+                }
+            }
         }
     }
 }

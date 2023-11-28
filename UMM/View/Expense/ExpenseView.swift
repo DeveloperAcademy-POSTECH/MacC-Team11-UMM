@@ -16,6 +16,7 @@ struct ExpenseView: View {
     @EnvironmentObject var mainVM: MainViewModel
     private var travelStream: Set<AnyCancellable> = []
     let isSE3 = abs(UIScreen.main.bounds.width - 375.0) < 2.0 && abs(UIScreen.main.bounds.height - 667.0) < 2.0
+    let viewContext = PersistenceController.shared.container.viewContext
     
     var body: some View {
         NavigationStack {
