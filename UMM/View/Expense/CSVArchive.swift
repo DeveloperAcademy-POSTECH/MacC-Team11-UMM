@@ -39,7 +39,7 @@ extension CSVArchive: Transferable {
 }
 
 extension UTType {
-    static let customCSV = UTType(exportedAs: "com.example.csv")
+    static let customCSV = UTType(exportedAs: "com.UMM.csv")
 }
 
 extension CSVArchive {
