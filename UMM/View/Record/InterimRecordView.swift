@@ -101,7 +101,7 @@ struct InterimRecordView: View {
                                     +
                                     Text(" ")
                                     +
-                                    Text((CurrencyInfoModel.shared.currencyResult[Int(((defaultExpense?[index].country) ?? -1))]?.koreanNm) ?? "-")
+                                    Text(CurrencyInfoModel.shared.currencyResult[Int(defaultExpense?[index].currency ?? -1)]?.koreanNm ?? "-")
                                 }
 
                                 .font(.display2)

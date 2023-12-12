@@ -287,6 +287,28 @@ struct TravelListView: View {
                                 self.savedExpenses = sortExpenseByDate(expenseArr: savedExpenses)
                                 
                                 if let savedExpenses = savedExpenses {
+                                    
+                                    var sortedSavedExpenses =             savedExpenses
+                                        .sorted {
+                                            if let date0 = $0.payDate, let date1 = $1.payDate {
+                                                return date0 >= date1
+                                            } else {
+                                                return true
+                                            }
+                                        }
+                                    
+                                    var flagImageArray = [Int]()
+                                    for expense in sortedSavedExpenses {
+                                        if !flagImageArray.contains(Int(expense.country)) {
+                                            flagImageArray.append(Int(expense.country))
+                                        }
+                                        if flagImageArray.count >= 4 {
+                                            break
+                                        }
+                                    }
+                                    
+                                    
+                                    
                                     let countryValues: [Int64] = savedExpenses.map { expense in
                                         return viewModel.getCountryForExpense(expense)
                                     }

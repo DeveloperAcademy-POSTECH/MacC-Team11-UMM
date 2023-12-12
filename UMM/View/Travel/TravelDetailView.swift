@@ -179,27 +179,29 @@ struct TravelDetailView: View {
                 .foregroundStyle(Color.white)
             
             if koreanNM.count > 0 {
-                HStack {
-                    
-                    ForEach(0..<koreanNM.count, id: \.self) { index in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
                         
-                        HStack {
-                            Image(flagImageArr[index])
-                                .resizable()
-                                .frame(width: 24, height: 24)
+                        ForEach(0..<koreanNM.count, id: \.self) { index in
                             
-                            Text(koreanNM[index])
-                                .font(.body2)
-                                .foregroundStyle(Color.white)
+                            HStack {
+                                Image(flagImageArr[index])
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                
+                                Text(koreanNM[index])
+                                    .font(.body2)
+                                    .foregroundStyle(Color.white)
+                            }
+                            
+                            .padding(.trailing, 18)
+                            
                         }
                         
-                        .padding(.trailing, 18)
-                        
+                        Spacer()
                     }
-                    
-                    Spacer()
+                    .padding(.vertical, 20)
                 }
-                .padding(.vertical, 20)
             } else {
                 HStack {
                     Text("소비 기록을 남기면 자동으로 채워져요.")
